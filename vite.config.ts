@@ -25,7 +25,11 @@ export default defineConfig({
 					"115网盘魔法优化: 画质增强 | 视频缩略图 | 在线字幕 | 内置 Jav 信息",
 				supportURL: "https://github.com/cbingb666/115master/issues",
 				"run-at": "document-start",
-				include: ["https://115.com/?ct*", "https://dl.115cdn.net/fuckkk/*"],
+				include: [
+					"https://115.com/?ct*",
+					"https://115.com/?aid*",
+					"https://dl.115cdn.net/fuckkk/*",
+				],
 				exclude: [
 					"https://*.115.com/bridge*",
 					"https://*.115.com/static*",

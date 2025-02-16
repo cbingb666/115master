@@ -1,0 +1,22 @@
+.video-operation-tooltip {
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    text-align: center;
+    pointer-events: none;
+    z-index: 1000;
+    backdrop-filter: blur(20px);
+    width: 60%;
+    opacity: 0;
+}
+
+.video-operation-tooltip.show {
+    transition: opacity 0.3s ease-in-out;
+    transition-delay: 0.2s;
+}

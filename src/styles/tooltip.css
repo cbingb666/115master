@@ -1,0 +1,13 @@
+.video-operation-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1000;
+    display: none;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+} 
