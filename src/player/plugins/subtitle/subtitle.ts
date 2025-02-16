@@ -90,7 +90,7 @@ export class Subtitle extends PlayerPlugin<SubtitleState> {
 	}
 
 	handleSubtitleClick(e: Event) {
-		const index = parseInt(
+		const index = Number.parseInt(
 			(e.currentTarget as HTMLElement).dataset.index ?? "-1",
 		);
 		const tracks = this.player.video.textTracks;

@@ -38,19 +38,19 @@ export class Rsa115 {
 			return null;
 		}
 		const ba: number[] = [];
-		let pos = n;
 		let i = s.length - 1;
-
+		let pos = n;
 		while (i >= 0 && pos > 0) {
-			ba[--pos] = s.charCodeAt(i--);
+			pos--;
+			ba[pos] = s.charCodeAt(i--);
 		}
-		ba[--pos] = 0;
+		ba[pos - 1] = 0;
 		while (pos > 2) {
-			ba[--pos] = 0xff;
+			pos--;
+			ba[pos] = 0xff;
 		}
-		ba[--pos] = 2;
-		ba[--pos] = 0;
-
+		ba[pos - 1] = 2;
+		ba[pos - 2] = 0;
 		const c = this.a2hex(ba);
 		return bigInt(c, 16);
 	}
