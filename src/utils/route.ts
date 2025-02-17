@@ -1,4 +1,5 @@
 import { GM_openInTab, GM_setValue } from "$";
+import { DL_HOST_155 } from "../constants/115";
 import GM_VALUE_KEY from "../constants/gm.value.key";
 import type { PlayingVideoInfo } from "../types/player";
 
@@ -12,7 +13,7 @@ export const goToPlayer = (
 		avNumber: playingVideoInfo.avNumber || "",
 		title: playingVideoInfo.title,
 	});
-	const url = `https://dl.115cdn.net/fuckkk/player/?${params.toString()}`;
+	const url = `https://${DL_HOST_155}/fuckkk/player/?${params.toString()}`;
 	if (isOpenInTab) {
 		GM_openInTab(url, {
 			active: true,

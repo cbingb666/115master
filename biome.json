@@ -7,7 +7,10 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["node_modules", "dist"]
+		"ignore": [
+			"node_modules",
+			"dist"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -21,7 +24,8 @@
 		"rules": {
 			"recommended": true,
 			"style": {
-				"noNonNullAssertion": "off"
+				"noNonNullAssertion": "off",
+				"useNumberNamespace": "off"
 			},
 			"complexity": {
 				"noForEach": "off",

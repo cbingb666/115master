@@ -1,0 +1,25 @@
+:root {
+    /* Base Colors */
+    --x-player-background-color: #000;
+    --x-player-color-primary: #0084ff;
+    --x-player-color-primary-hover: #339dff;
+    --x-player-color-primary-alpha: rgba(0, 132, 255, 0.3);
+    
+    /* Progress Bar */
+    --x-player-progress-bar-track-color: rgba(255, 255, 255, 0.3);
+    --x-player-progress-bar-fill-color: var(--x-player-color-primary);
+    --x-player-progress-bar-thumb-color: #fff;
+    --x-player-progress-bar-thumb-size: 12px;
+    --x-player-progress-bar-height: 4px;
+    
+    /* Volume Control */
+    --x-player-volume-control-track-color: rgba(255, 255, 255, 0.3);
+    --x-player-volume-control-fill-color: var(--x-player-color-primary);
+    --x-player-volume-control-thumb-color: #fff;
+    --x-player-volume-control-thumb-size: 12px;
+    --x-player-volume-control-height: 4px;
+    
+    /* Controls */
+    --x-player-controller-progress-bar-color: var(--x-player-color-primary);
+    --x-player-controller-progress-bar-color-hover: var(--x-player-color-primary-hover);
+}

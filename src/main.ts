@@ -1,10 +1,10 @@
 debugInfo.bootstrapInfo();
 
-import "./style.css";
 import { minimatch } from "minimatch";
 import ROUTE_MATCH from "./constants/route.match";
-import HomePage from "./pages/home";
-import PlayerPage from "./pages/player";
+import HomePage from "./pages/home/index";
+import { videoPage } from "./pages/video";
+import "./style.css";
 import { checkUserAgent } from "./utils/checkUserAgent";
 import { debugInfo } from "./utils/debugInfo";
 
@@ -16,7 +16,7 @@ const main = () => {
 	}
 
 	if (minimatch(window.location.href, ROUTE_MATCH.DPLAYER)) {
-		new PlayerPage();
+		videoPage();
 	}
 };
 

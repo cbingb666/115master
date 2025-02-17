@@ -1,5 +1,5 @@
-import { FileOperationMenu } from "../components/FileOperationMenu";
-import { AppLogger } from "../utils/logger";
+import { FileOperationMenu } from "../../components/FileOperationMenu";
+import { AppLogger } from "../../utils/logger";
 
 class HomePage {
 	private readonly logger: AppLogger;
