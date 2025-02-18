@@ -8,8 +8,9 @@
 		
 		<Menu
 			:visible="showMenu"
-			:x="menuPosition.x"
-			:y="menuPosition.y"
+			:triggerRef="buttonRef"
+			placement="top"
+			@update:visible="handleMenuVisibleChange"
 		>
 			<div
 				v-for="source in sources"
@@ -26,7 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { usePlayerContext } from "../../hooks/useVideoPlayerContext";
 import type { VideoSource } from "../../types";
 import Menu from "../Menu/index.vue";
 
@@ -43,6 +45,18 @@ const emit = defineEmits<{
 
 const showMenu = ref(false);
 const buttonRef = ref<HTMLElement>();
+const { state } = usePlayerContext();
+
+// 监听全屏状态变化，确保菜单位置正确
+watch(
+	() => state.isFullscreen.value,
+	() => {
+		if (showMenu.value) {
+			showMenu.value = false;
+			emit("menu-visible-change", false);
+		}
+	},
+);
 
 const currentQuality = computed(() => {
 	if (!props.currentSource) return "自动";
@@ -51,37 +65,14 @@ const currentQuality = computed(() => {
 	return typeof quality === "number" ? `${quality}P` : quality;
 });
 
-const menuPosition = computed(() => {
-	if (!buttonRef.value) return { x: 0, y: 0 };
-	const rect = buttonRef.value.getBoundingClientRect();
-	const menuHeight = props.sources.length * 36 + 16;
-
-	// 获取播放器容器
-	const playerContainer = buttonRef.value.closest(".x-player");
-	if (!playerContainer) return { x: 0, y: 0 };
-
-	const playerRect = playerContainer.getBoundingClientRect();
-
-	// 计算按钮相对于播放器的位置
-	const buttonLeft = rect.left - playerRect.left;
-	const buttonTop = rect.top - playerRect.top;
-	const buttonBottom = rect.bottom - playerRect.top;
-	const spaceBelow = playerRect.height - buttonBottom;
-
-	// 如果下方空间足够，就显示在下方，否则显示在上方
-	const y =
-		spaceBelow >= menuHeight ? buttonBottom + 8 : buttonTop - menuHeight - 8;
-
-	// 确保菜单不会超出播放器右侧边界
-	const menuWidth = 200; // 菜单的固定宽度
-	const x = Math.min(buttonLeft, playerRect.width - menuWidth - 16); // 16是右侧边距
-
-	return { x, y };
-});
-
 const toggleMenu = () => {
 	showMenu.value = !showMenu.value;
 	emit("menu-visible-change", showMenu.value);
+};
+
+const handleMenuVisibleChange = (visible: boolean) => {
+	showMenu.value = visible;
+	emit("menu-visible-change", visible);
 };
 
 const getQualityLabel = (quality: number) => {
@@ -117,8 +108,6 @@ const handleQualityChange = (source: VideoSource) => {
 	showMenu.value = false;
 	emit("menu-visible-change", false);
 };
-
-onUnmounted(() => {});
 </script>
 
 <style scoped>
@@ -133,6 +122,7 @@ onUnmounted(() => {});
 	display: flex;
 	align-items: center;
 	gap: 4px;
+	user-select: none;
 }
 
 .quality-button:hover {

@@ -3,6 +3,8 @@ export interface VideoSource {
 	name: string;
 	// 地址
 	url: string;
+	// 海报
+	poster?: string;
 	// 类型
 	type: "auto" | "hls" | "mp4"; // 明确定义支持的类型
 	// 质量
@@ -18,4 +20,12 @@ export interface VideoSource {
 		debug?: boolean;
 		[key: string]: unknown;
 	};
+}
+
+export interface Subtitle {
+	url: string;
+	label: string;
+	srclang: string;
+	kind: "subtitles" | "captions";
+	default?: boolean;
 }

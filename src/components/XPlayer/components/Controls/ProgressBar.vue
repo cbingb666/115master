@@ -1,14 +1,16 @@
 <template>
 	<div class="progress-bar">
+		<!-- 进度条外容器 -->
 		<div 
 			ref="progressBarRef"
 			class="progress-bar-wrapper"
 			@click="handleProgressClick"
 			@mousemove="handleMouseMove"
-			@mouseenter="isHovering = true"
+			@mouseenter="handleMouseEnter"
 			@mouseleave="handleMouseLeave"
 			@mousedown="handleMouseDown"
 		>
+			<!-- 进度条内容器 -->
 			<div class="progress-bar-container">
 				<!-- 缓冲进度 -->
 				<div 
@@ -18,32 +20,32 @@
 
 				<!-- 原始播放进度（拖拽时保持显示） -->
 				<div 
-					class="progress-current" 
+					class="progress-current"
 					:style="{ 
 						width: `${state.progress.value}%`,
-						opacity: isDragging ? 0.5 : 1
+						opacity: state.isDragging.value ? 0.5 : 1
 					}"
 				></div>
 
 				<!-- 拖拽时的实时进度 -->
 				<div 
-					v-if="isDragging"
-					class="progress-current progress-dragging" 
-					:style="{ width: `${progress}%` }"
+					v-if="state.isDragging.value"
+					class="progress-current progress-dragging"
+					:style="{ width: `${state.dragProgress.value}%` }"
 				></div>
 
 				<!-- 预览进度 -->
 				<div 
-					v-show="isHovering && !isDragging"
+					v-show="state.isPreviewVisible.value && !state.isDragging.value"
 					class="progress-hover" 
-					:style="{ width: `${hoverProgress}%` }"
+					:style="{ width: `${state.previewProgress.value}%` }"
 				></div>
 
 				<!-- 原始进度拖拽点 -->
 				<div 
-					v-if="isDragging"
+					v-if="state.isDragging.value"
 					class="progress-handle-container"
-					:style="{ left: `${originalProgress}%` }"
+					:style="{ left: `${state.originalProgress.value}%` }"
 				>
 					<div class="progress-handle progress-handle-original"></div>
 				</div>
@@ -51,153 +53,97 @@
 				<!-- 当前进度拖拽点 -->
 				<div 
 					class="progress-handle-container"
-					:style="{ left: `${isDragging ? progress : state.progress.value}%` }"
+					:style="{ 
+						left: `${state.isDragging.value ? state.dragProgress.value : state.progress.value}%` 
+					}"
 				>
 					<div 
 						class="progress-handle"
-						:class="{ 'is-dragging': isDragging }"
+						:class="{ 'is-dragging': state.isDragging.value }"
 					></div>
 				</div>
 			</div>
 
-			<!-- 缩略图和时间提示容器 -->
-			<div 
-				class="preview-container"
-				v-show="isHovering || isDragging"
-				:style="{ left: `${isDragging ? progress : hoverProgress}%` }"
-			>
-				<Thumbnail
-					:position="0"
-					:visible="true"
-					:current-time="previewTime"
-					:duration="state.duration.value"
-					:thumbnails="thumbnails"
-					:type="thumbnailType"
-				/>
-				<div class="time-tooltip">
-					{{ formatTime(previewTime) }}
-				</div>
-			</div>
+			<!-- 缩略图预览 -->
+			<Thumbnail
+				:visible="state.isPreviewVisible.value || state.isDragging.value"
+				:position="state.isDragging.value ? state.dragProgress.value : state.previewProgress.value"
+				:time="state.previewTime.value"
+				:progress-bar-width="progressBarWidth"
+				:on-thumbnail-request="onThumbnailRequest"
+			/>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { usePlayerContext } from "../../hooks/useVideoPlayer";
+import { computed, ref } from "vue";
+import { usePlayerContext } from "../../hooks/useVideoPlayerContext";
 import Thumbnail from "../Thumbnail/index.vue";
 
-const progressBarRef = ref<HTMLElement | null>(null);
-const isHovering = ref(false);
-const isDragging = ref(false);
-const hoverProgress = ref(0);
-const progress = ref(0);
-const originalProgress = ref(0);
-const previewTime = ref(0);
-
-const { state, actions } = usePlayerContext();
-const localProgress = ref(0); // 用于平滑过渡的本地进度
-
-// 添加缩略图相关的 props
 interface Props {
-	thumbnails?: string[] | ImageBitmap[];
-	thumbnailType?: "image" | "canvas";
+	onThumbnailRequest?: (time: number) => Promise<ImageBitmap | null>;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-	thumbnailType: "image",
-});
+const { onThumbnailRequest } = defineProps<Props>();
+const { state, actions } = usePlayerContext();
 
-const thumbnails = computed(() => props.thumbnails || []);
+const progressBarRef = ref<HTMLElement | null>(null);
+const progressBarWidth = computed(() => progressBarRef.value?.offsetWidth || 0);
 
-// 计算当前显示的进度
-const currentProgress = computed(() => {
-	return isDragging.value ? localProgress.value : state.progress.value;
-});
-
-// 监听视频实际进度变化
-watch(
-	() => state.progress.value,
-	(newProgress) => {
-		if (!isDragging.value) {
-			localProgress.value = newProgress;
-		}
-	},
-);
-
-// 格式化时间
-const formatTime = (seconds: number): string => {
-	const minutes = Math.floor(seconds / 60);
-	const remainingSeconds = Math.floor(seconds % 60);
-	return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-};
-
-// 计算进度位置
+// 计算鼠标位置对应的进度
 const calculatePosition = (event: MouseEvent, element: HTMLElement) => {
 	const rect = element.getBoundingClientRect();
-	return Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+	const position = (event.clientX - rect.left) / rect.width;
+	return Math.min(Math.max(position, 0), 1);
 };
 
 // 处理鼠标移动
 const handleMouseMove = (event: MouseEvent) => {
 	if (!progressBarRef.value) return;
 	const position = calculatePosition(event, progressBarRef.value);
-	hoverProgress.value = position * 100;
-	previewTime.value = position * state.duration.value;
+	actions.updatePreview(position);
+};
 
-	if (isDragging.value) {
-		progress.value = position * 100;
-		previewTime.value = position * state.duration.value;
-	}
+// 处理鼠标进入
+const handleMouseEnter = () => {
+	actions.showPreview();
+};
+
+// 处理鼠标离开
+const handleMouseLeave = () => {
+	actions.hidePreview();
 };
 
 // 处理鼠标按下
 const handleMouseDown = (event: MouseEvent) => {
 	if (!progressBarRef.value) return;
-	isDragging.value = true;
-	originalProgress.value = state.progress.value;
-
 	const position = calculatePosition(event, progressBarRef.value);
-	progress.value = position * 100;
-	previewTime.value = position * state.duration.value;
+	actions.startDragging(position);
 
 	document.addEventListener("mousemove", handleGlobalMouseMove);
 	document.addEventListener("mouseup", handleMouseUp);
-	event.preventDefault();
 };
 
 // 处理全局鼠标移动
 const handleGlobalMouseMove = (event: MouseEvent) => {
-	if (!progressBarRef.value || !isDragging.value) return;
+	if (!progressBarRef.value) return;
 	const position = calculatePosition(event, progressBarRef.value);
-	progress.value = position * 100;
-	previewTime.value = position * state.duration.value;
+	actions.updateDragging(position);
 };
 
 // 处理鼠标松开
 const handleMouseUp = () => {
-	if (isDragging.value) {
-		const finalTime = (progress.value / 100) * state.duration.value;
-		actions.seekTo(finalTime);
-	}
-	isDragging.value = false;
+	actions.stopDragging();
 	document.removeEventListener("mousemove", handleGlobalMouseMove);
 	document.removeEventListener("mouseup", handleMouseUp);
 };
 
-// 处理鼠标离开
-const handleMouseLeave = () => {
-	if (!isDragging.value) {
-		isHovering.value = false;
-	}
-};
-
 // 进度条点击
 const handleProgressClick = (event: MouseEvent) => {
-	if (!progressBarRef.value || isDragging.value) return;
+	if (!progressBarRef.value || state.isDragging.value) return;
 	const position = calculatePosition(event, progressBarRef.value);
 	const newTime = position * state.duration.value;
-	previewTime.value = newTime;
 	actions.seekTo(newTime);
 };
 </script>
@@ -282,25 +228,5 @@ const handleProgressClick = (event: MouseEvent) => {
 .progress-handle-original {
 	background-color: rgba(255, 255, 255, 0.5);
 	transform: translate(-50%, -50%) scale(1) !important;
-}
-
-.preview-container {
-	position: absolute;
-	bottom: 100%;
-	transform: translateX(-50%);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 4px;
-	margin-bottom: 8px;
-}
-
-.time-tooltip {
-	background-color: rgba(28, 28, 28, 0.9);
-	color: #fff;
-	padding: 2px 4px;
-	border-radius: 2px;
-	font-size: 12px;
-	white-space: nowrap;
 }
 </style> 

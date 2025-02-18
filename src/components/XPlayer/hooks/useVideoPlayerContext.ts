@@ -10,6 +10,15 @@ export interface PlayerState {
 	buffered: Ref<number>;
 	progress: Ref<number>;
 	isControlsVisible: Ref<boolean>;
+	previewTime: Ref<number>;
+	previewProgress: Ref<number>;
+	isPreviewVisible: Ref<boolean>;
+	isDragging: Ref<boolean>;
+	dragProgress: Ref<number>;
+	originalProgress: Ref<number>;
+	autoplay: Ref<boolean>;
+	loop: Ref<boolean>;
+	playbackRate: Ref<number>;
 }
 
 export interface PlayerActions {
@@ -22,11 +31,22 @@ export interface PlayerActions {
 	adjustVolume: (delta: number) => void;
 	showControls: () => void;
 	hideControls: () => void;
+	updatePreview: (position: number) => void;
+	startDragging: (position: number) => void;
+	updateDragging: (position: number) => void;
+	stopDragging: () => void;
+	showPreview: () => void;
+	hidePreview: () => void;
+	setPlaybackRate: (rate: number) => void;
 }
 
 export interface PlayerContext {
 	state: PlayerState;
 	actions: PlayerActions;
+	refs: {
+		playerRef: Ref<HTMLElement | null>;
+		videoContainerRef: Ref<HTMLElement | null>;
+	};
 }
 
 export const PlayerSymbol: InjectionKey<PlayerContext> = Symbol("VideoPlayer");
@@ -34,16 +54,38 @@ export const PlayerSymbol: InjectionKey<PlayerContext> = Symbol("VideoPlayer");
 export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 	// 播放器状态
 	const isPlaying = ref(false);
+	// 是否静音
 	const isMuted = ref(false);
+	// 是否全屏
 	const isFullscreen = ref(false);
+	// 音量
 	const volume = ref(100);
+	// 当前时间
 	const currentTime = ref(0);
+	// 总时长
 	const duration = ref(0);
+	// 缓冲进度
 	const buffered = ref(0);
+	// 进度
 	const progress = ref(0);
+	// 是否显示控制栏
 	const isControlsVisible = ref(true);
+	// 新增预览相关状态
+	const previewTime = ref(0);
+	const previewProgress = ref(0);
+	const isPreviewVisible = ref(false);
+	const isDragging = ref(false);
+	const dragProgress = ref(0);
+	const originalProgress = ref(0);
+	// 隐藏控制栏计时器
 	let hideControlsTimer: number | null = null;
-	const isHoveringControls = ref(false);
+	const autoplay = ref(false);
+	const loop = ref(false);
+	const playbackRate = ref(1);
+
+	// 新增 ref
+	const playerRef = ref<HTMLElement | null>(null);
+	const videoContainerRef = ref<HTMLElement | null>(null);
 
 	// 更新播放状态
 	const updatePlayingState = () => {
@@ -117,11 +159,10 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 	// 全屏控制
 	const toggleFullscreen = async () => {
 		try {
-			const container = document.querySelector(".x-player");
-			if (!container) return;
+			if (!playerRef.value) return;
 
 			if (!document.fullscreenElement) {
-				await container.requestFullscreen();
+				await playerRef.value.requestFullscreen();
 			} else {
 				await document.exitFullscreen();
 			}
@@ -166,22 +207,27 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 		}
 
 		switch (event.code) {
+			// 空格键
 			case "Space":
 				event.preventDefault();
 				togglePlay();
 				break;
+			// 左箭头
 			case "ArrowLeft":
 				event.preventDefault();
 				skip(-5);
 				break;
+			// 右箭头
 			case "ArrowRight":
 				event.preventDefault();
 				skip(5);
 				break;
+			// 上箭头
 			case "ArrowUp":
 				event.preventDefault();
 				adjustVolume(5);
 				break;
+			// 下箭头
 			case "ArrowDown":
 				event.preventDefault();
 				adjustVolume(-5);
@@ -201,6 +247,7 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 		isControlsVisible.value = true;
 	};
 
+	// 隐藏控制栏
 	const hideControls = () => {
 		if (hideControlsTimer) {
 			clearTimeout(hideControlsTimer);
@@ -210,11 +257,13 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 		}, 3000);
 	};
 
+	// 鼠标移动
 	const handleMouseMove = () => {
 		showControls();
 		hideControls();
 	};
 
+	// 鼠标离开
 	const handleMouseLeave = () => {
 		if (!isControlsVisible.value) return;
 		hideControls();
@@ -222,39 +271,22 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 
 	// 设置事件监听
 	const setupControlsEventListeners = () => {
-		const videoContainer = document.querySelector(".video-container");
-		// const controls = document.querySelector(".controls-wrapper");
-
-		if (videoContainer) {
-			videoContainer.addEventListener("mousemove", handleMouseMove);
-			videoContainer.addEventListener("mouseleave", handleMouseLeave);
+		if (videoContainerRef.value) {
+			videoContainerRef.value.addEventListener("mousemove", handleMouseMove);
+			videoContainerRef.value.addEventListener("mouseleave", handleMouseLeave);
 		}
-
-		// if (controls) {
-		// 	controls.addEventListener("mouseenter", handleControlsMouseEnter);
-		// 	controls.addEventListener("mouseleave", handleControlsMouseLeave);
-		// }
 
 		showControls();
 	};
 
 	// 清理事件监听
 	const cleanupControlsEventListeners = () => {
-		const videoContainer = document.querySelector(".video-container");
-		// const controls = document.querySelector(".controls-wrapper");
-
-		if (videoContainer) {
-			videoContainer.removeEventListener("mousemove", handleMouseMove);
-			videoContainer.removeEventListener("mouseleave", handleMouseLeave);
-		}
-
-		// if (controls) {
-		// 	controls.removeEventListener("mouseenter", handleControlsMouseEnter);
-		// 	controls.removeEventListener("mouseleave", handleControlsMouseLeave);
-		// }
-
-		if (hideControlsTimer) {
-			clearTimeout(hideControlsTimer);
+		if (videoContainerRef.value) {
+			videoContainerRef.value.removeEventListener("mousemove", handleMouseMove);
+			videoContainerRef.value.removeEventListener(
+				"mouseleave",
+				handleMouseLeave,
+			);
 		}
 	};
 
@@ -325,7 +357,57 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 		{ immediate: true },
 	);
 
-	const playerContext: PlayerContext = {
+	// 更新预览位置
+	const updatePreview = (position: number) => {
+		previewProgress.value = position * 100;
+		previewTime.value = position * duration.value;
+	};
+
+	// 开始拖拽
+	const startDragging = (position: number) => {
+		isDragging.value = true;
+		originalProgress.value = progress.value;
+		dragProgress.value = position * 100;
+		previewTime.value = position * duration.value;
+	};
+
+	// 更新拖拽
+	const updateDragging = (position: number) => {
+		if (!isDragging.value) return;
+		dragProgress.value = position * 100;
+		previewTime.value = position * duration.value;
+	};
+
+	// 停止拖拽
+	const stopDragging = () => {
+		if (isDragging.value) {
+			const finalTime = (dragProgress.value / 100) * duration.value;
+			seekTo(finalTime);
+		}
+		isDragging.value = false;
+	};
+
+	// 显示预览
+	const showPreview = () => {
+		isPreviewVisible.value = true;
+	};
+
+	// 隐藏预览
+	const hidePreview = () => {
+		if (!isDragging.value) {
+			isPreviewVisible.value = false;
+		}
+	};
+
+	// 设置播放速度
+	const setPlaybackRate = (rate: number) => {
+		if (!videoElementRef.value) return;
+		videoElementRef.value.playbackRate = rate;
+		playbackRate.value = rate;
+	};
+
+	// 返回上下文
+	const context: PlayerContext = {
 		state: {
 			isPlaying,
 			isMuted,
@@ -336,6 +418,15 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 			buffered,
 			progress,
 			isControlsVisible,
+			previewTime,
+			previewProgress,
+			isPreviewVisible,
+			isDragging,
+			dragProgress,
+			originalProgress,
+			autoplay,
+			loop,
+			playbackRate,
 		},
 		actions: {
 			togglePlay,
@@ -347,13 +438,23 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 			adjustVolume,
 			showControls,
 			hideControls,
+			updatePreview,
+			startDragging,
+			updateDragging,
+			stopDragging,
+			showPreview,
+			hidePreview,
+			setPlaybackRate,
+		},
+		refs: {
+			playerRef,
+			videoContainerRef,
 		},
 	};
 
-	// 提供上下文
-	provide(PlayerSymbol, playerContext);
+	provide(PlayerSymbol, context);
 
-	return playerContext;
+	return context;
 }
 
 // 使用播放器上下文的 hook

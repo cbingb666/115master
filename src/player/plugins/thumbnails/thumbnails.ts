@@ -2,7 +2,7 @@ import throttle from "lodash/throttle";
 import { PlayerPlugin } from "..";
 import type { Player } from "../..";
 import { AsyncQueue } from "../../../utils/asyncQueue";
-import { M3U8Clipper, type VideoFrame } from "../../../utils/clip";
+import { type ClipFrame, M3U8Clipper } from "../../../utils/clip";
 import "./thumbnails.css";
 import { calculateFitSize } from "./utils";
 
@@ -14,12 +14,12 @@ type TumbnailsState = {
 };
 
 type CachedFrame = {
-	frame: VideoFrame;
+	frame: ClipFrame;
 	segmentIndex: number;
 };
 
 type SegmentFrame = {
-	frames: VideoFrame[];
+	frames: ClipFrame[];
 	isLoaded: boolean;
 	isProcessing: boolean;
 	isAutoPreload: boolean;
@@ -223,7 +223,7 @@ export class Tumbnails extends PlayerPlugin<TumbnailsState> {
 		}
 		try {
 			const { segments, totalDuration } =
-				await this.clipper.getSegmentsWithDuration(url);
+				await this.clipper.getM3U8InfoByUrl(url);
 			this.segments = segments;
 			this.totalDuration = totalDuration;
 			this.thumbnalCount = segments.length;
@@ -258,20 +258,20 @@ export class Tumbnails extends PlayerPlugin<TumbnailsState> {
 		try {
 			const segment = this.segments[index];
 			const segmentStartTime = this.getSegmentStartTime(index);
-			const thumbnail = await this.clipper.createThumbnail({
+			const thumbnail = await this.clipper.createSegmentClipsByUrl({
 				segmentUrl: segment.uri,
 				segmentStartTime: segmentStartTime,
 				samplesPerSegment: this.state.samplesPerSegment!,
-				width: this.thumbnailWidth,
-				height: this.thumbnailHeight,
+				maxWidth: this.thumbnailWidth,
+				maxHeight: this.thumbnailHeight,
 			});
 
 			if (thumbnail) {
 				if (!isAutoPreload) {
-					this.renderThumbnail(thumbnail.videoFrames[0]);
+					this.renderThumbnail(thumbnail.frames[0]);
 				}
 				this.segmentFrame.set(index, {
-					frames: thumbnail.videoFrames,
+					frames: thumbnail.frames,
 					isLoaded: true,
 					isProcessing: false,
 					isAutoPreload: isAutoPreload,
@@ -282,7 +282,7 @@ export class Tumbnails extends PlayerPlugin<TumbnailsState> {
 		}
 	}
 
-	private renderThumbnail(frame: VideoFrame) {
+	private renderThumbnail(frame: ClipFrame) {
 		if (!this.previewCtx) {
 			return;
 		}

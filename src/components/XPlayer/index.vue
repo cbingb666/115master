@@ -3,23 +3,66 @@
 		class="x-player"
 		ref="playerRef"
 		:class="{ 'is-fullscreen': playerContext.state.isFullscreen.value }"
-		@dblclick="playerContext.actions.toggleFullscreen"
 		@mousemove="handleMouseMove"
 		@mouseleave="handleMouseLeave"
 	>
+		<!-- 播放器容器 -->
 		<div class="player-container">
-			<div class="video-container">
+			<!-- 视频容器 -->
+			<div 
+				class="video-container"
+				ref="videoContainerRef"
+			>
+				<!-- 视频元素 -->
 				<video 
 					ref="videoElement"
+					:poster="currentSource?.poster"
+					:muted="playerContext.state.isMuted.value"
+					:volume="playerContext.state.volume.value / 100"
+					:autoplay="playerContext.state.autoplay.value"
+					:loop="playerContext.state.loop.value"
+					:controls="false"
+					:playsinline="true"
+					:webkit-playsinline="true"
 					@click="playerContext.actions.togglePlay"
-				></video>
+				>
+					<track
+						v-for="(subtitle, index) in subtitles"
+						:key="index"
+						:src="subtitle.url"
+						:label="subtitle.label"
+						:srclang="subtitle.srclang"
+						:kind="subtitle.kind"
+						:default="subtitle.default"
+					/>
+				</video>
+
+				<!-- 播放/暂停动画 -->
+				<PlayAnimation />
+
+				<!-- 视频遮罩 -->
+				<div 
+					class="video-mask"
+					@click="playerContext.actions.togglePlay"
+					@dblclick="playerContext.actions.toggleFullscreen"
+				></div>
+				<!-- 视频控制栏 -->
 				<VideoControls 
 					:sources="props.sources.value"
 					:current-source="currentSource"
+					:onThumbnailRequest="handleThumbnailRequest"
+					:subtitles="props.subtitles"
+					:current-subtitle="currentSubtitle"
 					@quality-change="handleQualityChange"
+					@subtitle-change="handleSubtitleChange"
 				/>
 			</div>
 		</div>
+		<!-- 弹出层容器 -->
+		<div 
+			class="portal-container"
+			ref="portalContainerRef"
+		></div>
 	</div>
 </template>
 
@@ -27,29 +70,50 @@
 import { type Ref, computed, onMounted, onUnmounted, ref, watch } from "vue";
 import VideoControls from "./components/Controls/index.vue";
 import { useHls } from "./hooks/useHls";
-import { useVideoPlayer } from "./hooks/useVideoPlayer";
+import { usePortalProvider } from "./hooks/usePortal";
+import { useVideoPlayer } from "./hooks/useVideoPlayerContext";
 import type { VideoSource } from "./types";
 import "./styles/theme.css";
+import PlayAnimation from "./components/PlayAnimation/index.vue";
 
 // 定义 props
-interface Props {
-	sources: Ref<VideoSource[]>;
-	thumbnails?: string[] | ImageBitmap[];
-	thumbnailType?: "image" | "canvas";
+interface Subtitle {
+	url: string;
+	label: string;
+	srclang: string;
+	kind: "subtitles" | "captions";
+	default?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-	thumbnailType: "image",
-});
+interface Props {
+	sources: Ref<VideoSource[]>;
+	onThumbnailRequest?: (time: number) => Promise<ImageBitmap>;
+	subtitles?: Subtitle[];
+}
 
+const props = defineProps<Props>();
+const currentSubtitle = ref<Subtitle | null>(null);
+
+// 定义 emits
+const emit = defineEmits<(e: "thumbnail-request", time: number) => void>();
+
+// 视频播放器
 const playerRef = ref<HTMLElement | null>(null);
+// 视频元素
 const videoElement = ref<HTMLVideoElement | null>(null);
+// 视频容器
+const videoContainerRef = ref<HTMLElement | null>(null);
+// 当前视频源
 const currentSource = ref<VideoSource | undefined>();
-
+// 视频播放器上下文
 const playerContext = useVideoPlayer(videoElement);
-
+// 菜单是否可见
 const isMenuVisible = ref(false);
 
+const portalContainerRef = ref<HTMLElement | null>(null);
+const portalContext = usePortalProvider();
+
+// 鼠标移动视频容器
 const handleMouseMove = () => {
 	if (isMenuVisible.value) {
 		playerContext.actions.showControls();
@@ -59,6 +123,7 @@ const handleMouseMove = () => {
 	playerContext.actions.hideControls();
 };
 
+// 鼠标离开视频容器
 const handleMouseLeave = () => {
 	if (isMenuVisible.value) return;
 	playerContext.actions.hideControls();
@@ -74,6 +139,7 @@ const initializeVideo = (source?: VideoSource) => {
 		videoElement.value.src = "";
 	}
 
+	// 如果视频源是 hls
 	if (targetSource.type === "hls") {
 		const { initHls, cleanup } = useHls(
 			videoElement.value,
@@ -83,7 +149,10 @@ const initializeVideo = (source?: VideoSource) => {
 		return cleanup;
 	}
 
+	// 设置视频源
 	videoElement.value.src = targetSource.url;
+
+	// 返回清理函数
 	return () => {
 		if (videoElement.value) {
 			videoElement.value.src = "";
@@ -112,6 +181,7 @@ const handleQualityChange = (source: VideoSource) => {
 	return () => cleanup?.();
 };
 
+// 监听 sources 变化
 watch(
 	() => props.sources,
 	(sources) => {
@@ -122,6 +192,53 @@ watch(
 	{ immediate: true, deep: true },
 );
 
+// 将 ref 赋值给 playerContext
+watch(
+	[playerRef, videoContainerRef],
+	([player, container]) => {
+		if (playerContext.refs) {
+			playerContext.refs.playerRef.value = player;
+			playerContext.refs.videoContainerRef.value = container;
+		}
+	},
+	{ immediate: true },
+);
+
+// 监听 portal container ref
+watch(
+	portalContainerRef,
+	(container) => {
+		portalContext.container.value = container;
+	},
+	{ immediate: true },
+);
+
+// 处理缩略图请求
+const handleThumbnailRequest = async (time: number) => {
+	if (props.onThumbnailRequest) {
+		return await props.onThumbnailRequest(time);
+	}
+	return null;
+};
+
+const handleSubtitleChange = (subtitle: Subtitle | null) => {
+	currentSubtitle.value = subtitle;
+	const tracks = videoElement.value?.textTracks;
+	if (tracks) {
+		for (let i = 0; i < tracks.length; i++) {
+			tracks[i].mode = "disabled";
+		}
+		if (subtitle) {
+			const index =
+				props.subtitles?.findIndex((s) => s.url === subtitle.url) ?? -1;
+			if (index >= 0 && tracks[index]) {
+				tracks[index].mode = "showing";
+			}
+		}
+	}
+};
+
+// 卸载时清理
 onUnmounted(() => {
 	if (videoElement.value) {
 		videoElement.value.pause();
@@ -159,8 +276,37 @@ onUnmounted(() => {
 	align-items: center;
 }
 
+.video-mask {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 2;
+}
+
 video {
-	max-width: 100%;
-	max-height: 100%;
+	width: 100%;
+	height: 100%;
+	backdrop-filter: saturate(1);
+}
+
+/* 确保控制栏在遮罩层上方 */
+:deep(.controls-wrapper) {
+	z-index: 3;
+}
+
+.portal-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 9999;
+}
+
+.portal-container > * {
+	pointer-events: auto;
 }
 </style>

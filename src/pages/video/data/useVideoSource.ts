@@ -1,7 +1,8 @@
 import { ref } from "vue";
 import type { VideoSource } from "../../../components/XPlayer";
+import { qualityNumMap } from "../../../constants/quality";
 import drive115 from "../../../utils/drive115";
-export const useFetchVideoSources = () => {
+export const useDataVideoSources = () => {
 	const list = ref<VideoSource[]>([]);
 
 	const fetch = async (pickCode: string) => {
@@ -15,7 +16,7 @@ export const useFetchVideoSources = () => {
 				name: "Ultra原画",
 				url: download.value.url,
 				type: "auto",
-				quality: 9999,
+				quality: 99999,
 				displayQuality: "Ultra原画",
 			});
 		}
@@ -27,6 +28,8 @@ export const useFetchVideoSources = () => {
 					url: item.url,
 					type: "hls" as const,
 					quality: item.quality,
+					displayQuality:
+						qualityNumMap[item.quality as keyof typeof qualityNumMap],
 				})),
 			);
 		}

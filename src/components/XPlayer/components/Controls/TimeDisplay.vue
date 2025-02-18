@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePlayerContext } from "../../hooks/useVideoPlayer";
+import { usePlayerContext } from "../../hooks/useVideoPlayerContext";
 import { formatTime } from "../../utils/time";
 const { state } = usePlayerContext();
 </script>
