@@ -136,6 +136,7 @@ onUnmounted(() => {
 	background-repeat: repeat-x;
 	background-position: bottom;
 	z-index: 1;
+	pointer-events: none;
 }
 
 .video-controls {

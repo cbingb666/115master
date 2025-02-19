@@ -29,6 +29,7 @@ export function useHls(videoElement: HTMLVideoElement, config: HLSConfig = {}) {
 
 		hls.loadSource(url);
 		hls.attachMedia(videoElement);
+
 		hls.on(Hls.Events.ERROR, (event, data) => {
 			console.error("HLS error", event, data);
 		});

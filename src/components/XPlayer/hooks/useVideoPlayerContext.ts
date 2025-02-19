@@ -1,4 +1,5 @@
 import { type InjectionKey, type Ref, inject, provide, ref, watch } from "vue";
+import { useHotKey } from "./useHotKey";
 
 export interface PlayerState {
 	isPlaying: Ref<boolean>;
@@ -196,48 +197,6 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 		setVolume(newVolume);
 	};
 
-	// 热键处理
-	const handleKeydown = (event: KeyboardEvent) => {
-		// 忽略输入框的按键事件
-		if (
-			event.target instanceof HTMLInputElement ||
-			event.target instanceof HTMLTextAreaElement
-		) {
-			return;
-		}
-
-		switch (event.code) {
-			// 空格键
-			case "Space":
-				event.preventDefault();
-				togglePlay();
-				break;
-			// 左箭头
-			case "ArrowLeft":
-				event.preventDefault();
-				skip(-5);
-				break;
-			// 右箭头
-			case "ArrowRight":
-				event.preventDefault();
-				skip(5);
-				break;
-			// 上箭头
-			case "ArrowUp":
-				event.preventDefault();
-				adjustVolume(5);
-				break;
-			// 下箭头
-			case "ArrowDown":
-				event.preventDefault();
-				adjustVolume(-5);
-				break;
-		}
-	};
-
-	// 添加热键监听
-	document.addEventListener("keydown", handleKeydown);
-
 	// 控制栏显示/隐藏控制
 	const showControls = () => {
 		if (hideControlsTimer) {
@@ -337,25 +296,10 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 		);
 		document.removeEventListener("mozfullscreenchange", handleFullscreenChange);
 		document.removeEventListener("MSFullscreenChange", handleFullscreenChange);
-		document.removeEventListener("keydown", handleKeydown);
 
 		// 清理控制栏事件监听
 		cleanupControlsEventListeners();
 	};
-
-	// 监听 videoElement 的变化
-	watch(
-		videoElementRef,
-		(newVideo, oldVideo) => {
-			if (oldVideo) {
-				cleanupEventListeners();
-			}
-			if (newVideo) {
-				setupEventListeners();
-			}
-		},
-		{ immediate: true },
-	);
 
 	// 更新预览位置
 	const updatePreview = (position: number) => {
@@ -406,6 +350,44 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 		playbackRate.value = rate;
 	};
 
+	// 初始化 actions 对象
+	const actions = {
+		togglePlay,
+		setVolume,
+		toggleMute,
+		toggleFullscreen,
+		seekTo,
+		skip,
+		adjustVolume,
+		showControls,
+		hideControls,
+		updatePreview,
+		startDragging,
+		updateDragging,
+		stopDragging,
+		showPreview,
+		hidePreview,
+		setPlaybackRate,
+	};
+
+	const { setupHotKeys, cleanupHotKeys } = useHotKey(actions);
+
+	// 在 watch 中设置和清理热键
+	watch(
+		videoElementRef,
+		(newVideo, oldVideo) => {
+			if (oldVideo) {
+				cleanupEventListeners();
+				cleanupHotKeys();
+			}
+			if (newVideo) {
+				setupEventListeners();
+				setupHotKeys();
+			}
+		},
+		{ immediate: true },
+	);
+
 	// 返回上下文
 	const context: PlayerContext = {
 		state: {
@@ -428,24 +410,7 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 			loop,
 			playbackRate,
 		},
-		actions: {
-			togglePlay,
-			setVolume,
-			toggleMute,
-			toggleFullscreen,
-			seekTo,
-			skip,
-			adjustVolume,
-			showControls,
-			hideControls,
-			updatePreview,
-			startDragging,
-			updateDragging,
-			stopDragging,
-			showPreview,
-			hidePreview,
-			setPlaybackRate,
-		},
+		actions,
 		refs: {
 			playerRef,
 			videoContainerRef,

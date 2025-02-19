@@ -15,6 +15,7 @@
 			>
 				<!-- 视频元素 -->
 				<video 
+					:key="videoKey"
 					ref="videoElement"
 					:poster="currentSource?.poster"
 					:muted="playerContext.state.isMuted.value"
@@ -51,7 +52,7 @@
 					:sources="props.sources.value"
 					:current-source="currentSource"
 					:onThumbnailRequest="handleThumbnailRequest"
-					:subtitles="props.subtitles"
+					:subtitles="subtitles"
 					:current-subtitle="currentSubtitle"
 					@quality-change="handleQualityChange"
 					@subtitle-change="handleSubtitleChange"
@@ -67,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Ref, computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { type Ref, nextTick, onUnmounted, ref, watch } from "vue";
 import VideoControls from "./components/Controls/index.vue";
 import { useHls } from "./hooks/useHls";
 import { usePortalProvider } from "./hooks/usePortal";
@@ -78,10 +79,15 @@ import PlayAnimation from "./components/PlayAnimation/index.vue";
 
 // 定义 props
 interface Subtitle {
+	// 字幕 url
 	url: string;
+	// 字幕名称
 	label: string;
+	// 字幕语言
 	srclang: string;
+	// 字幕类型
 	kind: "subtitles" | "captions";
+	// 字幕默认
 	default?: boolean;
 }
 
@@ -93,6 +99,7 @@ interface Props {
 
 const props = defineProps<Props>();
 const currentSubtitle = ref<Subtitle | null>(null);
+const videoKey = ref(0);
 
 // 定义 emits
 const emit = defineEmits<(e: "thumbnail-request", time: number) => void>();
@@ -109,7 +116,7 @@ const currentSource = ref<VideoSource | undefined>();
 const playerContext = useVideoPlayer(videoElement);
 // 菜单是否可见
 const isMenuVisible = ref(false);
-
+// 弹出层容器
 const portalContainerRef = ref<HTMLElement | null>(null);
 const portalContext = usePortalProvider();
 
@@ -160,10 +167,14 @@ const initializeVideo = (source?: VideoSource) => {
 	};
 };
 
-const handleQualityChange = (source: VideoSource) => {
+const handleQualityChange = async (source: VideoSource) => {
 	// 记住当前播放时间和播放状态
 	const currentTime = videoElement.value?.currentTime || 0;
 	const wasPlaying = !videoElement.value?.paused;
+
+	videoKey.value++;
+
+	await nextTick();
 
 	// 更新当前源
 	currentSource.value = source;
@@ -190,6 +201,14 @@ watch(
 		return () => cleanup?.();
 	},
 	{ immediate: true, deep: true },
+);
+
+// 监听 subtitles 变化
+watch(
+	() => props.subtitles,
+	(subtitles) => {
+		currentSubtitle.value = subtitles?.find((s) => s.default) || null;
+	},
 );
 
 // 将 ref 赋值给 playerContext
@@ -221,6 +240,7 @@ const handleThumbnailRequest = async (time: number) => {
 	return null;
 };
 
+// 处理字幕变化
 const handleSubtitleChange = (subtitle: Subtitle | null) => {
 	currentSubtitle.value = subtitle;
 	const tracks = videoElement.value?.textTracks;

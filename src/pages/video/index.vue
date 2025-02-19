@@ -22,12 +22,12 @@ const DataThumbnails = useDataThumbnails();
 const DataSubtitles = useDataSubtitles();
 
 const subtitleList = computed(() =>
-	DataSubtitles.subtitles.value.map((subtitle) => ({
+	DataSubtitles.subtitles.value.map((subtitle, index) => ({
 		url: subtitle.url,
 		label: subtitle.title,
 		srclang: subtitle.targetLanguage,
 		kind: "subtitles" as const,
-		default: false,
+		default: index === 0,
 	})),
 );
 
