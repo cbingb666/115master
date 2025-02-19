@@ -73,23 +73,9 @@ import VideoControls from "./components/Controls/index.vue";
 import { useHls } from "./hooks/useHls";
 import { usePortalProvider } from "./hooks/usePortal";
 import { useVideoPlayer } from "./hooks/useVideoPlayerContext";
-import type { VideoSource } from "./types";
+import type { Subtitle, VideoSource } from "./types";
 import "./styles/theme.css";
 import PlayAnimation from "./components/PlayAnimation/index.vue";
-
-// 定义 props
-interface Subtitle {
-	// 字幕 url
-	url: string;
-	// 字幕名称
-	label: string;
-	// 字幕语言
-	srclang: string;
-	// 字幕类型
-	kind: "subtitles" | "captions";
-	// 字幕默认
-	default?: boolean;
-}
 
 interface Props {
 	sources: Ref<VideoSource[]>;
@@ -119,6 +105,8 @@ const isMenuVisible = ref(false);
 // 弹出层容器
 const portalContainerRef = ref<HTMLElement | null>(null);
 const portalContext = usePortalProvider();
+// 清理函数
+const cleanupRef = ref<(() => void) | null>(() => void 0);
 
 // 鼠标移动视频容器
 const handleMouseMove = () => {
@@ -158,8 +146,9 @@ const initializeVideo = (source?: VideoSource) => {
 
 	// 设置视频源
 	videoElement.value.src = targetSource.url;
+	videoElement.value.load();
+	videoElement.value.play();
 
-	// 返回清理函数
 	return () => {
 		if (videoElement.value) {
 			videoElement.value.src = "";
@@ -189,16 +178,51 @@ const handleQualityChange = async (source: VideoSource) => {
 			videoElement.value.play();
 		}
 	}
-	return () => cleanup?.();
+
+	// 记住清理函数
+	cleanupRef.value = cleanup;
+};
+
+// 处理缩略图请求
+const handleThumbnailRequest = async (time: number) => {
+	if (props.onThumbnailRequest) {
+		return await props.onThumbnailRequest(time);
+	}
+	return null;
+};
+
+// 处理字幕变化
+const handleSubtitleChange = (subtitle: Subtitle | null) => {
+	currentSubtitle.value = subtitle;
+	const tracks = videoElement.value?.textTracks;
+	if (tracks) {
+		for (let i = 0; i < tracks.length; i++) {
+			tracks[i].mode = "disabled";
+		}
+		if (subtitle) {
+			const index =
+				props.subtitles?.findIndex((s) => s.url === subtitle.url) ?? -1;
+			if (index >= 0 && tracks[index]) {
+				tracks[index].mode = "showing";
+			}
+		}
+	}
 };
 
 // 监听 sources 变化
 watch(
 	() => props.sources,
-	(sources) => {
+	async (sources) => {
+		if (sources.value.length === 0) {
+			return;
+		}
+		if (cleanupRef.value) {
+			cleanupRef.value();
+		}
 		currentSource.value = sources.value[0];
-		const cleanup = initializeVideo(sources.value[0]);
-		return () => cleanup?.();
+		videoKey.value++;
+		await nextTick();
+		initializeVideo(sources.value[0]);
 	},
 	{ immediate: true, deep: true },
 );
@@ -232,36 +256,13 @@ watch(
 	{ immediate: true },
 );
 
-// 处理缩略图请求
-const handleThumbnailRequest = async (time: number) => {
-	if (props.onThumbnailRequest) {
-		return await props.onThumbnailRequest(time);
-	}
-	return null;
-};
-
-// 处理字幕变化
-const handleSubtitleChange = (subtitle: Subtitle | null) => {
-	currentSubtitle.value = subtitle;
-	const tracks = videoElement.value?.textTracks;
-	if (tracks) {
-		for (let i = 0; i < tracks.length; i++) {
-			tracks[i].mode = "disabled";
-		}
-		if (subtitle) {
-			const index =
-				props.subtitles?.findIndex((s) => s.url === subtitle.url) ?? -1;
-			if (index >= 0 && tracks[index]) {
-				tracks[index].mode = "showing";
-			}
-		}
-	}
-};
-
 // 卸载时清理
 onUnmounted(() => {
 	if (videoElement.value) {
 		videoElement.value.pause();
+	}
+	if (cleanupRef.value) {
+		cleanupRef.value();
 	}
 });
 </script>

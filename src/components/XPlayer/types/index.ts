@@ -29,3 +29,17 @@ export interface Subtitle {
 	kind: "subtitles" | "captions";
 	default?: boolean;
 }
+
+// 定义 props
+export interface Subtitle {
+	// 字幕 url
+	url: string;
+	// 字幕名称
+	label: string;
+	// 字幕语言
+	srclang: string;
+	// 字幕类型
+	kind: "subtitles" | "captions";
+	// 字幕默认
+	default?: boolean;
+}

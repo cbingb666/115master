@@ -84,17 +84,26 @@ export class JavBus extends Jav {
 
 	parseActor() {
 		const actors =
-			this.labels[
-				"演員"
-			]?.parentElement?.nextElementSibling?.nextElementSibling?.querySelectorAll(
-				"a",
+			this.labels["演員"]?.parentElement?.nextElementSibling?.querySelectorAll(
+				"li",
 			);
 		return actors?.length
-			? Array.from(actors).map((i) => ({
-					name: i.textContent!,
-					url: i.getAttribute("href") ?? undefined,
-					sex: undefined,
-				}))
+			? Array.from(actors).map((i) => {
+					const a = i.querySelector("a");
+					const img = i.querySelector("img");
+
+					// TODO 暂时无法加载头像，需要专门写个支持油猴跨域加载的图片组件来加载
+					// const faceHref = img?.getAttribute("src");
+					// const face = faceHref
+					// 	? new URL(faceHref, this.baseUrl).href
+					// 	: undefined;
+					return {
+						name: img?.getAttribute("title") ?? "",
+						url: a?.getAttribute("href") ?? undefined,
+						sex: undefined,
+						face: "",
+					};
+				})
 			: undefined;
 	}
 
@@ -166,5 +175,9 @@ export class JavBus extends Jav {
 					url: i.getAttribute("href") ?? undefined,
 				}))
 			: undefined;
+	}
+
+	parseComments() {
+		return [];
 	}
 }

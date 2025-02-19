@@ -40,6 +40,7 @@ export function useHls(videoElement: HTMLVideoElement, config: HLSConfig = {}) {
 		if (hls) {
 			hls.destroy();
 			hls = null;
+			videoElement.src = "";
 		}
 	};
 

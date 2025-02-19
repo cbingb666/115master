@@ -9,6 +9,7 @@ export const goToPlayer = (
 ) => {
 	GM_setValue(GM_VALUE_KEY.PLAYING_VIDEO_INFO, playingVideoInfo);
 	const params = new URLSearchParams({
+		cid: playingVideoInfo.cid || "",
 		pick_code: playingVideoInfo.pickCode,
 		avNumber: playingVideoInfo.avNumber || "",
 		title: playingVideoInfo.title,

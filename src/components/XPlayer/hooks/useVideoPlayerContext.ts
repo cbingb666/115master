@@ -163,7 +163,9 @@ export function useVideoPlayer(videoElementRef: Ref<HTMLVideoElement | null>) {
 			if (!playerRef.value) return;
 
 			if (!document.fullscreenElement) {
-				await playerRef.value.requestFullscreen();
+				window.scrollTo(0, 0);
+				await document.documentElement.requestFullscreen();
+				// await playerRef.value.requestFullscreen();
 			} else {
 				await document.exitFullscreen();
 			}

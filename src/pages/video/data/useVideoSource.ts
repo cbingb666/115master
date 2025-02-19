@@ -35,8 +35,13 @@ export const useDataVideoSources = () => {
 		}
 	};
 
+	const cleanup = () => {
+		list.value = [];
+	};
+
 	return {
 		list: ref(list.value),
 		fetch,
+		cleanup,
 	};
 };

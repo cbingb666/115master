@@ -21,6 +21,8 @@ type Actor = {
 	url?: string;
 	// 性别
 	sex?: 0 | 1;
+	// face
+	face?: string;
 };
 
 // 类别
@@ -63,6 +65,21 @@ type Preview = {
 	thumbnail?: string;
 };
 
+type Comment = {
+	// 内容
+	content: string;
+	// 名称
+	name: string;
+	// 头像
+	avatar?: string;
+	// 评分
+	score: number;
+	// 时间
+	time: number;
+	// 点赞数
+	likeCount: number;
+};
+
 // 番号信息
 export type JavInfo = {
 	// 来源
@@ -101,6 +118,8 @@ export type JavInfo = {
 	viewCount?: number;
 	// 下载人数
 	downloadCount?: number;
+	// 评论
+	comments?: Comment[];
 };
 
 // 修改 Jav 抽象类
@@ -147,6 +166,8 @@ abstract class Jav {
 	parseViewCount?(dom: Document): number | undefined;
 	// 解析下载人数
 	parseDownloadCount?(dom: Document): number | undefined;
+	// 解析评论
+	parseComments?(dom: Document): Comment[] | undefined;
 	// 解析番号信息
 	async parseInfo(html: string): Promise<JavInfo> {
 		let dom = new DOMParser().parseFromString(html, "text/html");
@@ -170,6 +191,7 @@ abstract class Jav {
 			scoreCount: this.parseScoreCount?.(dom),
 			viewCount: this.parseViewCount?.(dom),
 			downloadCount: this.parseDownloadCount?.(dom),
+			comments: this.parseComments?.(dom),
 		};
 		return this.parseInfoAfter(info);
 	}

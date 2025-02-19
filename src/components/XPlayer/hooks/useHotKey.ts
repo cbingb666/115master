@@ -26,6 +26,7 @@ export function useHotKey(actions: PlayerActions) {
 			case "ArrowRight":
 				event.preventDefault();
 				actions.skip(5);
+				console.log("右箭头");
 				break;
 			// 上箭头
 			case "ArrowUp":

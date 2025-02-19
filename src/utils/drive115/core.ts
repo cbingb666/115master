@@ -18,6 +18,7 @@ export interface DownloadResult {
 	fileToken?: string;
 }
 
+// TODO: 超时登录错误 errNo 990001
 export class Drive115Core {
 	private logger = new AppLogger("Drive115Core");
 
@@ -180,6 +181,7 @@ export class Drive115Core {
 					"User-Agent": USER_AGENT_115,
 					host: VOD_HOST_155,
 					referer: `${this.VOD_URL_115}/?pickcode=${params.pickcode}&share_id=0`,
+					cookie: document.cookie,
 				},
 			},
 		);
@@ -239,7 +241,24 @@ export class Drive115Core {
 			if (response.data.state) {
 				return response.data;
 			}
-			throw new Error("apsNatsortFiles 获取播放列表失败");
+			throw new Error(`获取播放列表失败: ${JSON.stringify(response.data)}`);
 		}
+	}
+
+	public async getFileInfo(params: WebApi.Req.FilesInfoReq) {
+		const response = await this.iRequest.get<WebApi.Res.FilesInfo>(
+			new URL("/webapi/files/video", this.VOD_URL_115).href,
+			{
+				params,
+				headers: {
+					"Content-Type": "application/json",
+					"User-Agent": USER_AGENT_115,
+					referer: `${this.VOD_URL_115}/?pickcode=${params.pickcode}&share_id=0`,
+					host: VOD_HOST_155,
+				},
+			},
+		);
+
+		return response.data;
 	}
 }
