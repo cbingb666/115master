@@ -11,7 +11,8 @@
 					:onSubtitleChange="handleSubtitleChange"
 				/>
 
-				<!-- <button class="page-mpv-play" @click="handleMpvPlay">MPV 本地播放器 Beta</button> -->
+				<button class="page-local-play" @click="handleLocalPlay('mpv')">快捷指令 MPV 本地播放器 Beta</button>
+				<button class="page-local-play" @click="handleLocalPlay('iina')">IINA 本地播放器 Beta</button>
 				<div class="page-flow">
 					<FileInfo :fileInfo="DataFileInfo" />
 					<MovieInfo 
@@ -41,6 +42,7 @@ import type { Subtitle } from "../../components/XPlayer/types";
 import { useParamsVideoPage } from "../../hooks/useParams";
 import type { Entity } from "../../utils/drive115";
 import Drive115Instance from "../../utils/drive115";
+import drive115 from "../../utils/drive115";
 import { getAvNumber } from "../../utils/getNumber";
 import { goToPlayer } from "../../utils/route";
 import { subtitlePreference } from "../../utils/subtitlePreference";
@@ -54,7 +56,7 @@ import { useDataPlaylist } from "./data/useDataPlaylist";
 import { useDataSubtitles } from "./data/useSubtitlesData";
 import { useDataThumbnails } from "./data/useThumbnails";
 import { useDataVideoSources } from "./data/useVideoSource";
-import { useWeblink } from "./hooks/useWeblink";
+import { webLinkIINA, webLinkShortcutsMpv } from "./hooks/useWeblink";
 
 const params = useParamsVideoPage();
 const DataVideoSources = useDataVideoSources();
@@ -63,7 +65,6 @@ const DataSubtitles = useDataSubtitles();
 const DataMovieInfo = useDataMovieInfo();
 const DataFileInfo = useDataFileInfo();
 const DataPlaylist = useDataPlaylist();
-const { play } = useWeblink();
 // 处理字幕变化
 const handleSubtitleChange = async (subtitle: Subtitle | null) => {
 	// 保存字幕选择
@@ -73,11 +74,20 @@ const handleSubtitleChange = async (subtitle: Subtitle | null) => {
 	);
 };
 
-const handleMpvPlay = () => {
-	play({
-		url: DataVideoSources.list.value[0].url,
-		cookie: document.cookie,
-	});
+const open = (url: string) => {
+	window.open(url, "_blank");
+};
+
+const handleLocalPlay = async (player: "mpv" | "iina") => {
+	const { url } = await drive115.getFileDownloadUrl(params.pickCode.value);
+	switch (player) {
+		case "mpv":
+			open(webLinkShortcutsMpv(url));
+			break;
+		case "iina":
+			open(webLinkIINA(url));
+			break;
+	}
 };
 
 useTitle(params.title.value || "");
@@ -200,7 +210,7 @@ onUnmounted(() => {
 	--video-player-width: var(--page-main-width);
 }
 
-.page-mpv-play {
+.page-local-play {
 	width: 200px;
 	background: #000;
 	color: #fff;
