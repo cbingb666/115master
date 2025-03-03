@@ -1,11 +1,8 @@
 import { GM_openInTab } from "$";
 import { VOD_URL_115 } from "../../constants/115";
-import { webLinkIINA } from "../../pages/video/hooks/useWeblink";
 import type { PlayingVideoInfo } from "../../types/player";
-import drive115 from "../../utils/drive115";
 import { getAvNumber } from "../../utils/getNumber";
 import { AppLogger } from "../../utils/logger";
-import { isMac } from "../../utils/platform";
 import { goToPlayer } from "../../utils/route";
 import "./styles.css";
 
@@ -24,15 +21,6 @@ export class FileOperationMenu {
 			title: "使用【115官方播放器】",
 			text: "5️⃣ 官方播放",
 		},
-		...(isMac
-			? [
-					{
-						class: "iina-player",
-						title: "使用【iina】",
-						text: "🎵 iina 播放",
-					},
-				]
-			: []),
 		{
 			class: "master-player",
 			title: "使用【Master播放器】",
@@ -206,7 +194,7 @@ export class FileOperationMenu {
 		link: HTMLAnchorElement,
 		listItem: HTMLElement,
 	): void {
-		link.addEventListener("mousedown", async (e: MouseEvent) => {
+		link.addEventListener("mousedown", (e: MouseEvent) => {
 			e.preventDefault();
 			e.stopPropagation();
 			e.stopImmediatePropagation();
@@ -228,16 +216,6 @@ export class FileOperationMenu {
 					size: parseInt(listItem.getAttribute("file_size")!),
 				};
 				goToPlayer(playingVideoInfo, true);
-			} else if (link.classList.contains("iina-player")) {
-				try {
-					const download = await drive115.getFileDownloadUrl(
-						listItem.getAttribute("pick_code")!,
-					);
-					open(webLinkIINA(download.url));
-				} catch (error) {
-					this.logger.error("打开iina失败", error);
-					alert("打开iina失败");
-				}
 			}
 		});
 	}

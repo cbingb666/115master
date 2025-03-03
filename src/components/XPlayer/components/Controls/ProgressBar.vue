@@ -68,7 +68,7 @@
 			<Thumbnail
 				:visible="isPreviewVisible || isDragging"
 				:position="isDragging ? dragProgress : previewProgress"
-				:time="previewTime"
+				:time="isDragging ? previewTime : (isPreviewVisible ? previewTime : progress.currentTime.value)"
 				:progress-bar-width="progressBarWidth"
 			/>
 		</div>
@@ -117,13 +117,6 @@ const calculatePosition = (event: MouseEvent, element: HTMLElement) => {
 	return Math.min(Math.max(position, 0), 1);
 };
 
-// 处理鼠标移动
-const handleBarWrapperMouseMove = (event: MouseEvent) => {
-	if (!progressBarRef.value) return;
-	const position = calculatePosition(event, progressBarRef.value);
-	updatePreview(position);
-};
-
 // 处理鼠标按下
 const handleBarWrapperMouseDown = (event: MouseEvent) => {
 	if (!progressBarRef.value) return;
@@ -135,18 +128,26 @@ const handleBarWrapperMouseDown = (event: MouseEvent) => {
 	document.addEventListener("mouseup", handleMouseUp);
 };
 
+// 处理鼠标松开
+const handleMouseUp = (event: MouseEvent) => {
+	document.removeEventListener("mousemove", handleGlobalMouseMove);
+	document.removeEventListener("mouseup", handleMouseUp);
+	const position = calculatePosition(event, progressBarRef.value);
+	stopDragging(position);
+};
+
+// 处理鼠标移动
+const handleBarWrapperMouseMove = (event: MouseEvent) => {
+	if (!progressBarRef.value) return;
+	const position = calculatePosition(event, progressBarRef.value);
+	updatePreview(position);
+};
+
 // 处理全局鼠标移动
 const handleGlobalMouseMove = (event: MouseEvent) => {
 	if (!progressBarRef.value) return;
 	const position = calculatePosition(event, progressBarRef.value);
 	updateDragging(position);
-};
-
-// 处理鼠标松开
-const handleMouseUp = () => {
-	document.removeEventListener("mousemove", handleGlobalMouseMove);
-	document.removeEventListener("mouseup", handleMouseUp);
-	stopDragging();
 };
 
 // 进度条点击
@@ -166,7 +167,7 @@ const updatePreview = (position: number) => {
 // 开始拖拽
 const startDragging = (position: number) => {
 	isDragging.value = true;
-	originalProgress.value = progress.currentTime.value;
+	originalProgress.value = progress.progress.value;
 	dragProgress.value = position * 100;
 	previewTime.value = position * progress.duration.value;
 };
@@ -179,10 +180,13 @@ const updateDragging = (position: number) => {
 };
 
 // 停止拖拽
-const stopDragging = () => {
+const stopDragging = (position: number) => {
 	if (isDragging.value) {
-		const finalTime = (dragProgress.value / 100) * progress.duration.value;
+		const finalTime = position * progress.duration.value;
 		progress.seekTo(finalTime);
+
+		previewProgress.value = position * 100;
+		previewTime.value = finalTime;
 	}
 	isDragging.value = false;
 };
@@ -196,6 +200,9 @@ const showPreview = () => {
 const hidePreview = () => {
 	if (!isDragging.value) {
 		isPreviewVisible.value = false;
+		// 重置预览进度和时间
+		previewProgress.value = 0;
+		previewTime.value = 0;
 	}
 };
 

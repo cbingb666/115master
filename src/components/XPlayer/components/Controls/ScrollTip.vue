@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onUnmounted, ref, watch } from "vue";
 import { usePlayerContext } from "../../hooks/usePlayer";
 
 const { fullscreen } = usePlayerContext();
@@ -65,7 +65,6 @@ onUnmounted(() => {
     color: white;
     padding: 12px 20px;
     border-radius: 8px;
-    backdrop-filter: blur(4px);
 }
 
 .scroll-tip-content span {

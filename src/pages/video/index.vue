@@ -3,21 +3,18 @@
 		<div class="page-body">
 			<div class="page-main">
 				<XPlayer
-					v-if="xplayerShow"
-					ref="xplayerRef"
 					class="video-player"
 					:sources="DataVideoSources.list"
 					:subtitles="DataSubtitles.state"
-					:onThumbnailRequest="DataThumbnails.getThumbnailAtTime"
+					:onThumbnailRequest="DataThumbnails.onThumbnailRequest"
 					:loadingSubtitles="DataSubtitles.isLoading"
 					:onSubtitleChange="handleSubtitleChange"
 				/>
+
+				<!-- <button class="page-mpv-play" @click="handleMpvPlay">MPV 本地播放器 Beta</button> -->
 				<div class="page-flow">
 					<FileInfo :fileInfo="DataFileInfo" />
-					<div class="local-player">
-						<button v-if="isMac" class="page-local-play" @click="handleLocalPlay('iina')">IINA Beta</button>
-					</div>
-					<MovieInfo 
+					<MovieInfo
 						:movieInfos="DataMovieInfo"
 					/>
 					<div class="page-footer">
@@ -26,10 +23,10 @@
 				</div>
 			</div>
 			<div class="page-sider">
-				<Playlist class="page-sider-playlist" 
-					:pickCode="params.pickCode.value" 
-					:playlist="DataPlaylist" 
-					@play="handlePlay" 
+				<Playlist class="page-sider-playlist"
+					:pickCode="params.pickCode.value"
+					:playlist="DataPlaylist"
+					@play="handlePlay"
 				/>
 			</div>
 		</div>
@@ -37,17 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import { useTitle } from "@vueuse/core";
+import { tryOnMounted, useTitle } from "@vueuse/core";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-import type XPlayerInstance from "../../components/XPlayer/index.vue";
 import XPlayer from "../../components/XPlayer/index.vue";
 import type { Subtitle } from "../../components/XPlayer/types";
 import { useParamsVideoPage } from "../../hooks/useParams";
 import type { Entity } from "../../utils/drive115";
 import Drive115Instance from "../../utils/drive115";
-import drive115 from "../../utils/drive115";
 import { getAvNumber } from "../../utils/getNumber";
-import { isMac } from "../../utils/platform";
 import { goToPlayer } from "../../utils/route";
 import { subtitlePreference } from "../../utils/subtitlePreference";
 import FileInfo from "./components/FileInfo/index.vue";
@@ -60,10 +54,7 @@ import { useDataPlaylist } from "./data/useDataPlaylist";
 import { useDataSubtitles } from "./data/useSubtitlesData";
 import { useDataThumbnails } from "./data/useThumbnails";
 import { useDataVideoSources } from "./data/useVideoSource";
-import { webLinkIINA, webLinkShortcutsMpv } from "./hooks/useWeblink";
-
-const xplayerRef = ref<InstanceType<typeof XPlayerInstance>>();
-const xplayerShow = ref(true);
+import { useWeblink } from "./hooks/useWeblink";
 
 const params = useParamsVideoPage();
 const DataVideoSources = useDataVideoSources();
@@ -72,6 +63,8 @@ const DataSubtitles = useDataSubtitles();
 const DataMovieInfo = useDataMovieInfo();
 const DataFileInfo = useDataFileInfo();
 const DataPlaylist = useDataPlaylist();
+const { play } = useWeblink();
+
 // 处理字幕变化
 const handleSubtitleChange = async (subtitle: Subtitle | null) => {
 	// 保存字幕选择
@@ -81,27 +74,14 @@ const handleSubtitleChange = async (subtitle: Subtitle | null) => {
 	);
 };
 
-const open = (url: string) => {
-	window.open(url, "_blank");
+const handleMpvPlay = () => {
+	play({
+		url: DataVideoSources.list.value[0].url,
+		cookie: document.cookie,
+	});
 };
 
-const handleLocalPlay = async (player: "mpv" | "iina") => {
-	const { url } = await drive115.getFileDownloadUrl(params.pickCode.value);
-	switch (player) {
-		case "mpv":
-			open(webLinkShortcutsMpv(url));
-			break;
-		case "iina":
-			xplayerRef.value?.interruptSource();
-			setTimeout(() => {
-				open(webLinkIINA(url));
-			}, 300);
-			break;
-	}
-};
-
-useTitle(params.title.value || "");
-
+// 切换播放
 const handlePlay = async (item: Entity.PlaylistItem) => {
 	goToPlayer({
 		cid: params.cid.value,
@@ -111,8 +91,8 @@ const handlePlay = async (item: Entity.PlaylistItem) => {
 		avNumber: getAvNumber(item.n),
 	});
 	params.getParams();
+	DataThumbnails.clear();
 	DataVideoSources.cleanup();
-	DataThumbnails.cleanup();
 	DataSubtitles.execute(0, params.pickCode.value, null);
 	DataMovieInfo.value.javBusState.execute(0, null);
 	DataMovieInfo.value.javDBState.execute(0, null);
@@ -120,6 +100,7 @@ const handlePlay = async (item: Entity.PlaylistItem) => {
 	await loadData(false);
 };
 
+// 加载数据
 const loadData = async (isFirst = true) => {
 	DataVideoSources.fetch(params.pickCode.value).then(() => {
 		DataThumbnails.initialize(DataVideoSources.list.value);
@@ -164,13 +145,12 @@ const loadData = async (isFirst = true) => {
 	);
 };
 
+// 设置标题
+useTitle(params.title.value || "");
+
+// 挂载
 onMounted(async () => {
 	await loadData();
-});
-
-onUnmounted(() => {
-	DataVideoSources.cleanup();
-	DataThumbnails.cleanup();
 });
 </script>
 
@@ -220,8 +200,8 @@ onUnmounted(() => {
 	--video-player-width: var(--page-main-width);
 }
 
-.page-local-play {
-	display: inline-flex;
+.page-mpv-play {
+	width: 200px;
 	background: #000;
 	color: #fff;
 	padding: 10px 20px;

@@ -1,20 +1,20 @@
 <template>
-	<div 
+	<div
 		class="preview-container"
 		v-show="visible"
-		:style="{ 
+		:style="{
 			left: `${position}%`,
 			transform: `translateX(${previewTransform}px)`
 		}"
 	>
 		<div class="thumbnail-container">
-			<canvas 
+			<canvas
 				ref="thumbnailCanvas"
 				:width="width"
 				:height="height"
 			></canvas>
-			<div class="thumbnail-loading" v-if="tasks.length > 0">
-				<LoadingBar />
+			<div class="thumbnail-loading" v-show="loading">
+				<Loading/>
 			</div>
 		</div>
 		<div class="time-tooltip">
@@ -24,10 +24,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, ref, shallowRef, watch } from "vue";
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import { usePlayerContext } from "../../hooks/usePlayer";
 import { formatTime } from "../../utils/time";
-import LoadingBar from "./LoadingBar.vue";
+import Loading from "./Loading.vue";
 
 interface Props {
 	visible: boolean;
@@ -36,15 +36,26 @@ interface Props {
 	progressBarWidth: number;
 }
 
+const DEFAULT_WIDTH = 320;
+const DEFAULT_HEIGHT = 180;
+
 const props = withDefaults(defineProps<Props>(), {});
 const { rootProps, source } = usePlayerContext();
 const { onThumbnailRequest } = rootProps;
 const thumbnailCanvas = ref<HTMLCanvasElement | null>(null);
 const ctx = computed(() => thumbnailCanvas.value?.getContext("2d"));
-const currentThumbnail = ref<ImageBitmap | null>(null);
-const tasks = ref<number[]>([]);
-const width = computed(() => currentThumbnail.value?.width ?? 320);
-const height = computed(() => currentThumbnail.value?.height ?? 180);
+const width = ref(DEFAULT_WIDTH);
+const height = ref(DEFAULT_HEIGHT);
+const thumb = reactive({
+	lastHoverTime: -1,
+	lastRequestTime: -1,
+	renderTime: -1,
+	renderImage: null as ImageBitmap | null,
+});
+const loading = computed(
+	() =>
+		thumb.lastRequestTime >= 0 && thumb.lastRequestTime === thumb.lastHoverTime,
+);
 
 // 计算预览容器的位移，防止超出边界
 const previewTransform = computed(() => {
@@ -67,32 +78,106 @@ const previewTransform = computed(() => {
 	return -(thumbnailWidth / 2);
 });
 
-// 更新缩略图
+const lastTimer = ref<NodeJS.Timeout | null>(null);
+const updateThumbnail = async (hoverTime: number, isLast: boolean) => {
+	if (lastTimer.value) {
+		clearTimeout(lastTimer.value);
+		lastTimer.value = null;
+	}
+
+	// 重置缩略图
+	thumb.renderImage = null;
+
+	if (!isLast) {
+		lastTimer.value = setTimeout(() => {
+			if (hoverTime === thumb.lastHoverTime) {
+				updateThumbnail(hoverTime, true);
+			}
+		}, 300);
+	}
+
+	// 尝试从缓存中取, 其实是同步返回
+	const cacheImage = await onThumbnailRequest({
+		type: "Cache",
+		time: hoverTime,
+		isLast,
+	});
+	if (cacheImage) {
+		thumb.renderImage = cacheImage;
+		thumb.renderTime = hoverTime;
+
+		if (isLast) {
+			thumb.lastRequestTime = -1;
+		}
+		return;
+	}
+
+	thumb.lastRequestTime = hoverTime;
+	const newImage = await onThumbnailRequest({
+		type: "Must",
+		time: hoverTime,
+		isLast,
+	});
+	if (!newImage) return;
+
+	// 如果请求时间与最新Hover时间相同，则更新缩略图
+	if (hoverTime === thumb.lastHoverTime && isLast) {
+		thumb.lastRequestTime = -1;
+		thumb.renderImage = newImage;
+		thumb.renderTime = hoverTime;
+	}
+};
+
+// 监听缩略图请求
 watch(
-	() => props.time,
-	async (newTime) => {
-		if (onThumbnailRequest) {
-			tasks.value.push(newTime);
-			currentThumbnail.value = await onThumbnailRequest(newTime);
-			tasks.value = tasks.value.filter((task) => task !== newTime);
+	() => [props.visible, props.time],
+	async () => {
+		if (!onThumbnailRequest) return;
+		if (!props.visible || !props.time) {
+			thumb.lastHoverTime = -1;
+			thumb.renderImage = null;
+			return;
+		}
+
+		const hoverTime = props.time;
+		// 更新 hover 时间
+		thumb.lastHoverTime = hoverTime;
+		await updateThumbnail(hoverTime, false);
+	},
+);
+// 绘制缩略图
+watch(
+	() => thumb.renderImage,
+	(newVal, oldVal) => {
+		if (thumbnailCanvas.value && ctx.value) {
+			width.value = newVal?.width ?? oldVal?.width ?? DEFAULT_WIDTH;
+			height.value = newVal?.height ?? oldVal?.height ?? DEFAULT_HEIGHT;
+			requestAnimationFrame(() => {
+				ctx.value.fillRect(0, 0, width.value, height.value);
+				if (newVal && thumb.renderTime === thumb.lastHoverTime) {
+					ctx.value.drawImage(newVal, 0, 0, width.value, height.value);
+				}
+			});
 		}
 	},
 );
-
-// 绘制缩略图
-watch(currentThumbnail, (newVal) => {
-	if (thumbnailCanvas.value && ctx.value) {
-		requestAnimationFrame(() => {
-			ctx.value.fillRect(0, 0, width.value, height.value);
-			if (newVal) {
-				ctx.value.drawImage(newVal, 0, 0, width.value, height.value);
-			}
-		});
+// 监听源列表
+watch([source.list], () => {
+	thumb.lastHoverTime = -1;
+	thumb.lastRequestTime = -1;
+	thumb.renderTime = -1;
+	thumb.renderImage = null;
+	if (lastTimer.value) {
+		clearTimeout(lastTimer.value);
+		lastTimer.value = null;
 	}
 });
 
-watch([source.list], () => {
-	currentThumbnail.value = null;
+onUnmounted(() => {
+	if (lastTimer.value) {
+		clearTimeout(lastTimer.value);
+		lastTimer.value = null;
+	}
 });
 </script>
 
@@ -107,9 +192,9 @@ watch([source.list], () => {
 
 .thumbnail-container {
 	position: relative;
-	border-radius: 12px;
-	overflow: hidden;
+	border-radius: 16px;
 	box-shadow: 0 2px 8px rgba(15, 15, 15, 0.7);
+	overflow: hidden;
 	canvas {
 		background: rgba(15, 15, 15, 0.9);
 	}
@@ -124,10 +209,11 @@ watch([source.list], () => {
 
 .thumbnail-loading {
 	position: absolute;
-	bottom: 0;
+	top: 0;
 	left: 0;
 	right: 0;
-	height: 2px;
-	background: rgba(0, 0, 0, 0.3);
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 16px;
 }
-</style> 
+</style>
