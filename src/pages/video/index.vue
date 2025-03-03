@@ -3,6 +3,8 @@
 		<div class="page-body">
 			<div class="page-main">
 				<XPlayer
+					v-if="xplayerShow"
+					ref="xplayerRef"
 					class="video-player"
 					:sources="DataVideoSources.list"
 					:subtitles="DataSubtitles.state"
@@ -10,11 +12,11 @@
 					:loadingSubtitles="DataSubtitles.isLoading"
 					:onSubtitleChange="handleSubtitleChange"
 				/>
-
-				<button class="page-local-play" @click="handleLocalPlay('mpv')">快捷指令 MPV 本地播放器 Beta</button>
-				<button class="page-local-play" @click="handleLocalPlay('iina')">IINA 本地播放器 Beta</button>
 				<div class="page-flow">
 					<FileInfo :fileInfo="DataFileInfo" />
+					<div class="local-player">
+						<button v-if="isMac" class="page-local-play" @click="handleLocalPlay('iina')">IINA Beta</button>
+					</div>
 					<MovieInfo 
 						:movieInfos="DataMovieInfo"
 					/>
@@ -37,6 +39,7 @@
 <script setup lang="ts">
 import { useTitle } from "@vueuse/core";
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import type XPlayerInstance from "../../components/XPlayer/index.vue";
 import XPlayer from "../../components/XPlayer/index.vue";
 import type { Subtitle } from "../../components/XPlayer/types";
 import { useParamsVideoPage } from "../../hooks/useParams";
@@ -44,6 +47,7 @@ import type { Entity } from "../../utils/drive115";
 import Drive115Instance from "../../utils/drive115";
 import drive115 from "../../utils/drive115";
 import { getAvNumber } from "../../utils/getNumber";
+import { isMac } from "../../utils/platform";
 import { goToPlayer } from "../../utils/route";
 import { subtitlePreference } from "../../utils/subtitlePreference";
 import FileInfo from "./components/FileInfo/index.vue";
@@ -57,6 +61,9 @@ import { useDataSubtitles } from "./data/useSubtitlesData";
 import { useDataThumbnails } from "./data/useThumbnails";
 import { useDataVideoSources } from "./data/useVideoSource";
 import { webLinkIINA, webLinkShortcutsMpv } from "./hooks/useWeblink";
+
+const xplayerRef = ref<InstanceType<typeof XPlayerInstance>>();
+const xplayerShow = ref(true);
 
 const params = useParamsVideoPage();
 const DataVideoSources = useDataVideoSources();
@@ -85,7 +92,10 @@ const handleLocalPlay = async (player: "mpv" | "iina") => {
 			open(webLinkShortcutsMpv(url));
 			break;
 		case "iina":
-			open(webLinkIINA(url));
+			xplayerRef.value?.interruptSource();
+			setTimeout(() => {
+				open(webLinkIINA(url));
+			}, 300);
 			break;
 	}
 };
@@ -211,7 +221,7 @@ onUnmounted(() => {
 }
 
 .page-local-play {
-	width: 200px;
+	display: inline-flex;
 	background: #000;
 	color: #fff;
 	padding: 10px 20px;
