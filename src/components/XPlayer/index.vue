@@ -1,5 +1,5 @@
 <template>
-	<div
+	<div 
 		class="x-player"
 		:class="{ 'is-fullscreen': fullscreen.isFullscreen.value }"
 		@mousemove="handleRootMouseMove"
@@ -8,11 +8,11 @@
 		<!-- 播放器容器 -->
 		<div class="player-container">
 			<!-- 视频容器 -->
-			<div
+			<div 
 				class="video-container"
 			>
 				<!-- 视频元素 -->
-				<video
+				<video 
 					ref="videoElement"
 					:key="source.videoKey.value"
 					:poster="source.current.value?.poster"
@@ -43,7 +43,7 @@
 				<Loading :show="playing.isLoading.value" />
 
 				<!-- 视频遮罩 -->
-				<div
+				<div 
 					class="video-mask"
 					@click="playing.togglePlay"
 					@dblclick="fullscreen.toggleFullscreen"
@@ -53,10 +53,14 @@
 			</div>
 		</div>
 		<!-- 弹出层容器 -->
-		<div
+		<div 
 			class="portal-container"
 			:ref="portalContext.container"
 		></div>
+
+		<div class="resume-container" v-if="source.isInterrupt.value">
+			<button @click="source.resumeSource">恢复</button>
+		</div>
 	</div>
 </template>
 
@@ -72,15 +76,7 @@ import PlayAnimation from "./components/PlayAnimation/index.vue";
 
 export interface XPlayerProps {
 	sources: Ref<VideoSource[]>;
-	onThumbnailRequest?: ({
-		type,
-		time,
-		isLast,
-	}: {
-		type: "Cache" | "Must";
-		time: number;
-		isLast: boolean;
-	}) => Promise<ImageBitmap | null>;
+	onThumbnailRequest?: (time: number) => Promise<ImageBitmap>;
 	subtitles: Ref<Subtitle[] | null>;
 	loadingSubtitles: Ref<boolean>;
 	onSubtitleChange?: (subtitle: Subtitle | null) => void;
@@ -108,6 +104,11 @@ const handleRootMouseLeave = () => {
 	controls.clearHideControlsTimer();
 	controls.hide();
 };
+
+defineExpose({
+	togglePlay: playing.togglePlay,
+	interruptSource: source.interruptSource,
+});
 </script>
 
 <style scoped>
@@ -175,5 +176,25 @@ video {
 
 .portal-container > * {
 	pointer-events: auto;
+}
+
+.resume-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	button {
+		background-color: var(--x-player-background-color);
+		color: var(--x-player-text-color);
+		border-radius: 32px;
+		padding: 8px 16px;
+		font-size: 14px;
+		cursor: pointer;
+	}
 }
 </style>

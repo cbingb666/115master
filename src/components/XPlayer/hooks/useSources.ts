@@ -16,6 +16,8 @@ export const useSource = (
 	const hls = useHls(videoElementRef);
 	// 清理函数
 	const cleanupRef = ref<(() => void) | undefined>(() => void 0);
+	// 是否中断
+	const isInterrupt = ref(false);
 
 	// 初始化视频
 	const initializeVideo = async (source: VideoSource) => {
@@ -69,10 +71,22 @@ export const useSource = (
 		}
 	};
 
+	// 中断源
+	const interruptSource = () => {
+		isInterrupt.value = true;
+		cleanupRef.value?.();
+	};
+
+	const resumeSource = () => {
+		isInterrupt.value = false;
+		initializeVideo(current.value!);
+	};
+
 	watch(
 		list,
 		async () => {
 			cleanupRef.value?.();
+			isInterrupt.value = false;
 			if (sources.value.length === 0) {
 				return;
 			}
@@ -86,5 +100,8 @@ export const useSource = (
 		list,
 		current,
 		changeQuality,
+		interruptSource,
+		resumeSource,
+		isInterrupt,
 	};
 };

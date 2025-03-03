@@ -1,4 +1,4 @@
-import { type InjectionKey, type Ref, inject, provide, ref, watch } from "vue";
+import { type InjectionKey, type Ref, inject, provide } from "vue";
 import type { XPlayerProps } from "../index.vue";
 import { useControls } from "./useControls";
 import { useFullscreen } from "./useFullscreen";
