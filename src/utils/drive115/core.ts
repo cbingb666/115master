@@ -1,3 +1,4 @@
+import { GM_openInTab } from "$";
 import {
 	NORMAL_URL_115,
 	PRO_API_URL_115,
@@ -61,6 +62,13 @@ export class Drive115Core {
 		}
 	}
 
+	private verifyVod(pickcode: string) {
+		alert("你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~");
+		GM_openInTab(new URL(`?pickcode=${pickcode}`, this.VOD_URL_115).href, {
+			active: true,
+		});
+	}
+
 	async fakeVodAuthPickcode(pickcode: string) {
 		await this.iRequest.get<WebApi.Res.FilesDownload>(
 			new URL(`?pickcode=${pickcode}`, this.VOD_URL_115).href,
@@ -74,6 +82,7 @@ export class Drive115Core {
 		);
 	}
 
+	// 获取原文件地址
 	private async getDownloadUrlByNormal(
 		pickcode: string,
 	): Promise<DownloadResult> {
@@ -101,6 +110,7 @@ export class Drive115Core {
 		};
 	}
 
+	// 获取原文件地址
 	private async getDownloadUrlByPro(pickcode: string): Promise<DownloadResult> {
 		const tm = Math.floor(Date.now() / 1000).toString();
 		const src = JSON.stringify({ pickcode });
@@ -141,6 +151,7 @@ export class Drive115Core {
 		};
 	}
 
+	// 获取原文件地址
 	async getFileDownloadUrl(pickcode: string): Promise<DownloadResult> {
 		try {
 			return await this.getDownloadUrlByPro(pickcode);
@@ -152,6 +163,7 @@ export class Drive115Core {
 		}
 	}
 
+	// 获取原文件地址
 	async getOriginFileUrl(
 		pickcode: string,
 		fileId: string,
@@ -177,11 +189,16 @@ export class Drive115Core {
 		throw new Error(`获取原文件地址失败: ${JSON.stringify(res)}`);
 	}
 
-	getM3u8RootUrl(pickcode: string): string {
+	// 获取 m3u8 根 url
+	private getM3u8RootUrl(pickcode: string): string {
 		return new URL(`/api/video/m3u8/${pickcode}.m3u8`, this.BASE_URL).href;
 	}
 
-	async parseM3u8Url(url: string): Promise<M3u8Item[]> {
+	// 解析 m3u8 列表
+	private async parseM3u8Url(
+		url: string,
+		pickcode: string,
+	): Promise<M3u8Item[]> {
 		const response = await this.iRequest.get<NormalApi.Res.VideoM3u8>(url, {
 			headers: {
 				"Content-Type": "application/json",
@@ -191,7 +208,7 @@ export class Drive115Core {
 
 		if (response.data?.state === false) {
 			if (response.data.code === 911) {
-				this.verify();
+				this.verifyVod(pickcode);
 			}
 			throw new Error(`获取m3u8文件失败: ${response.data.error}`);
 		}
@@ -223,7 +240,15 @@ export class Drive115Core {
 		return m3u8List;
 	}
 
-	async apsNatsortFiles(params: VodApi.Req.VodApiFilesReq) {
+	// 获取 m3u8 列表
+	public async getM3u8(pickcode: string) {
+		const url = this.getM3u8RootUrl(pickcode);
+		const m3u8List = await this.parseM3u8Url(url, pickcode);
+		return m3u8List;
+	}
+
+	// 获取播放列表
+	private async apsNatsortFiles(params: VodApi.Req.VodApiFilesReq) {
 		const response = await this.iRequest.get<VodApi.Res.VodApiFiles>(
 			new URL("/aps/natsort/files.php", this.VOD_URL_115).href,
 			{
@@ -240,7 +265,8 @@ export class Drive115Core {
 		return response;
 	}
 
-	async webapiFiles(params: VodApi.Req.VodApiFilesReq) {
+	// 获取播放列表
+	private async webapiFiles(params: VodApi.Req.VodApiFilesReq) {
 		const response = await this.iRequest.get<VodApi.Res.VodApiFiles>(
 			new URL("/webapi/files", this.VOD_URL_115).href,
 			{
@@ -257,7 +283,8 @@ export class Drive115Core {
 		return response;
 	}
 
-	async getPlaylist(cid: string, pickcode: string, offset = 0) {
+	// 获取播放列表
+	public async getPlaylist(cid: string, pickcode: string, offset = 0) {
 		const obj: VodApi.Req.VodApiFilesReq = {
 			pickcode,
 			aid: 1,
@@ -297,6 +324,7 @@ export class Drive115Core {
 		}
 	}
 
+	// 获取文件信息
 	public async getFileInfo(params: WebApi.Req.FilesInfoReq) {
 		const response = await this.iRequest.get<WebApi.Res.FilesInfo>(
 			new URL("/webapi/files/video", this.VOD_URL_115).href,

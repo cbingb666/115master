@@ -8,7 +8,7 @@ export const useDataVideoSources = () => {
 	const fetch = async (pickCode: string) => {
 		const [download, m3u8List] = await Promise.allSettled([
 			drive115.getFileDownloadUrl(pickCode),
-			drive115.parseM3u8Url(drive115.getM3u8RootUrl(pickCode)),
+			drive115.getM3u8(pickCode),
 		]);
 
 		if (download.status === "fulfilled") {

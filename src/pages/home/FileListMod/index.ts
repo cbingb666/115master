@@ -1,9 +1,10 @@
-import { getAvNumber } from "../../../utils/getNumber";
-import { AppLogger } from "../../../utils/logger";
-import "./index.css";
 import { type App, createApp } from "vue";
 import actressFaceDB from "../../../utils/actressFaceDB";
+import { getAvNumber } from "../../../utils/getNumber";
+import { AppLogger } from "../../../utils/logger";
 import ExtInfo from "../components/ExtInfo/index.vue";
+import ExtPreview from "../components/ExtPreview/index.vue";
+import "./index.css";
 
 enum FileType {
 	folder = "0",
@@ -18,6 +19,7 @@ enum IvType {
 interface FileItemAttributes {
 	c: string;
 	iv: IvType;
+	vdi: string;
 	title: string;
 	hdf: string;
 	file_type: FileType;
@@ -40,21 +42,20 @@ interface FileItemAttributes {
 class FileItem {
 	private vueApp: App | null = null;
 	private initedActressInfo = false;
-
 	constructor(private readonly $item: HTMLElement) {}
 
-	public get attributes(): FileItemAttributes {
+	private get attributes(): FileItemAttributes {
 		return Object.fromEntries(
 			Array.from(this.$item.attributes).map((attr) => [attr.name, attr.value]),
 		) as unknown as FileItemAttributes;
 	}
 
-	public async load() {
-		this.loadExtInfo();
-		this.loadActressInfo();
+	private get avNumber(): string | null {
+		return getAvNumber(this.attributes.title);
 	}
 
-	public async loadExtInfo() {
+	// 加载扩展信息
+	private async loadExtInfo() {
 		if (
 			this.attributes.iv !== IvType.playable &&
 			this.attributes.file_type !== FileType.folder
@@ -66,21 +67,21 @@ class FileItem {
 			return;
 		}
 
-		const avNumber = getAvNumber(this.attributes.title);
-		if (avNumber) {
+		if (this.avNumber) {
 			this.$item.classList.add("with-ext-info");
 			const extInfoDom = document.createElement("div");
 			this.$item.append(extInfoDom);
 			extInfoDom.className = "ext-info-root";
 			const app = createApp(ExtInfo, {
-				avNumber,
+				avNumber: this.avNumber,
 			});
 			app.mount(extInfoDom);
 			this.vueApp = app;
 		}
 	}
 
-	public async loadActressInfo() {
+	// 加载演员信息
+	private async loadActressInfo() {
 		if (this.initedActressInfo === true) {
 			return;
 		}
@@ -98,6 +99,45 @@ class FileItem {
 			actressDom.className = "actress-info-img";
 			this.$item.querySelector(".file-name-wrap")?.prepend(actressDom);
 		}
+	}
+
+	// 加载预览视频
+	private async loadPreview() {
+		if (this.avNumber) {
+			return;
+		}
+
+		if (this.attributes.file_type === FileType.folder) {
+			return;
+		}
+
+		if (this.attributes.iv !== IvType.playable) {
+			return;
+		}
+
+		if (this.attributes.vdi === "0") {
+			return;
+		}
+
+		if (this.$item.classList.contains("with-ext-preview")) {
+			return;
+		}
+
+		this.$item.classList.add("with-ext-preview");
+		const previewDom = document.createElement("div");
+		previewDom.className = "ext-preview-root";
+		this.$item.append(previewDom);
+		const app = createApp(ExtPreview, {
+			pickCode: this.attributes.pick_code,
+		});
+		app.mount(previewDom);
+		this.vueApp = app;
+	}
+
+	public async load() {
+		this.loadExtInfo();
+		this.loadActressInfo();
+		this.loadPreview();
 	}
 
 	public destroy(): void {

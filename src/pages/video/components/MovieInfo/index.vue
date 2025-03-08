@@ -218,7 +218,7 @@
 <script lang="ts" setup>
 import type { UseAsyncStateReturn } from "@vueuse/core";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import LoadingError from "../../../../components/LoadingError/index.vue";
 import Skeleton from "../../../../components/Skeleton/index.vue";
 import Empty from "../../../../components/empty/Empty.vue";

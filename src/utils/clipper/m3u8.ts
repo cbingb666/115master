@@ -250,4 +250,16 @@ export class M3U8Clipper extends ClipperCore {
 			null
 		);
 	}
+
+	// 创建缩略图
+	public createThumbnailBase64(frame: ClipFrame): string {
+		const canvas = document.createElement("canvas");
+		const ctx = canvas.getContext("2d");
+		canvas.width = frame.img.width;
+		canvas.height = frame.img.height;
+		ctx?.drawImage(frame.img, 0, 0, frame.img.width, frame.img.height);
+		const base64 = canvas.toDataURL();
+		frame.img.close();
+		return base64;
+	}
 }

@@ -145,7 +145,6 @@ import Skeleton from "../../../../components/Skeleton/index.vue";
 import Empty from "../../../../components/empty/Empty.vue";
 import { formatDate, formatDuration } from "../../../../utils/format";
 import { Jav, JavBus, JavDB } from "../../../../utils/jav";
-import { JavNotFound } from "../../../../utils/jav/jav";
 import { MissAV } from "../../../../utils/jav/missAV";
 import { GMRequest } from "../../../../utils/request/gmRequst";
 
