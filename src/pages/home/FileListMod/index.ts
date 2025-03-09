@@ -1,5 +1,5 @@
 import { type App, createApp } from "vue";
-import actressFaceDB from "../../../utils/actressFaceDB";
+import { ActressFaceDB } from "../../../utils/actressFaceDB";
 import { getAvNumber } from "../../../utils/getNumber";
 import { AppLogger } from "../../../utils/logger";
 import ExtInfo from "../components/ExtInfo/index.vue";
@@ -42,7 +42,16 @@ interface FileItemAttributes {
 class FileItem {
 	private vueApp: App | null = null;
 	private initedActressInfo = false;
-	constructor(private readonly $item: HTMLElement) {}
+	private $fileNameDom: HTMLElement | null = null;
+	private $fileNameWrapDom: HTMLElement | null = null;
+	private $fileNameATagDom: HTMLAnchorElement | null = null;
+
+	constructor(
+		private readonly $item: HTMLElement,
+		private readonly actressFaceDB: ActressFaceDB,
+	) {
+		this.getDoms();
+	}
 
 	private get attributes(): FileItemAttributes {
 		return Object.fromEntries(
@@ -52,6 +61,16 @@ class FileItem {
 
 	private get avNumber(): string | null {
 		return getAvNumber(this.attributes.title);
+	}
+
+	private getDoms() {
+		this.$fileNameDom = this.$item.querySelector(".file-name") as HTMLElement;
+		this.$fileNameWrapDom = this.$item.querySelector(
+			".file-name-wrap",
+		) as HTMLElement;
+		this.$fileNameATagDom = this.$fileNameDom.querySelector(
+			"a",
+		) as HTMLAnchorElement;
 	}
 
 	// 加载扩展信息
@@ -86,7 +105,7 @@ class FileItem {
 			return;
 		}
 		this.initedActressInfo = true;
-		const actress = (await actressFaceDB).findActress(
+		const actress = await this.actressFaceDB.findActress(
 			this.attributes.title.trim(),
 		);
 		if (this.$item.classList.contains("with-actress-info")) {
@@ -97,7 +116,7 @@ class FileItem {
 			const actressDom = document.createElement("img");
 			actressDom.src = actress.url;
 			actressDom.className = "actress-info-img";
-			this.$item.querySelector(".file-name-wrap")?.prepend(actressDom);
+			this.$fileNameWrapDom?.prepend(actressDom);
 		}
 	}
 
@@ -134,10 +153,22 @@ class FileItem {
 		this.vueApp = app;
 	}
 
+	// 修改文件夹 a 标签链接（支持鼠标中键新标签打开）
+	private async ModFolderATagLink() {
+		if (this.attributes.file_type !== FileType.folder) {
+			return;
+		}
+
+		if (this.$fileNameATagDom?.href.includes("javascript:;")) {
+			this.$fileNameATagDom.href = `/?cid=${this.attributes.cate_id}&offset=0&tab=&mode=wangpan`;
+		}
+	}
+
 	public async load() {
 		this.loadExtInfo();
 		this.loadActressInfo();
 		this.loadPreview();
+		this.ModFolderATagLink();
 	}
 
 	public destroy(): void {
@@ -151,7 +182,7 @@ class FileListMod {
 	private $items!: NodeListOf<HTMLElement> | null;
 	private items: FileItem[] = [];
 	private offChangePage: (() => void) | null = null;
-
+	private actressFaceDB: ActressFaceDB | null = null;
 	constructor() {
 		this.logger = new AppLogger("FileStyle");
 		this.init();
@@ -164,6 +195,8 @@ class FileListMod {
 
 	private async init(): Promise<void> {
 		this.logger.log("init");
+		this.actressFaceDB = new ActressFaceDB();
+		this.actressFaceDB.init();
 		this.getOriginDom();
 
 		if (this.$list && this.$items) {
@@ -199,7 +232,7 @@ class FileListMod {
 		this.getOriginDom();
 		if (this.$list && this.$items) {
 			this.$items.forEach((item) => {
-				const fileItem = new FileItem(item);
+				const fileItem = new FileItem(item, this.actressFaceDB!);
 				fileItem.load();
 				this.items.push(fileItem);
 			});

@@ -13,6 +13,7 @@ export class ActressFaceDB {
 	private imageMap: ActressImageMap;
 	private lastUpdateTime = -1;
 	private updateTimer: number | null;
+	private initPromise: Promise<ActressFaceDB> | null = null;
 
 	constructor() {
 		this.imageMap = new Map();
@@ -21,18 +22,30 @@ export class ActressFaceDB {
 			name: "115master",
 			storeName: "actress_images",
 		});
+		this.init();
 	}
+
+	private inited = false;
 
 	/**
 	 * 初始化数据库
 	 */
 	async init(): Promise<ActressFaceDB> {
-		this.lastUpdateTime =
-			(await this.storage.getItem<number>(ActressFaceDB.CACHE_TIMESTAMP)) ?? -1;
-		await this.loadFromCache();
-		if (await this.checkUpdate()) {
-			await this.updateDB();
-		}
+		// biome-ignore lint/suspicious/noAsyncPromiseExecutor: <explanation>
+		const promise = new Promise<ActressFaceDB>(async (resolve) => {
+			this.inited = false;
+			this.lastUpdateTime =
+				(await this.storage.getItem<number>(ActressFaceDB.CACHE_TIMESTAMP)) ??
+				-1;
+			await this.loadFromCache();
+			if (await this.checkUpdate()) {
+				await this.updateDB();
+			}
+			this.inited = true;
+			resolve(this);
+		});
+		this.initPromise = promise;
+		await promise;
 		return this;
 	}
 
@@ -69,11 +82,15 @@ export class ActressFaceDB {
 	/**
 	 * 查找演员头像信息
 	 */
-	public findActress(
+	public async findActress(
 		name: string,
-	):
+	): Promise<
 		| { folder: string; filename: string; timestamp: number; url: string }
-		| undefined {
+		| undefined
+	> {
+		if (!this.inited) {
+			await this.initPromise;
+		}
 		const actress = this.imageMap.get(name.toLowerCase());
 		if (!actress) {
 			return undefined;
@@ -162,7 +179,3 @@ export class ActressFaceDB {
 		]);
 	}
 }
-
-const actressFaceDB = new ActressFaceDB().init();
-
-export default actressFaceDB;

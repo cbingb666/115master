@@ -1,13 +1,13 @@
-import type { ActressFaceDB } from "../../utils/gfirendDB";
 import { AppLogger } from "../../utils/logger";
 import FileListMod from "./FileListMod";
 import { FileOperationMenu } from "./FileOperationMenu";
+import { PageTitleMod } from "./PageTitleMod";
 
 class HomePage {
 	private readonly logger: AppLogger;
 	private fileOperationMenu!: FileOperationMenu;
-	private ileListMod!: FileListMod;
-	private gFirendDB!: ActressFaceDB;
+	private fileListMod!: FileListMod;
+	private pageTitleMod!: PageTitleMod;
 
 	constructor() {
 		this.logger = new AppLogger("HomePage");
@@ -17,13 +17,14 @@ class HomePage {
 	private async init(): Promise<void> {
 		this.logger.log("init");
 		this.fileOperationMenu = new FileOperationMenu();
-		this.ileListMod = new FileListMod();
+		this.fileListMod = new FileListMod();
+		this.pageTitleMod = new PageTitleMod();
 	}
 
 	public destroy(): void {
 		this.fileOperationMenu.destroy();
-		this.ileListMod.destroy();
-		this.gFirendDB.destroy();
+		this.fileListMod.destroy();
+		this.pageTitleMod.destroy();
 	}
 }
 
