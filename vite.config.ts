@@ -41,7 +41,7 @@ export default defineConfig({
 					"https://115.com/?ct*",
 					"https://115.com/?aid*",
 					"https://dl.115cdn.net/master/*",
-					"https://115.com/web/lixian/video/?*",
+					"https://115.com/web/lixian/master/video/*",
 				],
 				exclude: [
 					"https://*.115.com/bridge*",

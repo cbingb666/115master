@@ -1,5 +1,5 @@
 import { GM_openInTab, GM_setValue } from "$";
-import { DL_HOST_155 } from "../constants/115";
+import { NORMAL_HOST_155 } from "../constants/115";
 import GM_VALUE_KEY from "../constants/gm.value.key";
 import type { PlayingVideoInfo } from "../types/player";
 
@@ -14,7 +14,7 @@ export const goToPlayer = (
 		avNumber: playingVideoInfo.avNumber || "",
 		title: playingVideoInfo.title,
 	});
-	const url = `https://${DL_HOST_155}/master/video/?${params.toString()}`;
+	const url = `https://${NORMAL_HOST_155}/web/lixian/master/video/?${params.toString()}`;
 	if (isOpenInTab) {
 		GM_openInTab(url, {
 			active: true,

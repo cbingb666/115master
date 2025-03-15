@@ -191,6 +191,7 @@ onUnmounted(() => {
 }
 
 .thumbnail-container {
+	display: flex;
 	position: relative;
 	border-radius: 16px;
 	box-shadow: 0 2px 8px rgba(15, 15, 15, 0.7);

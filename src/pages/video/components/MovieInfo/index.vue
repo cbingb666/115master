@@ -353,12 +353,14 @@ watch(movieInfoThumb, async () => {
 }
 
 .movie-info-header-actors-item img {
+	display: block;
 	width: 60px;
 	height: 60px;
 	border-radius: 50%;
 	object-fit: cover;
 	border: 2px solid #f1f1f1;
 	box-sizing: border-box;
+	background-color: #f1f1f1;
 }
 
 .movie-info-header-actors-item-name {
