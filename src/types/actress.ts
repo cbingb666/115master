@@ -1,5 +1,8 @@
+type FolderName = string;
+type ActressName = string;
+
 export type ActressImageInfo = {
-	Content: Record<string, Record<string, string>>;
+	Content: Record<FolderName, Record<ActressName, string>>;
 	Information: {
 		TotalNum: number;
 		TotalSize: number;
@@ -13,5 +16,5 @@ export type ActressImageMap = Map<
 		folder: string;
 		filename: string;
 		timestamp: number;
-	}
+	}[]
 >;

@@ -20,7 +20,7 @@ export class ActressFaceDB {
 		this.updateTimer = null;
 		this.storage = localforage.createInstance({
 			name: "115master",
-			storeName: "actress_images",
+			storeName: "actress_images_v2",
 		});
 		this.init();
 	}
@@ -91,13 +91,14 @@ export class ActressFaceDB {
 		if (!this.inited) {
 			await this.initPromise;
 		}
-		const actress = this.imageMap.get(name.toLowerCase());
+		const actress = this.imageMap.get(name)?.reverse();
 		if (!actress) {
 			return undefined;
 		}
+		const file = actress[0];
 		return {
-			...actress,
-			url: `https://github.com/gfriends/gfriends/blob/master/Content/${actress.folder}/${actress.filename}?raw=true`,
+			...file,
+			url: `https://raw.githubusercontent.com/gfriends/gfriends/refs/heads/master/Content/${file.folder}/${file.filename}`,
 		};
 	}
 
@@ -147,21 +148,26 @@ export class ActressFaceDB {
 	 * 处理并保存数据
 	 */
 	private async processAndSaveData(data: ActressImageInfo): Promise<void> {
-		const newMap = new Map<
-			string,
-			{ folder: string; filename: string; timestamp: number }
-		>();
+		const newMap: ActressImageMap = new Map();
 
 		// 处理数据并构建查找映射
 		Object.entries(data.Content).forEach(([folder, files]) => {
 			Object.entries(files).forEach(([originalName, renamedFile]) => {
-				const timestamp = parseInt(renamedFile.split("?t=")[1] || "0", 10);
+				const [filename, timestampStr] = renamedFile.split("?t=");
+				const timestamp = parseInt(timestampStr, 10);
 				const actressName = originalName.replace(".jpg", "");
-				newMap.set(actressName.toLowerCase(), {
+				const file = {
 					folder,
-					filename: renamedFile.split("?")[0],
+					filename,
 					timestamp,
-				});
+				};
+				const files = newMap.get(actressName);
+				if (files && files?.length > 0) {
+					files.push(file);
+					newMap.set(actressName, files);
+				} else {
+					newMap.set(actressName, [file]);
+				}
 			});
 		});
 
