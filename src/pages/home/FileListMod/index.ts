@@ -5,6 +5,8 @@ import { AppLogger } from "../../../utils/logger";
 import ExtInfo from "../components/ExtInfo/index.vue";
 import ExtPreview from "../components/ExtPreview/index.vue";
 import "./index.css";
+import { imageCache } from "../../../utils/cache";
+import { compressImage } from "../../../utils/image";
 
 enum FileType {
 	folder = "0",
@@ -37,6 +39,7 @@ interface FileItemAttributes {
 	shared: string;
 	has_pass: string;
 	issct: string;
+	sha1: string;
 }
 
 class FileItem {
@@ -114,11 +117,45 @@ class FileItem {
 		if (actress) {
 			this.$item.classList.add("with-actress-info");
 			const actressDom = document.createElement("img");
-			actressDom.src = actress.url;
 			actressDom.alt = actress.filename;
 			actressDom.loading = "lazy";
 			actressDom.className = "actress-info-img";
 			this.$fileNameWrapDom?.prepend(actressDom);
+
+			try {
+				// 尝试从缓存获取图片
+				const cacheKey = `actress-face-${actress.url}`;
+				const cachedImage = await imageCache.get(cacheKey);
+
+				if (cachedImage) {
+					actressDom.src = URL.createObjectURL(cachedImage.value);
+				} else {
+					actressDom.src = actress.url;
+					try {
+						const response = await fetch(actress.url);
+						if (response.ok) {
+							const blob = await response.blob();
+
+							// 压缩图片后再缓存
+							const compressedBlob = await compressImage(blob, {
+								maxWidth: 200,
+								maxHeight: 200,
+								quality: 0.8,
+								type: "image/webp",
+							});
+
+							// 存储到imageCache中
+							await imageCache.set(cacheKey, compressedBlob);
+						}
+					} catch (error) {
+						console.error("缓存演员头像失败:", error);
+					}
+				}
+			} catch (error) {
+				// 出错时直接使用原始URL
+				console.error("加载演员头像缓存失败:", error);
+				actressDom.src = actress.url;
+			}
 		}
 	}
 
@@ -150,6 +187,7 @@ class FileItem {
 		this.$item.append(previewDom);
 		const app = createApp(ExtPreview, {
 			pickCode: this.attributes.pick_code,
+			sha1: this.attributes.sha1,
 		});
 		app.mount(previewDom);
 		this.vueApp = app;
@@ -198,7 +236,6 @@ class FileListMod {
 	private async init(): Promise<void> {
 		this.logger.log("init");
 		this.actressFaceDB = new ActressFaceDB();
-		this.actressFaceDB.init();
 		this.getOriginDom();
 
 		if (this.$list && this.$items) {

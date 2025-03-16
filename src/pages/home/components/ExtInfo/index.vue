@@ -2,7 +2,7 @@
     <div class="ext-info " ref="extInfoRef">
         <div class="ext-info-container" >
             <div class="ext-info-error" v-if="extInfo.error.value">
-                <LoadingError :message="`获取番号 [${props.avNumber}] 失败`" detail="可能由于网络原因，请检查是否科学网络" />
+                <LoadingError :message="`获取番号 [${props.avNumber}] 失败`" :detail="`可能由于网络原因，请检查是否科学网络${extInfo.error.value}`" />
             </div>
              <!-- loading骨架 -->
             <template v-else-if="extInfo.isLoading.value || (!extInfo.isLoading.value && !extInfo.isReady.value)">
@@ -32,7 +32,7 @@
             <template v-else-if="extInfo.state.value">
                 <div class="ext-info-cover">
                     <a href="javascript:void(0)" :alt="extInfo.state.value?.title">
-                        <Image skeleton-mode="light" :src="extInfo.state.value?.cover?.url" :alt="extInfo.state.value?.title" :referer="extInfo.state.value?.cover?.referer" />
+                        <Image skeleton-mode="light" :src="extInfo.state.value?.cover?.url" :alt="extInfo.state.value?.title" :referer="extInfo.state.value?.cover?.referer" cache />
                     </a>
                 </div>
                 <div class="ext-info-main">
@@ -146,11 +146,10 @@ import Empty from "../../../../components/empty/Empty.vue";
 import { formatDate, formatDuration } from "../../../../utils/format";
 import { Jav, JavBus, JavDB } from "../../../../utils/jav";
 import { MissAV } from "../../../../utils/jav/missAV";
-import { GMRequest } from "../../../../utils/request/gmRequst";
 
-const javBus = new JavBus(new GMRequest());
-const javDB = new JavDB(new GMRequest());
-const missAV = new MissAV(new GMRequest());
+const javBus = new JavBus();
+const javDB = new JavDB();
+const missAV = new MissAV();
 
 const props = defineProps<{
 	avNumber: string;
@@ -169,17 +168,21 @@ watch(extInfoRefVisible, (visible) => {
 
 const extInfo = useAsyncState(
 	async () => {
-		try {
-			return await javBus.getInfoByAvNumber(props.avNumber);
-		} catch (error) {
+		const javs = [javBus, javDB, missAV];
+		for (const jav of javs) {
+			const info = await jav.getInfoByCache(props.avNumber);
+			if (info) {
+				return info;
+			}
+		}
+
+		for (const [index, jav] of Object.entries(javs)) {
 			try {
-				return await javDB.getInfoByAvNumber(props.avNumber);
+				return await jav.getInfo(props.avNumber);
 			} catch (error) {
-				try {
-					return await missAV.getInfoByAvNumber(props.avNumber);
-				} catch (error) {
+				if (Number(index) === javs.length - 1) {
 					if (error instanceof Jav.NotFound) {
-						return undefined;
+						return null;
 					}
 					throw error;
 				}

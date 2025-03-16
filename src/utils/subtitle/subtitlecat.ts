@@ -1,7 +1,7 @@
-import { GM_xmlhttpRequest } from "$";
 import md5 from "blueimp-md5";
+import { subtitleCache } from "../cache/subtitleCache";
 import { AppLogger } from "../logger";
-import { subtitleCache } from "./subtitleCache";
+import { GMRequestInstance } from "../request/gmRequst";
 import { convertSrtToVtt, vttToBlobUrl } from "./subtitleTool";
 
 interface SubtitleSearchResult {
@@ -37,40 +37,40 @@ export interface ProcessedSubtitle {
 export class SubtitleCat {
 	private domain = "https://subtitlecat.com";
 	logger = new AppLogger("Utils SubtitleCat");
+	private iRequest = GMRequestInstance;
 
 	getSubtitleText(url: string): Promise<string> {
 		return new Promise((resolve, reject) => {
-			GM_xmlhttpRequest({
-				url: url,
-				method: "GET",
-				onload: (response) => {
-					resolve(response.responseText);
-				},
-				onerror: (error) => {
+			this.iRequest
+				.get(url)
+				.then((response) => {
+					resolve(response.text());
+				})
+				.catch((error) => {
 					reject(error);
-				},
-			});
+				});
 		});
 	}
 
 	fetchSubtitleUrl(url: string, language: string): Promise<string | undefined> {
 		return new Promise((resolve, reject) => {
-			GM_xmlhttpRequest({
-				url,
-				method: "GET",
-				onload: async (response) => {
+			this.iRequest
+				.get(url)
+				.then(async (response) => {
 					const parser = new DOMParser();
-					const doc = parser.parseFromString(response.response, "text/html");
+					const doc = parser.parseFromString(
+						await response.text(),
+						"text/html",
+					);
 					const subtitleUrl = doc
 						.querySelector(`#download_${language}`)
 						?.getAttribute("href");
 
 					resolve(subtitleUrl || undefined);
-				},
-				onerror: (error) => {
+				})
+				.catch((error) => {
 					reject(error);
-				},
-			});
+				});
 		});
 	}
 
@@ -150,7 +150,7 @@ export class SubtitleCat {
 		language: string,
 	): Promise<ProcessedSubtitle[]> {
 		// 首先尝试从缓存获取
-		const cachedSubtitles = await subtitleCache.get(keyword, language);
+		const cachedSubtitles = await subtitleCache.getCache(keyword, language);
 		if (cachedSubtitles) {
 			this.logger.log("从缓存获取字幕成功");
 			// 重新生成所有字幕的 blob URL，因为之前的可能已经失效
@@ -161,13 +161,15 @@ export class SubtitleCat {
 		}
 
 		return new Promise((resolve, reject) => {
-			GM_xmlhttpRequest({
-				url: `${this.domain}/index.php?search=${keyword}`,
-				method: "GET",
-				onload: async (response) => {
+			this.iRequest
+				.get(`${this.domain}/index.php?search=${keyword}`)
+				.then(async (response) => {
 					try {
 						const parser = new DOMParser();
-						const doc = parser.parseFromString(response.response, "text/html");
+						const doc = parser.parseFromString(
+							await response.text(),
+							"text/html",
+						);
 						const rows = Array.from(
 							doc.querySelectorAll(".sub-table tbody tr"),
 						).slice(0, 5);
@@ -210,7 +212,7 @@ export class SubtitleCat {
 
 						// 缓存所有找到的字幕
 						if (finalResults.length > 0) {
-							await subtitleCache.set(
+							await subtitleCache.addCache(
 								keyword,
 								language,
 								finalResults.map((i) => ({
@@ -227,12 +229,11 @@ export class SubtitleCat {
 						console.error("处理过程中出错:", error);
 						reject(error);
 					}
-				},
-				onerror: (error) => {
+				})
+				.catch((error) => {
 					console.error("请求失败:", error);
 					reject(error);
-				},
-			});
+				});
 		});
 	}
 }

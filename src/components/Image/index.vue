@@ -7,16 +7,18 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
+import { imageCache } from "../../utils/cache/imageCache";
+import { blobToBase64, compressImage } from "../../utils/image";
 import { GMRequest } from "../../utils/request/gmRequst";
-import type { RequestOptions } from "../../utils/request/types";
 import LoadingError from "../LoadingError/index.vue";
 import Skeleton from "../Skeleton/index.vue";
-type Props = Partial<RequestOptions> & {
+type Props = {
 	referer?: string;
 	src: string;
 	alt: string;
 	skeletonMode?: "light" | "dark";
+	cache?: boolean;
 };
 
 const props = defineProps<Props>();
@@ -25,22 +27,28 @@ const loading = ref(false);
 const error = ref(false);
 const gmRequst = new GMRequest();
 
-const getImageByGmRequest = async (src: string) => {
+const getImageByGmRequest = async (src: string): Promise<Base64URLString> => {
+	if (props.cache) {
+		const cache = await imageCache.get(src);
+		if (cache) {
+			return await blobToBase64(cache.value);
+		}
+	}
 	const res = await gmRequst.get(src, {
 		headers: {
 			...(props.referer ? { Referer: props.referer } : {}),
 		},
 		responseType: "blob",
 	});
-	const blob = new Blob([res.data as BlobPart], { type: "image/jpeg" });
-	const url = URL.createObjectURL(blob);
-	return url;
-};
-
-const revokeUrl = (url?: string) => {
-	if (url?.includes("blob://")) {
-		URL.revokeObjectURL(url);
-	}
+	const blob = new Blob([await res.blob()], { type: "image/jpeg" });
+	const compressedBlob = await compressImage(blob, {
+		maxWidth: 720,
+		maxHeight: 720,
+		quality: 0.8,
+		type: "image/webp",
+	});
+	props.cache && imageCache.set(props.src, compressedBlob);
+	return await blobToBase64(compressedBlob);
 };
 
 const loadImage = async (_src: string) => {
@@ -63,7 +71,6 @@ const loadImage = async (_src: string) => {
 watch(
 	() => props.src,
 	async (newVal) => {
-		revokeUrl(src.value);
 		if (newVal) {
 			loadImage(newVal);
 		} else {
@@ -72,10 +79,6 @@ watch(
 	},
 	{ immediate: true },
 );
-
-onUnmounted(() => {
-	revokeUrl(src.value);
-});
 </script>
 
 <style scoped>

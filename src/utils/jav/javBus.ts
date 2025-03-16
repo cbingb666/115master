@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { JAV_SOURCE, Jav, type JavInfo, JavNotFound } from "./jav";
+import { JAV_SOURCE, Jav, type JavInfo } from "./jav";
 
 /**
  * JavBus 类
@@ -16,14 +16,14 @@ export class JavBus extends Jav {
 		const searchUrl = new URL(`/search/${avNumber}`, this.baseUrl).href;
 		this.detailUrl = detailUrl;
 		this.searchUrl = searchUrl;
-		const html = await this.iRequest.get<string>(detailUrl);
+		const html = await this.request.get(detailUrl);
 		if (html.status === 404) {
 			throw new Jav.NotFound();
 		}
 		if (html.status !== 200 && html.status !== 302) {
 			throw new Jav.PageError();
 		}
-		return await this.parseInfo(html.data);
+		return await this.parseInfo(await html.text());
 	}
 
 	async parseInfoBefore(dom: Document): Promise<Document> {

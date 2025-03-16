@@ -162,35 +162,24 @@ export function useDataThumbnails() {
 			throw new Error("blurSegments is not null");
 		}
 
-		let preloadCount = 0;
-		const now = performance.now();
 		for (const segment of blurSegments) {
 			const id = segment._uri ?? "";
 			if (scheduler.get(id)) {
 				continue;
 			}
-			scheduler
-				.add(
-					async () => {
-						const clipImage = await clipper.getClip(segment._startTime);
-						return clipImage?.img ?? null;
-					},
-					{
-						id,
-						lane: LANE_CONFIG.buffer.name,
-						priority: 1,
-						immediate: true,
-						action: "unshift",
-					},
-				)
-				.then(() => {
-					preloadCount++;
-					console.log(`
-						preloadCount: ${preloadCount}
-						progress: ${(preloadCount / blurSegments.length) * 100}%
-						time: ${(performance.now() - now) / 1000}s
-					`);
-				});
+			scheduler.add(
+				async () => {
+					const clipImage = await clipper.getClip(segment._startTime);
+					return clipImage?.img ?? null;
+				},
+				{
+					id,
+					lane: LANE_CONFIG.buffer.name,
+					priority: 1,
+					immediate: true,
+					action: "unshift",
+				},
+			);
 		}
 	};
 

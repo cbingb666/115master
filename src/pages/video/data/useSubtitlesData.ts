@@ -1,6 +1,6 @@
 import { useAsyncState } from "@vueuse/core";
+import { subtitlePreference } from "../../../utils/cache/subtitlePreference";
 import { subtitlecat } from "../../../utils/subtitle/subtitlecat";
-import { subtitlePreference } from "../../../utils/subtitlePreference";
 
 // 字幕
 export const useDataSubtitles = () => {

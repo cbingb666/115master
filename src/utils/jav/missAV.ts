@@ -18,14 +18,14 @@ export class MissAV extends Jav {
 			throw new Jav.NotFound();
 		}
 		this.detailUrl = detailUrl;
-		let avNumberPageResponse = await this.iRequest.get<string>(detailUrl);
+		let avNumberPageResponse = await this.request.get(detailUrl);
 		if (avNumberPageResponse.status === 301) {
-			const redirectUrl = avNumberPageResponse.headers["location"];
+			const redirectUrl = avNumberPageResponse.headers.get("location");
 			if (!redirectUrl) {
 				throw new Jav.PageError();
 			}
 			this.detailUrl = redirectUrl;
-			avNumberPageResponse = await this.iRequest.get<string>(redirectUrl);
+			avNumberPageResponse = await this.request.get(redirectUrl);
 		}
 		if (avNumberPageResponse.status === 404) {
 			throw new Jav.NotFound();
@@ -36,7 +36,7 @@ export class MissAV extends Jav {
 		) {
 			throw new Jav.PageError();
 		}
-		return await this.parseInfo(avNumberPageResponse.data);
+		return await this.parseInfo(await avNumberPageResponse.text());
 	}
 
 	async parseInfoBefore(dom: Document): Promise<Document> {

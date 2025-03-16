@@ -202,12 +202,12 @@
 				<div class="movie-info-thumb" ref="movieInfoThumb">
 					<a 
 						class="movie-info-thumb-item" 
-						v-for="(item, index) in movieInfo.state.value?.preview" 
+						v-for="(item) in movieInfo.state.value?.preview" 
 						:key="item.thumbnail"
 						:href="item.raw"
 						target="_blank"
 					>
-						<img :src="item.raw" alt="thumb" />
+						<img :src="item.raw" alt="thumb" loading="lazy" />
 					</a>
 				</div>
 			</template>

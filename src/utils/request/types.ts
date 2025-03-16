@@ -1,11 +1,4 @@
-export interface RequestOptions {
-	headers?: Record<string, string>;
-	redirect?: "manual" | "follow" | "error";
-	params?: Record<string, string | number | boolean>;
-	timeout?: number;
-	body?: unknown;
-	method?: string;
-	signal?: AbortSignal;
+export type RequestOptions = RequestInit & {
 	responseType?:
 		| "text"
 		| "json"
@@ -13,29 +6,26 @@ export interface RequestOptions {
 		| "blob"
 		| "document"
 		| "stream";
-}
+	timeout?: number;
+	params?: Record<string, string | number | boolean>;
+	cache?: "force-cache" | "no-cache";
+	cacheTime?: number;
+	cacheKey?: string;
+	cacheStatus?: number[];
+};
 
-export interface ResponseType<T> {
-	data: T;
-	status: number;
-	statusText: string;
-	headers: Record<string, string>;
-	rawResponse: unknown;
-}
+export type ResponseType = Response;
 
 // 请求接口
 export abstract class IRequest {
-	abstract get<T>(
-		url: string,
-		options?: RequestOptions,
-	): Promise<ResponseType<T>>;
-	abstract post<T>(
+	abstract get(url: string, options?: RequestOptions): Promise<ResponseType>;
+	abstract post(
 		url: string,
 		data?: unknown,
 		options?: RequestOptions,
-	): Promise<ResponseType<T>>;
-	abstract request<T>(
+	): Promise<ResponseType>;
+	abstract request(
 		url: string,
 		options?: RequestOptions,
-	): Promise<ResponseType<T>>;
+	): Promise<ResponseType>;
 }

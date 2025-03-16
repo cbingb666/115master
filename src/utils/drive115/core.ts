@@ -29,40 +29,17 @@ export class Drive115Core {
 	private WEB_API_URL = WEB_API_URL_115;
 	private PRO_API_URL = PRO_API_URL_115;
 	private VOD_URL_115 = VOD_URL_115;
+	private verifying = false;
 
 	constructor(protected iRequest: IRequest) {
 		this.crypto115 = new Crypto115();
 	}
 
-	private verify() {
-		const time = new Date().getTime();
-		const w = 335;
-		const h = 500;
-		const t = (window.screen.availHeight - h) / 2;
-		const l = (window.screen.availWidth - w) / 2;
-		const link = `https://captchaapi.115.com/?ac=security_code&type=web&cb=Close911_${time}`;
-		const isConfirm = confirm("立即打开验证账号弹窗？");
-		if (isConfirm) {
-			let blocked = false;
-			try {
-				const WindowProxy = window.open(
-					link,
-					"请验证账号",
-					`height=${h},width=${w},top=${t},left=${l},toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no`,
-				);
-				if (WindowProxy == null) {
-					blocked = true;
-				}
-			} catch (e) {
-				blocked = true;
-			}
-			if (blocked) {
-				alert("验证弹窗已被拦截，请允许本页面弹出式窗口！");
-			}
-		}
-	}
-
 	private verifyVod(pickcode: string) {
+		if (this.verifying) {
+			return;
+		}
+		this.verifying = true;
 		alert("你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~");
 		GM_openInTab(new URL(`?pickcode=${pickcode}`, this.VOD_URL_115).href, {
 			active: true,
@@ -70,7 +47,7 @@ export class Drive115Core {
 	}
 
 	async fakeVodAuthPickcode(pickcode: string) {
-		await this.iRequest.get<WebApi.Res.FilesDownload>(
+		await this.iRequest.get(
 			new URL(`?pickcode=${pickcode}`, this.VOD_URL_115).href,
 			{
 				headers: {
@@ -86,7 +63,7 @@ export class Drive115Core {
 	private async getDownloadUrlByNormal(
 		pickcode: string,
 	): Promise<DownloadResult> {
-		const response = await this.iRequest.get<WebApi.Res.FilesDownload>(
+		const response = await this.iRequest.get(
 			new URL(`/files/download?pickcode=${pickcode}`, this.WEB_API_URL).href,
 			{
 				headers: {
@@ -95,18 +72,18 @@ export class Drive115Core {
 			},
 		);
 
-		if (response.data.errNo === 990001) {
+		const res = (await response.json()) as WebApi.Res.FilesDownload;
+
+		if (res.errNo === 990001) {
 			alert("登录已过期，请重新登录");
 		}
 
-		if (!response.data.state || !response.data.file_url) {
-			throw new Error(
-				`服务器返回数据格式错误: ${JSON.stringify(response.data)}`,
-			);
+		if (!res.state || !res.file_url) {
+			throw new Error(`服务器返回数据格式错误: ${JSON.stringify(res)}`);
 		}
 
 		return {
-			url: response.data.file_url,
+			url: res.file_url,
 		};
 	}
 
@@ -119,7 +96,7 @@ export class Drive115Core {
 		const data = `data=${encodeURIComponent(encoded.data)}`;
 		this.logger.log("发送加密数据:", data);
 
-		const response = await this.iRequest.post<ProApi.Res.FilesAppChromeDownurl>(
+		const response = await this.iRequest.post(
 			new URL(`/app/chrome/downurl?t=${tm}`, this.PRO_API_URL).href,
 			data,
 			{
@@ -130,20 +107,20 @@ export class Drive115Core {
 			},
 		);
 
-		const responseData = response.data;
-		this.logger.log("Pro方式响应:", responseData);
+		const res = (await response.json()) as ProApi.Res.FilesAppChromeDownurl;
+		this.logger.log("Pro方式响应:", res);
 
-		if (!responseData.state) {
-			throw new Error(`获取下载地址失败: ${JSON.stringify(responseData)}`);
+		if (!res.state) {
+			throw new Error(`获取下载地址失败: ${JSON.stringify(res)}`);
 		}
 
 		const result = JSON.parse(
-			this.crypto115.m115_decode(responseData.data, encoded.key),
+			this.crypto115.m115_decode(res.data, encoded.key),
 		);
 		const downloadInfo = Object.values(result)[0] as { url: { url: string } };
 
 		// 从响应头中获取 fileToken
-		const fileToken = response.headers["set-cookie"]?.split(";")[0];
+		const fileToken = response.headers.get("set-cookie")?.split(";")[0];
 
 		return {
 			url: downloadInfo.url.url,
@@ -168,7 +145,7 @@ export class Drive115Core {
 		pickcode: string,
 		fileId: string,
 	): Promise<DownloadResult> {
-		const response = await this.iRequest.get<WebApi.Res.FilesAppChromeDown>(
+		const response = await this.iRequest.get(
 			new URL(
 				`/app/chrome/down?method=get_file_url&pickcode=${pickcode}`,
 				this.PRO_API_URL,
@@ -181,7 +158,7 @@ export class Drive115Core {
 			},
 		);
 
-		const res = response.data;
+		const res = (await response.json()) as WebApi.Res.FilesAppChromeDown;
 		if (res.state) {
 			const url = res.data[fileId].url.url;
 			return { url };
@@ -199,22 +176,23 @@ export class Drive115Core {
 		url: string,
 		pickcode: string,
 	): Promise<M3u8Item[]> {
-		const response = await this.iRequest.get<NormalApi.Res.VideoM3u8>(url, {
+		const response = await this.iRequest.get(url, {
 			headers: {
 				"Content-Type": "application/json",
 				"User-Agent": USER_AGENT_115,
 			},
 		});
 
-		if (response.data?.state === false) {
-			if (response.data.code === 911) {
-				this.verifyVod(pickcode);
+		const htmlText = await response.text();
+		if (!/^#/.test(htmlText)) {
+			const res = JSON.parse(htmlText) as NormalApi.Res.VideoM3u8;
+			if (res.state === false) {
+				if (res.code === 911) {
+					this.verifyVod(pickcode);
+				}
+				throw new Error(`获取m3u8文件失败: ${res.error}`);
 			}
-			throw new Error(`获取m3u8文件失败: ${response.data.error}`);
 		}
-
-		const htmlText = response.data;
-
 		const lines = htmlText.split("\n");
 		const m3u8List: M3u8Item[] = [];
 
@@ -249,7 +227,7 @@ export class Drive115Core {
 
 	// 获取播放列表
 	private async apsNatsortFiles(params: VodApi.Req.VodApiFilesReq) {
-		const response = await this.iRequest.get<VodApi.Res.VodApiFiles>(
+		const response = await this.iRequest.get(
 			new URL("/aps/natsort/files.php", this.VOD_URL_115).href,
 			{
 				params,
@@ -261,13 +239,12 @@ export class Drive115Core {
 				},
 			},
 		);
-
-		return response;
+		return (await response.json()) as VodApi.Res.VodApiFiles;
 	}
 
 	// 获取播放列表
 	private async webapiFiles(params: VodApi.Req.VodApiFilesReq) {
-		const response = await this.iRequest.get<VodApi.Res.VodApiFiles>(
+		const response = await this.iRequest.get(
 			new URL("/webapi/files", this.VOD_URL_115).href,
 			{
 				params,
@@ -280,7 +257,7 @@ export class Drive115Core {
 			},
 		);
 
-		return response;
+		return (await response.json()) as VodApi.Res.VodApiFiles;
 	}
 
 	// 获取播放列表
@@ -309,7 +286,7 @@ export class Drive115Core {
 
 		try {
 			const response = await this.webapiFiles(obj);
-			if (response.data.state) {
+			if (response.state) {
 				return response.data;
 			}
 			throw new Error("webapiFiles 获取播放列表失败");
@@ -317,7 +294,7 @@ export class Drive115Core {
 			this.logger.log("获取webapiFiles失败，尝试使用apsNatsortFiles获取");
 			const response = await this.apsNatsortFiles(obj);
 
-			if (response.data?.state) {
+			if (response.state) {
 				return response.data;
 			}
 			throw new Error(`获取播放列表失败: ${JSON.stringify(response)}`);
@@ -326,7 +303,7 @@ export class Drive115Core {
 
 	// 获取文件信息
 	public async getFileInfo(params: WebApi.Req.FilesInfoReq) {
-		const response = await this.iRequest.get<WebApi.Res.FilesInfo>(
+		const response = await this.iRequest.get(
 			new URL("/webapi/files/video", this.VOD_URL_115).href,
 			{
 				params,
@@ -339,6 +316,6 @@ export class Drive115Core {
 			},
 		);
 
-		return response.data;
+		return (await response.json()) as WebApi.Res.FilesInfo;
 	}
 }

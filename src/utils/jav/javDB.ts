@@ -18,7 +18,7 @@ export class JavDB extends Jav {
 		const searchUrl = new URL(`/search?${params.toString()}`, this.baseUrl)
 			.href;
 		this.searchUrl = searchUrl;
-		const html = await this.iRequest.get<string>(searchUrl);
+		const html = await this.request.get(searchUrl);
 		if (html.status === 404) {
 			throw new Jav.NotFound();
 		}
@@ -26,12 +26,12 @@ export class JavDB extends Jav {
 			throw new Jav.PageError();
 		}
 
-		const detailUrl = this.getDetailUrl(html.data);
+		const detailUrl = this.getDetailUrl(await html.text());
 		if (!detailUrl) {
 			throw new Jav.PageError();
 		}
 		this.detailUrl = detailUrl;
-		const avNumberPageResponse = await this.iRequest.get<string>(detailUrl);
+		const avNumberPageResponse = await this.request.get(detailUrl);
 
 		if (avNumberPageResponse.status === 404) {
 			throw new Jav.NotFound();
@@ -42,7 +42,7 @@ export class JavDB extends Jav {
 		) {
 			throw new Jav.PageError();
 		}
-		return await this.parseInfo(avNumberPageResponse.data);
+		return await this.parseInfo(await avNumberPageResponse.text());
 	}
 
 	getDetailUrl(html: string) {

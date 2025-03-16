@@ -1,4 +1,5 @@
-import type { IRequest } from "../request/types";
+import { javCache } from "../cache/javCache";
+import { GMRequest } from "../request/gmRequst";
 
 export enum JAV_SOURCE {
 	JAVBUS = "JavBus",
@@ -150,8 +151,8 @@ export class JavPageError extends Error {
 
 // Jav 抽象类
 abstract class Jav {
-	constructor(protected iRequest: IRequest) {}
-
+	request = new GMRequest();
+	private cache = javCache;
 	static NotFound = JavNotFound;
 	static PageError = JavPageError;
 
@@ -201,6 +202,29 @@ abstract class Jav {
 	parseDownloadCount?(dom: Document): number | undefined;
 	// 解析评论
 	parseComments?(dom: Document): Comment[] | undefined;
+
+	// 获取番号信息
+	async getInfo(avNumber: string): Promise<JavInfo | undefined> {
+		const info = await this.getInfoByCache(avNumber);
+		if (info) {
+			return info;
+		}
+		const infoNew = await this.getInfoByAvNumber(avNumber);
+		if (infoNew) {
+			this.cache.set(`${this.source}:${avNumber}`, infoNew);
+		}
+		return infoNew ?? undefined;
+	}
+
+	// 获取番号信息缓存
+	async getInfoByCache(avNumber: string): Promise<JavInfo | undefined> {
+		const info = await this.cache.get(`${this.source}:${avNumber}`);
+		if (info) {
+			return info.value;
+		}
+		return undefined;
+	}
+
 	// 解析番号信息
 	async parseInfo(html: string): Promise<JavInfo | undefined> {
 		let dom = new DOMParser().parseFromString(html, "text/html");
@@ -233,7 +257,8 @@ abstract class Jav {
 			downloadCount: this.parseDownloadCount?.(dom),
 			comments: this.parseComments?.(dom),
 		};
-		return this.parseInfoAfter(info);
+		const infoAfter = await this.parseInfoAfter(info);
+		return infoAfter;
 	}
 
 	// 解析番号信息后

@@ -1,7 +1,7 @@
 <template>
 	<div class="ext-preview" ref="rootRef">
 		<LoadingError v-if="videoData.error.value" style="margin: 0 auto" />
-		<Skeleton v-else-if="videoData.isLoading.value || isFirstVisible" mode="light" width="100%" height="100%" border-radius="0"  />	
+		<Skeleton v-else-if="videoData.isLoading.value" mode="light" width="100%" height="100%" border-radius="0"  />	
 		<div class="ext-preview-video pswp-gallery" :id="`gallery-${props.pickCode}`" v-else ref="videoRef">
 			<a 
 				v-for="(thumbnail, index) in videoData.state.value"
@@ -19,11 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-	useAsyncState,
-	useDebounceFn,
-	useElementVisibility,
-} from "@vueuse/core";
+import { useAsyncState, useElementVisibility } from "@vueuse/core";
 import { sampleSize } from "lodash";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import { nextTick, onBeforeUnmount, ref, watch } from "vue";
@@ -31,18 +27,26 @@ import LoadingError from "../../../../components/LoadingError/index.vue";
 import Skeleton from "../../../../components/Skeleton/index.vue";
 import { M3U8Clipper } from "../../../../utils/clipper/m3u8";
 import Drive115Instance from "../../../../utils/drive115";
-import { isBlackFrameFromBase64 } from "../../../../utils/isBlackFrame";
 import "photoswipe/style.css";
+import { previewCache } from "../../../../utils/cache";
+import {
+	blobToBase64,
+	getImageSize,
+	imageBitmapToBlob,
+	isBlackFrame,
+} from "../../../../utils/image";
 
 const props = defineProps<{
 	pickCode: string;
+	sha1: string;
 }>();
 
 const rootRef = ref<HTMLElement>();
-const rootVisibilityRef = useElementVisibility(rootRef);
+const rootVisibilityRef = useElementVisibility(rootRef, {
+	threshold: 0.3,
+});
 const videoRef = ref<HTMLElement>();
 const lightbox = ref<PhotoSwipeLightbox | null>(null);
-const isFirstVisible = ref(true);
 
 // 初始化 PhotoSwipe
 const initPhotoSwipe = () => {
@@ -79,6 +83,25 @@ const openPhotoSwipe = (index: number) => {
 };
 
 const fetchVideoData = async () => {
+	const cache = await previewCache.get(props.sha1);
+	if (cache) {
+		// 从缓存获取数据后，将Blob转换为base64用于显示
+		const cachedData = cache.value;
+		const processedData = await Promise.all(
+			cachedData.map(async (item) => {
+				// 将缓存的Blob转换为base64用于显示
+				const base64 = await blobToBase64(item);
+				const { width, height } = await getImageSize(base64);
+				return {
+					img: base64,
+					width,
+					height,
+				};
+			}),
+		);
+		return processedData;
+	}
+
 	const m3u8List = await Drive115Instance.getM3u8(props.pickCode);
 	const source = m3u8List.sort((a, b) => a.quality - b.quality)[0];
 	if (!source) return null;
@@ -92,50 +115,62 @@ const fetchVideoData = async () => {
 	const frames = await Promise.all(
 		segments.map((segment) => clipper.getClip(segment._startTime)),
 	);
-	const thumbnails = frames.map((frame) => {
-		const width = frame.img.width;
-		const height = frame.img.height;
-		return {
-			img: clipper.createThumbnailBase64(frame),
-			width,
-			height,
-		};
-	});
-	clipper.clear();
-	const validThumbnails = await Promise.all(
-		thumbnails.map(async (thumbnail) => {
-			try {
-				const isBlack = await isBlackFrameFromBase64(thumbnail.img, {
-					darkPixelRatio: 0.95,
-					avgBrightnessThreshold: 25,
-				});
-				return isBlack ? null : thumbnail;
-			} catch (error) {
-				console.error("判断黑帧失败:", error);
-				return null;
-			}
+
+	// 生成缩略图
+	const thumbnails = await Promise.all(
+		frames.filter(Boolean).map(async (frame) => {
+			const width = frame.img.width;
+			const height = frame.img.height;
+
+			// 检测是否为黑帧
+			const isBlack = await isBlackFrame(frame.img);
+			if (isBlack) return null;
+
+			// 直接从ImageBitmap创建Blob用于缓存
+			const blob = await imageBitmapToBlob(frame.img, 0.8);
+
+			// 将Blob转换为base64用于显示
+			const base64 = await blobToBase64(blob);
+
+			return {
+				// 用于显示
+				img: base64,
+				// 用于缓存
+				cacheBlob: blob,
+				width,
+				height,
+			};
 		}),
 	);
 
-	return validThumbnails.filter(Boolean);
+	clipper.clear();
+
+	const filteredThumbnails = thumbnails.filter(Boolean);
+
+	try {
+		// 缓存数据 - 使用Blob
+		const cacheData = filteredThumbnails.map((item) => item.cacheBlob);
+		await previewCache.set(props.sha1, cacheData);
+	} catch (error) {
+		console.error("缓存失败:", error);
+	}
+
+	// 返回用于显示的数据
+	return filteredThumbnails.map((item) => ({
+		img: item.img,
+		width: item.width,
+		height: item.height,
+	}));
 };
 
 const videoData = useAsyncState(fetchVideoData, null, { immediate: false });
-
-// 防抖处理视频数据加载
-const debouncedLoadVideo = useDebounceFn(() => {
-	if (isFirstVisible.value) {
-		isFirstVisible.value = false;
-		videoData.execute(0);
-	}
-}, 500);
 
 // 监听元素可见性
 watch(
 	() => rootVisibilityRef.value,
 	(visible) => {
 		if (visible) {
-			debouncedLoadVideo();
+			videoData.execute(0);
 		}
 	},
 );
