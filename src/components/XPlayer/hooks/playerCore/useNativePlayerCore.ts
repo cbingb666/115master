@@ -111,9 +111,17 @@ export const useNativePlayerCore = (_ctx: PlayerContext) => {
 					state.paused.value = false;
 				})
 				.catch((error: DOMException) => {
-					if (error.name === "NotAllowedError") {
+					/**
+					 * 浏览器在未设置静音且未交互时，会抛出 NotAllowedError，不允许直接播放
+					 * 那么我们设置 video 为静音，并且标记音频被挂起，然后重新播放
+					 * @more NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+					 */
+					if (error.name === "NotAllowedError" && videoElement.error === null) {
 						console.warn(error);
-						throw error;
+						state.isSuspended.value = true;
+						const videoElement = getVideoElementRef();
+						videoElement.muted = true;
+						return methods.play();
 					}
 					if (error.name === "AbortError") {
 						console.warn(error);
@@ -153,6 +161,14 @@ export const useNativePlayerCore = (_ctx: PlayerContext) => {
 		},
 		toggleMute: () => {
 			methods.setMute(!state.muted.value);
+			if (state.isSuspended.value) {
+				state.isSuspended.value = false;
+			}
+		},
+		resumeSuspended: async () => {
+			const videoElement = getVideoElementRef();
+			videoElement.muted = false;
+			state.isSuspended.value = false;
 		},
 		setAutoPlay: (autoPlay) => {
 			const videoElement = getVideoElementRef();

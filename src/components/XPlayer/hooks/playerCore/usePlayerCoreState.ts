@@ -30,6 +30,13 @@ export const usePlayerCoreState = () => {
 	const videoWidth = shallowRef(0);
 	// 视频高度
 	const videoHeight = shallowRef(0);
+	/**
+	 * 是否被挂起
+	 * @description 由于音频被浏览器限制而挂起时
+	 * 1. 如果是 Native 和 Hls 播放器，则挂起播放
+	 * 2. 如果是 AvPlayer 播放器，则挂起音频
+	 */
+	const isSuspended = shallowRef(false);
 
 	return {
 		currentTime,
@@ -45,6 +52,7 @@ export const usePlayerCoreState = () => {
 		loadError,
 		videoWidth,
 		videoHeight,
+		isSuspended,
 		reset: () => {
 			currentTime.value = 0;
 			duration.value = 0;
@@ -59,6 +67,7 @@ export const usePlayerCoreState = () => {
 			loadError.value = undefined;
 			videoWidth.value = 0;
 			videoHeight.value = 0;
+			isSuspended.value = false;
 		},
 	};
 };

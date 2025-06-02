@@ -140,6 +140,18 @@ export const useHud = (ctx: PlayerContext) => {
 		});
 	};
 
+	// 显示恢复音频
+	const showResumeSuspended = () => {
+		const icon = getVolumeIcon(
+			ctx.playerCore.value?.volume ?? 0,
+			ctx.playerCore.value?.muted ?? false,
+		);
+		show({
+			icon,
+			value: "音频已恢复",
+		});
+	};
+
 	// 显示播放速度
 	const showPlaybackRate = () => {
 		const playbackRate = ctx.playerCore.value?.playbackRate;
@@ -254,5 +266,6 @@ export const useHud = (ctx: PlayerContext) => {
 		showPlaybackRate,
 		showVolume,
 		showLongPressFastForward,
+		showResumeSuspended,
 	};
 };

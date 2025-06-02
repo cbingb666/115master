@@ -11,32 +11,6 @@ export enum PlayerCoreType {
 }
 
 /**
- * 播放器核心状态
- */
-export type PlayerCoreState = {
-	// 当前时间
-	currentTime: number;
-	// 总时间
-	duration: number;
-	// 当前播放状态
-	paused: boolean;
-	// 播放器速率
-	playbackRate: number;
-	// 播放器音量
-	volume: number;
-	// 是否静音
-	muted: boolean;
-	// 是否自动播放
-	autoPlay: boolean;
-	// 是否加载中
-	isLoading: boolean;
-	// 是否可以播放
-	canplay: boolean;
-	// 加载错误
-	loadError: string | Error | unknown;
-};
-
-/**
  * 播放器核心事件
  */
 export type PlayerCoreEvents = {
@@ -77,6 +51,13 @@ export type PlayerCoreMethods = {
 	setMute: (muted: boolean) => void;
 	// 切换静音
 	toggleMute: () => void;
+	/**
+	 * 恢复音频或播放
+	 * @description 由于音频被浏览器限制而挂起时，可以在触发点击事件时恢复音频或播放
+	 * 1. 如果是 Native 和 Hls 播放器，则恢复播放
+	 * 2. 如果是 AvPlayer 播放器，则恢复音频
+	 */
+	resumeSuspended: () => Promise<void>;
 	// 设置自动播放
 	setAutoPlay: (autoPlay: boolean) => void;
 	// 跳转 (秒)

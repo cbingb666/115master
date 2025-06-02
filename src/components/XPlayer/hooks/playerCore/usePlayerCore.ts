@@ -30,6 +30,7 @@ export const usePlayerCoreDecorator = (
 		syncRef(ctx.rootPropsVm.muted, player.muted),
 		syncRef(ctx.rootPropsVm.playbackRate, player.playbackRate),
 		syncRef(ctx.rootPropsVm.volume, player.volume),
+		syncRef(ctx.rootPropsVm.autoPlay, player.autoPlay),
 	];
 
 	// 取消同步响应式数据

@@ -129,6 +129,8 @@ export type XPlayerProps = {
 	lastTime?: number;
 	// 自动缓冲缩略图
 	autoLoadThumbnails: boolean;
+	// 自动播放
+	autoPlay: boolean;
 	// 禁用HDR
 	disabledHDR: boolean;
 	// 缩略图采样间隔

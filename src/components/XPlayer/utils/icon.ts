@@ -60,6 +60,8 @@ export const ICON_SHORTCUTS = "material-symbols:keyboard-outline";
 export const ICON_ABOUT = "material-symbols:info-outline";
 // 颜色调整
 export const ICON_COLOR_ADJUST = "mdi:color";
+// 错误
+export const ICON_ERROR = "material-symbols:error";
 
 /**
  * 获取音量图标 Symbol

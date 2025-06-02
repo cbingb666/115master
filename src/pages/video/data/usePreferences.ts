@@ -19,6 +19,8 @@ export const usePreferences = () => {
 		disabledHDR: false,
 		// 缩略图采样间隔
 		thumbnailsSamplingInterval: 60,
+		// 自动播放
+		autoPlay: true,
 	});
 
 	return preferences;

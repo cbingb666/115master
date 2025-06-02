@@ -257,6 +257,11 @@ const HOT_KEYS_CONFIG: Record<string, HotKeyConfig> = {
 		keys: [KEYS.m],
 		name: "切换静音",
 		keydown: (ctx) => {
+			if (ctx.playerCore.value?.isSuspended) {
+				ctx.playerCore.value?.resumeSuspended();
+				ctx.hud?.showResumeSuspended();
+				return;
+			}
 			ctx.playerCore.value?.toggleMute();
 			ctx.hud?.showMute();
 		},

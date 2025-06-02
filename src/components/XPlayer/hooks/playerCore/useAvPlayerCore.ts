@@ -5,12 +5,7 @@ import { AVCodecID } from "@libmedia/avutil/codec";
 import type AVCodecParameters from "@libmedia/avutil/struct/avcodecparameters";
 import type { Rational } from "@libmedia/avutil/struct/rational";
 import type { Data } from "@libmedia/common/types/type";
-import {
-	useDebounceFn,
-	useElementSize,
-	useEventListener,
-	useIntervalFn,
-} from "@vueuse/core";
+import { useDebounceFn, useElementSize, useIntervalFn } from "@vueuse/core";
 import ee from "event-emitter";
 import { get } from "lodash";
 import { computed, nextTick, ref, shallowRef, watch } from "vue";
@@ -378,13 +373,6 @@ export const useAvPlayerCore = (ctx: PlayerContext) => {
 					}
 					state.currentTime.value = Number(pts) / 1000;
 				});
-
-				useEventListener(document, "click", () => {
-					if (playerRef.value?.isSuspended()) {
-						playerRef.value?.resume();
-						state.paused.value = false;
-					}
-				});
 			} catch (error) {
 				console.error("初始化 AVPlayer 失败:", error);
 				state.loadError.value = error as Error;
@@ -424,15 +412,18 @@ export const useAvPlayerCore = (ctx: PlayerContext) => {
 						await methods
 							.play()
 							.then(async () => {
-								// 设置 canplay 为 true
 								state.canplay.value = true;
 								customEmitter.emit("canplay");
+
+								state.isSuspended.value =
+									!state.muted.value && player.isSuspended();
 							})
 							.catch((error) => {
 								console.error("播放失败", error);
 								state.loadError.value = error;
 							});
 					} else {
+						state.canplay.value = true;
 						customEmitter.emit("canplay");
 					}
 				})
@@ -503,9 +494,17 @@ export const useAvPlayerCore = (ctx: PlayerContext) => {
 			const player = checkPlayer();
 			state.muted.value = muted;
 			player.setVolume(muted ? 0 : 100);
+			if (!muted) {
+				methods.resumeSuspended();
+			}
 		},
 		toggleMute: () => {
 			methods.setMute(!state.muted.value);
+		},
+		resumeSuspended: async () => {
+			const player = checkPlayer();
+			await player.resume();
+			state.isSuspended.value = false;
 		},
 		setAutoPlay: (autoPlay) => {
 			state.autoPlay.value = autoPlay;

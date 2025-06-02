@@ -20,7 +20,6 @@ export const useSources = (ctx: PlayerContext) => {
 	const isInterrupt = shallowRef(false);
 	// 是否正在切换播放器核心
 	const isSwitching = shallowRef(false);
-
 	// 获取 hls 视频源
 	const getHlsSource = () => {
 		return list.value.find((item) => item.type === "hls");

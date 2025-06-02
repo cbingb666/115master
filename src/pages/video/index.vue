@@ -34,6 +34,7 @@
 							v-model:autoLoadThumbnails="preferences.autoLoadThumbnails"
 							v-model:disabledHDR="preferences.disabledHDR"
 							v-model:thumbnailsSamplingInterval="preferences.thumbnailsSamplingInterval"
+							v-model:autoPlay="preferences.autoPlay"
 							:sources="DataVideoSources.list"
 							:subtitles="DataSubtitles.state"
 							:lastTime="DataHistory.lastTime.value"

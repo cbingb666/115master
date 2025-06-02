@@ -21,6 +21,7 @@ import { useFullscreen } from "./useFullscreen";
 import { useHotKey } from "./useHotKey";
 import { useHud } from "./useHud";
 import { usePictureInPicture } from "./usePictureInPicture";
+import { usePlaySettings } from "./usePlaySettings";
 import { usePlaybackRate } from "./usePlaybackRate";
 import { usePopupManager } from "./usePopupManager";
 import { useProgressBar } from "./useProgressBar";
@@ -89,6 +90,8 @@ export interface PlayerContext {
 	contextMenu: ReturnType<typeof useContextMenu>;
 	// 播放器核心
 	playerCore: Ref<ReturnType<typeof usePlayerCoreDecorator> | undefined>;
+	// 播放设置
+	playSettings: ReturnType<typeof usePlaySettings>;
 }
 
 /**
@@ -183,6 +186,10 @@ export function usePlayerProvide(
 	// 右键菜单
 	const contextMenu = useContextMenu(context);
 	context.contextMenu = contextMenu;
+
+	// 播放设置
+	const playSettings = usePlaySettings(context);
+	context.playSettings = playSettings;
 
 	provide(PlayerSymbol, context);
 	return context;
