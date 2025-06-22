@@ -4,6 +4,10 @@
 	flex-wrap: wrap;
 	align-content: flex-start;
 
+	.file-name-wrap {
+		padding-top: 16px !important;
+	}
+
 	.ext-info-root {
 		width: 100%;
 		position: relative;
