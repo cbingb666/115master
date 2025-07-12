@@ -1,107 +1,80 @@
-import { PLUS_VERSION } from "../../../constants";
-import { getAvNumber } from "../../../utils/getNumber";
-import { getDuration } from "../../../utils/time";
-import type { FileItemAttributes, FileListType, ItemInfo } from "../types";
-import { FileItemActressInfo } from "./actressInfo";
-import { FileItemClickPlay } from "./clickPlay";
-import { FileListDownload } from "./download";
-import { FileItemExtInfo } from "./extInfo";
-import { FileItemExtMenu } from "./extMenu";
-import { FileItemPreview } from "./preview";
+import type { FileItemAttributes, FileListType, ItemInfo } from '../types'
+import type { FileItemModBase, FileListMod } from './FileItemMod/base'
+import { PLUS_VERSION } from '../../../constants'
+import { getAvNumber } from '../../../utils/getNumber'
+import { getDuration } from '../../../utils/time'
 
 /**
  * 文件列表 Item 修改加载器
  */
 export class FileItemModLoader {
-	// 预览信息
-	private preview: FileItemPreview | null = null;
-	// 扩展信息
-	private extInfo: FileItemExtInfo | null = null;
-	// 演员信息
-	private actressInfo: FileItemActressInfo | null = null;
-	// 扩展菜单
-	private extMenu: FileItemExtMenu | null = null;
-	// 点击播放
-	private clickPlay: FileItemClickPlay | null = null;
-	// 下载
-	private download: FileListDownload | null = null;
+  /** 已加载的修改器 */
+  private loadedMods: FileItemModBase[] = []
 
-	constructor(
-		private readonly itemNode: HTMLElement,
-		private readonly fileListType: FileListType,
-		private readonly listScrollBoxNode: HTMLElement,
-	) {}
+  constructor(
+    /** item 节点 DOM */
+    private readonly itemNode: HTMLElement,
+    /** 文件列表类型 */
+    private readonly fileListType: FileListType,
+    /** 列表滚动容器 DOM */
+    private readonly listScrollBoxNode: HTMLElement,
+    /** 加载的 item 修改器类 */
+    private readonly mods: Array<FileListMod>,
+  ) {}
 
-	// 获取属性
-	private get attributes(): FileItemAttributes {
-		return Object.fromEntries(
-			Array.from(this.itemNode.attributes).map((attr) => [
-				attr.name,
-				attr.value,
-			]),
-		) as unknown as FileItemAttributes;
-	}
+  /** 获取属性 */
+  private get attributes(): FileItemAttributes {
+    return Object.fromEntries(
+      Array.from(this.itemNode.attributes).map(attr => [
+        attr.name,
+        attr.value,
+      ]),
+    ) as unknown as FileItemAttributes
+  }
 
-	// 获取番号
-	private get avNumber(): ItemInfo["avNumber"] {
-		return getAvNumber(this.attributes.title);
-	}
+  /** 获取番号 */
+  private get avNumber(): ItemInfo['avNumber'] {
+    return getAvNumber(this.attributes.title)
+  }
 
-	// 获取视频时长节点
-	private get durationNode(): HTMLElement | null {
-		return this.itemNode.querySelector(".duration") ?? null;
-	}
+  /** 获取视频时长节点 */
+  private get durationNode(): HTMLElement | null {
+    return this.itemNode.querySelector('.duration') ?? null
+  }
 
-	// 获取视频时长
-	private get duration(): number {
-		return getDuration(this.durationNode?.getAttribute("duration")!);
-	}
+  /** 获取视频时长 */
+  private get duration(): number {
+    return getDuration(this.durationNode?.getAttribute('duration') ?? '')
+  }
 
-	// 获取 itemInfo
-	private get itemInfo(): ItemInfo {
-		return {
-			avNumber: this.avNumber,
-			attributes: this.attributes,
-			fileListType: this.fileListType,
-			duration: this.duration,
-			listScrollBoxNode: this.listScrollBoxNode,
-		};
-	}
+  /** itemInfo */
+  private get itemInfo(): ItemInfo {
+    return {
+      avNumber: this.avNumber,
+      attributes: this.attributes,
+      fileListType: this.fileListType,
+      duration: this.duration,
+      listScrollBoxNode: this.listScrollBoxNode,
+    }
+  }
 
-	// 加载
-	public async load() {
-		if (PLUS_VERSION) {
-			// 加载扩展信息
-			this.extInfo = new FileItemExtInfo(this.itemNode, this.itemInfo);
-			this.extInfo.load();
-			// 加载演员信息
-			this.actressInfo = new FileItemActressInfo(this.itemNode, this.itemInfo);
-			this.actressInfo.load();
-		}
+  /** 加载 */
+  async load() {
+    this.mods.forEach((Mod) => {
+      const mod = new Mod(this.itemNode, this.itemInfo)
+      // 如果 mod 是 Plus 功能，并且没有 PLUS_VERSION，则不加载
+      if (mod.IS_PLUS && !PLUS_VERSION) {
+        return
+      }
+      mod.load()
+      this.loadedMods.push(mod)
+    })
+  }
 
-		// 加载预览信息
-		this.preview = new FileItemPreview(this.itemNode, this.itemInfo);
-		this.preview.load();
-
-		// 加载扩展菜单
-		this.extMenu = new FileItemExtMenu(this.itemNode, this.itemInfo);
-		this.extMenu.load();
-
-		// 加载点击播放
-		this.clickPlay = new FileItemClickPlay(this.itemNode, this.itemInfo);
-		this.clickPlay.load();
-
-		// 加载下载
-		this.download = new FileListDownload(this.itemNode, this.itemInfo);
-		this.download.load();
-	}
-
-	// 销毁
-	public destroy(): void {
-		this.extInfo?.destroy();
-		this.preview?.destroy();
-		this.actressInfo?.destroy();
-		this.clickPlay?.destroy();
-		this.download?.destory();
-	}
+  /** 销毁 */
+  destroy() {
+    this.loadedMods.forEach((mod) => {
+      mod.destroy()
+    })
+  }
 }

@@ -1,0 +1,31 @@
+.master-preview-switch-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+  aspect-ratio: 1;
+  border-radius: 50%;
+
+  iconify-icon {
+    font-size: 20px;
+  }
+
+  .preview-off {
+    display: block;
+  }
+
+  .preview-on {
+    display: none;
+  }
+
+  &.active {
+    .preview-on {
+      display: block;
+      color: var(--official-theme);
+    }
+    .preview-off {
+      display: none;
+    }
+  }
+}

@@ -1,5 +1,5 @@
 const GM_VALUE_KEY = {
-	PLAYING_VIDEO_INFO: "playingVideoInfo",
-};
+  PLAYING_VIDEO_INFO: 'playingVideoInfo',
+}
 
-export default GM_VALUE_KEY;
+export default GM_VALUE_KEY

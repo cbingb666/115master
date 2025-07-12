@@ -1,144 +1,155 @@
-import { merge } from "lodash";
-import { IRequest, type RequestOptions, type ResponseType } from "./types";
+import type { RequestOptions, ResponseType } from './types'
+import { merge } from 'lodash'
+import { IRequest } from './types'
 
+/** 默认请求选项 */
 const DEFAULT_OPTIONS: RequestOptions = {
-	cache: "no-cache",
-	credentials: "include",
-};
+  /** 缓存策略 */
+  cache: 'no-cache',
+  /** 凭证 */
+  credentials: 'include',
+}
 
 /**
  * Fetch 实现的请求类
  */
 export class FetchRequest extends IRequest {
-	options: RequestOptions = {};
+  /** 请求选项 */
+  options: RequestOptions = {}
 
-	constructor(options: RequestOptions = {}) {
-		super();
-		this.options = {
-			...DEFAULT_OPTIONS,
-			...options,
-		};
-	}
+  /**
+   * 构造函数
+   * @param options 请求选项
+   */
+  constructor(options: RequestOptions = {}) {
+    super()
+    this.options = {
+      ...DEFAULT_OPTIONS,
+      ...options,
+    }
+  }
 
-	/**
-	 * 处理 URL 参数
-	 * @param url 请求 URL
-	 * @param params 查询参数
-	 * @returns 处理后的 URL
-	 */
-	private processUrl(
-		url: string,
-		params?: Record<string, string | number | boolean>,
-	): string {
-		if (!params) return url;
+  /**
+   * 发起请求
+   */
+  async request(
+    url: string,
+    _options: RequestOptions = {},
+  ): Promise<ResponseType> {
+    const options = { ...this.options, ..._options }
+    const requestUrl = this.processUrl(url, options.params)
 
-		const urlObj = new URL(url);
-		Object.entries(params).forEach(([key, value]) => {
-			urlObj.searchParams.append(key, value.toString());
-		});
+    try {
+      const response = await fetch(requestUrl, options)
+      return response
+    }
+    catch (error) {
+      throw new Error(
+        `请求失败: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
+  }
 
-		return urlObj.href;
-	}
+  /**
+   * GET 请求
+   * @param url 请求 URL
+   * @param options 请求选项
+   * @returns Promise<Response>
+   */
+  get(url: string, options?: RequestOptions): Promise<ResponseType> {
+    return this.request(url, { ...options, method: 'GET' })
+  }
 
-	/**
-	 * 发起请求
-	 * @param url 请求 URL
-	 * @param options 请求选项
-	 * @returns Promise<Response>
-	 */
-	async request(
-		url: string,
-		_options: RequestOptions = {},
-	): Promise<ResponseType> {
-		const options = { ...this.options, ..._options };
-		const requestUrl = this.processUrl(url, options.params);
+  /**
+   * POST 请求
+   * @param url 请求 URL
+   * @param options 请求选项
+   * @returns Promise<Response>
+   */
+  post(url: string, options?: RequestOptions): Promise<ResponseType> {
+    /** 处理 data 参数，转换为 body */
+    let finalOptions = options ? { ...options } : {}
 
-		try {
-			const response = await fetch(requestUrl, options);
-			return response;
-		} catch (error) {
-			throw new Error(
-				`请求失败: ${error instanceof Error ? error.message : String(error)}`,
-			);
-		}
-	}
+    if (finalOptions.data) {
+      const contentType
+        = (finalOptions.headers as Record<string, string>)?.['Content-Type']
+          || 'application/x-www-form-urlencoded'
 
-	/**
-	 * GET 请求
-	 * @param url 请求 URL
-	 * @param options 请求选项
-	 * @returns Promise<Response>
-	 */
-	get(url: string, options?: RequestOptions): Promise<ResponseType> {
-		return this.request(url, { ...options, method: "GET" });
-	}
+      let body: string | FormData | URLSearchParams
 
-	/**
-	 * POST 请求
-	 * @param url 请求 URL
-	 * @param options 请求选项
-	 * @returns Promise<Response>
-	 */
-	post(url: string, options?: RequestOptions): Promise<ResponseType> {
-		// 处理 data 参数，转换为 body
-		let finalOptions = options ? { ...options } : {};
+      if (contentType.includes('application/json')) {
+        body = JSON.stringify(finalOptions.data)
+      }
+      else if (contentType.includes('application/x-www-form-urlencoded')) {
+        body = new URLSearchParams(finalOptions.data as Record<string, string>)
+      }
+      else if (contentType.includes('multipart/form-data')) {
+        const formData = new FormData()
+        Object.entries(finalOptions.data).forEach(([key, value]) => {
+          formData.append(key, value as string | Blob)
+        })
+        body = formData
+        // 使用 FormData 时，浏览器会自动设置 Content-Type，所以需要移除手动设置的头
+        if (finalOptions.headers) {
+          /** 创建一个不包含 Content-Type 的新 headers 对象 */
+          const newHeaders: Record<string, string> = {}
+          Object.entries(
+            finalOptions.headers as Record<string, string>,
+          ).forEach(([key, value]) => {
+            if (key.toLowerCase() !== 'content-type') {
+              newHeaders[key] = value
+            }
+          })
+          finalOptions.headers = newHeaders
+        }
+      }
+      else {
+        body = String(finalOptions.data)
+      }
 
-		if (finalOptions.data) {
-			const contentType =
-				(finalOptions.headers as Record<string, string>)?.["Content-Type"] ||
-				"application/x-www-form-urlencoded";
+      /** 创建新对象而不是使用 delete */
+      const { data, ...restOptions } = finalOptions
+      finalOptions = {
+        ...restOptions,
+        body,
+      }
+    }
 
-			let body: string | FormData | URLSearchParams;
+    return this.request(
+      url,
+      merge(
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          },
+        },
+        finalOptions,
+      ),
+    )
+  }
 
-			if (contentType.includes("application/json")) {
-				body = JSON.stringify(finalOptions.data);
-			} else if (contentType.includes("application/x-www-form-urlencoded")) {
-				body = new URLSearchParams(finalOptions.data as Record<string, string>);
-			} else if (contentType.includes("multipart/form-data")) {
-				const formData = new FormData();
-				Object.entries(finalOptions.data).forEach(([key, value]) => {
-					formData.append(key, value as string | Blob);
-				});
-				body = formData;
-				// 使用 FormData 时，浏览器会自动设置 Content-Type，所以需要移除手动设置的头
-				if (finalOptions.headers) {
-					// 创建一个不包含 Content-Type 的新 headers 对象
-					const newHeaders: Record<string, string> = {};
-					Object.entries(
-						finalOptions.headers as Record<string, string>,
-					).forEach(([key, value]) => {
-						if (key.toLowerCase() !== "content-type") {
-							newHeaders[key] = value;
-						}
-					});
-					finalOptions.headers = newHeaders;
-				}
-			} else {
-				body = String(finalOptions.data);
-			}
+  /**
+   * 处理 URL 参数
+   * @param url 请求 URL
+   * @param params 查询参数
+   * @returns 处理后的 URL
+   */
+  private processUrl(
+    url: string,
+    params?: unknown,
+  ): string {
+    if (!params)
+      return url
 
-			// 创建新对象而不是使用 delete
-			const { data, ...restOptions } = finalOptions;
-			finalOptions = {
-				...restOptions,
-				body,
-			};
-		}
+    const urlObj = new URL(url)
+    Object.entries(params).forEach(([key, value]) => {
+      urlObj.searchParams.append(key, value.toString())
+    })
 
-		return this.request(
-			url,
-			merge(
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-					},
-				},
-				finalOptions,
-			),
-		);
-	}
+    return urlObj.href
+  }
 }
 
-// 创建默认实例
-export const fetchRequest = new FetchRequest();
+/** fetchRequest 实例 */
+export const fetchRequest = new FetchRequest()

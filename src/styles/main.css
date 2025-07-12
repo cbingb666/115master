@@ -1,14 +1,13 @@
-@import "tailwindcss";
-
+@import 'tailwindcss';
 
 @plugin "daisyui" {
-	themes: dark, light;
-  exclude:  scrollbar;
+  themes: dark, light;
+  exclude: scrollbar;
 }
 
 @plugin "daisyui/theme" {
-	name: "dark";
-	color-scheme: "dark";
+  name: 'dark';
+  color-scheme: 'dark';
   --color-base-100: oklch(14% 0 0);
   --color-base-200: oklch(20% 0 0);
   --color-base-300: oklch(43% 0 0);
@@ -40,8 +39,8 @@
 }
 
 @plugin "daisyui/theme" {
-	name: "light";
-	color-scheme: "light";
+  name: 'light';
+  color-scheme: 'light';
   --color-primary: oklch(62% 0.214 259.815);
   --color-primary-content: oklch(98% 0 0);
   --radius-selector: 2rem;
@@ -54,5 +53,5 @@
   --noise: 0;
 }
 
-@import "./ui-extend.css";
-@import "./scrollbar.css";
+@import './ui-extend.css';
+@import './scrollbar.css';

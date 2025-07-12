@@ -1,33 +1,33 @@
-export type Rational = {
-	// 分子
-	num: number;
-	// 分母
-	den: number;
-};
+export interface Rational {
+  /** 分子 */
+  num: number
+  /** 分母 */
+  den: number
+}
 
 /**
  * 微秒时间基
  */
 export const microsecTimebase: Rational = {
-	num: 1,
-	den: 1000000,
-};
+  num: 1,
+  den: 1000000,
+}
 
 /**
  * 毫秒时间基
  */
 export const millisecTimebase: Rational = {
-	num: 1,
-	den: 1000,
-};
+  num: 1,
+  den: 1000,
+}
 
 /**
  * 秒时间基
  */
 export const secTimebase: Rational = {
-	num: 1,
-	den: 1,
-};
+  num: 1,
+  den: 1,
+}
 
 /**
  * 时间基转换
@@ -36,14 +36,14 @@ export const secTimebase: Rational = {
  * @param toTimebase {Rational} 目标时间基
  */
 export function timebaseConvert(
-	value: number,
-	fromTimebase: Rational,
-	toTimebase: Rational,
+  value: number,
+  fromTimebase: Rational,
+  toTimebase: Rational,
 ): number {
-	return (
-		(((value * fromTimebase.num) / fromTimebase.den) * toTimebase.den) /
-		toTimebase.num
-	);
+  return (
+    (((value * fromTimebase.num) / fromTimebase.den) * toTimebase.den)
+    / toTimebase.num
+  )
 }
 
 /**
@@ -52,7 +52,7 @@ export function timebaseConvert(
  * @returns 毫秒
  */
 export function microsecToMillisec(microsec: number): number {
-	return timebaseConvert(microsec, microsecTimebase, millisecTimebase);
+  return timebaseConvert(microsec, microsecTimebase, millisecTimebase)
 }
 
 /**
@@ -61,5 +61,5 @@ export function microsecToMillisec(microsec: number): number {
  * @returns 微秒
  */
 export function millisecToMicrosec(millisec: number): number {
-	return timebaseConvert(millisec, millisecTimebase, microsecTimebase);
+  return timebaseConvert(millisec, millisecTimebase, microsecTimebase)
 }

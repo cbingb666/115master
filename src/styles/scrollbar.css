@@ -1,12 +1,13 @@
+/** 滚动条样式工具类 */
 @utility app-scrollbar {
-    &::-webkit-scrollbar {
-        width: calc(var(--spacing) * 2.5);
-    }
-    &::-webkit-scrollbar-thumb {
-        background-color: color-mix(in oklch, var(--color-base-content) 30%, transparent);
-        @apply rounded-full;
-    }
-    &::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
+  &::-webkit-scrollbar {
+    width: calc(var(--spacing) * 2.5);
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklch, var(--color-base-content) 30%, transparent);
+    @apply rounded-full;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 }

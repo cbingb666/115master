@@ -1,2 +1,2 @@
 // 本地播放器类型
-declare type LocalPlayer = "iina" | "mpv";
+declare type LocalPlayer = 'iina' | 'mpv'

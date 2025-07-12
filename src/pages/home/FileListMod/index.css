@@ -3,63 +3,63 @@
 	padding-bottom: 12px;
 	flex-wrap: wrap;
 	align-content: flex-start;
-
+  
 	.file-name-wrap {
 		padding-top: 16px !important;
 	}
 
-	.ext-info-root {
-		width: 100%;
-		position: relative;
-		display: flex;
-	}
+  .ext-info-root {
+    width: 100%;
+    position: relative;
+    display: flex;
+  }
 }
 
 .list-contents li.with-actress-info {
-	height: auto !important;
-	.file-type {
-		top: 50%;
-		transform: translateY(-50%);
-		transition: none;
-	}
-	.file-name-wrap {
-		display: flex;
-		align-items: center;
-		flex-direction: row;
-		justify-content: flex-start;
-		height: auto !important;
-		padding-top: 12px;
-		padding-bottom: 12px;
-		.actress-info-img {
-			width: 50px;
-			height: 50px;
-			border-radius: 50%;
-			object-fit: cover;
-			margin-right: 12px;
-			border: 3px solid #f1f1f1;
-			box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
-			background-color: #f1f1f1;
-		}
-	}
+  height: auto !important;
+  .file-type {
+    top: 50%;
+    transform: translateY(-50%);
+    transition: none;
+  }
+  .file-name-wrap {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: auto !important;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    .actress-info-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 12px;
+      border: 3px solid #f1f1f1;
+      box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+      background-color: #f1f1f1;
+    }
+  }
 }
 
-.list-contents li.with-ext-preview {
-	height: auto !important;
-	flex-wrap: wrap;
-	align-content: flex-start;
-	padding-top: 0;
-	padding-bottom: 12px;
-	&:first-child {
-		padding-top: 16px;
-	}
-	.file-name-wrap {
-		margin-bottom: 0;
-	}
-	.ext-preview-root {
-		width: 100%;
-		height: 100%;
-		position: relative;
-		display: flex;
-		padding-left: 83px;
-	}
+.list-contents li.with-ext-video-cover {
+  height: auto !important;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  padding-top: 0;
+  padding-bottom: 12px;
+  &:first-child {
+    padding-top: 16px;
+  }
+  .file-name-wrap {
+    margin-bottom: 0;
+  }
+  .ext-video-cover-root {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    padding-left: 83px;
+  }
 }

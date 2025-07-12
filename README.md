@@ -21,13 +21,19 @@
 
 ### 文件列表
 
-- 预览视频缩略图
+- 显示视频封面
 - 文件列表点击鼠标中键打开文件夹新标签页
 - Tab 标题上显示当前目录路径
 - 支持文件下载（仅支持单文件）
 - 云下载离线任务，免刷新重定向
 - 滚动位置记忆
 - 返回目录按钮
+
+### Magnet
+
+支持任何网站的 Magnet 链接一键唤起离线任务。
+
+[如何使用 Magnet 链接一键打开离线任务？](https://github.com/cbingb666/115master/discussions/238)
 
 ## 使用安装
 
@@ -73,7 +79,12 @@ pnpm build
 ```
 
 ## 常见问题
+
 [Q&A](https://github.com/cbingb666/115master/discussions/categories/q-a)
+
+## 赞助
+
+[为爱发电~ 为 Master 添把柴火🔥](https://afdian.com/a/115Master) 
 
 ## 免责声明
 
@@ -93,4 +104,4 @@ pnpm build
 
 ## 鸣谢
 
-- [@zhaohappy](https://github.com/zhaohappy) 提供了 [AvPlayer](https://zhaohappy.github.io/libmedia/docs/guide/player) 
+- [@zhaohappy](https://github.com/zhaohappy) 提供了 [AvPlayer](https://zhaohappy.github.io/libmedia/docs/guide/player)

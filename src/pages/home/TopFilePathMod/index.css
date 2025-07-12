@@ -1,33 +1,24 @@
 .master-back-button {
-	--office-theme: #2777f8;
-	display: inline-flex;
-	align-items: center;
-	text-align: center;
-	padding: 4px 13px;
-	font-size: 12px;
-	border-radius: 4px;
-	margin: auto 9px auto -6px;
-	background-color: #f2f4f8;
-	color: #666;
-	vertical-align: middle;
-	flex-shrink: 0;
-	&:hover {
-		background-color: color-mix(
-			in srgb,
-			var(--office-theme) 10%,
-			transparent 0%
-		);
-		color: var(--office-theme);
-	}
-	&:active {
-		background-color: color-mix(
-			in srgb,
-			var(--office-theme) 15%,
-			transparent 0%
-		);
-	}
-	iconify-icon {
-		margin-right: 4px;
-		font-size: 14px;
-	}
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+  padding: 4px 13px;
+  font-size: 12px;
+  border-radius: 4px;
+  margin: auto 9px auto -6px;
+  background-color: #f2f4f8;
+  color: #666;
+  vertical-align: middle;
+  flex-shrink: 0;
+  &:hover {
+    background-color: color-mix(in srgb, var(--official-theme) 10%, transparent 0%);
+    color: var(--office-theme);
+  }
+  &:active {
+    background-color: color-mix(in srgb, var(--official-theme) 15%, transparent 0%);
+  }
+  iconify-icon {
+    margin-right: 4px;
+    font-size: 14px;
+  }
 }

@@ -4,7 +4,9 @@
       <div class="user-agent-popup" @click.stop>
         <div class="user-agent-popup-header">
           <h3>115Master 提示</h3>
-          <button class="close-button" @click="close">×</button>
+          <button class="close-button" @click="close">
+            ×
+          </button>
         </div>
         <div class="popup-main">
           <div class="popup-content">
@@ -23,7 +25,9 @@
           </div>
           <div class="popup-desc">
             <p>当前的 User-Agent</p>
-            <div class="user-agent-box">{{ userAgent }}</div>
+            <div class="user-agent-box">
+              {{ userAgent }}
+            </div>
           </div>
         </div>
       </div>
@@ -32,19 +36,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 
 defineProps<{
-	visible: boolean;
-}>();
+  visible: boolean
+}>()
 
-const emit = defineEmits<(e: "update:visible", value: boolean) => void>();
+const emit = defineEmits<(e: 'update:visible', value: boolean) => void>()
 
-const userAgent = ref(navigator.userAgent);
+const userAgent = ref(navigator.userAgent)
 
-const close = () => {
-	emit("update:visible", false);
-};
+function close() {
+  emit('update:visible', false)
+}
 </script>
 
 <style scoped>
@@ -203,4 +207,4 @@ a:hover {
     transform: translateY(0) scale(1);
   }
 }
-</style> 
+</style>

@@ -1,24 +1,20 @@
 /* 重写 range-xs 样式 */
 .range {
-    --range-bg: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  --range-bg: color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .range-xs {
-    --range-thumb-size: calc(var(--size-selector, 0.25rem) * 3);
-    --range-p: 0rem;
+  --range-thumb-size: calc(var(--size-selector, 0.25rem) * 3);
+  --range-p: 0rem;
 }
 
 .range-2xs {
-    --range-thumb-size: calc(var(--size-selector, 0.25rem) * 2);
-    --range-p: 0rem;
+  --range-thumb-size: calc(var(--size-selector, 0.25rem) * 2);
+  --range-p: 0rem;
 }
-[data-theme="dark"] {
-    .skeleton {
-        background-image: linear-gradient(
-            105deg,
-            #0000 0% 40%,
-            #fff5 50%,
-            #0000 60% 100%
-        );
-    }
+
+[data-theme='dark'] {
+  .skeleton {
+    background-image: linear-gradient(105deg, #0000 0% 40%, #fff5 50%, #0000 60% 100%);
+  }
 }

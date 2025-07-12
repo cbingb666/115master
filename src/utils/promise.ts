@@ -3,9 +3,9 @@
  * @param ms 延迟时间
  * @returns 延迟 Promise
  */
-export const promiseDelay = (ms: number) => {
-	return new Promise((resolve) => setTimeout(resolve, ms));
-};
+export function promiseDelay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 /**
  * 带超时功能的 Promise
@@ -13,14 +13,11 @@ export const promiseDelay = (ms: number) => {
  * @param timeout 超时时间
  * @returns 结果
  */
-export const promiseWithTimeout = <T>(
-	fn: () => Promise<T>,
-	timeout: number,
-): Promise<T> => {
-	return Promise.race([
-		fn(),
-		promiseDelay(timeout).then(() => {
-			throw new Error("Timeout");
-		}),
-	]);
-};
+export function promiseWithTimeout<T>(fn: () => Promise<T>, timeout: number): Promise<T> {
+  return Promise.race([
+    fn(),
+    promiseDelay(timeout).then(() => {
+      throw new Error('Timeout')
+    }),
+  ])
+}

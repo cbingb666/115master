@@ -1,92 +1,92 @@
 {
-	"compilerOptions": {
-		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-		"target": "ES2020",
-		"useDefineForClassFields": true,
-		"module": "ESNext",
-		"lib": [
-			"ES2020",
-			"DOM",
-			"DOM.Iterable"
-		],
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"isolatedModules": false,
-		"moduleDetection": "force",
-		"noEmit": true,
-		"jsx": "preserve",
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true,
-		"noImplicitAny": true,
-		"composite": true,
-		"esModuleInterop": true,
-		"outDir": "./dist/types",
-		"declarationDir": "./dist/types",
-		"typeRoots": [
-			"./src/types"
-		],
-	},
-	"paths": {
-		"@libmedia/common/*": [
-			"node_modules/@libmedia/common/dist/esm/*"
-		],
-		"@libmedia/cheap/*": [
-			"node_modules/@libmedia/cheap/dist/esm/*"
-		],
-		"@libmedia/avcodec/*": [
-			"node_modules/@libmedia/avcodec/dist/esm/*"
-		],
-		"@libmedia/avformat/*": [
-			"node_modules/@libmedia/avformat/dist/esm/*"
-		],
-		"@libmedia/avnetwork/*": [
-			"node_modules/@libmedia/avnetwork/dist/esm/*"
-		],
-		"@libmedia/avplayer/*": [
-			"node_modules/@libmedia/avplayer/dist/esm/*"
-		],
-		"@libmedia/avprotocol/*": [
-			"node_modules/@libmedia/avprotocol/dist/esm/*"
-		],
-		"@libmedia/avrender/*": [
-			"node_modules/@libmedia/avrender/dist/esm/*"
-		],
-		"@libmedia/audiostretchpitch/*": [
-			"node_modules/@libmedia/audiostretchpitch/dist/esm/*"
-		],
-		"@libmedia/audioresample/*": [
-			"node_modules/@libmedia/audioresample/dist/esm/*"
-		],
-		"@libmedia/avpipeline/*": [
-			"node_modules/@libmedia/avpipeline/dist/esm/*"
-		],
-		"@libmedia/avtranscode/*": [
-			"node_modules/@libmedia/avtranscode/dist/esm/*"
-		],
-		"@libmedia/avutil/*": [
-			"node_modules/@libmedia/avutil/dist/esm/*"
-		],
-		"@libmedia/videoscale/*": [
-			"node_modules/@libmedia/videoscale/dist/esm/*"
-		],
-		"@libmedia/avfilter/*": [
-			"node_modules/@libmedia/avfilter/dist/esm/*"
-		]
-	},
-	"files": [
-		"node_modules/@libmedia/cheap/dist/esm/cheapdef.d.ts",
-	],
-	"include": [
-		"package.json",
-		"src/**/*.ts",
-		"src/**/*.tsx",
-		"src/**/*.vue",
-		"src/**/*.d.ts",
-	],
-	"exclude": [
-		"src/**/__tests__/**"
-	]
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2020",
+    "jsx": "preserve",
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "moduleDetection": "force",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "typeRoots": [
+      "./src/types"
+    ],
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "declarationDir": "./dist/types",
+    "noEmit": true,
+    "outDir": "./dist/types",
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "skipLibCheck": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "paths": {
+    "@libmedia/common/*": [
+      "node_modules/@libmedia/common/dist/esm/*"
+    ],
+    "@libmedia/cheap/*": [
+      "node_modules/@libmedia/cheap/dist/esm/*"
+    ],
+    "@libmedia/avcodec/*": [
+      "node_modules/@libmedia/avcodec/dist/esm/*"
+    ],
+    "@libmedia/avformat/*": [
+      "node_modules/@libmedia/avformat/dist/esm/*"
+    ],
+    "@libmedia/avnetwork/*": [
+      "node_modules/@libmedia/avnetwork/dist/esm/*"
+    ],
+    "@libmedia/avplayer/*": [
+      "node_modules/@libmedia/avplayer/dist/esm/*"
+    ],
+    "@libmedia/avprotocol/*": [
+      "node_modules/@libmedia/avprotocol/dist/esm/*"
+    ],
+    "@libmedia/avrender/*": [
+      "node_modules/@libmedia/avrender/dist/esm/*"
+    ],
+    "@libmedia/audiostretchpitch/*": [
+      "node_modules/@libmedia/audiostretchpitch/dist/esm/*"
+    ],
+    "@libmedia/audioresample/*": [
+      "node_modules/@libmedia/audioresample/dist/esm/*"
+    ],
+    "@libmedia/avpipeline/*": [
+      "node_modules/@libmedia/avpipeline/dist/esm/*"
+    ],
+    "@libmedia/avtranscode/*": [
+      "node_modules/@libmedia/avtranscode/dist/esm/*"
+    ],
+    "@libmedia/avutil/*": [
+      "node_modules/@libmedia/avutil/dist/esm/*"
+    ],
+    "@libmedia/videoscale/*": [
+      "node_modules/@libmedia/videoscale/dist/esm/*"
+    ],
+    "@libmedia/avfilter/*": [
+      "node_modules/@libmedia/avfilter/dist/esm/*"
+    ]
+  },
+  "files": [
+    "node_modules/@libmedia/cheap/dist/esm/cheapdef.d.ts"
+  ],
+  "include": [
+    "package.json",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "src/**/__tests__/**"
+  ]
 }

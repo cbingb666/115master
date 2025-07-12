@@ -10,12 +10,12 @@
  * boundary(0, 1, 10) // 1
  * boundary(11, 1, 10) // 10
  */
-export const boundary = (value: number, min: number, max: number) => {
-	if (value < min) {
-		return min;
-	}
-	if (value > max) {
-		return max;
-	}
-	return value;
-};
+export function boundary(value: number, min: number, max: number) {
+  if (value < min) {
+    return min
+  }
+  if (value > max) {
+    return max
+  }
+  return value
+}
