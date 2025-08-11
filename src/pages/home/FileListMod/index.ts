@@ -1,5 +1,6 @@
+import type { FileListScrollHistory } from './scrollHistory'
 import { unsafeWindow } from '$'
-import { isReload } from '../../../utils/route'
+// 移除未使用的 isReload 导入
 import { BaseMod } from '../BaseMod'
 import { FileListType } from '../types'
 import { FileItemModLoader } from './FileItemLoader'
@@ -9,7 +10,6 @@ import { FileItemModDownload } from './FileItemMod/download'
 import { FileItemModExtInfo } from './FileItemMod/extInfo'
 import { FileItemModExtMenu } from './FileItemMod/extMenu'
 import { FileItemModVideoCover } from './FileItemMod/videoCover'
-import { FileListScrollHistory } from './scrollHistory'
 import './index.css'
 
 const itemMods = [
@@ -41,14 +41,44 @@ class FileListMod extends BaseMod {
    * 获取文件列表容器节点
    */
   get dataListBoxNode() {
-    return document.querySelector<HTMLElement>(
-      unsafeWindow.Main.CONFIG.DataListBox,
-    )
+    const config = unsafeWindow.Main?.CONFIG
+    const configSelector = config?.DataListBox
+
+    /** 尝试多个可能的选择器 */
+    const possibleSelectors = [
+      configSelector,
+      '#js_data_list',
+      '#js_cantain_box',
+      '.page-container',
+      '.list-wrap',
+    ].filter(Boolean)
+
+    let node: HTMLElement | null = null
+
+    for (const selector of possibleSelectors) {
+      node = document.querySelector<HTMLElement>(selector!)
+      if (node) {
+        break
+      }
+    }
+
+    return node
   }
 
   /** 获取文件列表dom */
   get listCellNode() {
-    return document.querySelector<HTMLElement>('.list-cell') ?? null
+    /** 尝试多个可能的选择器 */
+    const selectors = ['.list-cell', '.list-wrap', '#js_data_list .list-cell']
+    let node: HTMLElement | null = null
+
+    for (const selector of selectors) {
+      node = document.querySelector<HTMLElement>(selector)
+      if (node) {
+        break
+      }
+    }
+
+    return node
   }
 
   /**
@@ -86,7 +116,19 @@ class FileListMod extends BaseMod {
    * 获取文件列表 Item Nodes
    */
   get itemNodes() {
-    return this.listCellNode?.querySelectorAll('li')
+    const listCell = this.listCellNode
+
+    if (!listCell) {
+      return undefined
+    }
+
+    /** 尝试多种方式查找li元素 */
+    const directLi = listCell.querySelectorAll('li')
+    const contentsLi = listCell.querySelector('.list-contents')?.querySelectorAll('li')
+
+    const items = directLi.length > 0 ? directLi : contentsLi
+
+    return items
   }
 
   /**
@@ -99,16 +141,32 @@ class FileListMod extends BaseMod {
   }
 
   /**
+   * 等待DOM准备就绪
+   */
+  private async waitForDOMReady(): Promise<void> {
+    const maxAttempts = 50 /** 最多尝试50次 */
+    let attempts = 0
+
+    while (attempts < maxAttempts) {
+      attempts++
+
+      const itemNodes = this.itemNodes
+
+      if (itemNodes && itemNodes.length > 0) {
+        return
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
+  }
+
+  /**
    * 初始化
    */
   private async init() {
-    this.updateItems()
-    this.scrollHistory = new FileListScrollHistory()
-    isReload() && this.scrollHistory.clearAll()
-    if (this.listScrollBoxNode) {
-      this.scrollHistory?.setScrollBox(this.listScrollBoxNode)
-    }
+    await this.waitForDOMReady()
     this.watchItemsChange()
+    this.updateItems()
   }
 
   /**
@@ -132,7 +190,6 @@ class FileListMod extends BaseMod {
     })
 
     if (!this.dataListBoxNode) {
-      console.error('文件列表容器节点不存在, 无法监听文件列表变化')
       return
     }
 
@@ -147,11 +204,17 @@ class FileListMod extends BaseMod {
    */
   private updateItems() {
     const itemNodes = this.itemNodes
-    const itemsSet = new Set(itemNodes)
+    const listScrollBoxNode = this.listScrollBoxNode
 
-    if (!itemsSet) {
+    if (!itemNodes || itemNodes.length === 0) {
       return
     }
+
+    if (!listScrollBoxNode) {
+      return
+    }
+
+    const itemsSet = new Set(itemNodes)
 
     // 创建新 Item 修改器
     for (const item of itemsSet) {
@@ -162,7 +225,7 @@ class FileListMod extends BaseMod {
       const itemModLoader = new FileItemModLoader(
         item,
         this.listType,
-        this.listScrollBoxNode!,
+        listScrollBoxNode,
         itemMods,
       )
       itemModLoader.load()

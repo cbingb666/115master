@@ -96,6 +96,24 @@ export default defineConfig({
         'resource': {
           icon: 'https://115.com/favicon.ico',
         },
+        // 授权权限
+        'grant': [
+          'unsafeWindow',
+          'GM_getValue',
+          'GM_setValue',
+          'GM_deleteValue',
+          'GM_listValues',
+          'GM_info',
+          'GM_log',
+          'GM_notification',
+          'GM_openInTab',
+          'GM_xmlhttpRequest',
+          'GM_addStyle',
+          'GM_getResourceText',
+          'GM_getResourceURL',
+          'GM_registerMenuCommand',
+          'GM_unregisterMenuCommand',
+        ],
         'downloadURL':
           'https://github.com/cbingb666/115master/releases/latest/download/115master.user.js',
         'updateURL':
