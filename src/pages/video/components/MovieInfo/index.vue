@@ -225,12 +225,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { useDataMovieInfo } from '../../data/useDataMovieInfo'
+import type { useDataMovieInfo } from '@/pages/video/data/useDataMovieInfo'
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
 import { computed, nextTick, ref, watch } from 'vue'
-import Empty from '../../../../components/empty/Empty.vue'
-import LoadingError from '../../../../components/LoadingError/index.vue'
-import { formatDate, formatDuration } from '../../../../utils/format'
+import { Empty, LoadingError } from '@/components'
+import { formatDate, formatDuration } from '@/utils/format'
 import CopyButton from './components/CopyButton.vue'
 import 'photoswipe/style.css'
 
@@ -295,7 +294,7 @@ const styles = {
   // 缩略图样式
   thumbnails: {
     container:
-      'grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-9 gap-3',
+      'grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-9 gap-3',
     item: 'aspect-square overflow-hidden hover:opacity-80',
     image: 'size-full object-cover',
   },

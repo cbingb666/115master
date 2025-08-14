@@ -1,8 +1,8 @@
-import { actressFaceDB } from '../../../../utils/actressFaceDB'
-import { imageCache } from '../../../../utils/cache'
-import { compressImage } from '../../../../utils/image'
-import { FileListType } from '../../types'
-import { FileItemModBase } from './base'
+import { FileItemModBase } from '@/pages/home/FileListMod/FileItemMod/base'
+import { FileListType } from '@/pages/home/types'
+import { actressFaceDB } from '@/utils/actressFaceDB'
+import { imageCache } from '@/utils/cache'
+import { compressImage } from '@/utils/image'
 
 /**
  * FileItemMod 演员信息

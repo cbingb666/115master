@@ -29,8 +29,8 @@
 
 <script setup lang="ts">
 import { computed, shallowRef } from 'vue'
-import { useControlsMouseDetection } from '../../hooks/useControlsMouseDetection'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
+import { useControlsMouseDetection } from '@/components/XPlayer/hooks/useControlsMouseDetection'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 const props = defineProps<{
   title?: string

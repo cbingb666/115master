@@ -1,14 +1,33 @@
-import type { MoviesSubtitleItem, PathItem, PlaylistItem } from '../entity'
+import type { FilesItem, MoviesSubtitleItem, PathItem, Sorter } from '@/utils/drive115/api/entity'
 
 /** 基础类型 */
 type Base<T> = {
   state: boolean
   errNo: number
+  error: string
 } & T
 
 /** 获取文件列表 */
 export type Files = Base<{
-  data: PlaylistItem[]
+  /** 总数 */
+  count: number
+  /** 文件数量 */
+  file_count: number
+  /** 目录数量 */
+  folder_count: number
+  /** 是否升序 */
+  is_asc: Sorter['asc']
+  /** 排序方式 */
+  order: Sorter['o']
+  /** 是否混合排序 */
+  fc_mix: Sorter['fc_mix']
+  /** 偏移量 */
+  offset: number
+  /** 当前页 */
+  cur: number
+  /** 数据 */
+  data: FilesItem[]
+  /** 路径 */
   path: PathItem[]
 }>
 
@@ -107,3 +126,95 @@ export type MoviesSubtitle = Base<{
     list: MoviesSubtitleItem[]
   }
 }>
+
+/** 文件信息 */
+export type FilesIndexInfo = Base<{
+  data: {
+    /** 空间信息 */
+    space_info: {
+      /** 剩余空间 */
+      all_remain: {
+        size: number
+        size_format: string
+      }
+      /** 已用空间 */
+      all_use: {
+        size: number
+        size_format: string
+      }
+      /** 总空间 */
+      all_total: {
+        size: number
+        size_format: string
+      }
+    }
+  }
+}>
+
+/** 设置文件排序 */
+export type PostFilesOrder = Base<unknown>
+
+/** 重命名文件 */
+export type PostFilesBatchRename = Base<unknown>
+
+/** 添加文件夹 */
+export type PostFilesAdd = Base<unknown>
+
+/** 删除文件 */
+export type PostRbDelete = Base<unknown>
+
+/** 移动文件 */
+export type PostFilesMove = Base<unknown>
+
+/** 获取移动进度 */
+export type GetFilesMoveProgress = Base<{
+  /** 进度 (0-100) */
+  progress: number
+}>
+
+/** 搜索 */
+export type GetFilesSearch = Base<{
+  /** 数据 */
+  data: FilesItem[]
+  /** 总数 */
+  count: number
+  /** 是否升序 */
+  is_asc: Sorter['asc']
+  /** 排序方式 */
+  order: Sorter['o']
+  /** 偏移量 */
+  offset: number
+  /** 当前页 */
+  cur: number
+}>
+
+/** 获取图片列表 */
+export type GetFilesImglist = Base<{
+  /** 数据 */
+  data: FilesItem[]
+  /** 总数 */
+  count: number
+}>
+
+/** 获取图片 */
+export type GetFilesImage = Base<{
+  data: {
+    /** 所有图片 URL */
+    all_url: string[]
+    /** 文件名 */
+    file_name: string
+    /** 文件 SHA1 */
+    file_sha1: string
+    /** 未压缩 URL */
+    origin_url: string
+    /** 提取码 */
+    pick_code: string
+    /** 源文件 URL */
+    source_url: string
+    /** 图片 URL */
+    url: string
+  }
+}>
+
+/** 置顶文件 */
+export type PostFilesTop = Base<unknown>

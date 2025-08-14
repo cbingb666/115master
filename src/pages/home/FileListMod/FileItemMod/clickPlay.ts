@@ -1,8 +1,8 @@
 import { GM_openInTab } from '$'
-import { VOD_URL_115 } from '../../../../constants/115'
-import { goToPlayer } from '../../../../utils/route'
-import { IvType } from '../../types'
-import { FileItemModBase } from './base'
+import { VOD_URL_115 } from '@/constants/115'
+import { FileItemModBase } from '@/pages/home/FileListMod/FileItemMod/base'
+import { IvType } from '@/pages/home/types'
+import { goToPlayer } from '@/utils/route'
 
 /**
  * FileItemMod 点击播放

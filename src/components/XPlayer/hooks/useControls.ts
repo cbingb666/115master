@@ -1,4 +1,4 @@
-import type { PlayerContext } from './usePlayerProvide'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { useDebounceFn, useEventListener, useThrottleFn } from '@vueuse/core'
 import { computed, onUnmounted, shallowRef, watch } from 'vue'
 

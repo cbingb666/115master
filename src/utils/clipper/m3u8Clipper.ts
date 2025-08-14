@@ -1,8 +1,8 @@
-import { promiseDelay } from '../promise'
-import { DemuxerTsNew } from './demuxerTsNew'
-import { FetchIO } from './io/FetchIO'
-import { HlsIO } from './io/HlsIO'
-import { microsecTimebase, secTimebase, timebaseConvert } from './timebase'
+import { DemuxerTsNew } from '@/utils/clipper/demuxerTsNew'
+import { FetchIO } from '@/utils/clipper/io/FetchIO'
+import { HlsIO } from '@/utils/clipper/io/HlsIO'
+import { microsecTimebase, secTimebase, timebaseConvert } from '@/utils/clipper/timebase'
+import { promiseDelay } from '@/utils/promise'
 
 /** 超时时间 */
 const TIMEOUT_MS = 5000

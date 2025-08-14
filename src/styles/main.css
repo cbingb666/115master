@@ -14,8 +14,8 @@
   --color-base-content: oklch(100% 0 0);
   --color-primary: oklch(62% 0.214 259.815);
   --color-primary-content: oklch(98% 0 0);
-  --color-secondary: oklch(64.092% 0.027 229.389);
-  --color-secondary-content: oklch(12.818% 0.005 229.389);
+  --color-secondary: oklch(28% 0.091 267.935);
+  --color-secondary-content: oklch(100% 0 0);
   --color-accent: oklch(67.271% 0.167 35.791);
   --color-accent-content: oklch(13.454% 0.033 35.791);
   --color-neutral: oklch(27.441% 0.013 253.041);
@@ -29,11 +29,11 @@
   --color-error: oklch(51.61% 0.146 29.674);
   --color-error-content: oklch(90.322% 0.029 29.674);
   --radius-selector: 2rem;
-  --radius-field: 2rem;
+  --radius-field: 0.5rem;
   --radius-box: 1rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
-  --border: 1px;
+  --border: 2px;
   --depth: 0;
   --noise: 0;
 }
@@ -55,3 +55,37 @@
 
 @import './ui-extend.css';
 @import './scrollbar.css';
+
+@utility liquid-glass-border {
+  &:after {
+    content: '';
+    position: absolute;
+    inset: 0px;
+    overflow: hidden;
+    box-shadow:
+      inset 1px 1px 1px 0px rgba(255, 255, 255, 0.15),
+      inset 1px -1px 1px 1px rgba(255, 255, 255, 0.01),
+      0 0 1px rgba(0, 0, 0, 0.1),
+      0 0 2px rgba(255, 255, 255, 0.5);
+    transform: translateZ(0);
+    pointer-events: none;
+  }
+}
+
+@utility liquid-glass-effect {
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    backdrop-filter: blur(3px);
+    filter: url(#glass-distortion);
+    transform: translateZ(0);
+  }
+}
+
+@utility liquid-glass {
+  transform: translateZ(0);
+  @apply liquid-glass-effect;
+  @apply liquid-glass-border;
+}

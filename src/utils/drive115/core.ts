@@ -1,19 +1,20 @@
-import type { M3u8Item } from '../../types/player'
-import type { NormalApi, ProApi, WebApi } from './api'
+import type { M3u8Item } from '@/types/player'
+import type { MyApi, NormalApi, ProApi, WebApi } from '@/utils/drive115/api'
 import { GM_openInTab } from '$'
 import {
   APS_URL_115,
+  MY_URL_115,
   NORMAL_URL_115,
   PRO_API_URL_115,
   VOD_URL_115,
   WEB_API_URL_115,
-} from '../../constants/115'
-import { qualityCodeMap } from '../../constants/quality'
-import { is115Browser } from '../platform'
-import { fetchRequest } from '../request/fetchRequest'
-import { GMRequest } from '../request/gmRequst'
-import { getXUrl } from '../url'
-import { Crypto115 } from './crypto'
+} from '@/constants/115'
+import { qualityCodeMap } from '@/constants/quality'
+import { Crypto115 } from '@/utils/drive115/crypto'
+import { is115Browser } from '@/utils/platform'
+import { fetchRequest } from '@/utils/request/fetchRequest'
+import { GMRequest } from '@/utils/request/gmRequst'
+import { getXUrl } from '@/utils/url'
 
 /**
  * 下载结果
@@ -60,6 +61,8 @@ export class Drive115Core {
   protected crypto115 = new Crypto115()
   /** 基础 URL */
   private BASE_URL = NORMAL_URL_115
+  /** 我的 URL */
+  private MY_URL = MY_URL_115
   /** 网页 API URL */
   private WEB_API_URL = WEB_API_URL_115
   /** Pro API URL */
@@ -106,7 +109,7 @@ export class Drive115Core {
     /** 115Browser 需要使用 GMRequest，因为 115 会检查 ua 是否是 115Browser，请求这个接口返回重定向到 dl.115cdn.net，导致跨域无法获取到返回结果 */
     const request = is115Browser ? new GMRequest() : fetchRequest
     const response = await request.post(
-      new URL(`/app/chrome/downurl?t=${tm}`, this.PRO_API_URL).href,
+      new URL(`/app/chrome/downurl?t=${tm}&c=9999`, this.PRO_API_URL).href,
       {
         body: data,
       },
@@ -239,7 +242,7 @@ export class Drive115Core {
     return (await response.json()) as WebApi.Res.FilesHistory
   }
 
-  /** 文件收藏 */
+  /** 设置文件星标 */
   async webApiPostFilesStar(
     params: WebApi.Req.FilesStar,
   ): Promise<WebApi.Res.FilesStar> {
@@ -263,6 +266,221 @@ export class Drive115Core {
     )
 
     return (await response.json()) as WebApi.Res.MoviesSubtitle
+  }
+
+  /** 获取文件信息 */
+  async webApiGetFilesIndexInfo(params: WebApi.Req.GetFilesIndexInfo = {}) {
+    const response = await fetchRequest.get(
+      new URL('/files/index_info', this.WEB_API_URL).href,
+      {
+        params,
+      },
+    )
+
+    return (await response.json()) as WebApi.Res.FilesIndexInfo
+  }
+
+  /** 设置文件排序 */
+  async webApiPostFilesOrder(params: WebApi.Req.PostFilesOrder) {
+    const response = await fetchRequest.post(
+      new URL('/files/order', this.WEB_API_URL).href,
+      {
+        data: params,
+      },
+    )
+    return (await response.json()) as WebApi.Res.PostFilesOrder
+  }
+
+  /** 重命名文件 (批量) */
+  async webApiPostFilesBatchRename(params: WebApi.Req.PostFilesBatchRename) {
+    const response = await fetchRequest.post(
+      new URL('/files/batch_rename', this.WEB_API_URL).href,
+      {
+        data: params,
+      },
+    )
+
+    return (await response.json()) as WebApi.Res.PostFilesBatchRename
+  }
+
+  /** 添加文件夹 */
+  async webApiPostFilesAdd(params: WebApi.Req.PostFilesAdd) {
+    const response = await fetchRequest.post(
+      new URL('/files/add', this.WEB_API_URL).href,
+      {
+        data: params,
+      },
+    )
+
+    return (await response.json()) as WebApi.Res.PostFilesAdd
+  }
+
+  /** 删除文件 */
+  async webApiPostRbDelete(params: WebApi.Req.PostRbDelete) {
+    const response = await fetchRequest.post(
+      new URL('/rb/delete', this.WEB_API_URL).href,
+      {
+        data: params,
+      },
+    )
+
+    return (await response.json()) as WebApi.Res.PostRbDelete
+  }
+
+  /** 移动文件 */
+  async webApiPostFilesMove(params: WebApi.Req.PostFilesMove) {
+    const response = await fetchRequest.post(
+      new URL('/files/move', this.WEB_API_URL).href,
+      {
+        data: params,
+      },
+    )
+
+    return (await response.json()) as WebApi.Res.PostFilesMove
+  }
+
+  /** 获取移动进度 */
+  async webApiGetFilesMoveProgress(params: WebApi.Req.GetFilesMoveProgress) {
+    const response = await fetchRequest.get(
+      new URL('/files/move_progress', this.WEB_API_URL).href,
+      {
+        params,
+      },
+    )
+
+    return (await response.json()) as WebApi.Res.GetFilesMoveProgress
+  }
+
+  /** 搜索 */
+  async webApiGetFilesSearch(params: WebApi.Req.GetFilesSearch) {
+    const response = await fetchRequest.get(
+      new URL('/files/search', this.WEB_API_URL).href,
+      {
+        params,
+      },
+    )
+
+    return (await response.json()) as WebApi.Res.GetFilesSearch
+  }
+
+  /** 获取离线空间 */
+  async NormalApiGetOfflineSpace(data: NormalApi.Req.OfflineSpace = {}) {
+    const response = await fetchRequest.get(
+      new URL('/web/lixian/space', this.BASE_URL).href,
+      {
+        params: {
+          ct: 'lixian',
+          ac: 'space',
+          _: Date.now(),
+        },
+        data,
+      },
+    )
+    return (await response.json()) as NormalApi.Res.OfflineSpace
+  }
+
+  /** 获取离线配额 */
+  async NormalApiGetOfflineGetQuotaPackageInfo(data: NormalApi.Req.OfflineGetQuotaPackageInfo = {}) {
+    const response = await fetchRequest.get(
+      new URL('/web/lixian', this.BASE_URL).href,
+      {
+        params: {
+          ct: 'lixian',
+          ac: 'get_quota_package_info',
+        },
+        data,
+      },
+    )
+    return (await response.json()) as NormalApi.Res.OfflineGetQuotaPackageInfo
+  }
+
+  /** 添加一组离线任务 */
+  async NormalApiPostOfflineAddUrls(data: NormalApi.Req.OfflineAddUrls) {
+    const response = await fetchRequest.post(
+      new URL('/web/lixian/', this.BASE_URL).href,
+      {
+        params: {
+          ct: 'lixian',
+          ac: 'add_task_urls',
+        },
+        data,
+        credentials: 'include',
+      },
+    )
+    return (await response.json()) as NormalApi.Res.OfflineAddUrls
+  }
+
+  /** 获取用户信息 */
+  async MyApiGetUserAq(data: MyApi.Req.UserAq = {}) {
+    const response = await fetchRequest.get(
+      new URL('/', this.MY_URL).href,
+      {
+        params: {
+          ct: 'ajax',
+          ac: 'get_user_aq',
+        },
+        data,
+      },
+    )
+    return (await response.json()) as MyApi.Res.UserAq
+  }
+
+  /** 获取图片列表 */
+  async WebApiGetFilesImglist(params: WebApi.Req.GetFilesImglist) {
+    const response = await fetchRequest.get(
+      new URL('/files/imglist', this.WEB_API_URL).href,
+      { params },
+    )
+    return (await response.json()) as WebApi.Res.GetFilesImglist
+  }
+
+  /** 获取图片列表 */
+  async ProApiGetAndroidFilesImglist(params: ProApi.Req.AndroidFilesImglist) {
+    const { tm, encoded } = this.ProApiEncodeData(params)
+    const response = await fetchRequest.get(
+      new URL('/android/files/imglist', this.PRO_API_URL).href,
+      {
+        params: {
+          t: tm,
+          data: encoded.data,
+        },
+      },
+    )
+    return (await response.json()) as ProApi.Res.AndroidFilesImglist
+  }
+
+  /** 获取图片 */
+  async WebApiGetFilesImage(params: WebApi.Req.GetFilesImage) {
+    const response = await fetchRequest.get(
+      new URL('/files/image', this.WEB_API_URL).href,
+      { params },
+    )
+
+    return (await response.json()) as WebApi.Res.GetFilesImage
+  }
+
+  /** 置顶文件 */
+  async webApiPostFilesTop(params: WebApi.Req.PostFilesTop) {
+    const response = await fetchRequest.post(
+      new URL('/files/top', this.WEB_API_URL).href,
+      {
+        data: params,
+      },
+    )
+    return (await response.json()) as WebApi.Res.PostFilesTop
+  }
+
+  /** 编码数据 */
+  private ProApiEncodeData(data: object) {
+    const tm = Math.floor(Date.now() / 1000).toString()
+    const src = JSON.stringify(data)
+    const encoded = this.crypto115.m115_encode(src, tm)
+    const encodedData = `data=${encodeURIComponent(encoded.data)}`
+    return {
+      tm,
+      encoded,
+      encodedData,
+    }
   }
 
   /** 跳转验证 */

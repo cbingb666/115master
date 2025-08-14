@@ -32,12 +32,12 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { shallowRef } from 'vue'
-import { controlStyles } from '../../styles/common'
-import { ICON_SETTINGS } from '../../utils/icon'
-import Popup from '../Popup/index.vue'
-import PlaySettings from './PlaySettings.vue'
-import ThumbnailSettings from './ThumbnailSettings.vue'
-import TransformSettings from './TransformSettings.vue'
+import PlaySettings from '@/components/XPlayer/components/Controls/PlaySettings.vue'
+import ThumbnailSettings from '@/components/XPlayer/components/Controls/ThumbnailSettings.vue'
+import TransformSettings from '@/components/XPlayer/components/Controls/TransformSettings.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { controlStyles } from '@/components/XPlayer/styles/common'
+import { ICON_SETTINGS } from '@/components/XPlayer/utils/icon'
 
 const styles = {
   ...controlStyles,

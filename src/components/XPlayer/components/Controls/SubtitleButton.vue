@@ -51,17 +51,17 @@
 </template>
 
 <script setup lang="ts">
-import type { Subtitle } from '../../types'
+import type { XPlayerTypes } from '../..'
 import { Icon } from '@iconify/vue'
 import { computed, shallowRef } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { controlStyles } from '../../styles/common'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
 import {
   ICON_LOADING,
   ICON_SUBTITLES,
   ICON_SUBTITLES_OFF,
-} from '../../utils/icon'
-import Popup from '../Popup/index.vue'
+} from '@/components/XPlayer/utils/icon'
 
 const styles = {
   menu: {
@@ -102,7 +102,7 @@ function toggleMenu() {
   menuVisible.value = !menuVisible.value
 }
 
-function handleSubtitleSelect(subtitle: Subtitle | null) {
+function handleSubtitleSelect(subtitle: XPlayerTypes.Subtitle | null) {
   menuVisible.value = false
   subtitles.change(subtitle)
 }

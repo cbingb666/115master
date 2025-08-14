@@ -1,10 +1,10 @@
 import type { App } from 'vue'
 import { createApp } from 'vue'
-import { PLUS_VERSION } from '../../../../constants'
-import mainStyles from '../../../../styles/main.css?inline'
+import { PLUS_VERSION } from '@/constants'
+import { FileListType, IvType } from '@/pages/home/types'
+import mainStyles from '@/styles/main.css?inline'
 import ExtVideoCover from '../../components/ExtVideoCover/index.vue'
-import { FileListType, IvType } from '../../types'
-import { FileItemModBase } from './base'
+import { FileItemModBase } from '../../FileListMod/FileItemMod/base'
 
 /**
  * FileItemMod 视频封面

@@ -32,9 +32,9 @@ import {
   shallowRef,
   watch,
 } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { usePortal } from '../../hooks/usePortal'
-import { isInContainsTrigger, triggerSet } from './utils'
+import { isInContainsTrigger, triggerSet } from '@/components/XPlayer/components/Popup/utils'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { usePortal } from '@/components/XPlayer/hooks/usePortal'
 
 defineOptions({
   inheritAttrs: false,

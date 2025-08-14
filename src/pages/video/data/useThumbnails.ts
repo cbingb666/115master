@@ -1,22 +1,18 @@
-import type {
-  ThumbnailFrame,
-  VideoSource,
-} from '../../../components/XPlayer/types'
-import type { LaneConfig } from '../../../utils/scheduler'
-import type { usePreferences } from './usePreferences'
+import type { XPlayerTypes } from '@/components'
+import type { usePreferences } from '@/pages/video/data/usePreferences'
+import type { LaneConfig } from '@/utils/scheduler'
 import { tryOnUnmounted } from '@vueuse/core'
 import { shuffle } from 'lodash'
 import { shallowRef } from 'vue'
-import { FRIENDLY_ERROR_MESSAGE } from '../../../constants'
-import { intervalArray } from '../../../utils/array'
-import { M3U8ClipperNew } from '../../../utils/clipper/m3u8Clipper'
-import { getImageResize } from '../../../utils/image'
+import { FRIENDLY_ERROR_MESSAGE } from '@/constants'
+import { intervalArray } from '@/utils/array'
+import { M3U8ClipperNew } from '@/utils/clipper/m3u8Clipper'
+import { getImageResize } from '@/utils/image'
 import {
-
   Scheduler,
   SchedulerError,
-} from '../../../utils/scheduler'
-import { blurTime } from '../../../utils/time'
+} from '@/utils/scheduler'
+import { blurTime } from '@/utils/time'
 
 /** 缩略图生成器配置 */
 const CLIPPER_OPTIONS = {
@@ -54,7 +50,7 @@ export function useDataThumbnails(
   let clipper: M3U8ClipperNew
 
   /** 任务调度器 */
-  const scheduler = new Scheduler<ThumbnailFrame | null>(SCHEDULER_OPTIONS)
+  const scheduler = new Scheduler<XPlayerTypes.ThumbnailFrame | null>(SCHEDULER_OPTIONS)
 
   /** 初始化缩略图生成器 */
   const isInited = shallowRef(false)
@@ -66,7 +62,7 @@ export function useDataThumbnails(
   const samplingInterval = shallowRef(DEFAULT_SAMPLING_INTERVAL)
 
   /** 缓存缩略图 */
-  const cahceThumbnails = new Map<number, ThumbnailFrame>()
+  const cahceThumbnails = new Map<number, XPlayerTypes.ThumbnailFrame>()
 
   /** 错误 */
   const state = shallowRef<{
@@ -76,8 +72,8 @@ export function useDataThumbnails(
   })
 
   /** 找到最低画质的 HLS 源 */
-  const findLowestQualityHLS = (sources: VideoSource[]): VideoSource | null => {
-    let lowestQuality: VideoSource | null = null
+  const findLowestQualityHLS = (sources: XPlayerTypes.VideoSource[]): XPlayerTypes.VideoSource | null => {
+    let lowestQuality: XPlayerTypes.VideoSource | null = null
     sources.forEach((source) => {
       if (source.type === 'hls') {
         if (!lowestQuality || source.quality < lowestQuality.quality) {
@@ -89,7 +85,7 @@ export function useDataThumbnails(
   }
 
   /** 初始化缩略图生成器 */
-  const initialize = async (sources: VideoSource[], interval: number) => {
+  const initialize = async (sources: XPlayerTypes.VideoSource[], interval: number) => {
     try {
       isInited.value = false
       const source = findLowestQualityHLS(sources)
@@ -114,7 +110,7 @@ export function useDataThumbnails(
   const seekThumbnail = async (
     seekTime: number,
     seekBlurTime: number,
-  ): Promise<ThumbnailFrame> => {
+  ): Promise<XPlayerTypes.ThumbnailFrame> => {
     const result = await clipper.seek(seekBlurTime, true)
     if (!result) {
       return undefined
@@ -134,7 +130,7 @@ export function useDataThumbnails(
       resizeWidth: resize.width,
       resizeHeight: resize.height,
     })
-    const thumbnail: ThumbnailFrame = {
+    const thumbnail: XPlayerTypes.ThumbnailFrame = {
       img: imageBitmap,
       seekTime,
       seekBlurTime,
@@ -156,7 +152,7 @@ export function useDataThumbnails(
   }: {
     time: number
     isLast: boolean
-  }): Promise<ThumbnailFrame> => {
+  }): Promise<XPlayerTypes.ThumbnailFrame> => {
     if (state.value.error) {
       throw state.value.error
     }

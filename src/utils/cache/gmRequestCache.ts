@@ -1,6 +1,6 @@
-import type { RequestOptions } from '../request/types'
-import { CacheCore } from './core'
-import { STORE_NAME } from './core/const'
+import type { RequestOptions } from '@/utils/request/types'
+import { CacheCore } from '@/utils/cache/core'
+import { STORE_NAME } from '@/utils/cache/core/const'
 
 /** 可序列化的响应数据 */
 export interface SerializableResponse {

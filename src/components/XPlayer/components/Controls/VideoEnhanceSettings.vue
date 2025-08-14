@@ -206,10 +206,10 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { shallowRef } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { controlStyles } from '../../styles/common'
-import { ICON_COLOR_ADJUST, ICON_RESTART } from '../../utils/icon'
-import Popup from '../Popup/index.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
+import { ICON_COLOR_ADJUST, ICON_RESTART } from '@/components/XPlayer/utils/icon'
 
 const styles = {
   ...controlStyles,

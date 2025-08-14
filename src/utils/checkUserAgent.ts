@@ -1,5 +1,5 @@
 import { createApp, h } from 'vue'
-import UserAgentPopup from '../components/UserAgentPopup/index.vue'
+import { UserAgentPopup } from '@/components'
 
 /**
  * 检查是否是115浏览器,如果是则弹出提示

@@ -35,11 +35,11 @@
 </template>
 
 <script setup lang="ts">
-import type { VideoSource } from '../../types'
+import type { XPlayerTypes } from '../..'
 import { computed, shallowRef } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { controlStyles } from '../../styles/common'
-import Popup from '../Popup/index.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
 
 const styles = {
   ...controlStyles,
@@ -61,12 +61,12 @@ function toggleMenu() {
   menuVisible.value = !menuVisible.value
 }
 
-function getDisplayQuality(sourceValue: VideoSource) {
+function getDisplayQuality(sourceValue: XPlayerTypes.VideoSource) {
   const quality = sourceValue.displayQuality || sourceValue.quality
   return typeof quality === 'number' ? `${quality}P` : quality
 }
 
-async function handleQualityChange(sourceValue: VideoSource) {
+async function handleQualityChange(sourceValue: XPlayerTypes.VideoSource) {
   menuVisible.value = false
   await source.changeQuality(sourceValue)
 }

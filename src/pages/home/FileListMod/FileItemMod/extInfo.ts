@@ -1,10 +1,10 @@
 import type { App } from 'vue'
 import { defer } from 'lodash'
 import { createApp } from 'vue'
-import mainStyles from '../../../../styles/main.css?inline'
-import ExtInfo from '../../components/ExtInfo/index.vue'
-import { FileListType, FileType, IvType } from '../../types'
-import { FileItemModBase } from './base'
+import ExtInfo from '@/pages/home/components/ExtInfo/index.vue'
+import { FileItemModBase } from '@/pages/home/FileListMod/FileItemMod/base'
+import { FileListType, FileType, IvType } from '@/pages/home/types'
+import mainStyles from '@/styles/main.css?inline'
 
 /**
  * FileItemMod 扩展信息

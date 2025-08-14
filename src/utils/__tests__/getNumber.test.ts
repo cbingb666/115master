@@ -1,4 +1,4 @@
-import { getAvNumber } from '../getNumber'
+import { getAvNumber } from '@/utils/getNumber'
 
 describe('getNumber', () => {
   it('fC2系列', () => {

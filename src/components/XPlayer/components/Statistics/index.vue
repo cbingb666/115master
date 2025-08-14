@@ -149,10 +149,10 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
-import { PlayerCoreType } from '../../hooks/playerCore/types'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { ICON_STATISTICS_INFO } from '../../utils/icon'
-import Popup from '../Popup/index.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { ICON_STATISTICS_INFO } from '@/components/XPlayer/utils/icon'
 
 const styles = {
   // 根元素样式

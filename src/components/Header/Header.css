@@ -1,0 +1,38 @@
+.header-scroll-effect {
+  animation: header-scroll-effect 0.6s linear;
+  animation-timeline: scroll(root);
+  animation-range: 0 calc(var(--navbar-height) - var(--spacing) * 4);
+  animation-fill-mode: both;
+
+  &:after {
+    animation: header-after-scroll-effect 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+    animation-timeline: scroll(root);
+    animation-range: 0 calc(var(--navbar-height));
+    animation-fill-mode: both;
+  }
+
+  &:before {
+    animation: header-before-scroll-effect 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+    animation-timeline: scroll(root);
+    animation-range: 0 calc(var(--navbar-height));
+    animation-fill-mode: both;
+  }
+}
+
+@keyframes header-scroll-effect {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(0px - var(--navbar-height) + var(--spacing) * 4));
+  }
+}
+
+@keyframes header-after-scroll-effect {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

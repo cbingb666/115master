@@ -1,7 +1,7 @@
-import type { ActressImageInfo, ActressImageMap } from '../types/actress'
+import type { ActressImageInfo, ActressImageMap } from '@/types/actress'
 import { GM_notification } from '$'
-import { CDN_BASE_URL } from '../constants'
-import { actressFaceCache } from './cache/actressFaceCache'
+import { CDN_BASE_URL } from '@/constants'
+import { actressFaceCache } from '@/utils/cache/actressFaceCache'
 
 /** 头像数据库仓库地址 */
 const GFRIENDS_REP_URL = `${CDN_BASE_URL}/gh/gfriends/gfriends@latest`

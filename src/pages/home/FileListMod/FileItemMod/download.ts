@@ -1,6 +1,6 @@
-import { drive115 } from '../../../../utils/drive115'
-import { is115Browser } from '../../../../utils/platform'
-import { FileItemModBase } from './base'
+import { FileItemModBase } from '@/pages/home/FileListMod/FileItemMod/base'
+import { drive115 } from '@/utils/drive115'
+import { is115Browser } from '@/utils/platform'
 
 /**
  * FileItemMod 文件下载

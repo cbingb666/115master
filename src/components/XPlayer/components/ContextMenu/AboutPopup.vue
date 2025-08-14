@@ -39,8 +39,8 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { ICON_ABOUT } from '../../utils/icon'
-import Popup from '../Popup/index.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { ICON_ABOUT } from '@/components/XPlayer/utils/icon'
 
 interface Props {
   visible: boolean

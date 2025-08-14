@@ -62,11 +62,11 @@
 </template>
 
 <script setup lang="ts">
-import type { ThumbnailFrame } from '../../types'
+import type { XPlayerTypes } from '../..'
 import { computed, onUnmounted, reactive, ref, shallowRef, watch } from 'vue'
-import LoadingError from '../../../../components/LoadingError/index.vue'
-import { getImageResize } from '../../../../utils/image'
-import { boundary } from '../../../../utils/number'
+import { LoadingError } from '@/components/LoadingError'
+import { getImageResize } from '@/utils/image'
+import { boundary } from '@/utils/number'
 import { usePlayerContext } from '../../hooks/usePlayerProvide'
 import { formatTime } from '../../utils/time'
 
@@ -143,7 +143,7 @@ const thumb = reactive<{
   lastHoverTime: number
   lastRequestTime: number
   renderTime: number
-  renderImage: ThumbnailFrame | undefined
+  renderImage: XPlayerTypes.ThumbnailFrame | undefined
   error: unknown
 }>({
   // 最后一次 hover 时间

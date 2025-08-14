@@ -1,9 +1,9 @@
-import type { PlayerContext } from '../usePlayerProvide'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { syncRef, toReactive } from '@vueuse/core'
-import { PlayerCoreType } from './types'
-import { useAvPlayerCore } from './useAvPlayerCore'
-import { useHlsPlayerCore } from './useHlsPlayerCore'
-import { useNativePlayerCore } from './useNativePlayerCore'
+import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
+import { useAvPlayerCore } from '@/components/XPlayer/hooks/playerCore/useAvPlayerCore'
+import { useHlsPlayerCore } from '@/components/XPlayer/hooks/playerCore/useHlsPlayerCore'
+import { useNativePlayerCore } from '@/components/XPlayer/hooks/playerCore/useNativePlayerCore'
 
 /**
  * 视频核心混合封装

@@ -50,11 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import type { HudMessage } from './types'
+import type { HudMessage } from '@/components/XPlayer/components/HUD/types'
 import { Icon } from '@iconify/vue'
 import { computed, ref, watch } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import Popup from '../Popup/index.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 const styles = {
   popup: 'left-4! top-4! shadow-xs/90',

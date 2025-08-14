@@ -22,8 +22,8 @@
       <!-- 目录 -->
       <div :class="styles.fileInfo.path.container">
         <ul>
-          <li v-for="item in path" :key="item.cid" @click="handleOpenFolder(item.cid)">
-            <a>
+          <li v-for="item in path" :key="item.cid">
+            <a :href="getOpenFolderUrl(item.cid)">
               {{ item.name }}
             </a>
           </li>
@@ -34,10 +34,10 @@
 </template>
 
 <script setup lang="ts">
-import type { useDataFileInfo } from '../../data/useDataFileInfo'
-import type { useDataPlaylist } from '../../data/useDataPlaylist'
+import type { useDataFileInfo } from '@/pages/video/data/useDataFileInfo'
+import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
 import { computed } from 'vue'
-import { formatFileSize } from '../../../../utils/format'
+import { formatFileSize } from '@/utils/format'
 
 const props = defineProps<{
   /** 文件信息 */
@@ -75,7 +75,7 @@ const path = computed(() => {
   )
 })
 
-function handleOpenFolder(id: string) {
-  window.open(`https://115.com/?cid=${id}&offset=0&mode=wangpan`, '_blank')
+function getOpenFolderUrl(cid: string) {
+  return `https://115.com/web/lixian/master/#/drive/all/${cid}`
 }
 </script>

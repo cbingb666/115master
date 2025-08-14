@@ -21,8 +21,8 @@
 import { Icon } from '@iconify/vue'
 import { useClipboard } from '@vueuse/core'
 import { computed } from 'vue'
-import { FRIENDLY_ERROR_MESSAGE } from '../../constants'
-import { ICON_ERROR } from '../../icons'
+import { FRIENDLY_ERROR_MESSAGE } from '@/constants'
+import { ICON_ERROR } from '@/icons'
 
 const props = withDefaults(
   defineProps<{

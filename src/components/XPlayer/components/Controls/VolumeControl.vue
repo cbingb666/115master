@@ -49,9 +49,9 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { controlStyles } from '../../styles/common'
-import { getVolumeIcon } from '../../utils/icon'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
+import { getVolumeIcon } from '@/components/XPlayer/utils/icon'
 
 const { playerCore, hud } = usePlayerContext()
 

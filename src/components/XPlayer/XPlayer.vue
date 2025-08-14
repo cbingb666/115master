@@ -76,9 +76,9 @@
 </template>
 
 <script setup lang="ts">
-import type { XPlayerEmit, XPlayerProps } from './types'
-import { shallowRef, watch, watchEffect } from 'vue'
-import LoadingError from '../../components/LoadingError/index.vue'
+import type { XPlayerEmit, XPlayerProps } from './XPlayer.types'
+import { onBeforeUnmount, shallowRef, watch, watchEffect } from 'vue'
+import { LoadingError } from '../LoadingError'
 import ContextMenu from './components/ContextMenu/index.vue'
 import ControlsBar from './components/Controls/ControlBar.vue'
 import ControlsHeader from './components/Controls/ControlHeader.vue'
@@ -161,6 +161,11 @@ watch(
   },
   { immediate: true },
 )
+
+/** 卸载前销毁播放器 */
+onBeforeUnmount(() => {
+  context.playerCore.value?.destroy()
+})
 
 // 暴露方法
 defineExpose({

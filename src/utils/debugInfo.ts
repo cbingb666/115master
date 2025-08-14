@@ -1,5 +1,5 @@
 import { GM_info } from '$'
-import { Logger } from './logger'
+import { Logger } from '@/utils/logger'
 
 /**
  * 调试信息

@@ -1,6 +1,7 @@
-import type { HudMessage } from '../components/HUD/index'
-import type { PlayerContext } from './usePlayerProvide'
+import type { HudMessage } from '@/components/XPlayer/components/HUD/index'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { computed, onUnmounted, shallowRef, watch } from 'vue'
+import { formatTime } from '@/components/XPlayer/utils/time'
 import {
   getVolumeIcon,
   ICON_FAST_FORWARD,
@@ -14,7 +15,6 @@ import {
   ICON_SUBTITLES_OFF,
   ICON_TIMER,
 } from '../utils/icon'
-import { formatTime } from '../utils/time'
 
 /** 消息持续时间选项 */
 const DurationOptions = {

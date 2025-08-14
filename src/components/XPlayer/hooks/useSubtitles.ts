@@ -1,4 +1,4 @@
-import type { Subtitle } from '../types'
+import type { XPlayerTypes } from '../..'
 import type { PlayerContext } from './usePlayerProvide'
 import { computed, ref, watch } from 'vue'
 
@@ -9,9 +9,9 @@ export function useSubtitles(ctx: PlayerContext) {
   /** 是否准备就绪 */
   const ready = ref(false)
   /** 当前字幕 */
-  const current = ref<Subtitle | null>(null)
+  const current = ref<XPlayerTypes.Subtitle | null>(null)
   /** 上一个字幕 */
-  const previousSubtitle = ref<Subtitle | null>(null)
+  const previousSubtitle = ref<XPlayerTypes.Subtitle | null>(null)
   /** 默认字幕 */
   const defaultSubtitle = computed(() => {
     return (
@@ -22,7 +22,7 @@ export function useSubtitles(ctx: PlayerContext) {
   })
 
   /** 切换字幕 */
-  const change = (subtitle: Subtitle | null) => {
+  const change = (subtitle: XPlayerTypes.Subtitle | null) => {
     if (subtitle) {
       previousSubtitle.value = subtitle
     }
@@ -44,7 +44,7 @@ export function useSubtitles(ctx: PlayerContext) {
   }
 
   /** 设置默认字幕 */
-  const restoreLastSubtitle = (subtitles: Subtitle[]) => {
+  const restoreLastSubtitle = (subtitles: XPlayerTypes.Subtitle[]) => {
     const defaultSubtitle = subtitles.find(s => s.default)
     if (defaultSubtitle) {
       change(defaultSubtitle)

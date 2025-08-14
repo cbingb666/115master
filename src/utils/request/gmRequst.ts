@@ -1,8 +1,8 @@
-import type { RequestOptions, ResponseType } from './types'
+import type { RequestOptions, ResponseType } from '@/utils/request/types'
 import { GM_info, GM_xmlhttpRequest } from '$'
 import { merge } from 'lodash'
-import { GMRequestCache } from '../cache/gmRequestCache'
-import { IRequest } from './types'
+import { GMRequestCache } from '@/utils/cache/gmRequestCache'
+import { IRequest } from '@/utils/request/types'
 
 /** 是否是 Chrome 浏览器 */
 const isChrome = GM_info.userAgentData.brands.some(
@@ -96,6 +96,7 @@ export class GMRequest extends IRequest {
           resolve(response)
         },
         onerror: (e) => {
+          console.log(e)
           // @ts-expect-error 类型错误
           reject(new Error('请求失败', { cause: e.error }))
         },

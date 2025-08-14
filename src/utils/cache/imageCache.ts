@@ -1,4 +1,4 @@
-import { CacheCore } from './core/index'
+import { CacheCore } from '@/utils/cache/core/index'
 
 const IMAGE_CACHE_KEY = 'image_cache'
 class ImageCache extends CacheCore<Blob> {

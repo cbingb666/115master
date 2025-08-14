@@ -1,7 +1,7 @@
 {
   "name": "115master",
   "type": "module",
-  "version": "1.6.1",
+  "version": "2.0.0-beta.0",
   "private": true,
   "packageManager": "pnpm@9.15.9",
   "description": "115网盘魔法优化: 画质增强 | 视频缩略图 | 在线字幕",
@@ -20,6 +20,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:tools": "cross-env DEV_TOOLS=true vite",
     "build": "vite build",
     "dev:plus": "cross-env VITE_PLUS_VERSION=true vite",
     "build:plus": "cross-env VITE_PLUS_VERSION=true vite build",
@@ -34,6 +35,7 @@
   },
   "dependencies": {
     "@cbingbing/demuxer": "^2.4.1",
+    "@fancyapps/ui": "^6.0.21",
     "@iconify/vue": "^5.0.0",
     "@libmedia/avcodec": "^0.8.1",
     "@libmedia/avformat": "^0.8.1",
@@ -45,10 +47,14 @@
     "@tailwindcss/vite": "^4.1.7",
     "@types/event-emitter": "^0.3.5",
     "@types/eventemitter3": "^2.0.4",
+    "@vueuse/components": "^13.5.0",
     "@vueuse/core": "^12.7.0",
+    "@vueuse/router": "^13.5.0",
+    "@wxperia/liquid-glass-vue": "^1.0.9",
     "big-integer": "^1.6.52",
     "blueimp-md5": "^2.19.0",
     "dayjs": "^1.11.13",
+    "emoji-regex": "^10.4.0",
     "event-emitter": "^0.3.5",
     "eventemitter3": "^5.0.1",
     "glob-to-regexp": "^0.4.1",
@@ -58,8 +64,10 @@
     "lodash": "^4.17.21",
     "m3u8-parser": "^7.2.0",
     "photoswipe": "^5.4.4",
+    "pinia": "^3.0.3",
     "tailwindcss": "^4.1.7",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.1",
@@ -73,6 +81,7 @@
     "@types/lodash": "^4.17.15",
     "@types/m3u8-parser": "^7.2.0",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^5.0.1",
     "cross-env": "^7.0.3",
     "daisyui": "^5.0.35",
     "eslint": "^9.29.0",
@@ -87,6 +96,7 @@
     "vite": "^6.0.5",
     "vite-plugin-monkey": "^5.0.3",
     "vite-plugin-static-copy": "^2.3.0",
+    "vite-plugin-vue-devtools": "^7.7.7",
     "vite-svg-loader": "^5.1.0",
     "vue-tsc": "^2.2.10"
   },

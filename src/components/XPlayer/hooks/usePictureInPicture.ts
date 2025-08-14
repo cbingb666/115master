@@ -1,4 +1,4 @@
-import type { PlayerContext } from './usePlayerProvide'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { useEventListener } from '@vueuse/core'
 import { shallowRef } from 'vue'
 

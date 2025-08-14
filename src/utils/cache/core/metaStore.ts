@@ -1,5 +1,5 @@
 import localforage from 'localforage'
-import { META_STORE_NAME, STORE_NAME } from './const'
+import { META_STORE_NAME, STORE_NAME } from '@/utils/cache/core/const'
 
 export interface CacheMetaItem {
   /** 原始缓存键 */

@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'vue'
-import type { PlayerContext } from './usePlayerProvide'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { useElementSize } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
 

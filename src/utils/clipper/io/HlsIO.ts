@@ -1,5 +1,5 @@
 import type { Segment as M3U8Segment } from 'm3u8-parser'
-import type { Range } from './IO'
+import type { Range } from '@/utils/clipper/io/IO'
 import { Parser } from 'm3u8-parser'
 
 /**

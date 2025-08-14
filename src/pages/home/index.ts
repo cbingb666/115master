@@ -1,8 +1,9 @@
-import { registerMagnetTaskHandler } from '../magnet'
-import { ModManager } from './BaseMod'
-import FileListMod from './FileListMod'
-import { TopFilePathMod } from './TopFilePathMod'
-import { TopHeaderMod } from './TopHeaderMod'
+import { ModManager } from '@/pages/home/BaseMod'
+import FileListMod from '@/pages/home/FileListMod'
+import NavMod from '@/pages/home/NavMod'
+import { TopFilePathMod } from '@/pages/home/TopFilePathMod'
+import { TopHeaderMod } from '@/pages/home/TopHeaderMod'
+import { registerMagnetTaskHandler } from '@/pages/magnet'
 import './index.css'
 
 /**
@@ -32,6 +33,7 @@ class HomePage {
   private async init(): Promise<void> {
     registerMagnetTaskHandler()
     this.modManager = new ModManager([
+      new NavMod(),
       new FileListMod(),
       new TopFilePathMod(),
       new TopHeaderMod(),

@@ -52,12 +52,12 @@
 </template>
 
 <script setup lang="ts">
-import type { HotKeyConfig } from '../../hooks/useHotKey'
+import type { HotKeyConfig } from '@/components/XPlayer/hooks/useHotKey'
 import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
-import { getHotKeysConfig } from '../../hooks/useHotKey'
-import { ICON_SHORTCUTS } from '../../utils/icon'
-import Popup from '../Popup/index.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { getHotKeysConfig } from '@/components/XPlayer/hooks/useHotKey'
+import { ICON_SHORTCUTS } from '@/components/XPlayer/utils/icon'
 
 interface Props {
   visible: boolean

@@ -1,5 +1,5 @@
-import type { ActressImageInfo } from '../../types/actress'
-import { CacheCore } from './core/index'
+import type { ActressImageInfo } from '@/types/actress'
+import { CacheCore } from '@/utils/cache/core/index'
 
 const ACTRESS_FACE_CACHE_KEY = 'actress_face_json_cache'
 

@@ -64,14 +64,14 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import {
   ICON_FLIP_X,
   ICON_FLIP_Y,
   ICON_ROTATE_LEFT,
   ICON_ROTATE_NORMAL,
   ICON_ROTATE_RIGHT,
-} from '../../utils/icon'
+} from '@/components/XPlayer/utils/icon'
 
 const { transform } = usePlayerContext()
 </script>

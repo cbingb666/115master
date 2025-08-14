@@ -40,5 +40,34 @@ export default antfu({
     'vue/block-order': ['error', {
       order: ['template', 'script', 'style'],
     }],
+    /** 强制 JSX 属性排序 */
+    'style/jsx-sort-props': ['error', {
+      callbacksLast: true,
+      reservedFirst: [
+        'id',
+        'key',
+        'ref',
+        'class',
+        'style',
+        'v-show',
+        'v-model',
+      ],
+    }],
+    /** 强制 JSX 属性每行最大数量 */
+    'style/jsx-max-props-per-line': ['error', {
+      maximum: 2,
+    }],
+    /** 禁止使用相对路径导入，强制使用 @ 别名 */
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: [
+          {
+            group: ['../../../*', '../../../../*', '../../../../../*'],
+            message: '请使用 @ 别名代替深层相对路径',
+          },
+        ],
+      },
+    ],
   },
 })

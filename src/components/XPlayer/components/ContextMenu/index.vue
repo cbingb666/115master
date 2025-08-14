@@ -45,10 +45,10 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import Popup from '../Popup/index.vue'
-import AboutPopup from './AboutPopup.vue'
-import ShortcutsPopup from './ShortcutsPopup.vue'
+import AboutPopup from '@/components/XPlayer/components/ContextMenu/AboutPopup.vue'
+import ShortcutsPopup from '@/components/XPlayer/components/ContextMenu/ShortcutsPopup.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 defineSlots<{
   aboutContent: () => void

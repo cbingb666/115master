@@ -31,9 +31,9 @@
 
 <script setup lang="ts">
 import { computed, ref, shallowRef } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { controlStyles } from '../../styles/common'
-import Popup from '../Popup/index.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
 
 const styles = {
   ...controlStyles,

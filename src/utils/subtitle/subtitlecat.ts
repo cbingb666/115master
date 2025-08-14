@@ -1,8 +1,8 @@
 import md5 from 'blueimp-md5'
-import { subtitleCache } from '../cache/subtitleCache'
-import { AppLogger } from '../logger'
-import { GMRequestInstance } from '../request/gmRequst'
-import { convertSrtToVtt, vttToBlobUrl } from './subtitleTool'
+import { subtitleCache } from '@/utils/cache/subtitleCache'
+import { AppLogger } from '@/utils/logger'
+import { GMRequestInstance } from '@/utils/request/gmRequst'
+import { convertSrtToVtt, vttToBlobUrl } from '@/utils/subtitle/subtitleTool'
 
 /**
  * subtitlecat 搜索结果

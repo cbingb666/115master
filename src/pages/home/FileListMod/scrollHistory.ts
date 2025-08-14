@@ -1,4 +1,4 @@
-import type { FileMainReInstanceSetting } from '../global'
+import type { FileMainReInstanceSetting } from '@/pages/home/global'
 import { unsafeWindow } from '$'
 import { throttle } from 'lodash'
 

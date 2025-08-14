@@ -1,10 +1,14 @@
+import { resolve } from 'node:path'
 import transformer from '@libmedia/cheap/build/transformer'
 import typescript from '@rollup/plugin-typescript'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import monkey, { cdn, util } from 'vite-plugin-monkey'
+
+import vueDevTools from 'vite-plugin-vue-devtools'
 import svgLoader from 'vite-svg-loader'
 import PKG from './package.json'
 
@@ -16,6 +20,7 @@ const icons = {
   dev: 'https://vitejs.dev/logo.svg',
 }
 const isProd = env.NODE_ENV === 'production'
+const isDevTools = env.DEV_TOOLS === 'true'
 const isAnalyze = env.ANALYZE === 'true'
 const _cdn = cdn.jsdelivrFastly
 
@@ -24,10 +29,16 @@ export default defineConfig({
   build: {
     minify: true,
   },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+    },
+  },
   optimizeDeps: {
     exclude: ['@libmedia/avplayer'],
   },
   plugins: [
+    isDevTools ? vueDevTools() : null,
     typescript({
       // ref: https://zhaohappy.github.io/libmedia/docs/guide/quick-start#%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AE
       // 配置使用的 tsconfig.json 配置文件
@@ -45,6 +56,7 @@ export default defineConfig({
       },
     }),
     vue(),
+    vueJsx(),
     tailwindcss(),
     svgLoader(),
     visualizer({
@@ -66,8 +78,7 @@ export default defineConfig({
         'run-at': 'document-start',
         'include': [
           'https://115.com/?ct*',
-          'https://115.com/web/lixian/master/video/*',
-          'https://115.com/web/lixian/master/magnet/*',
+          'https://115.com/web/lixian/master*',
           'https://115.com/?aid*',
           'https://dl.115cdn.net/video/token',
         ],
@@ -86,6 +97,7 @@ export default defineConfig({
           'cpats01.115.com',
           'dl.115cdn.net',
           'cdnfhnfile.115cdn.net',
+          'cdnfileimg.116cd.cn',
           'v.anxia.com',
           'subtitlecat.com',
           'javbus.com',

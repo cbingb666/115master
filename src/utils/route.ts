@@ -1,7 +1,8 @@
-import type { PlayingVideoInfo } from '../types/player'
+import type { PlayingVideoInfo } from '@/types/player'
 import { GM_openInTab, GM_setValue } from '$'
-import { NORMAL_HOST_155 } from '../constants/115'
-import GM_VALUE_KEY from '../constants/gm.value.key'
+import { useRouter } from 'vue-router'
+import { NORMAL_HOST_155 } from '@/constants/115'
+import GM_VALUE_KEY from '@/constants/gm.value.key'
 
 /**
  * 跳转播放器
@@ -10,11 +11,8 @@ import GM_VALUE_KEY from '../constants/gm.value.key'
  */
 export function goToPlayer(playingVideoInfo: PlayingVideoInfo, isOpenInTab = false) {
   GM_setValue(GM_VALUE_KEY.PLAYING_VIDEO_INFO, playingVideoInfo)
-  const params = new URLSearchParams({
-    cid: playingVideoInfo.cid || '',
-    pick_code: playingVideoInfo.pickCode,
-  })
-  const url = `https://${NORMAL_HOST_155}/web/lixian/master/video/?${params.toString()}`
+
+  const url = `https://${NORMAL_HOST_155}/web/lixian/master/#/video/${playingVideoInfo.cid}/${playingVideoInfo.pickCode}`
   if (isOpenInTab) {
     GM_openInTab(url, {
       active: true,
@@ -22,7 +20,15 @@ export function goToPlayer(playingVideoInfo: PlayingVideoInfo, isOpenInTab = fal
     return
   }
 
-  history.pushState({}, '', url)
+  /** history.pushState({}, '', url) */
+  const router = useRouter()
+  router.push({
+    name: 'video',
+    params: {
+      cid: playingVideoInfo.cid,
+      pickCode: playingVideoInfo.pickCode,
+    },
+  })
 }
 
 /**

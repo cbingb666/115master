@@ -1,6 +1,6 @@
-import type { RequestOptions, ResponseType } from './types'
+import type { RequestOptions, ResponseType } from '@/utils/request/types'
 import { merge } from 'lodash'
-import { IRequest } from './types'
+import { IRequest } from '@/utils/request/types'
 
 /** 默认请求选项 */
 const DEFAULT_OPTIONS: RequestOptions = {
@@ -144,7 +144,10 @@ export class FetchRequest extends IRequest {
 
     const urlObj = new URL(url)
     Object.entries(params).forEach(([key, value]) => {
-      urlObj.searchParams.append(key, value.toString())
+      // 跳过 undefined 和 null 值
+      if (value !== undefined && value !== null) {
+        urlObj.searchParams.append(key, value.toString())
+      }
     })
 
     return urlObj.href

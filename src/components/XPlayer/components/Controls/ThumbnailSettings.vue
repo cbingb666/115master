@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 const { thumbnailSettings } = usePlayerContext()
 

@@ -1,8 +1,8 @@
-import type { FileItemAttributes, FileListType, ItemInfo } from '../types'
-import type { FileItemModBase, FileListMod } from './FileItemMod/base'
-import { PLUS_VERSION } from '../../../constants'
-import { getAvNumber } from '../../../utils/getNumber'
-import { getDuration } from '../../../utils/time'
+import type { FileItemModBase, FileListMod } from '@/pages/home/FileListMod/FileItemMod/base'
+import type { FileItemAttributes, FileListType, ItemInfo } from '@/pages/home/types'
+import { PLUS_VERSION } from '@/constants'
+import { getAvNumber } from '@/utils/getNumber'
+import { getDuration } from '@/utils/time'
 
 /**
  * 文件列表 Item 修改加载器

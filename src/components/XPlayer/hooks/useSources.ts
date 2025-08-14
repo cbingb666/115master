@@ -1,9 +1,9 @@
-import type { VideoSource } from '../types'
-import type { PlayerContext } from './usePlayerProvide'
+import type { VideoSource } from '../XPlayer.types'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { useDebounceFn } from '@vueuse/core'
 import { ref, shallowRef, toValue, watch } from 'vue'
-import { VideoSourceExtension } from '../types'
-import { PlayerCoreType } from './playerCore/types'
+import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
+import { VideoSourceExtension } from '../XPlayer.const'
 
 /**
  * 视频源

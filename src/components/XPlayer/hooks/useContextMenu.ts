@@ -1,4 +1,4 @@
-import type { PlayerContext } from './usePlayerProvide'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { ref, shallowRef } from 'vue'
 import {
   ICON_ABOUT,

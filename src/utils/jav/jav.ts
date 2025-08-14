@@ -1,5 +1,5 @@
-import { javCache } from '../cache/javCache'
-import { GMRequest } from '../request/gmRequst'
+import { javCache } from '@/utils/cache/javCache'
+import { GMRequest } from '@/utils/request/gmRequst'
 
 /** 来源 */
 export enum JAV_SOURCE {

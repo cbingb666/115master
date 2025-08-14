@@ -1,4 +1,16 @@
 {
+  // file nesting
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "tsconfig.json": "tsconfig.*.json, env.d.ts",
+    "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*",
+    "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .oxlint*, oxlint*, .prettier*, prettier*, .editorconfig"
+  },
+
+  // indent
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+
   "eslint.enable": true,
   // Disable the default formatter, use eslint instead
   "prettier.enable": false,
@@ -50,18 +62,23 @@
     "postcss"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+
+  // Tailwind CSS
   "css.customData": [
     ".vscode/tailwind.json"
   ],
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "editor.quickSuggestions": {
-    "strings": "on"
-  },
   "tailwindCSS.classAttributes": [
     "class",
     "ui"
+  ],
+  "tailwindCSS.classFunctions": [
+    "clsx"
   ],
   "tailwindCSS.experimental.classRegex": [
     [

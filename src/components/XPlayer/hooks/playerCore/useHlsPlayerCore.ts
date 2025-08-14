@@ -1,11 +1,11 @@
 import type { HlsConfig } from 'hls.js'
-import type { PlayerContext } from '../usePlayerProvide'
-import type { PlayerCoreMethods } from './types'
+import type { PlayerCoreMethods } from '@/components/XPlayer/hooks/playerCore/types'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { useEventListener } from '@vueuse/core'
 import Hls from 'hls.js'
 import { shallowRef } from 'vue'
-import { PlayerCoreType } from './types'
-import { useNativePlayerCore } from './useNativePlayerCore'
+import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
+import { useNativePlayerCore } from '@/components/XPlayer/hooks/playerCore/useNativePlayerCore'
 
 /**
  * 默认配置

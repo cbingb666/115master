@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 const { fullscreen } = usePlayerContext()
 const icon = computed(() => {

@@ -1,6 +1,6 @@
 import { useDebounceFn, useThrottleFn } from '@vueuse/core'
 import { onUnmounted, shallowRef } from 'vue'
-import { drive115 } from '../../../utils/drive115'
+import { drive115 } from '@/utils/drive115'
 
 /**
  * 历史记录

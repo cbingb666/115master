@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, shallowRef } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 const styles = {
   mask: 'relative flex-1',

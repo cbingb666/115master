@@ -25,9 +25,9 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { controlStyles } from '../../styles/common'
-import { ICON_PASUE, ICON_PLAY } from '../../utils/icon'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
+import { ICON_PASUE, ICON_PLAY } from '@/components/XPlayer/utils/icon'
 
 const styles = {
   btn: {

@@ -1,6 +1,6 @@
-import type { UserSettings } from '../../../../utils/userSettings'
-import type { ItemInfo } from '../../types'
-import { userSettings } from '../../../../utils/userSettings'
+import type { ItemInfo } from '@/pages/home/types'
+import type { UserSettings } from '@/utils/userSettings'
+import { userSettings } from '@/utils/userSettings'
 
 /**
  * 文件列表 Item 修改器基类

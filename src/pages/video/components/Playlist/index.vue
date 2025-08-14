@@ -41,13 +41,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Entity } from '../../../../utils/drive115'
-import type { useDataPlaylist } from '../../data/useDataPlaylist'
-import type PlaylistItemVue from './item.vue'
+import type PlaylistItemVue from '@/pages/video/components/Playlist/item.vue'
+import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
+import type { Entity } from '@/utils/drive115'
 import { Icon } from '@iconify/vue'
 import { nextTick, ref, shallowRef, useTemplateRef, watch } from 'vue'
-import LoadingError from '../../../../components/LoadingError/index.vue'
-import { ICON_CLOSE, ICON_PLAYLIST } from '../../../../icons'
+import { LoadingError } from '@/components'
+import { ICON_CLOSE, ICON_PLAYLIST } from '@/icons'
 import PlaylistItem from './item.vue'
 
 const props = defineProps<{
@@ -56,8 +56,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'play', item: Entity.PlaylistItem): void
-  (e: 'close'): void
+  play: [item: Entity.FilesItem]
+  close: []
 }>()
 
 /** 样式常量定义 */
@@ -101,7 +101,7 @@ const playlistItemRefs
 const initedScroll = shallowRef(false)
 
 /** 点击播放 */
-function handlePlay(item: Entity.PlaylistItem) {
+function handlePlay(item: Entity.FilesItem) {
   if (item.pc === props.pickCode) {
     return
   }

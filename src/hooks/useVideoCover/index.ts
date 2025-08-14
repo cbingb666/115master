@@ -1,19 +1,19 @@
 import type { Ref } from 'vue'
 import { useElementVisibility, useScroll } from '@vueuse/core'
 import { onUnmounted, reactive, watch } from 'vue'
-import { FRIENDLY_ERROR_MESSAGE } from '../../constants'
-import { videoCoverCache } from '../../utils/cache'
-import { M3U8ClipperNew } from '../../utils/clipper/m3u8Clipper'
-import { drive115 } from '../../utils/drive115'
-import { Drive115Error } from '../../utils/drive115/core'
-import { getImageResize } from '../../utils/image'
-import { Scheduler, SchedulerError, TaskStatus } from '../../utils/scheduler'
+import { FRIENDLY_ERROR_MESSAGE } from '@/constants'
+import { videoCoverCache } from '@/utils/cache'
+import { M3U8ClipperNew } from '@/utils/clipper/m3u8Clipper'
+import { drive115 } from '@/utils/drive115'
+import { Drive115Error } from '@/utils/drive115/core'
+import { getImageResize } from '@/utils/image'
+import { Scheduler, SchedulerError, TaskStatus } from '@/utils/scheduler'
 
 /** 最大宽度 */
-const MAX_WIDTH = 720
+const MAX_WIDTH = 1280
 
 /** 最大高度 */
-const MAX_HEIGHT = 720
+const MAX_HEIGHT = 1280
 
 /** 视频封面调度器 */
 const videoCoverScheduler = new Scheduler<VideoCover[]>({
@@ -162,7 +162,7 @@ async function generateVideoCoverRaw(clipper: M3U8ClipperNew, time: number): Pro
   /** 转换成 blob */
   const blob = await canvas.convertToBlob({
     type: 'image/webp',
-    quality: 0.85,
+    quality: 0.9,
   })
 
   // 关闭

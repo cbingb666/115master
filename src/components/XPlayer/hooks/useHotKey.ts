@@ -1,4 +1,4 @@
-import type { PlayerContext } from './usePlayerProvide'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { useEventListener } from '@vueuse/core'
 
 // 匹配热键
@@ -450,6 +450,10 @@ export function useHotKey(ctx: PlayerContext) {
     }
   }
 
-  useEventListener('keydown', handleKeydown)
-  useEventListener('keyup', handleKeyup)
+  useEventListener('keydown', handleKeydown, {
+    capture: true,
+  })
+  useEventListener('keyup', handleKeyup, {
+    capture: true,
+  })
 }

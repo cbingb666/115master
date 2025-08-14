@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { useMouseInElement } from '@vueuse/core'
 import { onUnmounted, shallowRef, watchEffect } from 'vue'
-import { usePlayerContext } from './usePlayerProvide'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 /**
  * 控制栏鼠标检测 Hook

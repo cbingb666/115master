@@ -1,4 +1,4 @@
-import { openOfflineTask } from '../home/TopHeaderMod/openOfflineTask'
+import { openOfflineTask } from '@/pages/home/TopHeaderMod/openOfflineTask'
 
 /** 磁力链接任务键名 */
 const MAGNET_TASK_KEY = 'magnetTask'
@@ -66,7 +66,7 @@ export function magnetPage() {
     return
   }
   setMagnetTask(magnet)
-  const handle = window.open('https://115.com/?cid=0&offset=0&mode=wangpan', '_blank', 'width=1280,height=860')
+  const handle = window.open(`/web/lixian/master/#/?offline_url=${magnet}`, '_blank', 'width=1280,height=860')
   if (handle) {
     handleOpenAfter()
   }

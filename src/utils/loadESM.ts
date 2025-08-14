@@ -1,6 +1,6 @@
 import { unsafeWindow } from '$'
-import pkg from '../../package.json'
-import { CDN_BASE_URL } from '../constants'
+import pkg from '@/../package.json'
+import { CDN_BASE_URL } from '@/constants'
 
 /**
  * 动态加载 ESM 模块

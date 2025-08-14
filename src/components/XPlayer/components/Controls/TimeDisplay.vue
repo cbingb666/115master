@@ -16,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { controlStyles } from '../../styles/common'
-import { formatTime } from '../../utils/time'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
+import { formatTime } from '@/components/XPlayer/utils/time'
 
 const { playerCore } = usePlayerContext()
 

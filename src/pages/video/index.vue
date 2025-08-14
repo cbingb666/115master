@@ -131,7 +131,7 @@
         <!-- 播放列表内容 -->
         <Playlist
           :class="styles.playlist"
-          :pick-code="params.pickCode.value"
+          :pick-code="route.params.pickCode"
           :playlist="DataPlaylist"
           :visible="preferences.showPlaylist"
           @play="handleChangeVideo"
@@ -143,37 +143,29 @@
 </template>
 
 <script setup lang="ts">
-import type XPlayerInstance from '../../components/XPlayer/index.vue'
-import type { Subtitle } from '../../components/XPlayer/types'
-import type { Entity } from '../../utils/drive115'
+import type { XPlayerTypes } from '@/components'
+import type { Entity } from '@/utils/drive115'
 import { Icon } from '@iconify/vue'
 import { useTitle } from '@vueuse/core'
 import { computed, nextTick, onMounted, ref, shallowRef } from 'vue'
-import iinaIcon from '../../assets/icons/iina-icon.png'
-import XPlayer from '../../components/XPlayer/index.vue'
-import { controlRightStyles } from '../../components/XPlayer/styles/common'
-import { PLUS_VERSION } from '../../constants'
-import { useParamsVideoPage } from '../../hooks/useParams'
-import { ICON_PLAYLIST, ICON_STAR, ICON_STAR_FILL } from '../../icons'
-import { subtitlePreference } from '../../utils/cache/subtitlePreference'
-import { drive115 } from '../../utils/drive115'
-import { getAvNumber } from '../../utils/getNumber'
-import { isMac } from '../../utils/platform'
-import { goToPlayer } from '../../utils/route'
-import { webLinkIINA, webLinkShortcutsMpv } from '../../utils/weblink'
-import About from './components/About/index.vue'
-import HeaderInfo from './components/HeaderInfo/index.vue'
-import MovieInfo from './components/MovieInfo/index.vue'
-import Playlist from './components/Playlist/index.vue'
-import { useDataFileInfo } from './data/useDataFileInfo'
-import { useDataHistory } from './data/useDataHistory'
-import { useMark } from './data/useDataMark'
-import { useDataMovieInfo } from './data/useDataMovieInfo'
-import { useDataPlaylist } from './data/useDataPlaylist'
-import { usePreferences } from './data/usePreferences'
-import { useDataSubtitles } from './data/useSubtitlesData'
-import { useDataThumbnails } from './data/useThumbnails'
-import { useDataVideoSources } from './data/useVideoSource'
+import { useRoute, useRouter } from 'vue-router'
+import iinaIcon from '@/assets/icons/iina-icon.png'
+import { XPlayer } from '@/components'
+import { controlRightStyles } from '@/components/XPlayer/styles/common'
+import { PLUS_VERSION } from '@/constants'
+import { ICON_PLAYLIST, ICON_STAR, ICON_STAR_FILL } from '@/icons'
+import { subtitlePreference } from '@/utils/cache/subtitlePreference'
+import { drive115 } from '@/utils/drive115'
+import { getAvNumber } from '@/utils/getNumber'
+import { isMac } from '@/utils/platform'
+import { webLinkIINA, webLinkShortcutsMpv } from '@/utils/weblink'
+import {
+  About,
+  HeaderInfo,
+  MovieInfo,
+  Playlist,
+} from './components'
+import { useDataFileInfo, useDataHistory, useDataMovieInfo, useDataPlaylist, useDataSubtitles, useDataThumbnails, useDataVideoSources, useMark, usePreferences } from './data'
 
 const styles = {
   // 容器样式
@@ -182,7 +174,7 @@ const styles = {
       'flex flex-col items-center',
       'min-h-screen gap-5',
       'bg-base-100 text-gray-100',
-      'sm:[--app-xplayer-ratio:0.3] md:[--app-xplayer-ratio:0.518] lg:[--app-xplayer-ratio:0.618] 2xl:[--app-xplayer-ratio:0.718]',
+      'sm:[--app-xplayer-ratio:0.3] sm:[--app-xplayer-ratio:0.518] lg:[--app-xplayer-ratio:0.618] 2xl:[--app-xplayer-ratio:0.718]',
       '[--app-playlist-ratio:calc(1-var(--app-xplayer-ratio))]',
       '[--app-xplayer-width:calc(100%*var(--app-xplayer-ratio))]',
       '[--app-playlist-width:calc(100%*var(--app-playlist-ratio))]',
@@ -214,13 +206,14 @@ const styles = {
     iinaIcon: 'size-8 grayscale invert contrast-200',
   },
 }
-
+/** 路由 */
+const router = useRouter()
+/** 当前路由 */
+const route = useRoute('video')
 /** 播放器 Ref */
-const xplayerRef = ref<InstanceType<typeof XPlayerInstance>>()
+const xplayerRef = ref<InstanceType<typeof XPlayer>>()
 /** 偏好设置 */
 const preferences = usePreferences()
-/** 参数 */
-const params = useParamsVideoPage()
 /** 视频源 */
 const DataVideoSources = useDataVideoSources()
 /** 缩略图 */
@@ -264,20 +257,20 @@ const aspectRatio = computed(() => {
 })
 
 /** 处理字幕变化 */
-async function handleSubtitleChange(subtitle: Subtitle | null) {
+async function handleSubtitleChange(subtitle: XPlayerTypes.Subtitle | null) {
   // 保存字幕选择
   await subtitlePreference.savePreference(
-    params.pickCode.value ?? '',
+    route.params.pickCode ?? '',
     subtitle || null,
   )
 }
 
 /** 本地播放 */
 async function handleLocalPlay(player: LocalPlayer) {
-  if (!params.pickCode.value) {
+  if (!route.params.pickCode) {
     throw new Error('pickCode is required')
   }
-  const download = await drive115.getFileDownloadUrl(params.pickCode.value)
+  const download = await drive115.getFileDownloadUrl(route.params.pickCode)
   switch (player) {
     case 'mpv':
       open(webLinkShortcutsMpv(download))
@@ -292,23 +285,25 @@ async function handleLocalPlay(player: LocalPlayer) {
 }
 
 /** 播放器列表切换 */
-async function handleChangeVideo(item: Entity.PlaylistItem) {
+async function handleChangeVideo(item: Entity.FilesItem) {
   try {
     changeing.value = true
-    if (!params.cid.value) {
+    if (!route.params.cid) {
       throw new Error('cid is required')
     }
-    goToPlayer({
-      cid: params.cid.value,
-      pickCode: item.pc,
+    router.push({
+      name: 'video',
+      params: {
+        cid: route.params.cid,
+        pickCode: item.pc,
+      },
     })
-    params.getParams()
     DataVideoSources.clear()
     DataThumbnails.clear()
     DataHistory.clear()
     DataSubtitles.execute(
       0,
-      params.pickCode.value,
+      route.params.pickCode,
       DataFileInfo.state.file_name,
       null,
     )
@@ -341,10 +336,10 @@ function handleTimeupdate(time: number) {
     return
   }
   DataHistory.handleTimeupdate(time)
-  if (!params.pickCode.value) {
+  if (!route.params.pickCode) {
     throw new Error('pickCode is required')
   }
-  DataPlaylist.updateItemTime(params.pickCode.value, time)
+  DataPlaylist.updateItemTime(route.params.pickCode, time)
 }
 
 /** 关闭播放列表 */
@@ -359,20 +354,20 @@ function togglePlaylist() {
 
 /** 加载数据 */
 async function loadData(isFirst = true) {
-  if (!params.pickCode.value) {
+  if (!route.params.pickCode) {
     throw new Error('pickCode is required')
   }
-  if (!params.cid.value) {
+  if (!route.params.cid) {
     throw new Error('cid is required')
   }
   try {
-    await DataHistory.fetch(params.pickCode.value)
+    await DataHistory.fetch(route.params.pickCode)
   }
   catch (error) {
     console.error(error)
   }
   // 加载视频源
-  DataVideoSources.fetch(params.pickCode.value).then(() => {
+  DataVideoSources.fetch(route.params.pickCode).then(() => {
     // 初始化缩略图
     DataThumbnails.initialize(
       DataVideoSources.list.value,
@@ -381,7 +376,7 @@ async function loadData(isFirst = true) {
   })
 
   // 加载文件信息
-  DataFileInfo.execute(0, params.pickCode.value).then((res) => {
+  DataFileInfo.execute(0, route.params.pickCode).then((res) => {
     const avNumber = getAvNumber(res.file_name)
     // 设置标题
     useTitle(DataFileInfo.state.file_name || '')
@@ -391,11 +386,11 @@ async function loadData(isFirst = true) {
       DataMovieInfo.javBusState.execute(0, avNumber)
     }
     // 加载字幕
-    DataSubtitles.execute(0, params.pickCode.value, res.file_name, avNumber)
+    DataSubtitles.execute(0, route.params.pickCode, res.file_name, avNumber)
   })
 
   // 加载播放列表
-  isFirst && DataPlaylist.execute(0, params.cid.value)
+  isFirst && DataPlaylist.execute(0, route.params.cid)
 }
 
 // 挂载

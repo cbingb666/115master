@@ -1,6 +1,6 @@
 import type { EmitFn, InjectionKey, Ref, ShallowRef, ToRefs } from 'vue'
-import type { XPlayerEmit, XPlayerProps } from '../types'
-import type { usePlayerCoreDecorator } from './playerCore/usePlayerCore'
+import type { XPlayerEmit, XPlayerProps } from '../XPlayer.types'
+import type { usePlayerCoreDecorator } from '@/components/XPlayer/hooks/playerCore/usePlayerCore'
 import { useVModels } from '@vueuse/core'
 import {
 
@@ -8,27 +8,27 @@ import {
   provide,
   ref,
 } from 'vue'
+import { useContextMenu } from '@/components/XPlayer/hooks/useContextMenu'
+import { useControls } from '@/components/XPlayer/hooks/useControls'
+import { useCssVar } from '@/components/XPlayer/hooks/useCssVar'
+import { useFullscreen } from '@/components/XPlayer/hooks/useFullscreen'
+import { useHotKey } from '@/components/XPlayer/hooks/useHotKey'
+import { useHud } from '@/components/XPlayer/hooks/useHud'
+import { usePictureInPicture } from '@/components/XPlayer/hooks/usePictureInPicture'
+import { usePlaybackRate } from '@/components/XPlayer/hooks/usePlaybackRate'
+import { usePlaySettings } from '@/components/XPlayer/hooks/usePlaySettings'
+import { usePopupManager } from '@/components/XPlayer/hooks/usePopupManager'
+import { useProgressBar } from '@/components/XPlayer/hooks/useProgressBar'
+import { useSources } from '@/components/XPlayer/hooks/useSources'
+import { useStatistics } from '@/components/XPlayer/hooks/useStatistics'
+import { useSubtitles } from '@/components/XPlayer/hooks/useSubtitles'
+import { useThumbnailSettings } from '@/components/XPlayer/hooks/useThumbnailSettings'
+import { useTransform } from '@/components/XPlayer/hooks/useTransform'
+import { useVideoEnhance } from '@/components/XPlayer/hooks/useVideoEnhance'
 import {
 
   useSwitchPlayerCore,
 } from './playerCore/usePlayerCore'
-import { useContextMenu } from './useContextMenu'
-import { useControls } from './useControls'
-import { useCssVar } from './useCssVar'
-import { useFullscreen } from './useFullscreen'
-import { useHotKey } from './useHotKey'
-import { useHud } from './useHud'
-import { usePictureInPicture } from './usePictureInPicture'
-import { usePlaybackRate } from './usePlaybackRate'
-import { usePlaySettings } from './usePlaySettings'
-import { usePopupManager } from './usePopupManager'
-import { useProgressBar } from './useProgressBar'
-import { useSources } from './useSources'
-import { useStatistics } from './useStatistics'
-import { useSubtitles } from './useSubtitles'
-import { useThumbnailSettings } from './useThumbnailSettings'
-import { useTransform } from './useTransform'
-import { useVideoEnhance } from './useVideoEnhance'
 
 /**
  * 播放器引用

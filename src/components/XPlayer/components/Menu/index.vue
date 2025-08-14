@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core'
-import Popup from '../Popup/index.vue'
+import Popup from '@/components/XPlayer/components/Popup/index.vue'
 
 interface Props {
   visible: boolean

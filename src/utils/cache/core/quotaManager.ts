@@ -1,6 +1,6 @@
-import type { CacheCore } from './index'
-import { CLEANUP_BATCH_SIZE, STORAGE_QUOTA_THRESHOLD } from './const'
-import { MetaStore } from './metaStore'
+import type { CacheCore } from '@/utils/cache/core/index'
+import { CLEANUP_BATCH_SIZE, STORAGE_QUOTA_THRESHOLD } from '@/utils/cache/core/const'
+import { MetaStore } from '@/utils/cache/core/metaStore'
 
 /**
  * 存储空间使用情况

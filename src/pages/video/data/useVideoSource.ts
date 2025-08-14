@@ -1,14 +1,14 @@
-import type { VideoSource } from '../../../components/XPlayer'
+import type { XPlayerTypes } from '@/components'
 import { ref } from 'vue'
+import { XPlayerConst } from '@/components'
+import { qualityNumMap } from '@/constants/quality'
+import { drive115 } from '@/utils/drive115'
+import { getFileExtensionByUrl } from '@/utils/file'
 import { setVideoCookie } from '..'
-import { VideoSourceExtension } from '../../../components/XPlayer/types'
-import { qualityNumMap } from '../../../constants/quality'
-import { drive115 } from '../../../utils/drive115'
-import { getFileExtensionByUrl } from '../../../utils/file'
 
 /** 视频源 */
 export function useDataVideoSources() {
-  const list = ref<VideoSource[]>([])
+  const list = ref<XPlayerTypes.VideoSource[]>([])
 
   const fetch = async (pickCode: string) => {
     const [download, m3u8List] = await Promise.allSettled([
@@ -38,7 +38,7 @@ export function useDataVideoSources() {
 
       const extension
         = getFileExtensionByUrl(download.value.url.url)
-          ?? VideoSourceExtension.unknown
+          ?? XPlayerConst.VideoSourceExtension.unknown
 
       list.value.unshift({
         name: 'Ultra',
@@ -56,7 +56,7 @@ export function useDataVideoSources() {
           name: `${item.quality}P`,
           url: item.url,
           type: 'hls' as const,
-          extension: VideoSourceExtension.m3u8,
+          extension: XPlayerConst.VideoSourceExtension.m3u8,
           quality: item.quality,
           displayQuality:
             qualityNumMap[item.quality as keyof typeof qualityNumMap],

@@ -1,8 +1,8 @@
-import type { Subtitle } from '../../components/XPlayer/types'
-import { CacheCore } from './core'
+import type { XPlayerTypes } from '@/components'
+import { CacheCore } from '@/utils/cache/core'
 
 /** 字幕偏好 Type */
-export type SubtitlePreference = Subtitle
+export type SubtitlePreference = XPlayerTypes.Subtitle
 
 /** 字幕偏好存储前缀 */
 const STORE_PREFIX = 'subtitle_preference'
@@ -20,7 +20,7 @@ export class SubtitlePreferenceManager extends CacheCore<SubtitlePreference> {
   /** 保存字幕偏好 */
   async savePreference(
     pickcode: string,
-    subtitle: Subtitle | null,
+    subtitle: XPlayerTypes.Subtitle | null,
   ): Promise<void> {
     try {
       const key = this.getStoreKey(pickcode)

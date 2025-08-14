@@ -1,5 +1,5 @@
 import { defer } from 'lodash'
-import { BaseMod } from '../BaseMod'
+import { BaseMod } from '@/pages/home/BaseMod'
 import './index.css'
 import 'iconify-icon'
 

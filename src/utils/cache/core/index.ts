@@ -1,6 +1,6 @@
 import localforage from 'localforage'
-import { STORE_NAME } from './const'
-import { QuotaManager } from './quotaManager'
+import { STORE_NAME } from '@/utils/cache/core/const'
+import { QuotaManager } from '@/utils/cache/core/quotaManager'
 
 /** 缓存项接口 */
 interface CacheValue<T> {

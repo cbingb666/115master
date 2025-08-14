@@ -1,5 +1,5 @@
 import md5 from 'blueimp-md5'
-import { Rsa115 } from './rsa'
+import { Rsa115 } from '@/utils/drive115/rsa'
 
 export interface M115EncodeResult {
   data: string

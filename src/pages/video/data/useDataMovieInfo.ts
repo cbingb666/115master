@@ -1,6 +1,6 @@
 import { useAsyncState } from '@vueuse/core'
-import { JavBus, JavDB } from '../../../utils/jav'
-import { promiseDelay } from '../../../utils/promise'
+import { JavBus, JavDB } from '@/utils/jav'
+import { promiseDelay } from '@/utils/promise'
 
 export function useDataMovieInfo() {
   const javDB = new JavDB()

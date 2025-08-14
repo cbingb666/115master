@@ -74,8 +74,8 @@
 <script setup lang="ts">
 import { useElementSize } from '@vueuse/core'
 import { computed, onUnmounted, shallowRef } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import Thumbnail from '../Thumbnail/index.vue'
+import Thumbnail from '@/components/XPlayer/components/Thumbnail/index.vue'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 /** 样式抽象 */
 const styles = {

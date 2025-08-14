@@ -1,10 +1,11 @@
 import globToRegex from 'glob-to-regexp'
-import ROUTE_MATCH from './constants/route.match'
-import HomePage from './pages/home/index'
-import { magnetPage, registerMagnetProtocolHandler } from './pages/magnet'
-import { videoPage, videoTokenPage } from './pages/video'
-import { checkUserAgent } from './utils/checkUserAgent'
-import { debugInfo } from './utils/debugInfo'
+import { createMasterApp } from '@/app/index'
+import ROUTE_MATCH from '@/constants/route.match'
+import HomePage from '@/pages/home/index'
+import { magnetPage, registerMagnetProtocolHandler } from '@/pages/magnet'
+import { videoTokenPage } from '@/pages/video'
+import { checkUserAgent } from '@/utils/checkUserAgent'
+import { debugInfo } from '@/utils/debugInfo'
 
 /** 调试信息 */
 debugInfo.bootstrapInfo()
@@ -17,15 +18,15 @@ registerMagnetProtocolHandler()
 
 /** 路由匹配 */
 const routeMatch = [
-  /** 首页 */
+  /** 官方首页 */
   {
     match: ROUTE_MATCH.HOME,
     exec: () => new HomePage(),
   },
-  /** 视频页 */
+  /** 网盘首页 */
   {
-    match: ROUTE_MATCH.VIDEO,
-    exec: () => videoPage(),
+    match: ROUTE_MATCH.MASTER,
+    exec: () => createMasterApp(),
   },
   /** 视频页（token中转） */
   {

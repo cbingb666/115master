@@ -14,10 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Subtitle } from '../../types'
+import type { XPlayerTypes } from '../..'
 import { useElementBounding } from '@vueuse/core'
 import { computed, shallowRef, watch } from 'vue'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 
 const styles = {
   container: 'absolute inset-0',
@@ -112,7 +112,7 @@ function parseSubtitle(text: string) {
  * 加载字幕
  * @param subtitle 字幕
  */
-async function loadSubtitle(subtitle: Subtitle | null) {
+async function loadSubtitle(subtitle: XPlayerTypes.Subtitle | null) {
   if (!subtitle) {
     text.value = null
     return

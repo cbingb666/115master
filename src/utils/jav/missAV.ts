@@ -1,6 +1,6 @@
-import type { JavInfo } from './jav'
+import type { JavInfo } from '@/utils/jav/jav'
 import dayjs from 'dayjs'
-import { Jav, JAV_SOURCE } from './jav'
+import { Jav, JAV_SOURCE } from '@/utils/jav/jav'
 
 /**
  * MissAV 类

@@ -1,12 +1,12 @@
 import { GM_openInTab } from '$'
-import iinaIcon from '../../../../assets/icons/iina-icon.png'
-import { VOD_URL_115 } from '../../../../constants/115'
-import { drive115 } from '../../../../utils/drive115'
-import { isMac } from '../../../../utils/platform'
-import { goToPlayer } from '../../../../utils/route'
-import { webLinkIINA } from '../../../../utils/weblink'
-import { FileListType, IvType } from '../../types'
-import { FileItemModBase } from './base'
+import iinaIcon from '@/assets/icons/iina-icon.png'
+import { VOD_URL_115 } from '@/constants/115'
+import { FileItemModBase } from '@/pages/home/FileListMod/FileItemMod/base'
+import { FileListType, IvType } from '@/pages/home/types'
+import { drive115 } from '@/utils/drive115'
+import { isMac } from '@/utils/platform'
+import { goToPlayer } from '@/utils/route'
+import { webLinkIINA } from '@/utils/weblink'
 
 /**
  * 按钮配置

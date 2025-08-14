@@ -10,10 +10,10 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { PlayerCoreType } from '../../hooks/playerCore/types'
-import { usePlayerContext } from '../../hooks/usePlayerProvide'
-import { controlStyles } from '../../styles/common'
-import { ICON_PIP, ICON_PIP_EXIT } from '../../utils/icon'
+import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
+import { ICON_PIP, ICON_PIP_EXIT } from '@/components/XPlayer/utils/icon'
 
 const styles = {
   ...controlStyles,

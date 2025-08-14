@@ -6,6 +6,17 @@ dayjs.extend(duration)
 /**
  * 格式化时间戳为日期
  * @param timestamp 时间戳
+ * @returns 格式化后的日期字符串 YYYY-MM-DD HH:mm
+ */
+export function formatYMDHM(timestamp?: number) {
+  if (!timestamp)
+    return ''
+  return dayjs(timestamp).format('YYYY-MM-DD HH:mm')
+}
+
+/**
+ * 格式化时间戳为日期
+ * @param timestamp 时间戳
  * @returns 格式化后的日期字符串 YYYY-MM-DD
  */
 export function formatDate(timestamp?: number) {

@@ -1,14 +1,14 @@
-import type { Subtitle } from '../../../components/XPlayer/types'
+import type { XPlayerTypes } from '@/components'
 import { useAsyncState } from '@vueuse/core'
-import { subtitlePreference } from '../../../utils/cache/subtitlePreference'
-import { drive115 } from '../../../utils/drive115'
-import { fetchRequest } from '../../../utils/request/fetchRequest'
-import { filenameJaccardSimilarity } from '../../../utils/string'
-import { subtitlecat } from '../../../utils/subtitle/subtitlecat'
+import { subtitlePreference } from '@/utils/cache/subtitlePreference'
+import { drive115 } from '@/utils/drive115'
+import { fetchRequest } from '@/utils/request/fetchRequest'
+import { filenameJaccardSimilarity } from '@/utils/string'
+import { subtitlecat } from '@/utils/subtitle/subtitlecat'
 import {
   convertSrtToVtt,
   vttToBlobUrl,
-} from '../../../utils/subtitle/subtitleTool'
+} from '@/utils/subtitle/subtitleTool'
 
 /** 字幕数据 */
 export function useDataSubtitles() {
@@ -51,7 +51,7 @@ export function useDataSubtitles() {
   }
 
   /** 排序字幕 */
-  const sortSubtitles = (subtitles: Subtitle[], filename: string) => {
+  const sortSubtitles = (subtitles: XPlayerTypes.Subtitle[], filename: string) => {
     return subtitles.sort((a, b) => {
       const similarityA = filenameJaccardSimilarity(a.label, filename)
       const similarityB = filenameJaccardSimilarity(b.label, filename)
@@ -60,7 +60,7 @@ export function useDataSubtitles() {
   }
 
   /** 字幕数据 */
-  const subtitles = useAsyncState<Subtitle[]>(
+  const subtitles = useAsyncState<XPlayerTypes.Subtitle[]>(
     async (pickcode: string, filename: string, keyword: string) => {
       const preference = await subtitlePreference.getPreference(pickcode)
       const subtitleCats = await getFromSubtitlecat(keyword)

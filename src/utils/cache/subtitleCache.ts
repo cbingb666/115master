@@ -1,6 +1,6 @@
-import type { ProcessedSubtitle } from '../subtitle/subtitlecat'
-import { AppLogger } from '../logger'
-import { CacheCore } from './core'
+import type { ProcessedSubtitle } from '@/utils/subtitle/subtitlecat'
+import { CacheCore } from '@/utils/cache/core'
+import { AppLogger } from '@/utils/logger'
 
 /** 字幕缓存项 */
 interface SubtitleCacheItem {

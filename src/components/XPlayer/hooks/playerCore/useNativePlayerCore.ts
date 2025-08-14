@@ -1,9 +1,9 @@
-import type { PlayerContext } from '../usePlayerProvide'
-import type { PlayerCoreMethods } from './types'
+import type { PlayerCoreMethods } from '@/components/XPlayer/hooks/playerCore/types'
+import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { useEventListener } from '@vueuse/core'
 import { shallowRef, watch } from 'vue'
-import { PlayerCoreType } from './types'
-import { usePlayerCoreState } from './usePlayerCoreState'
+import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
+import { usePlayerCoreState } from '@/components/XPlayer/hooks/playerCore/usePlayerCoreState'
 
 /**
  * 原生播放器核心

@@ -1,6 +1,6 @@
-import type { WebApi } from './api'
-import type { DownloadResult } from './core'
-import { Drive115Core } from './core'
+import type { WebApi } from '@/utils/drive115/api'
+import type { DownloadResult } from '@/utils/drive115/core'
+import { Drive115Core } from '@/utils/drive115/core'
 
 /** 115驱动的包装 */
 export class Drive115Wrap extends Drive115Core {
@@ -35,7 +35,6 @@ export class Drive115Wrap extends Drive115Core {
       type: 4,
       source: '',
       format: 'json',
-      star: '',
       is_q: '',
       is_share: '',
       r_all: 1,
