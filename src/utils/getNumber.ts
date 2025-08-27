@@ -90,7 +90,7 @@ export function getAvNumber(filename: string): string | null {
     {
       name: '标准格式：字母-数字',
       pattern:
-        /(?:^|[^a-z])([a-z]{2,5})-?(\d{2,5})(?:c|-c)?(?:[^a-z]|$)/i,
+        /(?:^|[^a-z])([a-z]{2,5})-?(\d{2,5})(?:ch|-ch)?(?:[^a-z]|$)/i,
       format: (m: RegExpMatchArray) => {
         return `${m[1].toUpperCase()}-${m[2]}`
       },
