@@ -291,7 +291,7 @@ async function handleChangeVideo(item: Entity.FilesItem) {
     if (!route.params.cid) {
       throw new Error('cid is required')
     }
-    router.push({
+    router.replace({
       name: 'video',
       params: {
         cid: route.params.cid,

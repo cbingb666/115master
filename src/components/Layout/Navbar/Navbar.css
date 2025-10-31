@@ -13,6 +13,5 @@
   }
   to {
     opacity: 0;
-    transform: translateY(calc(0px - var(--navbar-height)));
   }
 }

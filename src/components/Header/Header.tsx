@@ -1,5 +1,6 @@
 import type { SlotsType } from 'vue'
-import { defineComponent } from 'vue'
+import { useIntersectionObserver } from '@vueuse/core'
+import { defineComponent, shallowRef } from 'vue'
 import { clsx } from '@/utils/clsx'
 import './Header.css'
 
@@ -7,29 +8,32 @@ const styles = clsx({
   root: [
     'relative',
     'h-[var(--drive-header-height)]',
+    'group',
   ],
   header: [
-    'fixed',
-    'top-[var(--navbar-height)]',
-    'left-[calc(var(--sider-width)+var(--spacing)*4)]',
-    'right-[calc(var(--spacing)*4)]',
+    'relative',
     'z-100',
     'h-14',
     'px-4',
-    'mx-auto',
+    'mx-4',
     'gap-2',
     'flex',
     'items-center',
     'justify-between',
     'h-[var(--drive-header-height)]',
-    'bg-base-200/70',
-    'liquid-glass',
+    'w-100%',
     'rounded-2xl',
-    'before:backdrop-blur-xl',
-    'before:rounded-2xl',
-    'after:rounded-2xl',
-    'header-scroll-effect',
     'will-change-transform',
+    'transition-all',
+    'group-data-[fixed=true]:fixed',
+    'group-data-[fixed=true]:liquid-glass',
+    'group-data-[fixed=true]:before:backdrop-blur-xl',
+    'group-data-[fixed=true]:before:rounded-2xl',
+    'group-data-[fixed=true]:after:rounded-2xl',
+    'group-data-[fixed=true]:transition-all',
+    'group-data-[fixed=true]:top-4',
+    'group-data-[fixed=true]:w-[calc(100%-var(--sider-width)-var(--spacing)*18)]',
+    'group-data-[fixed=true]:mx-9',
   ],
 })
 
@@ -45,9 +49,28 @@ const Header = defineComponent({
     default: () => void
   }>,
   setup: (props, { slots }) => {
+    const rootRef = shallowRef<HTMLElement>()
+    const isFixed = shallowRef(false)
+    useIntersectionObserver(
+      rootRef,
+      (e, f) => {
+        const [entry] = e
+        console.log(e, f)
+        isFixed.value = entry.intersectionRatio < 1
+      },
+      {
+        threshold: [0, 1],
+        rootMargin: `-16px 0px 0px 0px`,
+      },
+    )
+
     return () => {
       return (
-        <div class={[styles.root, props.class]}>
+        <div
+          ref={rootRef}
+          class={[styles.root, props.class]}
+          data-fixed={isFixed.value}
+        >
           <div class={styles.header}>
             {slots.default?.()}
           </div>

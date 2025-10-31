@@ -16,7 +16,7 @@ const styles = clsx({
     'relative',
     'w-full',
     'px-5',
-    'pt-2',
+    'pt-5',
     'pb-28',
     'focus-within:outline-none',
     // 列表模式
@@ -169,7 +169,7 @@ const FileList = defineComponent({
     /** 框选功能 */
     useMarqueeSelect({
       container: () => containerRef.value,
-      disabled: props.pathSelect, // 路径选择模式下禁用框选
+      disabled: props.pathSelect, // 路径选择模式下禁用框
     })
 
     /**
@@ -312,9 +312,10 @@ const FileList = defineComponent({
           '--fancybox-backdrop-bg': 'rgba(0, 0, 0, 1)',
         },
         Carousel: {
+          transition: 'crossfade',
           Lazyload: {
             showLoading: true,
-            preload: 10,
+            preload: 30,
           },
           Toolbar: {
             display: {

@@ -25,6 +25,8 @@
   }
   to {
     transform: translateY(calc(0px - var(--navbar-height) + var(--spacing) * 4));
+    box-shadow: 0 0 128px rgba(0, 0, 0, 0.9);
+    background: color-mix(in oklab, var(--color-black) 70%, transparent);
   }
 }
 

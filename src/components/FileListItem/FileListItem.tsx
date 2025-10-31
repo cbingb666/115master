@@ -207,15 +207,20 @@ const styles = clsx({
     'group-data-[view-type=card]:absolute group-data-[view-type=card]:top-1 group-data-[view-type=card]:right-1',
   ],
   content: [
+    'flex-1',
     // 列表模式
-    'group-data-[view-type=list]:flex-1 group-data-[view-type=list]:flex-col sm:group-data-[view-type=list]:flex sm:group-data-[view-type=list]:flex-row',
+    'group-data-[view-type=list]:flex-col',
     'group-data-[view-type=list]:items-center',
     'group-data-[view-type=list]:min-w-0',
     'group-data-[view-type=list]:gap-4',
+    'sm:group-data-[view-type=list]:flex',
+    'sm:group-data-[view-type=list]:flex-row',
     // 卡片模式
-    'group-data-[view-type=card]:flex-1 group-data-[view-type=card]:flex group-data-[view-type=card]:flex-col',
+    'group-data-[view-type=card]:grid',
+    'group-data-[view-type=card]:grid-cols-[1fr_auto]',
+    'group-data-[view-type=card]:grid-rows-[auto_auto_auto]',
     'group-data-[view-type=card]:p-3',
-    'group-data-[view-type=card]:gap-2',
+    'group-data-[view-type=card]:gap-1',
     'group-data-[view-type=card]:min-w-0',
   ],
   name: [
@@ -223,16 +228,20 @@ const styles = clsx({
     'flex-1',
     // 列表模式
     'group-data-[view-type=list]:space-x-2',
+    // 卡片模式
+    'group-data-[view-type=card]:col-span-2',
+    'group-data-[view-type=card]:row-start-1',
   ],
   nameText: [
     'text-neutral-100',
-    'text-md',
+    'text-base',
+    'break-words',
+    'wrap-anywhere',
     // 列表模式
     'group-data-[view-type=list]:truncate',
     'group-data-[view-type=list]:max-sm:block',
     // 卡片模式
     'group-data-[view-type=card]:font-medium',
-    'group-data-[view-type=card]:leading-tight',
     'group-data-[view-type=card]:line-clamp-4',
   ],
   star: [
@@ -248,6 +257,9 @@ const styles = clsx({
     'group-data-[view-type=list]:w-24 group-data-[view-type=list]:text-xs sm:group-data-[view-type=list]:text-sm',
     // 卡片模式
     'group-data-[view-type=card]:text-xs',
+    'group-data-[view-type=card]:col-start-2',
+    'group-data-[view-type=card]:row-start-3',
+    'group-data-[view-type=card]:text-right',
   ],
   time: [
     'text-base-content/60',
@@ -255,6 +267,8 @@ const styles = clsx({
     'group-data-[view-type=list]:w-60 group-data-[view-type=list]:text-xs sm:group-data-[view-type=list]:text-sm',
     // 卡片模式
     'group-data-[view-type=card]:text-xs',
+    'group-data-[view-type=card]:col-start-1',
+    'group-data-[view-type=card]:row-start-3',
   ],
   tags: [
     'flex items-center flex-wrap',
@@ -262,6 +276,8 @@ const styles = clsx({
     'group-data-[view-type=list]:justify-end group-data-[view-type=list]:gap-2 group-data-[view-type=list]:max-w-50',
     // 卡片模式
     'group-data-[view-type=card]:gap-1',
+    'group-data-[view-type=card]:col-span-2',
+    'group-data-[view-type=card]:row-start-2',
   ],
   tag: [
     'badge border-none bg-base-content/10',
@@ -788,15 +804,21 @@ const FileListItem = defineComponent({
               >
               </span>
               {/* star */}
-              <Icon
-                class={styles.star}
-                v-show={props.data.m === 1 || props.data.m === '1'}
-                icon="material-icon-theme:github-sponsors"
-              />
+              {
+                props.data.m === 1 || props.data.m === '1'
+                  ? (
+                      <Icon
+                        class={styles.star}
+                        v-show={props.data.m === 1 || props.data.m === '1'}
+                        icon="material-icon-theme:github-sponsors"
+                      />
+                    )
+                  : null
+              }
             </span>
 
             {/* tags */}
-            <span class={styles.tags} v-show={props.data.fl}>
+            <span class={styles.tags} v-show={(props.data.fl?.length ?? 0) > 0}>
               {
                 props.data.fl?.map(tag => (
                   <span
@@ -813,9 +835,15 @@ const FileListItem = defineComponent({
             </span>
 
             {/* size */}
-            <span class={styles.size} v-show={!props.pathSelect}>
-              { props.data.s ? formatFileSize(Number(props.data.s)) : '' }
-            </span>
+            {
+              !props.pathSelect && props.data.s
+                ? (
+                    <span class={styles.size}>
+                      { formatFileSize(Number(props.data.s)) }
+                    </span>
+                  )
+                : null
+            }
 
             {/* time */}
             <span

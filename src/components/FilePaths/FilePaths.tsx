@@ -13,7 +13,7 @@ const styles = clsx({
     'px-4',
     'py-0.5',
     'text-neutral-300',
-    'shadow-sm',
+    'text-shadow-2xs',
     'rounded-full',
     'no-underline!',
     'hover:bg-base-200/10',
