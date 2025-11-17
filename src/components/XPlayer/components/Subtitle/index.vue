@@ -99,7 +99,11 @@ function parseSubtitle(text: string) {
     if (/WEBVTT/.test(line))
       continue
 
-    const [time, text] = line.split(/\n/)
+    const linesSplit = line.split(/\n/)
+    /** 首行视为时间，其余为文本 */
+    const time = linesSplit.shift() ?? ''
+    const text = linesSplit.join('\n') ?? ''
+
     const [start, end] = time.split('-->')
     const st = timeToSeconds(start)
     const et = timeToSeconds(end)
