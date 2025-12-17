@@ -88,7 +88,7 @@
     "typescript": "^5.7.3",
     "vite": "^6.0.5",
     "vite-plugin-monkey": "^5.0.3",
-    "vite-plugin-static-copy": "^2.3.0",
+    "vite-plugin-static-copy": "^2.3.2",
     "vite-svg-loader": "^5.1.0",
     "vue-tsc": "^2.2.10"
   },
