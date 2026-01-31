@@ -70,6 +70,14 @@ pnpm analyze          # 构建分析 (生成 stats.html)
 pnpm lint:inspector   # ESLint 配置检查器
 ```
 
+### Changesets Commands
+
+```bash
+pnpm changeset        # 创建新的变更集
+pnpm changeset:version  # 更新版本号
+pnpm changeset:tag    # 创建 git tag
+```
+
 ### Monorepo Commands
 
 ```bash
@@ -466,3 +474,78 @@ MUST: 当需要依赖库文档时，使用以下方式主动查询：
 **Video**: @libmedia/\*, hls.js, m3u8-parser
 **Testing**: Vitest
 **Linting**: ESLint, @antfu/eslint-config
+**Release**: @changesets/cli
+
+---
+
+## CI/CD AND RELEASE
+
+### GitHub Actions Workflows
+
+本项目使用 GitHub Actions 进行持续集成和发布管理。
+
+#### CI Workflow (`.github/workflows/ci.yml`)
+
+- **触发条件**: push/PR 到 `main` 分支
+- **执行步骤**: lint → type-check → test → build
+- **权限**: `contents: read`
+
+#### Release Workflow (`.github/workflows/release.yml`)
+
+- **触发条件**: push 到 `release` 分支
+- **功能**: 使用 `changesets/action` 自动创建版本 PR 和 git tag
+- **权限**: `contents: write`, `pull-requests: write`
+
+#### Publish Workflow (`.github/workflows/publish.yml`)
+
+- **触发条件**: 推送 `@115master/monkey@*` 格式的标签
+- **功能**: 创建 GitHub Release 并上传 `apps/monkey/dist/*.js` 文件
+- **权限**: `contents: write`
+
+### Changesets 配置
+
+Changesets 用于管理版本和发布流程。
+
+**配置文件**: `.changeset/config.json`
+
+```json
+{
+  "baseBranch": "release",
+  "privatePackages": {
+    "version": true,
+    "tag": true
+  }
+}
+```
+
+### 发布流程
+
+```txt
+1. 开发功能/修复 bug
+   ↓
+2. 运行 `pnpm changeset` 创建变更集
+   ↓
+3. 合并代码到 `release` 分支
+   ↓
+4. Release workflow 自动创建 "Version Packages" PR
+   ↓
+5. 合并 Version PR → changesets 自动创建 git tag
+   ↓
+6. Publish workflow 自动创建 GitHub Release 并上传 dist 文件
+```
+
+### 创建变更集
+
+当你完成一个功能或修复时，运行：
+
+```bash
+pnpm changeset
+```
+
+按照提示选择：
+
+1. 选择受影响的包 (`@115master/monkey` 或 `@115master/shared`)
+2. 选择版本类型 (`patch` / `minor` / `major`)
+3. 输入变更描述
+
+这会在 `.changeset/` 目录创建一个 markdown 文件，描述此次变更。
