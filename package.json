@@ -31,9 +31,13 @@
     "lint:inspector": "pnpm dlx @eslint/config-inspector",
     "analyze": "turbo run analyze",
     "preinstall": "npx -y only-allow pnpm",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:tag": "changeset tag"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "cross-env": "^10.1.0",
     "turbo": "^2.3.4"
   },
