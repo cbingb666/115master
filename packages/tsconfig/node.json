@@ -7,7 +7,8 @@
     "lib": ["ES2023"],
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "noEmit": false
+    "noEmit": false,
+    "types": ["node"]
   },
   "include": ["vite.config.ts", "plugins/**/*.ts"]
 }

@@ -70,6 +70,7 @@
     "@types/glob-to-regexp": "^0.4.4",
     "@types/lodash": "^4.17.15",
     "@types/m3u8-parser": "^7.2.0",
+    "@types/node": "^25.1.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/coverage-v8": "4.0.16",
     "@vitest/ui": "^4.0.16",

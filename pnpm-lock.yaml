@@ -10,7 +10,7 @@ importers:
     devDependencies:
       '@changesets/cli':
         specifier: ^2.29.8
-        version: 2.29.8
+        version: 2.29.8(@types/node@25.1.0)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -46,7 +46,7 @@ importers:
         version: 2.2.0
       '@tailwindcss/vite':
         specifier: ^4.1.7
-        version: 4.1.18(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+        version: 4.1.18(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
       '@vueuse/core':
         specifier: ^14.1.0
         version: 14.1.0(vue@3.5.27(typescript@5.9.3))
@@ -126,9 +126,12 @@ importers:
       '@types/m3u8-parser':
         specifier: ^7.2.0
         version: 7.2.6
+      '@types/node':
+        specifier: ^25.1.0
+        version: 25.1.0
       '@vitejs/plugin-vue':
         specifier: ^5.2.1
-        version: 5.2.4(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))
+        version: 5.2.4(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))
       '@vitest/coverage-v8':
         specifier: 4.0.16
         version: 4.0.16(vitest@4.0.18)
@@ -152,19 +155,19 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^6.0.11
-        version: 6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+        version: 6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
       vite-plugin-monkey:
         specifier: ^5.0.5
-        version: 5.0.9(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+        version: 5.0.9(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
       vite-plugin-static-copy:
         specifier: ^2.3.0
-        version: 2.3.2(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+        version: 2.3.2(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
       vite-svg-loader:
         specifier: ^5.1.0
         version: 5.1.0(vue@3.5.27(typescript@5.9.3))
       vitest:
         specifier: ^4.0.16
-        version: 4.0.18(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+        version: 4.0.18(@types/node@25.1.0)(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
       vue-tsc:
         specifier: ^2.2.10
         version: 2.2.12(typescript@5.9.3)
@@ -984,6 +987,9 @@ packages:
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
+
+  '@types/node@25.1.0':
+    resolution: {integrity: sha512-t7frlewr6+cbx+9Ohpl0NOTKXZNV9xHRmNOvql47BFJKcEG1CxtxlPEEe+gR9uhVWM4DwhnvTF110mIL4yP9RA==}
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
@@ -2889,6 +2895,9 @@ packages:
   ufo@1.6.3:
     resolution: {integrity: sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==}
 
+  undici-types@7.16.0:
+    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+
   unist-util-is@6.0.1:
     resolution: {integrity: sha512-LsiILbtBETkDz8I9p1dQ0uyRUWuaQzd/cuEeS1hoRSyW5E5XGmTzlwY1OrNzzakGowI9Dr/I8HVaw4hTtnxy8g==}
 
@@ -3198,7 +3207,7 @@ snapshots:
     dependencies:
       '@changesets/types': 6.1.0
 
-  '@changesets/cli@2.29.8':
+  '@changesets/cli@2.29.8(@types/node@25.1.0)':
     dependencies:
       '@changesets/apply-release-plan': 7.0.14
       '@changesets/assemble-release-plan': 6.0.9
@@ -3214,7 +3223,7 @@ snapshots:
       '@changesets/should-skip-package': 0.1.2
       '@changesets/types': 6.1.0
       '@changesets/write': 0.4.0
-      '@inquirer/external-editor': 1.0.3
+      '@inquirer/external-editor': 1.0.3(@types/node@25.1.0)
       '@manypkg/get-packages': 1.1.3
       ansi-colors: 4.1.3
       ci-info: 3.9.0
@@ -3525,10 +3534,12 @@ snapshots:
       '@iconify/types': 2.0.0
       vue: 3.5.27(typescript@5.9.3)
 
-  '@inquirer/external-editor@1.0.3':
+  '@inquirer/external-editor@1.0.3(@types/node@25.1.0)':
     dependencies:
       chardet: 2.1.1
       iconv-lite: 0.7.2
+    optionalDependencies:
+      '@types/node': 25.1.0
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -3832,12 +3843,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.1.18
       '@tailwindcss/oxide-win32-x64-msvc': 4.1.18
 
-  '@tailwindcss/vite@4.1.18(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
+  '@tailwindcss/vite@4.1.18(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
     dependencies:
       '@tailwindcss/node': 4.1.18
       '@tailwindcss/oxide': 4.1.18
       tailwindcss: 4.1.18
-      vite: 6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vite: 6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
   '@trysound/sax@0.2.0': {}
 
@@ -3875,6 +3886,10 @@ snapshots:
   '@types/ms@2.1.0': {}
 
   '@types/node@12.20.55': {}
+
+  '@types/node@25.1.0':
+    dependencies:
+      undici-types: 7.16.0
 
   '@types/unist@3.0.3': {}
 
@@ -3976,9 +3991,9 @@ snapshots:
       '@babel/runtime': 7.28.6
       global: 4.4.0
 
-  '@vitejs/plugin-vue@5.2.4(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))':
+  '@vitejs/plugin-vue@5.2.4(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))':
     dependencies:
-      vite: 6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vite: 6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
       vue: 3.5.27(typescript@5.9.3)
 
   '@vitest/coverage-v8@4.0.16(vitest@4.0.18)':
@@ -3994,7 +4009,7 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vitest: 4.0.18(@types/node@25.1.0)(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -4005,7 +4020,7 @@ snapshots:
       eslint: 9.39.2(jiti@2.6.1)
     optionalDependencies:
       typescript: 5.9.3
-      vitest: 4.0.18(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vitest: 4.0.18(@types/node@25.1.0)(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -4018,13 +4033,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.18(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
+  '@vitest/mocker@4.0.18(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
     dependencies:
       '@vitest/spy': 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vite: 6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
   '@vitest/pretty-format@4.0.16':
     dependencies:
@@ -4056,7 +4071,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vitest: 4.0.18(@types/node@25.1.0)(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
   '@vitest/utils@4.0.16':
     dependencies:
@@ -5985,6 +6000,8 @@ snapshots:
 
   ufo@1.6.3: {}
 
+  undici-types@7.16.0: {}
+
   unist-util-is@6.0.1:
     dependencies:
       '@types/unist': 3.0.3
@@ -6020,7 +6037,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite-plugin-monkey@5.0.9(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)):
+  vite-plugin-monkey@5.0.9(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)):
     dependencies:
       acorn-walk: 8.3.4
       cross-spawn: 7.0.6
@@ -6032,23 +6049,23 @@ snapshots:
       picocolors: 1.1.1
       systemjs: 6.15.1
     optionalDependencies:
-      vite: 6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vite: 6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
-  vite-plugin-static-copy@2.3.2(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)):
+  vite-plugin-static-copy@2.3.2(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)):
     dependencies:
       chokidar: 3.6.0
       fast-glob: 3.3.3
       fs-extra: 11.3.3
       p-map: 7.0.4
       picocolors: 1.1.1
-      vite: 6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vite: 6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
   vite-svg-loader@5.1.0(vue@3.5.27(typescript@5.9.3)):
     dependencies:
       svgo: 3.3.2
       vue: 3.5.27(typescript@5.9.3)
 
-  vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2):
+  vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
@@ -6057,15 +6074,16 @@ snapshots:
       rollup: 4.57.1
       tinyglobby: 0.2.15
     optionalDependencies:
+      '@types/node': 25.1.0
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.2
       yaml: 2.8.2
 
-  vitest@4.0.18(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2):
+  vitest@4.0.18(@types/node@25.1.0)(@vitest/ui@4.0.18)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2):
     dependencies:
       '@vitest/expect': 4.0.18
-      '@vitest/mocker': 4.0.18(vite@6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+      '@vitest/mocker': 4.0.18(vite@6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
       '@vitest/pretty-format': 4.0.18
       '@vitest/runner': 4.0.18
       '@vitest/snapshot': 4.0.18
@@ -6082,9 +6100,10 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 6.4.1(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vite: 6.4.1(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
+      '@types/node': 25.1.0
       '@vitest/ui': 4.0.18(vitest@4.0.18)
     transitivePeerDependencies:
       - jiti
