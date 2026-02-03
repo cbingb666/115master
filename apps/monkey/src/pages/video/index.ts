@@ -1,8 +1,9 @@
 import { GM_addStyle, GM_cookie } from '$'
-import { createApp, defineAsyncComponent } from 'vue'
+import { createApp } from 'vue'
 import { DL_URL_115, NORMAL_URL_115 } from '@/constants/115'
 import mainStyles from '@/styles/main.css?inline'
 import { core115 } from '@/utils/core115'
+import VideoPage from './index.vue'
 
 function resetDocument() {
   document.body.style.backgroundColor = '#000'
@@ -110,11 +111,7 @@ export async function videoPage() {
   }
   document.head.append(style)
 
-  createApp(
-    defineAsyncComponent({
-      loader: () => import('./index.vue'),
-    }),
-  ).mount('#my-app')
+  createApp(VideoPage).mount('#my-app')
 
   core115.load()
 }

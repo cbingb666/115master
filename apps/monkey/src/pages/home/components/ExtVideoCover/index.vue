@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
+import PhotoSwipe from 'photoswipe'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import LoadingError from '@/components/LoadingError/index.vue'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
@@ -122,7 +123,7 @@ function initPhotoSwipe() {
       alt: '视频封面',
     })),
     showHideAnimationType: 'fade',
-    pswpModule: () => import('photoswipe'),
+    pswpModule: () => Promise.resolve(PhotoSwipe),
     mouseMovePan: true,
     initialZoomLevel: 'fit',
     secondaryZoomLevel: 2,

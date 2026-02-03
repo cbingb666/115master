@@ -227,6 +227,7 @@
 <script lang="ts" setup>
 import type { useDataMovieInfo } from '@/pages/video/data/useDataMovieInfo'
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
+import PhotoSwipe from 'photoswipe'
 import { computed, nextTick, ref, watch } from 'vue'
 import Empty from '@/components/empty/Empty.vue'
 import LoadingError from '@/components/LoadingError/index.vue'
@@ -322,7 +323,7 @@ watch(movieInfoThumb, async () => {
   lightbox.value = new PhotoSwipeLightbox({
     gallery: movieInfoThumb.value,
     children: 'a',
-    pswpModule: () => import('photoswipe'),
+    pswpModule: () => Promise.resolve(PhotoSwipe),
     mouseMovePan: true,
     initialZoomLevel: 'fit',
     wheelToZoom: true,
