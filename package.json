@@ -31,7 +31,7 @@
     "lint:inspector": "pnpm dlx @eslint/config-inspector",
     "analyze": "turbo run analyze",
     "changeset": "changeset",
-    "version-packages": "changeset version",
+    "version-packages": "GITHUB_TOKEN=$(gh auth token) changeset version",
     "release": "changeset publish",
     "preinstall": "npx -y only-allow pnpm",
     "clean": "turbo run clean && rm -rf node_modules"
