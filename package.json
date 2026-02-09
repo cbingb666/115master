@@ -2,7 +2,7 @@
   "name": "115master-monorepo",
   "private": true,
   "packageManager": "pnpm@9.15.9",
-  "description": "115网盘魔法优化: 画质增强 | 视频缩略图 | 在线字幕",
+  "description": "115master monorepo",
   "author": "cbingb666",
   "license": "MIT",
   "homepage": "https://github.com/cbingb666/115master",
