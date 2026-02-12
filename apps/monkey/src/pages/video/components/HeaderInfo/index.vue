@@ -21,8 +21,12 @@
       <!-- 目录 -->
       <div :class="styles.fileInfo.path.container">
         <ul>
-          <li v-for="item in path" :key="item.cid" @click="handleOpenFolder(item.cid)">
-            <a>
+          <li v-for="item in path" :key="item.cid">
+            <a
+              :href="`https://115.com/?cid=${item.cid}&offset=0&tab=&mode=wangpan`"
+              target="_blank"
+              rel="noreferrer"
+            >
               {{ item.name }}
             </a>
           </li>
@@ -83,8 +87,4 @@ const path = computed(() => {
     item => Number(item.cid) !== 0,
   )
 })
-
-function handleOpenFolder(id: string) {
-  window.open(`https://115.com/?cid=${id}&offset=0&tab=&mode=wangpan`, '_blank', 'noreferrer')
-}
 </script>

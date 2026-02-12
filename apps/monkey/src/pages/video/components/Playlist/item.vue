@@ -1,8 +1,11 @@
 <template>
-  <div
+  <a
     ref="rootRef"
+    :href="`https://115.com/web/lixian/master/video/?pick_code=${item.pc}`"
+    target="_blank"
+    rel="noreferrer"
     :class="[styles.item.base]"
-    @click="handlePlay(item)"
+    @click.prevent="handlePlay(item)"
   >
     <div :class="styles.cover.container">
       <template v-if="videoCover.error">
@@ -46,7 +49,7 @@
         {{ formatFileSize(item.s) }}
       </div>
     </div>
-  </div>
+  </a>
 </template>
 
 <script setup lang="ts">
