@@ -258,9 +258,11 @@ onClickOutside(popupRef, (event) => {
       event.stopPropagation()
     }
 
-    // 如果popup管理器有阻止冒泡元素，则阻止冒泡
+    // 如果popup管理器有阻止冒泡元素，且允许阻止控制栏关闭，则阻止冒泡
+    // allowPreventControlsClose 为 false 的弹窗（如 HUD）不应阻止事件传播
     if (
-      popupManager?.disabledBubblingElements.has(event.target as HTMLElement)
+      props.allowPreventControlsClose
+      && popupManager?.disabledBubblingElements.has(event.target as HTMLElement)
     ) {
       event.stopPropagation()
     }
