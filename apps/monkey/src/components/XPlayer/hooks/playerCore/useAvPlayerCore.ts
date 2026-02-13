@@ -18,6 +18,9 @@ import { usePlayerCoreState } from './usePlayerCoreState'
 /** 获取 wasm 参数 */
 type GetWasmArgs = Parameters<NonNullable<AVPlayerOptions['getWasm']>>
 
+/** 硬件加速状态 */
+const hardwareAccelerated = ref(true)
+
 /** 流 */
 export interface Stream {
   /** 媒体类型 */
@@ -221,6 +224,22 @@ function collectUnsupportWasm(collect: Array<GetWasmArgs>, getWasmFn: typeof get
   }
 }
 
+/** 检测浏览器当前是否已开启硬件加速 */
+async function detectHardwareAcceleration() {
+  if (!window.VideoDecoder)
+    return false
+
+  const config: VideoDecoderConfig = {
+    codec: 'avc1.42E01E',
+    codedWidth: 1920,
+    codedHeight: 1080,
+    hardwareAcceleration: 'prefer-hardware',
+  }
+
+  const support = await VideoDecoder.isConfigSupported(config)
+  return Boolean(support.supported)
+}
+
 /**
  * 使用 AvPlayerCore
  */
@@ -341,6 +360,8 @@ export function useAvPlayerCore(ctx: PlayerContext) {
   const methods: PlayerCoreMethods = {
     init: async (container) => {
       try {
+        hardwareAccelerated.value = await detectHardwareAcceleration()
+
         const AVPlayer = await loadESM<AVPlayerConstructor>({
           pkgName: '@libmedia/avplayer',
           path: 'dist/esm/avplayer.js',
@@ -407,6 +428,13 @@ export function useAvPlayerCore(ctx: PlayerContext) {
             // 必须包含凭证, 否则 115 浏览器无法播放
             credentials: 'include',
           },
+        })
+        .then(() => {
+          if (!hardwareAccelerated.value) {
+            setTimeout(() => {
+              alert('浏览器当前未开启硬件加速，或影响avplayer播放体验')
+            })
+          }
         })
         .then(async () => {
           streams.value = await player.getStreams()
