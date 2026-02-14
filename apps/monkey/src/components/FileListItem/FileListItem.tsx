@@ -141,7 +141,7 @@ const styles = clsx({
     'h-full w-full',
     'bg-black',
     'overflow-hidden',
-    'border-1',
+    'border',
     'border-base-content/5',
     // 列表模式
     'group-data-[view-type=list]:rounded-lg',
@@ -161,7 +161,6 @@ const styles = clsx({
   coverImage: [
     'cursor-grab',
     'object-cover',
-    'bg-base-content/90',
     'rounded-md',
     // 列表模式
     'group-data-[view-type=list]:size-14',
@@ -169,9 +168,9 @@ const styles = clsx({
     'group-data-[view-type=list]:ring-neutral-800',
     // 卡片模式
     'group-data-[view-type=card]:relative',
-    'group-data-[view-type=card]:bg-black',
     'group-data-[view-type=card]:object-contain',
-    'group-data-[view-type=card]:h-[61%]',
+    'group-data-[view-type=card]:aspect-square',
+    'group-data-[view-type=card]:h-[70%]',
     'group-data-[view-type=card]:transition-all',
   ],
   coverActressFace: [
@@ -182,7 +181,7 @@ const styles = clsx({
     'rounded-lg',
     // 列表模式
     'group-data-[view-type=list]:size-13',
-    'group-data-[view-type=list]:border-1',
+    'group-data-[view-type=list]:border',
     'group-data-[view-type=list]:border-neutral-800',
     // 卡片模式
     'group-data-[view-type=card]:absolute',
@@ -235,7 +234,7 @@ const styles = clsx({
   nameText: [
     'text-neutral-100',
     'text-base',
-    'break-words',
+    'wrap-break-word',
     'wrap-anywhere',
     // 列表模式
     'group-data-[view-type=list]:truncate',
