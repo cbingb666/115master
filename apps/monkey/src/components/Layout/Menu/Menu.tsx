@@ -25,13 +25,21 @@ const Menu = defineComponent({
     function isActive(menu: MenuItem) {
       const route = useRoute()
 
-      // 如果 menu.to 是对象且有 name 属性，按路由名称匹配
-      if (typeof menu.to === 'object' && 'name' in menu.to && menu.to.name) {
-        const routeName = (menu.to as { name: string }).name
-        return route.matched.some(item => item.name === routeName)
+      // 优先使用 activeMatch 进行匹配
+      if (menu.activeMatch) {
+        const { name, params } = menu.activeMatch
+        const matched = route.matched.some(item => item.name === name)
+        if (!matched)
+          return false
+        if (params) {
+          return Object.entries(params).every(
+            ([key, value]) => Reflect.get(route.params, key) === value,
+          )
+        }
+        return true
       }
 
-      // 如果 menu.to 是字符串，按路径匹配
+      // 回退：如果 menu.to 是字符串，按路径前缀匹配
       if (typeof menu.to === 'string') {
         return route.path === menu.to || route.path.startsWith(`${menu.to}/`)
       }

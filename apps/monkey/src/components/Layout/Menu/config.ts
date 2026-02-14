@@ -12,6 +12,10 @@ export const MENU_CONFIG: MenuItem[] = [
         cid: '0',
       },
     },
+    activeMatch: {
+      name: 'drive',
+      params: { area: 'all' },
+    },
   },
   // {
   //   icon: 'material-symbols:save-clock',
@@ -23,6 +27,10 @@ export const MENU_CONFIG: MenuItem[] = [
     icon: ICON_STAR_FILL,
     name: '星标',
     to: '/drive/star',
+    activeMatch: {
+      name: 'drive',
+      params: { area: 'star' },
+    },
   },
   // {
   //   icon: 'material-icon-theme:folder-shared',
