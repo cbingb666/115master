@@ -22,13 +22,11 @@ export interface RouteNamedMap {
   /** 播放页 */
   video: RouteRecordInfo<
       'video',
-      '/video/:cid/:pickCode',
+      '/video/:pickCode',
       {
-        cid: string
         pickCode: string
       },
       {
-        cid: string
         pickCode: string
       }
     >

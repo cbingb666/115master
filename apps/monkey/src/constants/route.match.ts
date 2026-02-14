@@ -1,5 +1,5 @@
-import { DL_HOST_155, NORMAL_HOST_155 } from './115'
 import { MASTER_BASE_URL } from '.'
+import { DL_HOST_155, NORMAL_HOST_155 } from './115'
 
 const ROUTE_MATCH = {
   HOME: `*://${NORMAL_HOST_155}/?*`,

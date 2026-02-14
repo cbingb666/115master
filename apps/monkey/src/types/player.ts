@@ -1,7 +1,5 @@
 /** 播放中的视频信息 */
 export interface PlayingVideoInfo {
-  /** 目录 ID */
-  cid?: string
   /** 文件唯一标识 */
   pickCode: string
 }

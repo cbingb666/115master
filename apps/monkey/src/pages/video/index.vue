@@ -327,7 +327,7 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
       // 设置 Core.FileConfig，确保移动操作能正确执行
       if (core115.global.Core.FileConfig) {
         core115.global.Core.FileConfig.aid = Number(DataFileInfo.state.parent_id) || 0
-        core115.global.Core.FileConfig.cid = params.cid.value || '0'
+        core115.global.Core.FileConfig.cid = params.cid.value || DataFileInfo.state.parent_id || '0'
       }
 
       /** 创建模拟 jQuery 对象 */
@@ -359,7 +359,7 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
           const newParentId = DataFileInfo.state.parent_id
           if (newParentId) {
             await DataPlaylist.execute(0, newParentId)
-            /** 更新 cid 参数为新目录 */
+            /** 更新 cid */
             params.cid.value = newParentId
           }
 
@@ -464,7 +464,6 @@ async function changeVideo(item: Entity.FilesItem) {
     goToPlayer({
       pickCode: item.pc,
     })
-    params.getParams()
     DataThumbnails.destory()
     DataSubtitles.execute(0, '')
     DataVideoSources.clear()
@@ -579,8 +578,8 @@ async function loadData(isFirst = true) {
       DataSubtitles.execute(0, pickCode, res.file_name, avNumber)
 
       // 加载播放列表
-      if (isFirst && params.cid.value) {
-        DataPlaylist.execute(0, params.cid.value)
+      if (isFirst && res.parent_id) {
+        DataPlaylist.execute(0, res.parent_id)
       }
     }),
   )

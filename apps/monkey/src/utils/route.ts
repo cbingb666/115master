@@ -1,6 +1,6 @@
 import type { PlayingVideoInfo } from '@/types/player'
 import { GM_openInTab, GM_setValue } from '$'
-import { useRouter } from 'vue-router'
+import { router } from '@/app/router'
 import { NORMAL_HOST_155 } from '@/constants/115'
 import GM_VALUE_KEY from '@/constants/gm.value.key'
 
@@ -12,8 +12,7 @@ import GM_VALUE_KEY from '@/constants/gm.value.key'
 export function goToPlayer(playingVideoInfo: PlayingVideoInfo, isOpenInTab = false) {
   GM_setValue(GM_VALUE_KEY.PLAYING_VIDEO_INFO, playingVideoInfo)
 
-  const cid = playingVideoInfo.cid ?? ''
-  const url = `https://${NORMAL_HOST_155}/web/lixian/master/#/video/${cid}/${playingVideoInfo.pickCode}`
+  const url = `https://${NORMAL_HOST_155}/web/lixian/master/#/video/${playingVideoInfo.pickCode}`
   if (isOpenInTab) {
     GM_openInTab(url, {
       active: true,
@@ -21,12 +20,9 @@ export function goToPlayer(playingVideoInfo: PlayingVideoInfo, isOpenInTab = fal
     return
   }
 
-  /** history.pushState({}, '', url) */
-  const router = useRouter()
   router.push({
     name: 'video',
     params: {
-      cid: playingVideoInfo.cid ?? '',
       pickCode: playingVideoInfo.pickCode,
     },
   })

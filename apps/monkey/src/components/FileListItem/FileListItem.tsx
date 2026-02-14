@@ -444,7 +444,7 @@ const FileListItem = defineComponent({
       // 视频
       if (Utils115.isVideo(data.iv)) {
         return {
-          to: `/video/${data.cid}/${data.pc}`,
+          to: `/video/${data.pc}`,
           target: '_self',
         }
       }

@@ -29,7 +29,7 @@ const styles = clsx({
   // 容器样式
   container: {
     root: [
-      'flex flex-col h-full',
+      'flex h-full flex-col',
       '[--drive-header-height:calc(var(--spacing)*12)]',
     ],
     layout: [
@@ -45,16 +45,16 @@ const styles = clsx({
   // 侧边栏样式
   sider: {
     downloadBtn: [
-      'btn btn-md btn-primary rounded-full btn-soft btn-text px-6 flex-none',
+      'btn btn-md btn-primary btn-soft btn-text flex-none rounded-full px-6',
     ],
     menuContainer: [
-      'flex-1 mt-5',
+      'mt-5 flex-1',
     ],
     menu: [
       'flex-1',
     ],
     divider: [
-      'h-px w-full bg-base-content/5 my-4',
+      'bg-base-content/5 my-4 h-px w-full',
     ],
   },
 
@@ -82,13 +82,13 @@ const styles = clsx({
   // 空间信息样式
   spaceInfo: {
     container: [
-      'mt-2 flex-none flex flex-col gap-2',
+      'mt-2 flex flex-none flex-col gap-2',
     ],
     text: [
-      'text-sm text-base-content/70',
+      'text-base-content/70 text-sm',
     ],
     progress: [
-      'progress progress-lg w-38 progress-primary',
+      'progress progress-lg progress-primary w-38',
     ],
   },
 
