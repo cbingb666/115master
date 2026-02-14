@@ -1,0 +1,50 @@
+{
+  "name": "@115master/drive115",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "description": "115 Drive API client for 115Master",
+  "author": "cbingb666",
+  "license": "MIT",
+  "homepage": "https://github.com/cbingb666/115master",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbingb666/115master.git",
+    "directory": "/packages/drive115"
+  },
+  "bugs": {
+    "url": "https://github.com/cbingb666/115master/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@115master/shared": "workspace:*",
+    "big-integer": "^1.6.52",
+    "blueimp-md5": "^2.19.0"
+  },
+  "devDependencies": {
+    "@115master/eslint-config": "workspace:*",
+    "@115master/tsconfig": "workspace:*",
+    "@types/big-integer": "^0.0.35",
+    "@types/blueimp-md5": "^2.18.2",
+    "typescript": "^5.7.3"
+  }
+}

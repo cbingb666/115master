@@ -1,0 +1,5 @@
+export type * as Entity from './entity.ts'
+export type * as MyApi from './myApi/index.ts'
+export type * as NormalApi from './normalApi/index.ts'
+export type * as ProApi from './proApi/index.ts'
+export type * as WebApi from './webApi/index.ts'
