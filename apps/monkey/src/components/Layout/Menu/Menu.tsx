@@ -8,8 +8,8 @@ import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
   menu: 'flex w-full flex-col gap-1',
-  menuItem: 'btn btn-md btn-secondary btn-ghost w-full justify-start gap-3 px-6',
-  menuItemActive: 'btn-active',
+  menuItem: 'btn btn-md btn-ghost w-full justify-start gap-3 px-6',
+  menuItemActive: 'btn-active btn-secondary',
   menuItemIcon: 'text-2xl',
 })
 
