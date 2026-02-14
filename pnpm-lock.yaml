@@ -35,6 +35,9 @@ importers:
 
   apps/monkey:
     dependencies:
+      '@115master/drive115':
+        specifier: workspace:*
+        version: link:../../packages/drive115
       '@cbingbing/demuxer':
         specifier: ^2.4.1
         version: 2.4.1
@@ -210,6 +213,34 @@ importers:
       vue-tsc:
         specifier: ^2.2.10
         version: 2.2.12(typescript@5.9.3)
+
+  packages/drive115:
+    dependencies:
+      '@115master/shared':
+        specifier: workspace:*
+        version: link:../shared
+      big-integer:
+        specifier: ^1.6.52
+        version: 1.6.52
+      blueimp-md5:
+        specifier: ^2.19.0
+        version: 2.19.0
+    devDependencies:
+      '@115master/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@115master/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/big-integer':
+        specifier: ^0.0.35
+        version: 0.0.35
+      '@types/blueimp-md5':
+        specifier: ^2.18.2
+        version: 2.18.2
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
 
   packages/eslint-config:
     dependencies:

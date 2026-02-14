@@ -1,9 +1,9 @@
+import type { WebApi } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { UseDriveFileOptions } from '@/hooks/useDriveFile/types'
-import type { WebApi } from '@/utils/drive115/api'
 import { toReactive, useAsyncState } from '@vueuse/core'
 import { computed, ref, shallowRef } from 'vue'
-import { drive115 } from '@/utils/drive115'
+import { drive115 } from '@/utils/drive115Instance'
 
 /** 分页 */
 function useDrivePagination(options: {

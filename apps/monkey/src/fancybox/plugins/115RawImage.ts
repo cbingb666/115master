@@ -1,6 +1,6 @@
 import type { CarouselInstance, CarouselPlugin, CarouselSlide as CarouselSlideType } from '@fancyapps/ui/dist/fancybox'
 import { isPlainObject } from 'lodash'
-import { drive115 } from '@/utils/drive115'
+import { drive115 } from '@/utils/drive115Instance'
 
 const DEFAULT_OPTIONS = {
   showLoading: true,

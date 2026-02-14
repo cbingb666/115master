@@ -1,7 +1,7 @@
-import type { WebApi } from '@/utils/drive115/api'
+import type { WebApi } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
 import { reactive } from 'vue'
-import { drive115 } from '@/utils/drive115'
+import { drive115 } from '@/utils/drive115Instance'
 
 /** 文件信息 */
 export function useDataFileInfo() {

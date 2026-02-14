@@ -126,6 +126,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Entity } from '@115master/drive115'
 import type { FileActionMenuTypes } from './components/FileActionMenu'
 import type {
   ActionKey,
@@ -136,7 +137,6 @@ import type {
 import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import type XPlayerInstance from '@/components/XPlayer/index.vue'
 import type { Subtitle, ThumbnailRequest } from '@/components/XPlayer/types'
-import type { Entity } from '@/utils/drive115'
 import { Icon } from '@iconify/vue'
 import { useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
@@ -153,7 +153,7 @@ import { ICON_MOVE, ICON_PLAYLIST, ICON_STAR, ICON_STAR_FILL } from '@/icons'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { clsx } from '@/utils/clsx'
 import { core115 } from '@/utils/core115'
-import { drive115 } from '@/utils/drive115'
+import { drive115 } from '@/utils/drive115Instance'
 import { formatFileSize } from '@/utils/format'
 import { getAvNumber } from '@/utils/getNumber'
 import { appLogger } from '@/utils/logger'

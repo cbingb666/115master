@@ -1,5 +1,5 @@
+import type { WebApi } from '@115master/drive115'
 import type { Action } from '@/types/action'
-import type { WebApi } from '@/utils/drive115/api'
 import { Icon } from '@iconify/vue'
 import { useStorage, useTitle } from '@vueuse/core'
 import { useRouteParams, useRouteQuery } from '@vueuse/router'

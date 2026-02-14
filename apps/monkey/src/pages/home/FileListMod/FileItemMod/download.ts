@@ -1,4 +1,4 @@
-import { drive115 } from '@/utils/drive115'
+import { drive115 } from '@/utils/drive115Instance'
 import { is115Browser } from '@/utils/platform'
 import { FileItemModBase } from './base'
 

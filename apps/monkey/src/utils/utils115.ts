@@ -1,4 +1,4 @@
-import type { WebApi } from '@/utils/drive115/api'
+import type { WebApi } from '@115master/drive115'
 import { GM_xmlhttpRequest } from '$'
 import { NORMAL_URL_115 } from '@/constants/115'
 import { ICON_FILE_FOLDER, ICON_FILE_IMAGE } from '@/icons'

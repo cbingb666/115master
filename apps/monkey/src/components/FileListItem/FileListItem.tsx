@@ -1,5 +1,5 @@
+import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
-import type { WebApi } from '@/utils/drive115/api'
 import { Icon } from '@iconify/vue'
 import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, shallowRef, withModifiers } from 'vue'

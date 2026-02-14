@@ -1,6 +1,6 @@
-import type { Ref } from 'vue'
+import type { WebApi } from '@115master/drive115'
 
-import type { WebApi } from '@/utils/drive115/api'
+import type { Ref } from 'vue'
 import { defineComponent, onBeforeMount, watch } from 'vue'
 import { FileList, FileListItem, FileMenu, FileNewFolderButton, FilePageSizeSelector, FilePaths, FileSortSelector, LoadingError, Pagination } from '@/components'
 import { useDriveFile } from '@/hooks/useDriveFile'

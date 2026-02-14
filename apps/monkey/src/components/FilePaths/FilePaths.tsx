@@ -1,5 +1,5 @@
+import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
-import type { WebApi } from '@/utils/drive115/api'
 import { defineComponent, shallowRef } from 'vue'
 import { clsx } from '@/utils/clsx'
 

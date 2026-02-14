@@ -1,6 +1,6 @@
+import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
 import type { Action } from '@/types/action'
-import type { WebApi } from '@/utils/drive115/api'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
 import { useMagicKeys } from '@vueuse/core'
 import { computed, defineComponent, ref, shallowRef, watch } from 'vue'

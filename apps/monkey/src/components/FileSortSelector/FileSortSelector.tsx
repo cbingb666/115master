@@ -1,6 +1,6 @@
+import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
 import type { Sort } from '@/components/FileSortSelector/FileSortSelector.types'
-import type { WebApi } from '@/utils/drive115/api'
 import { Icon } from '@iconify/vue'
 import { computed, defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'

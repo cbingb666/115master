@@ -1,7 +1,7 @@
 import type { useDataFileInfo } from './useDataFileInfo'
+import { MarkStatus } from '@115master/drive115'
 import { shallowRef, watch } from 'vue'
-import { drive115 } from '@/utils/drive115'
-import { MarkStatus } from '@/utils/drive115/api/webApi/req'
+import { drive115 } from '@/utils/drive115Instance'
 
 /** 收藏 */
 export function useMark(DataFileInfo: ReturnType<typeof useDataFileInfo>) {

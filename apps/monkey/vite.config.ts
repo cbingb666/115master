@@ -74,8 +74,7 @@ export default defineConfig({
         'run-at': 'document-start',
         'include': [
           'https://115.com/?ct*',
-          'https://115.com/web/lixian/master/video/*',
-          'https://115.com/web/lixian/master/magnet/*',
+          'https://115.com/web/lixian/master*',
           'https://115.com/?aid*',
           'https://dl.115cdn.net/video/token',
         ],

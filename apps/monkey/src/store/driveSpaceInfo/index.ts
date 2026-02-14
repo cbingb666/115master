@@ -1,6 +1,6 @@
 import { useAsyncState } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { drive115 } from '@/utils/drive115'
+import { drive115 } from '@/utils/drive115Instance'
 
 export const useDriveSpaceInfoStore = defineStore('driveSpaceInfo', () => {
   return useAsyncState(async () => {

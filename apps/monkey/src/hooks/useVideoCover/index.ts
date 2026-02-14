@@ -1,11 +1,11 @@
 import type { Ref } from 'vue'
+import { Drive115Error } from '@115master/drive115'
 import { useElementVisibility, useScroll } from '@vueuse/core'
 import { onUnmounted, reactive, watch } from 'vue'
 import { FRIENDLY_ERROR_MESSAGE } from '@/constants'
 import { videoCoverCache } from '@/utils/cache'
 import { M3U8ClipperNew } from '@/utils/clipper/m3u8Clipper'
-import { drive115 } from '@/utils/drive115'
-import { Drive115Error } from '@/utils/drive115/core'
+import { drive115 } from '@/utils/drive115Instance'
 import { getImageResize } from '@/utils/image'
 import { Scheduler, SchedulerError, TaskStatus } from '@/utils/scheduler'
 

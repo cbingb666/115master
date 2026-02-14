@@ -1,6 +1,6 @@
 import { useAsyncState } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { drive115 } from '@/utils/drive115'
+import { drive115 } from '@/utils/drive115Instance'
 
 /** 用户账户信息 Store */
 export const useUserAqStore = defineStore('userAq', () => {

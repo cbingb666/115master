@@ -40,9 +40,9 @@
 </template>
 
 <script setup lang="ts">
+import type { Entity } from '@115master/drive115'
 import type PlaylistItemVue from './item.vue'
 import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
-import type { Entity } from '@/utils/drive115'
 import { Icon } from '@iconify/vue'
 import { nextTick, useTemplateRef, watch } from 'vue'
 import LoadingError from '@/components/LoadingError/index.vue'

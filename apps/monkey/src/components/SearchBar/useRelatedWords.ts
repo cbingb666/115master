@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import { useAsyncState, watchDebounced } from '@vueuse/core'
-import { drive115 } from '@/utils/drive115'
+import { drive115 } from '@/utils/drive115Instance'
 
 interface UseRelatedWordsOptions {
   keyword: Ref<string>

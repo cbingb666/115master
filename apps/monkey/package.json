@@ -33,6 +33,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@115master/drive115": "workspace:*",
     "@cbingbing/demuxer": "^2.4.1",
     "@fancyapps/ui": "^6.0.21",
     "@iconify/vue": "^5.0.0",

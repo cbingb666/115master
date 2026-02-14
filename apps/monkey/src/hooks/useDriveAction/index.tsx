@@ -1,13 +1,13 @@
+import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
-import type { WebApi } from '@/utils/drive115/api'
+import { MarkStatus } from '@115master/drive115'
 import { defineComponent, ref, useTemplateRef, watch } from 'vue'
 import { useDialog, useToast } from '@/components'
 import { DriveFileBrowserContent } from '@/hooks/useDriveFileBroswerDialog'
 import { useOfflineQuotaPackageInfoStore } from '@/store/offlineQuotaPackageInfo'
 import { useOfflineSpaceStore } from '@/store/offlineSpace'
 import { useUserAqStore } from '@/store/userAq'
-import { drive115 } from '@/utils/drive115'
-import { MarkStatus } from '@/utils/drive115/api/webApi/req'
+import { drive115 } from '@/utils/drive115Instance'
 import { promiseDelay } from '@/utils/promise'
 
 /** 云下载输入组件（链接输入 + 目录显示） */
