@@ -52,3 +52,8 @@ export const ICON_TOAST_WARNING = 'material-symbols:warning-rounded'
 export const ICON_TOAST_INFO = 'material-symbols:info-rounded'
 /** Toast 关闭 */
 export const ICON_TOAST_CLOSE = 'material-symbols:close-small-rounded'
+
+// GitHub
+export const ICON_GITHUB = 'mdi:github'
+// Q&A
+export const ICON_QA = 'mdi:question-mark-circle'

@@ -1,12 +1,20 @@
 import type { SlotsType } from 'vue'
-import { GM_info } from '$'
 import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
+import PKG from '@/../package.json'
+import { ICON_GITHUB, ICON_QA } from '@/icons'
 import { clsx } from '@/utils/clsx'
+
+interface ExternalLinkItem {
+  icon?: string
+  text?: string
+  href: string
+  title?: string
+}
 
 const styles = clsx({
   root: [
-    'fixed top-0 bottom-0 left-0 z-100 flex w-[var(--sider-width)] flex-col px-4 pb-4 max-sm:hidden',
+    'fixed top-0 bottom-0 left-0 z-100 flex w-(--sider-width) flex-col px-4 pb-4 max-sm:hidden',
   ],
   divider: [
     'divider divider-neutral my-1',
@@ -19,25 +27,21 @@ const styles = clsx({
 
 const ExternalLink = [
   {
-    icon: 'mdi:github',
-    href: GM_info.script.homepage,
+    icon: ICON_GITHUB,
+    href: PKG.homepage,
     title: 'GitHub',
   },
   {
-    icon: 'logos:telegram',
-    href: 'https://t.me/+EzfL2xXhlOA4ZjBh',
-    title: 'Telegram',
-  },
-  {
-    icon: 'mdi:question-mark-circle',
-    href: `${GM_info.script.homepage}/discussions/categories/q-a`,
+    icon: ICON_QA,
+    href: `${PKG.homepage}/discussions/categories/q-a`,
     title: 'Q&A',
   },
   {
-    text: `Version: ${GM_info.script.version}`,
-    class: 'w-full',
+    href: `${PKG.homepage}/releases/tag/v${PKG.version}`,
+    title: `v${PKG.version} Release Notes`,
+    text: `v${PKG.version}`,
   },
-]
+] satisfies ExternalLinkItem[]
 
 /**
  * 侧边栏组件
@@ -59,7 +63,7 @@ const Sider = defineComponent({
             ExternalLink.map(item => (
               <a
                 key={item.href}
-                class={[styles.externalLinkItem, item.class]}
+                class={[styles.externalLinkItem]}
                 href={item.href}
                 target="_blank"
                 title={item.title}
