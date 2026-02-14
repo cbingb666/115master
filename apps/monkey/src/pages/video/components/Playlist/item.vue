@@ -46,7 +46,7 @@
       </div>
       <!-- 大小 -->
       <div :class="styles.info.size">
-        {{ formatFileSize(item.s) }}
+        {{ formatFileSize(Number(item.s)) }}
       </div>
     </div>
   </a>
@@ -64,12 +64,12 @@ import { clsx } from '@/utils/clsx'
 import { formatFileSize } from '@/utils/format'
 
 const props = defineProps<{
-  item: Entity.PlaylistItem
+  item: Entity.FilesItem
   active: boolean
 }>()
 
 const emit = defineEmits<{
-  play: [Entity.PlaylistItem]
+  play: [Entity.FilesItem]
 }>()
 
 /** 播放列表视频封面数量 */
@@ -158,7 +158,7 @@ const progressPercent = computed(() => {
 })
 
 /** 播放处理 */
-function handlePlay(item: Entity.PlaylistItem) {
+function handlePlay(item: Entity.FilesItem) {
   emit('play', item)
 }
 </script>

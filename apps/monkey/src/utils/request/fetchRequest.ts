@@ -144,7 +144,10 @@ export class FetchRequest extends IRequest {
 
     const urlObj = new URL(url)
     Object.entries(params).forEach(([key, value]) => {
-      urlObj.searchParams.append(key, value.toString())
+      // 跳过 undefined 和 null 值
+      if (value !== undefined && value !== null) {
+        urlObj.searchParams.append(key, value.toString())
+      }
     })
 
     return urlObj.href

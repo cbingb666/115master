@@ -1,4 +1,4 @@
-import type { PlaylistItem } from '@/utils/drive115/api/entity'
+import type { FilesItem } from '@/utils/drive115/api/entity'
 import { useAsyncState } from '@vueuse/core'
 import { reactive } from 'vue'
 import { drive115 } from '@/utils/drive115'
@@ -19,7 +19,7 @@ export function useDataPlaylist() {
   )
 
   /** 更新播放列表项 */
-  const updateItem = (pickCode: string, data: Partial<PlaylistItem>) => {
+  const updateItem = (pickCode: string, data: Partial<FilesItem>) => {
     if (!playlist.state.value)
       return
     const index = playlist.state.value.data.findIndex(i => i.pc === pickCode)

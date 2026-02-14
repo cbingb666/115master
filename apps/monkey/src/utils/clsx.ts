@@ -1,7 +1,7 @@
 /**
- * 类名处理
- * @description 此函数为了在 tailwindcss 有 language server 和 lint，因此直接返回 r 它不处理任何数据
+ * clsx
+ * @description 它是只是为 tailwindCSS 插件提供类型提示，它不对传入值做任何处理
  */
-export function clsx<T>(r: T): T {
-  return r
+export function clsx<T>(classnames: T): T {
+  return classnames
 }

@@ -149,7 +149,7 @@ import { controlRightStyles } from '@/components/XPlayer/styles/common'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { PLUS_VERSION } from '@/constants'
 import { useLockFn } from '@/hooks/useLockFn'
-import { ICON_DRIVE_FILE_MOVE, ICON_PLAYLIST, ICON_STAR, ICON_STAR_FILL } from '@/icons'
+import { ICON_MOVE, ICON_PLAYLIST, ICON_STAR, ICON_STAR_FILL } from '@/icons'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { clsx } from '@/utils/clsx'
 import { core115 } from '@/utils/core115'
@@ -307,7 +307,7 @@ const hasNext = computed(() => {
 const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
   {
     label: '移动',
-    icon: ICON_DRIVE_FILE_MOVE,
+    icon: ICON_MOVE,
     onAction: async (ctx) => {
       // 检查文件信息是否可用
       if (!DataFileInfo.state?.file_id) {
@@ -366,7 +366,7 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
           /** 显示成功提示 */
           ctx.hud?.show({
             title: '移动成功',
-            icon: ICON_DRIVE_FILE_MOVE,
+            icon: ICON_MOVE,
           })
         },
       })
@@ -458,7 +458,7 @@ async function handleLocalPlay(player: LocalPlayer) {
   }
 }
 
-async function changeVideo(item: Entity.PlaylistItem) {
+async function changeVideo(item: Entity.FilesItem) {
   try {
     changeing.value = true
     goToPlayer({
@@ -653,7 +653,7 @@ async function playPreviousOrNext(ctx: PlayerContext, dir: number) {
             {
               class: 'text-xs text-base-content/70',
             },
-            formatFileSize(nextItem.s),
+            formatFileSize(Number(nextItem.s)),
           ),
         ],
       ),

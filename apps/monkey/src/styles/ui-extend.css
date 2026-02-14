@@ -1,3 +1,8 @@
+body,
+html {
+  scrollbar-gutter: stable;
+}
+
 /* 重写 range-xs 样式 */
 .range {
   --range-bg: color-mix(in oklch, var(--color-primary) 30%, transparent);

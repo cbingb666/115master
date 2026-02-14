@@ -56,8 +56,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'play', item: Entity.PlaylistItem): void
-  (e: 'close'): void
+  play: [item: Entity.FilesItem]
+  close: []
 }>()
 
 /** 样式常量定义 */
@@ -108,7 +108,7 @@ const playlistItemRefs
   = useTemplateRef<InstanceType<typeof PlaylistItemVue>[]>('playlistItemRefs')
 
 /** 点击播放 */
-function handlePlay(item: Entity.PlaylistItem) {
+function handlePlay(item: Entity.FilesItem) {
   if (item.pc === props.pickCode) {
     return
   }

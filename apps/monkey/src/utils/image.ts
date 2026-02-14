@@ -308,3 +308,10 @@ export function imageBitmapToBase64(imageBitmap: ImageBitmap, quality = 0.85): P
     resolve(base64)
   })
 }
+
+/**
+ * 是否竖屏图片
+ */
+export function isPortraitImage(width: number, height: number): boolean {
+  return width < height
+}

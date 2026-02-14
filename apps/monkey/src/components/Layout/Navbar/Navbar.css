@@ -1,0 +1,17 @@
+/* 使用最新的CSS scroll-driven animations */
+.navbar-shadow-scroll {
+  animation: navbar-shadow-fade linear;
+  animation-timeline: scroll(root);
+  animation-range: 0px calc(var(--navbar-height));
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+
+@keyframes navbar-shadow-fade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

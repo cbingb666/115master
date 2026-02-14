@@ -79,7 +79,7 @@ export function magnetPage() {
   }
   setMagnetTask(magnet)
   const handle = window.open(
-    'https://115.com/?cid=0&offset=0&mode=wangpan',
+    `/web/lixian/master/#/?offline_url=${magnet}`,
     '_blank',
     'width=1280,height=860',
   )

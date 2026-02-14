@@ -3,6 +3,7 @@ import * as transformer from '@libmedia/cheap/build/transformer'
 import typescript from '@rollup/plugin-typescript'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import monkey, { cdn, util } from 'vite-plugin-monkey'
@@ -51,6 +52,7 @@ export default defineConfig({
       },
     }),
     vue(),
+    vueJsx(),
     tailwindcss(),
     svgLoader(),
     visualizer({

@@ -39,7 +39,6 @@ export class Drive115Wrap extends Drive115Core {
       type: 4,
       source: '',
       format: 'json',
-      star: '',
       is_q: '',
       is_share: '',
       r_all: 1,

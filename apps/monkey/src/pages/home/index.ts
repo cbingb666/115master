@@ -1,6 +1,7 @@
 import { registerMagnetTaskHandler } from '@/pages/magnet'
 import { ModManager } from './BaseMod'
 import FileListMod from './FileListMod'
+import NavMod from './NavMod'
 import { TopFilePathMod } from './TopFilePathMod'
 import { TopHeaderMod } from './TopHeaderMod'
 import './index.css'
@@ -32,6 +33,7 @@ class HomePage {
   private async init(): Promise<void> {
     registerMagnetTaskHandler()
     this.modManager = new ModManager([
+      new NavMod(),
       new FileListMod(),
       new TopFilePathMod(),
       new TopHeaderMod(),

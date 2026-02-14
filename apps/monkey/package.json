@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@cbingbing/demuxer": "^2.4.1",
+    "@fancyapps/ui": "^6.0.21",
     "@iconify/vue": "^5.0.0",
     "@libmedia/avcodec": "^1.2.0",
     "@libmedia/avformat": "^1.2.0",
@@ -41,11 +42,15 @@
     "@libmedia/avplayer": "^1.2.2",
     "@libmedia/avutil": "^1.2.0",
     "@libmedia/common": "^2.2.0",
+    "@vueuse/components": "^14.1.0",
     "@vueuse/core": "^14.1.0",
     "@vueuse/math": "^14.1.0",
+    "@vueuse/router": "^14.1.0",
+    "@wxperia/liquid-glass-vue": "^1.0.9",
     "big-integer": "^1.6.52",
     "blueimp-md5": "^2.19.0",
     "dayjs": "^1.11.13",
+    "emoji-regex": "^10.4.0",
     "glob-to-regexp": "^0.4.1",
     "hls.js": "^1.6.15",
     "iconify-icon": "^3.0.0",
@@ -54,8 +59,10 @@
     "m3u8-parser": "^7.2.0",
     "mitt": "^3.0.1",
     "photoswipe": "^5.4.4",
+    "pinia": "^3.0.3",
     "tailwindcss": "^4.1.7",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@115master/eslint-config": "workspace:*",
@@ -72,6 +79,7 @@
     "@types/m3u8-parser": "^7.2.0",
     "@types/node": "^25.2.2",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^5.0.1",
     "@vitest/coverage-v8": "4.0.16",
     "@vitest/ui": "^4.0.16",
     "daisyui": "^5.5.14",
