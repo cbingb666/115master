@@ -118,62 +118,62 @@ const styles = clsx({
     'flex-shrink-0',
   ],
   avatarImage: [
-    'w-8 h-8',
+    'h-8 w-8',
     'rounded-full',
     'object-cover',
-    'border border-base-300',
+    'border-base-300 border',
   ],
   avatarPlaceholder: [
-    'w-8 h-8',
+    'h-8 w-8',
     'rounded-full',
     'bg-primary/20 text-primary',
     'flex items-center justify-center',
     'text-sm font-semibold',
   ],
   desktopInfo: [
-    'hidden sm:flex flex-col', // 移动端隐藏，桌面端显示
+    'hidden flex-col sm:flex', // 移动端隐藏，桌面端显示
     'min-w-0', // 防止文字溢出
   ],
   username: [
-    'text-sm font-medium text-base-content',
+    'text-base-content text-sm font-medium',
     'truncate', // 长用户名截断
     'max-w-24', // 限制最大宽度
   ],
   vip: [
     'flex items-center gap-1',
-    'text-xs text-base-content/70',
+    'text-base-content/70 text-xs',
   ],
   dropdown: [
-    'absolute top-full right-0 mt-2 z-50',
+    'absolute top-full right-0 z-50 mt-2',
     'sm:hidden', // 桌面端隐藏
     'animate-in slide-in-from-top-2 duration-200',
   ],
   dropdownContent: [
-    'bg-base-100 rounded-lg shadow-lg border border-base-300',
-    'p-4 min-w-64',
+    'bg-base-100 border-base-300 rounded-lg border shadow-lg',
+    'min-w-64 p-4',
     'backdrop-blur-sm',
   ],
   dropdownHeader: [
-    'flex flex-col gap-1 mb-3',
-    'border-b border-base-300 pb-3',
+    'mb-3 flex flex-col gap-1',
+    'border-base-300 border-b pb-3',
   ],
   dropdownUsername: [
-    'text-base font-semibold text-base-content',
+    'text-base-content text-base font-semibold',
   ],
   dropdownVip: [
     'flex items-center gap-1',
-    'text-sm text-base-content/70',
+    'text-base-content/70 text-sm',
   ],
   dropdownInfo: [
     'flex flex-col gap-2',
   ],
   dropdownInfoItem: [
-    'flex justify-between items-center',
+    'flex items-center justify-between',
     'text-sm',
   ],
   loading: [
     'flex items-center gap-2 px-4 py-2',
-    'text-sm text-base-content/70',
+    'text-base-content/70 text-sm',
   ],
   loadingText: [
     'hidden sm:inline', // 移动端隐藏加载文字

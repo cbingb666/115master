@@ -42,7 +42,7 @@ const styles = clsx({
     'bg-primary text-primary-content',
     'rounded-lg shadow-lg',
     'px-4 py-2',
-    'font-medium text-sm',
+    'text-sm font-medium',
     'min-w-24',
   ],
 })

@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
-  main: 'flex-1 ml-[var(--sider-width)]',
+  main: 'ml-(--sider-width) flex-1',
 })
 
 /**

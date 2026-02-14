@@ -7,8 +7,8 @@ import { MENU_CONFIG } from '@/components/Layout/Menu/config'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
-  menu: 'flex flex-col w-full gap-1',
-  menuItem: 'btn btn-md btn-secondary btn-ghost w-full justify-start px-6 gap-3',
+  menu: 'flex w-full flex-col gap-1',
+  menuItem: 'btn btn-md btn-secondary btn-ghost w-full justify-start gap-3 px-6',
   menuItemActive: 'btn-active',
   menuItemIcon: 'text-2xl',
 })

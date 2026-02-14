@@ -49,7 +49,7 @@ const styles = clsx({
   label: [
     'cursor-pointer',
     // 列表模式
-    'group-data-[view-type=list]:flex group-data-[view-type=list]:items-center group-data-[view-type=list]:px-4 group-data-[view-type=list]:cursor-pointer',
+    'group-data-[view-type=list]:flex group-data-[view-type=list]:cursor-pointer group-data-[view-type=list]:items-center group-data-[view-type=list]:px-4',
     // 卡片模式
     'group-data-[view-type=card]:absolute group-data-[view-type=card]:top-3 group-data-[view-type=card]:left-3 group-data-[view-type=card]:z-10',
     'group-data-[view-type=card]:flex group-data-[view-type=card]:items-center',
@@ -71,13 +71,13 @@ const styles = clsx({
   wrapper: [
     'cursor-default',
     // 列表模式
-    'group-data-[view-type=list]:flex-1 group-data-[view-type=list]:flex',
+    'group-data-[view-type=list]:flex group-data-[view-type=list]:flex-1',
     'group-data-[view-type=list]:items-center',
     'group-data-[view-type=list]:min-w-0',
     'group-data-[view-type=list]:gap-4',
     'group-data-[view-type=list]:py-3',
     // 卡片模式
-    'group-data-[view-type=card]:flex-1 group-data-[view-type=card]:flex group-data-[view-type=card]:flex-col',
+    'group-data-[view-type=card]:flex group-data-[view-type=card]:flex-1 group-data-[view-type=card]:flex-col',
     'group-data-[view-type=card]:min-w-0',
   ],
   coverBox: [
@@ -138,7 +138,7 @@ const styles = clsx({
   coverVideoWrapper: [
     'cursor-grab',
     'absolute inset-0 m-auto',
-    'w-full h-full',
+    'h-full w-full',
     'bg-black',
     'overflow-hidden',
     'border-1',
@@ -150,7 +150,7 @@ const styles = clsx({
     'group-data-[view-type=card]:overflow-hidden',
   ],
   coverVideo: [
-    'w-full h-full object-cover',
+    'h-full w-full object-cover',
     'transition-all',
     'duration-300',
     'ease-[cubic-bezier(0.33_0_0.67_1)]',
@@ -199,7 +199,7 @@ const styles = clsx({
     'menu',
   ],
   top: [
-    'text-orange-500 size-5',
+    'size-5 text-orange-500',
     // 列表模式
     'group-data-[view-type=list]:absolute group-data-[view-type=list]:-top-1 group-data-[view-type=list]:-left-2',
     'group-data-[view-type=list]:-rotate-45',
@@ -271,16 +271,16 @@ const styles = clsx({
     'group-data-[view-type=card]:row-start-3',
   ],
   tags: [
-    'flex items-center flex-wrap',
+    'flex flex-wrap items-center',
     // 列表模式
-    'group-data-[view-type=list]:justify-end group-data-[view-type=list]:gap-2 group-data-[view-type=list]:max-w-50',
+    'group-data-[view-type=list]:max-w-50 group-data-[view-type=list]:justify-end group-data-[view-type=list]:gap-2',
     // 卡片模式
     'group-data-[view-type=card]:gap-1',
     'group-data-[view-type=card]:col-span-2',
     'group-data-[view-type=card]:row-start-2',
   ],
   tag: [
-    'badge border-none bg-base-content/10',
+    'badge bg-base-content/10 border-none',
     // 列表模式
     'group-data-[view-type=list]:badge-sm',
     // 卡片模式

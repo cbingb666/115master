@@ -23,12 +23,12 @@ const styles = clsx({
   // 页面大小选择器
   sizeSelector: {
     container: [
-      'flex items-center gap-2 ml-4',
+      'ml-4 flex items-center gap-2',
     ],
     select: [
       'appearance-none',
       'bg-base-content/10',
-      'border border-base-content/20',
+      'border-base-content/20 border',
       'rounded-xl',
       'px-2 py-1',
       'text-sm',
@@ -45,7 +45,7 @@ const styles = clsx({
   button: {
     base: [
       'relative',
-      'w-10 h-10',
+      'h-10 w-10',
       'flex items-center justify-center',
       'text-base-content',
       'text-lg',

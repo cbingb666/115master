@@ -53,7 +53,7 @@ const CloudDownloadInput = defineComponent({
         <div>
           <textarea
             ref="textareaRef"
-            class="w-full p-3 border border-gray-200 rounded-md text-sm outline-none resize-vertical font-inherit leading-5 focus:border-primary"
+            class="resize-vertical font-inherit focus:border-primary w-full rounded-md border border-gray-200 p-3 text-sm leading-5 outline-none"
             autofocus
             placeholder={props.placeholder}
             rows={4}
@@ -62,7 +62,7 @@ const CloudDownloadInput = defineComponent({
           />
         </div>
 
-        <div class="text-sm text-gray-500 flex items-center gap-2">
+        <div class="flex items-center gap-2 text-sm text-gray-500">
           本月配额：剩
           {quotaStore.state?.surplus}
           /总
@@ -79,15 +79,15 @@ const CloudDownloadInput = defineComponent({
 
         {/* 保存目录显示和选择 */}
         <div>
-          <label class="block mb-2 text-sm font-medium">
+          <label class="mb-2 block text-sm font-medium">
             保存到
           </label>
           <div class="flex items-center ">
-            <div class="flex-1 flex min-w-0">
-              <span class="text-sm font-medium mb-1">
+            <div class="flex min-w-0 flex-1">
+              <span class="mb-1 text-sm font-medium">
                 {props.currentDirectory.name}
               </span>
-              <span class="text-xs text-gray-500 break-all">
+              <span class="text-xs break-all text-gray-500">
                 {props.currentDirectory.path}
               </span>
             </div>

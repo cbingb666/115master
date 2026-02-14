@@ -139,7 +139,7 @@ export class Utils115 {
    */
   static GetOpenDocUrl({
     pickCode,
-ico,
+    ico,
     sha1,
     shareId,
     from,

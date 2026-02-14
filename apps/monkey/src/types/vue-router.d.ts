@@ -8,28 +8,28 @@ import type { RouteRecordInfo } from 'vue-router'
 export interface RouteNamedMap {
   /** 网盘页 */
   drive: RouteRecordInfo<
-      'drive',
-      '/drive/:area?/:cid?',
-      {
-        area?: 'all' | 'recent' | 'trash' | 'star' | 'share'
-        cid: string
-      },
-      {
-        area?: 'all' | 'recent' | 'trash' | 'star' | 'share'
-        cid: string
-      }
+    'drive',
+    '/drive/:area?/:cid?',
+    {
+      area?: 'all' | 'recent' | 'trash' | 'star' | 'share'
+      cid: string
+    },
+    {
+      area?: 'all' | 'recent' | 'trash' | 'star' | 'share'
+      cid: string
+    }
   >
   /** 播放页 */
   video: RouteRecordInfo<
-      'video',
-      '/video/:pickCode',
-      {
-        pickCode: string
-      },
-      {
-        pickCode: string
-      }
-    >
+    'video',
+    '/video/:pickCode',
+    {
+      pickCode: string
+    },
+    {
+      pickCode: string
+    }
+  >
   /** 404 */
   notFound: RouteRecordInfo<
     'not-found',

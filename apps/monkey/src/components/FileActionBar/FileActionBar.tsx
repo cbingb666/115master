@@ -6,14 +6,14 @@ import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
   root: [
-    'fixed bottom-18 left-0 right-0',
+    'fixed right-0 bottom-18 left-0',
     'flex items-center justify-center',
     'pointer-events-none',
   ],
   wrap: [
     'flex items-center justify-center',
     'bg-neutral-800/80',
-    'backdrop-blur-xl backdrop-saturate-180 backdrop-brightness-70',
+    'backdrop-blur-xl backdrop-brightness-70 backdrop-saturate-180',
     'ring-1 ring-neutral-700/80',
     'shadow-md shadow-neutral-950/50',
     'rounded-box',
@@ -23,7 +23,7 @@ const styles = clsx({
     'flex items-center justify-center',
   ],
   button: [
-    'relative group',
+    'group relative',
     'btn btn-xl btn-ghost border-none',
     'flex items-center justify-center',
     'hover:bg-base-content/5',
@@ -35,7 +35,7 @@ const styles = clsx({
   icon: [
     'size-8',
     'max-sm:size-5',
-    'drop-shadow-sm drop-shadow-base-200/50',
+    'drop-shadow-base-200/50 drop-shadow-sm',
   ],
   iconHide: [
     'opacity-20',

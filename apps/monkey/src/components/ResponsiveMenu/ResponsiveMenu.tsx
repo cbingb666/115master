@@ -21,7 +21,7 @@ const Dropdown = defineComponent({
           'rounded-box',
           'bg-base-300/30',
           'backdrop-blur-2xl backdrop-brightness-30 backdrop-saturate-180',
-          'ring-1 ring-base-300/10',
+          'ring-base-300/10 ring-1',
         ]}
         >
           {slots.default?.()}

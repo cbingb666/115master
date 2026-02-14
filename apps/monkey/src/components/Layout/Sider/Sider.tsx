@@ -6,7 +6,7 @@ import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
   root: [
-    'fixed top-0 left-0 bottom-0 w-[var(--sider-width)] flex flex-col px-4 pb-4 z-100 max-sm:hidden',
+    'fixed top-0 bottom-0 left-0 z-100 flex w-[var(--sider-width)] flex-col px-4 pb-4 max-sm:hidden',
   ],
   divider: [
     'divider divider-neutral my-1',
