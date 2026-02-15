@@ -1,80 +1,10 @@
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 import { PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS } from '@/constants'
-import { clsx } from '@/utils/clsx'
-/** 可见页码项类型 */
 
 type VisiblePageItem = number | '...'
 
-const styles = clsx({
-  // 容器
-  container: [
-    'inline-flex items-center',
-    'px-3 py-2',
-    'bg-base-200/70',
-    'rounded-3xl',
-    'liquid-glass',
-    'before:backdrop-blur-xl',
-    'before:rounded-3xl',
-    'after:rounded-3xl',
-    'shadow-xl',
-    'shadow-base-100/50',
-  ],
-  // 页面大小选择器
-  sizeSelector: {
-    container: [
-      'ml-4 flex items-center gap-2',
-    ],
-    select: [
-      'appearance-none',
-      'bg-base-content/10',
-      'border-base-content/20 border',
-      'rounded-xl',
-      'px-2 py-1',
-      'text-sm',
-      'text-base-content/80',
-      'cursor-pointer',
-      'focus:outline-none',
-    ],
-  },
-  // 按钮组
-  buttonGroup: [
-    'flex items-center gap-1',
-  ],
-  // 按钮样式
-  button: {
-    base: [
-      'relative',
-      'h-10 w-10',
-      'flex items-center justify-center',
-      'text-base-content',
-      'text-lg',
-      'rounded-full',
-      'text-shadow-lg',
-      'text-shadow-base-100/10',
-      'transition-all duration-150',
-      'hover:bg-base-content/10',
-      'cursor-pointer',
-    ],
-    active: [
-      'bg-base-content/15',
-      'text-base-content/80',
-      'font-semibold',
-      'border-base-content/10',
-    ],
-    disabled: [
-      'opacity-30',
-      'cursor-not-allowed',
-      'hover:bg-transparent',
-      'hover:text-base-content/70',
-    ],
-  },
-})
-
-/**
- * 分页
- */
-export default defineComponent({
+const Pagination = defineComponent({
   name: 'Pagination',
   props: {
     /**
@@ -132,35 +62,31 @@ export default defineComponent({
     },
   },
   setup: (props) => {
-    /** 是否是第一页 */
     const isFirstPage = computed(() => {
       return props.currentPage === 1
     })
 
-    /** 是否是最后一页 */
     const isLastPage = computed(() => {
       return props.currentPage === Math.ceil(props.total / props.currentPageSize)
     })
 
-    /** 总页数 */
     const pageCount = computed(() => {
       return Math.ceil(props.total / props.currentPageSize)
     })
 
-    /** 计算可见的页码 */
     const visiblePages = computed<VisiblePageItem[]>(() => {
       const current = props.currentPage
       const total = pageCount.value
       const visible: VisiblePageItem[] = []
 
+      // 总页数少于等于7页，显示所有页码
       if (total <= 7) {
-        // 总页数少于等于7页，显示所有页码
         for (let i = 1; i <= total; i++) {
           visible.push(i)
         }
       }
+      // 总页数大于7页，显示省略号
       else {
-        // 总页数大于7页，显示省略号
         if (current <= 4) {
           // 当前页在前部
           for (let i = 1; i <= 5; i++) {
@@ -213,14 +139,34 @@ export default defineComponent({
     }
 
     return () => (
-      <div class={styles.container}>
-        <div class={styles.buttonGroup}>
+      <div
+        class="
+          bg-base-200/70 liquid-glass
+          shadow-base-100/50 inline-flex
+          items-center
+          rounded-3xl
+          px-3
+          py-2
+          shadow-xl
+          before:rounded-3xl
+          before:backdrop-blur-xl
+          after:rounded-3xl
+        "
+      >
+        <div class="flex items-center gap-1">
           {/* prev */}
           <button
-            class={[
-              styles.button.base,
-              isFirstPage.value && styles.button.disabled,
-            ]}
+            class={`
+              text-base-content text-shadow-base-100/10 hover:bg-base-content/10
+              relative flex h-10
+              w-10 cursor-pointer
+              items-center
+              justify-center rounded-full
+              text-lg transition-all
+              duration-150
+              text-shadow-lg
+              ${isFirstPage.value ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
+            `}
             disabled={isFirstPage.value}
             onClick={handlePrev}
           >
@@ -229,27 +175,46 @@ export default defineComponent({
 
           {/* page */}
           {
-            visiblePages.value.map(pageNum => (
-              <button
-                class={[
-                  styles.button.base,
-                  pageNum === '...' && styles.button.disabled,
-                  pageNum === props.currentPage && styles.button.active,
-                ]}
-                disabled={pageNum === '...'}
-                onClick={() => handlePage(pageNum as number)}
-              >
-                {pageNum}
-              </button>
-            ))
+            visiblePages.value.map((pageNum) => {
+              const isActive = pageNum === props.currentPage
+              const isDisabled = pageNum === '...'
+
+              return (
+                <button
+                  class={`
+                    text-base-content text-shadow-base-100/10 hover:bg-base-content/10
+                    relative flex h-10
+                    w-10 cursor-pointer
+                    items-center
+                    justify-center rounded-full
+                    text-lg transition-all
+                    duration-150
+                    text-shadow-lg
+                    ${isDisabled ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
+                    ${isActive ? 'bg-base-content/15 text-base-content/80 border-base-content/10 border font-semibold' : ''}
+                  `}
+                  disabled={isDisabled}
+                  onClick={() => handlePage(pageNum as number)}
+                >
+                  {pageNum}
+                </button>
+              )
+            })
           }
 
           {/* next */}
           <button
-            class={[
-              styles.button.base,
-              isLastPage.value && styles.button.disabled,
-            ]}
+            class={`
+              text-base-content text-shadow-base-100/10 hover:bg-base-content/10
+              relative flex h-10
+              w-10 cursor-pointer
+              items-center
+              justify-center rounded-full
+              text-lg transition-all
+              duration-150
+              text-shadow-lg
+              ${isLastPage.value ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
+            `}
             disabled={isLastPage.value}
             onClick={handleNext}
           >
@@ -260,9 +225,19 @@ export default defineComponent({
         {/* size selector */}
         {
           props.showSizeChanger && (
-            <div class={styles.sizeSelector.container}>
+            <div class="ml-4 flex items-center gap-2">
               <select
-                class={styles.sizeSelector.select}
+                class="
+                  bg-base-content/10
+                  border-base-content/20
+                  text-base-content/80 cursor-pointer
+                  appearance-none
+                  rounded-xl border
+                  px-2
+                  py-1
+                  text-sm
+                  focus:outline-none
+                "
                 value={props.currentPageSize}
                 onChange={handlePageSize}
               >
@@ -283,3 +258,5 @@ export default defineComponent({
     )
   },
 })
+
+export default Pagination

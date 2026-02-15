@@ -2,70 +2,6 @@ import type { PropType } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useMagicKeys } from '@vueuse/core'
 import { computed, defineComponent, shallowRef, useModel, watch } from 'vue'
-import { clsx } from '@/utils/clsx'
-
-/** 样式常量定义 */
-const styles = clsx({
-  // 容器样式
-  container: [
-    'group',
-    'relative',
-    'z-1000',
-    'flex',
-    'flex-col',
-    'justify-center',
-    'flex-1',
-    'h-11',
-    'ml-4',
-    'bg-base-content/10',
-    'border-1',
-    'border-base-content/0',
-    'rounded-full',
-    'sm:flex-none',
-    'sm:w-168',
-    'focus-within:border-primary',
-  ],
-  // 前缀
-  preffix: [
-    'flex-none',
-    'text-2xl',
-    'text-base-content',
-  ],
-  // 后缀
-  suffix: [
-    'flex-none',
-    'opacity-50',
-    'group-focus-within:opacity-100',
-  ],
-  // 前缀图标
-  preffixIcon: [
-    'text-2xl',
-    'text-base-content',
-  ],
-  // 后缀图标
-  suffixIcon: [
-    'text-2xl',
-    'text-base-content',
-  ],
-  // label
-  label: [
-    'relative',
-    'z-1',
-    'w-full',
-    'px-4',
-    'py-1.5',
-    'flex',
-    'items-center',
-    'gap-2',
-  ],
-  // input
-  input: [
-    'w-full',
-    'h-full',
-    'outline-none',
-  ],
-
-})
 
 const SearchBar = defineComponent({
   name: 'SearchBar',
@@ -115,17 +51,33 @@ const SearchBar = defineComponent({
     }
 
     return () => (
-      <div class={styles.container}>
+      <div
+        class="
+          group
+          bg-base-content/10
+          border-base-content/0
+          focus-within:border-primary
+          relative
+          z-1000
+          ml-4
+          flex h-11
+          flex-1
+          flex-col
+          justify-center
+          rounded-full
+          border
+          sm:w-2xl
+          sm:flex-none
+        "
+      >
         <div class="dropdown">
-          <label
-            class={styles.label}
-          >
-            <div class={styles.preffixIcon}>
+          <label class="relative z-1 flex w-full items-center gap-2 px-4 py-1.5">
+            <div class="text-base-content text-2xl">
               <Icon icon="mdi:search" />
             </div>
             <input
               ref={inputRef}
-              class={styles.input}
+              class="h-full w-full outline-none"
               v-model={inputValue.value}
               placeholder={searchPlaceholder.value}
               type="text"
@@ -136,12 +88,12 @@ const SearchBar = defineComponent({
               }}
             />
             <button
-              class={styles.suffix}
+              class="flex-none opacity-50 group-focus-within:opacity-100"
               v-show={inputValue.value}
               onClick={handleClear}
             >
               <Icon
-                class={styles.suffixIcon}
+                class="text-base-content text-2xl"
                 icon="mdi:close"
               />
             </button>

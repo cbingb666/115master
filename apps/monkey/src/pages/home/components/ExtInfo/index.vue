@@ -143,9 +143,11 @@
 <script setup lang="ts">
 import { useAsyncState, useElementVisibility } from '@vueuse/core'
 import { onMounted, ref, watch } from 'vue'
-import Empty from '@/components/empty/Empty.vue'
-import Image from '@/components/Image/index.vue'
-import LoadingError from '@/components/LoadingError/index.vue'
+import {
+  Empty,
+  Image,
+  LoadingError,
+} from '@/components'
 import { clsx } from '@/utils/clsx'
 import { formatDate, formatDuration } from '@/utils/format'
 import { Jav, JavBus, JavDB } from '@/utils/jav'

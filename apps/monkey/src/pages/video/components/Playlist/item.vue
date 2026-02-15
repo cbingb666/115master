@@ -56,7 +56,7 @@
 import type { Entity } from '@115master/drive115'
 import { Icon } from '@iconify/vue'
 import { computed, shallowRef } from 'vue'
-import LoadingError from '@/components/LoadingError/index.vue'
+import { LoadingError } from '@/components'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { ICON_STAR_FILL } from '@/icons'

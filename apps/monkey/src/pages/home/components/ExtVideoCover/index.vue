@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import LoadingError from '@/components/LoadingError/index.vue'
+import { LoadingError } from '@/components'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { clsx } from '@/utils/clsx'
 import 'photoswipe/style.css'

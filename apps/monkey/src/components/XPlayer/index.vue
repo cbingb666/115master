@@ -82,7 +82,7 @@
 import type { PlayerContext } from './hooks/usePlayerProvide'
 import type { XPlayerEmit, XPlayerProps } from './types'
 import { shallowRef, watch, watchEffect } from 'vue'
-import LoadingError from '@/components/LoadingError/index.vue'
+import { LoadingError } from '@/components'
 import { clsx } from '@/utils/clsx'
 import ContextMenu from './components/ContextMenu/index.vue'
 import ControlsBar from './components/Controls/ControlBar.vue'

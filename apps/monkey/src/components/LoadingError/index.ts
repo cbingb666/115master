@@ -1,1 +1,1 @@
-export { default as LoadingError } from './index.vue'
+export { default as LoadingError } from './LoadingError'

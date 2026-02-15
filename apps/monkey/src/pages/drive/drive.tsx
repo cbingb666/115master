@@ -6,120 +6,40 @@ import { useRouteParams, useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, onBeforeMount, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { router } from '@/app/router'
-import { DriveSearchBar, Empty, FileList, FileMenu, FileNewFolderButton, FilePageSizeSelector, FilePaths, FileSortSelector, Header, Layout, LoadingError, Main, Menu, Navbar, Pagination, Sider } from '@/components'
-import { FileViewType } from '@/components/FileViewType'
-import UserInfo from '@/components/Layout/Navbar/UserInfo.vue'
+import {
+  DriveSearchBar,
+  Empty,
+  FileList,
+  FileMenu,
+  FileNewFolderButton,
+  FilePageSizeSelector,
+  FilePaths,
+  FileSortSelector,
+  FileViewType,
+  Header,
+  Layout,
+  LoadingError,
+  Main,
+  Menu,
+  Navbar,
+  Pagination,
+  Sider,
+  UserInfo,
+} from '@/components'
 import { PAGINATION_DEFAULT_PAGE_SIZE } from '@/constants'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import { useDriveFile } from '@/hooks/useDriveFile'
-import { ICON_CANCEL, ICON_DELETE, ICON_FILE_UP, ICON_MOVE, ICON_RENAME, ICON_TOP, ICON_TOP_SOLID } from '@/icons'
+import {
+  ICON_CANCEL,
+  ICON_DELETE,
+  ICON_FILE_IMPROVE,
+  ICON_MOVE,
+  ICON_RENAME,
+  ICON_TOP,
+  ICON_TOP_SOLID,
+} from '@/icons'
 import { useDriveSpaceInfoStore } from '@/store/driveSpaceInfo'
-import { clsx } from '@/utils/clsx'
 import { formatFileSize } from '@/utils/format'
-
-const styles = clsx({
-  brand: [
-    'text-2xl',
-    'font-bold',
-    'font-stretch-expanded',
-    'tracking-tight',
-    'h-[var(--navbar-height)]',
-    'flex items-center justify-center',
-  ],
-  // 容器样式
-  container: {
-    root: [
-      'flex h-full flex-col',
-      '[--drive-header-height:calc(var(--spacing)*12)]',
-    ],
-    layout: [
-      '[--navbar-frosted-glass-height:var(--navbar-height)]',
-    ],
-    main: [
-      'relative',
-      'flex flex-col',
-      'min-h-[calc(100vh-var(--navbar-height))]',
-    ],
-  },
-
-  // 侧边栏样式
-  sider: {
-    downloadBtn: [
-      'btn btn-md btn-primary btn-soft btn-text flex-none rounded-full px-6',
-    ],
-    menuContainer: [
-      'mt-5 flex-1',
-    ],
-    menu: [
-      'flex-1',
-    ],
-    divider: [
-      'bg-base-content/5 my-4 h-px w-full',
-    ],
-  },
-
-  // 图标样式
-  icon: {
-    large: [
-      'text-2xl',
-    ],
-  },
-
-  // 内容区域样式
-  content: {
-    empty: [
-      'absolute inset-0 m-auto',
-    ],
-    loadingContainer: [
-      'absolute inset-0 m-auto',
-      'loading loading-spinner loading-xl',
-    ],
-    fileList: [
-      // 文件列表容器样式
-    ],
-  },
-
-  // 空间信息样式
-  spaceInfo: {
-    container: [
-      'mt-2 flex flex-none flex-col gap-2',
-    ],
-    text: [
-      'text-base-content/70 text-sm',
-    ],
-    progress: [
-      'progress progress-lg progress-primary w-38',
-    ],
-  },
-
-  // 状态样式
-  state: {
-    posCenter: [
-      'absolute inset-0 m-auto',
-    ],
-    pagination: [
-      'fixed',
-      'left-1/2',
-      '-translate-x-1/2',
-      'bottom-4',
-      'z-50',
-    ],
-  },
-
-  // 头部样式
-  header: {
-    pathContainer: [
-      'relative',
-      'flex',
-      'items-center',
-      'gap-4',
-    ],
-    menuContainer: [
-      'flex',
-      'items-center',
-    ],
-  },
-})
 
 const Drive = defineComponent({
   name: 'Drive',
@@ -172,7 +92,7 @@ const Drive = defineComponent({
         listStore.options.cid.value,
         listStore.itemChecked.checkedValues.value,
       )),
-      fileUp: withRefresh(() => action.fileUp(
+      improve: withRefresh(() => action.improve(
         listStore.itemChecked.checkedValues.value,
         listStore.prevLevelPath.value?.cid ?? '0',
       )),
@@ -196,7 +116,7 @@ const Drive = defineComponent({
         activeLabel: '取消置顶',
         icon: ICON_TOP,
         activeIcon: ICON_TOP_SOLID,
-        activeIconColor: clsx('text-orange-500'),
+        activeIconColor: 'text-orange-500',
         active: computed(() => listStore.itemChecked.checkedValues.value.some(item => item.is_top)),
         onClick: () => actionHandlers.batchTop(),
       },
@@ -205,9 +125,9 @@ const Drive = defineComponent({
         label: '星标',
         activeLabel: '取消星标',
         icon: 'mdi:heart-outline',
-        iconColor: clsx('text-pink-400'),
+        iconColor: 'text-pink-400',
         activeIcon: 'mdi:heart',
-        activeIconColor: clsx('text-pink-400'),
+        activeIconColor: 'text-pink-400',
         active: computed(() => listStore.itemChecked.checkedValues.value.some(item => item.m)),
         onClick: () => actionHandlers.batchStar(),
       },
@@ -219,13 +139,13 @@ const Drive = defineComponent({
           actionHandlers.batchMove()
         },
       },
-      fileUp: {
-        name: 'fileUp',
+      improve: {
+        name: 'improve',
         label: '提到上级',
-        icon: ICON_FILE_UP,
+        icon: ICON_FILE_IMPROVE,
         show: computed(() => listStore.prevLevelPath.value !== undefined),
         onClick: () => {
-          actionHandlers.fileUp()
+          actionHandlers.improve()
         },
       },
       rename: {
@@ -260,7 +180,7 @@ const Drive = defineComponent({
     >(() => {
       return [
         [actionAtom.top, actionAtom.star],
-        [actionAtom.move, actionAtom.fileUp, actionAtom.rename],
+        [actionAtom.move, actionAtom.improve, actionAtom.rename],
         [actionAtom.delete],
         [actionAtom.cancel],
       ]
@@ -306,41 +226,41 @@ const Drive = defineComponent({
 
       return (
         <>
-          <div class={styles.brand}>
+          <div class="flex h-(--navbar-height) items-center justify-center text-2xl font-bold tracking-tight font-stretch-expanded">
             115Master
           </div>
           {/* 离线下载 */}
           <button
-            class={styles.sider.downloadBtn}
+            class="btn btn-md btn-primary btn-soft btn-text flex-none rounded-full px-6"
             onClick={() => actionHandlers.cloudDownload()}
           >
             <Icon
-              class={styles.icon.large}
+              class="text-2xl"
               icon="material-symbols:add-link-rounded"
             />
             离线下载
           </button>
 
-          <div class={styles.sider.menuContainer}>
+          <div class="mt-5 flex-1">
             {/* 菜单 */}
-            <Menu class={styles.sider.menu} />
+            <Menu class="flex-1" />
           </div>
 
           {/* 空间信息 */}
-          <div class={styles.spaceInfo.container} v-show={spaceInfo.state?.state === true}>
-            <div class={styles.spaceInfo.text}>
+          <div class="mt-2 flex flex-none flex-col gap-2" v-show={spaceInfo.state?.state === true}>
+            <div class="text-base-content/70 text-sm">
               { formatFileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0) }
               {' / '}
               { formatFileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0) }
             </div>
             <progress
-              class={styles.spaceInfo.progress}
+              class="progress progress-lg progress-primary w-38"
               max={100}
               value={value.value}
             />
           </div>
 
-          <div class={styles.sider.divider} />
+          <div class="bg-base-content/5 my-4 h-px w-full" />
         </>
       )
     }
@@ -350,7 +270,7 @@ const Drive = defineComponent({
     function ListHeader() {
       return (
         <Header>
-          <div class={styles.header.pathContainer}>
+          <div class="relative flex items-center gap-4">
             <FilePaths
               paths={listStore.path.value ?? []}
               onDragMove={handleDragMove}
@@ -358,7 +278,7 @@ const Drive = defineComponent({
             />
           </div>
 
-          <div class={styles.header.menuContainer}>
+          <div class="flex items-center">
             <FileMenu>
               <FileNewFolderButton onClick={actionHandlers.newFolder} />
               <FilePageSizeSelector
@@ -385,7 +305,7 @@ const Drive = defineComponent({
       if (listStore.list.error.value) {
         return (
           <LoadingError
-            class={styles.state.posCenter}
+            class="absolute inset-0 m-auto"
             message={listStore.list.error.value}
             size="mini"
           />
@@ -395,7 +315,7 @@ const Drive = defineComponent({
       if (listStore.list.isLoading.value) {
         return (
           <div
-            class={styles.content.loadingContainer}
+            class="loading loading-spinner loading-xl absolute inset-0 m-auto"
           />
         )
       }
@@ -403,7 +323,7 @@ const Drive = defineComponent({
       if (listStore.list.isReady.value && listStore.pagination.state.total === 0) {
         return (
           <Empty
-            class={styles.content.empty}
+            class="absolute inset-0 m-auto"
             description="没有文件"
           />
         )
@@ -421,7 +341,6 @@ const Drive = defineComponent({
               && listStore.list.state.value?.data
             ) && (
               <FileList
-                class={styles.content.fileList}
                 actionConfig={actionConfig.value}
                 checkeds={listStore.itemChecked.checkedSet.value}
                 listData={listStore.list.state.value?.data}
@@ -443,7 +362,7 @@ const Drive = defineComponent({
         return (
           <Pagination
             key="pagination"
-            class={styles.state.pagination}
+            class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2"
             currentPage={listStore.pagination.state.page}
             currentPageSize={listStore.pagination.state.size}
             showSizeChanger={false}
@@ -474,8 +393,8 @@ const Drive = defineComponent({
     })
 
     return () => (
-      <div class={styles.container.root}>
-        <Layout class={styles.container.layout}>
+      <div class="flex h-full flex-col [--drive-header-height:calc(var(--spacing)*12)]">
+        <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
           {/* navbar */}
           <Navbar>
             {{
@@ -495,7 +414,7 @@ const Drive = defineComponent({
             <SiderContent></SiderContent>
           </Sider>
           {/* main */}
-          <Main class={styles.container.main}>
+          <Main class="relative flex min-h-[calc(100vh-var(--navbar-height))] flex-col">
             <ListHeader />
             <ListState />
             <List />

@@ -285,7 +285,7 @@ export function useDriveAction() {
   }
 
   /** 提到上级 */
-  async function fileUp(items: WebApi.Entity.FilesItem [], prevLevelId: string): Promise<boolean> {
+  async function improve(items: WebApi.Entity.FilesItem [], prevLevelId: string): Promise<boolean> {
     const dialogRes = await dialog.confirm({
       title: '提到上级',
       content: '将文件提升到上级目录，确定提升吗？',
@@ -546,7 +546,7 @@ export function useDriveAction() {
     starBatch,
     moveBatch,
     dragMove,
-    fileUp,
+    improve,
     deleteBatch,
     renameItem,
     newFolder,

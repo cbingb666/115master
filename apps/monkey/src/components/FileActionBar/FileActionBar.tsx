@@ -1,60 +1,7 @@
 import type { PropType } from 'vue'
-import type { ActionBarItem, ActionBarItemState } from '@/components/FileActionBar/types'
+import type { ActionBarItem, ActionBarItemState } from './FileActionBar.types'
 import { Icon } from '@iconify/vue'
 import { defineComponent, ref, toValue, triggerRef } from 'vue'
-import { clsx } from '@/utils/clsx'
-
-const styles = clsx({
-  root: [
-    'fixed right-0 bottom-18 left-0',
-    'flex items-center justify-center',
-    'pointer-events-none',
-  ],
-  wrap: [
-    'flex items-center justify-center',
-    'bg-neutral-800/80',
-    'backdrop-blur-xl backdrop-brightness-70 backdrop-saturate-180',
-    'ring-1 ring-neutral-700/80',
-    'shadow-md shadow-neutral-950/50',
-    'rounded-box',
-    'pointer-events-auto',
-  ],
-  group: [
-    'flex items-center justify-center',
-  ],
-  button: [
-    'group relative',
-    'btn btn-xl btn-ghost border-none',
-    'flex items-center justify-center',
-    'hover:bg-base-content/5',
-    'transition-opacity',
-    'max-sm:btn-md',
-    'rounded-box',
-    'tooltip tooltip-top',
-  ],
-  icon: [
-    'size-8',
-    'max-sm:size-5',
-    'drop-shadow-base-200/50 drop-shadow-sm',
-  ],
-  iconHide: [
-    'opacity-20',
-  ],
-  loading: [
-    'absolute inset-0 m-auto',
-    'loading loading-spinner loading-xl',
-    'opacity-0',
-    'transition-all',
-  ],
-  loadingShow: [
-    'opacity-100',
-  ],
-  divider: [
-    'bg-base-content/20',
-    'h-8 w-px',
-    'mx-2',
-  ],
-})
 
 /**
  * 文件操作栏
@@ -105,8 +52,15 @@ const FileActionBar = defineComponent({
     }
 
     return () => (
-      <div class={styles.root}>
-        <div class={styles.wrap}>
+      <div class="pointer-events-none fixed inset-x-0 bottom-18 flex items-center justify-center">
+        <div
+          class="
+            rounded-box pointer-events-auto flex items-center
+            justify-center bg-neutral-800/80
+            shadow-md ring-1 shadow-neutral-950/50 ring-neutral-700/80
+            backdrop-blur-xl backdrop-brightness-70 backdrop-saturate-180
+          "
+        >
           {
             props.data.map((group, groupIndex) => {
               const groupItems = group.filter(item =>
@@ -115,7 +69,7 @@ const FileActionBar = defineComponent({
               return (
                 <>
                   {/* group */}
-                  <div class={styles.group}>
+                  <div class="flex items-center justify-center">
                     {
                       groupItems.map((item) => {
                         const isLoading = itemStateMap.value.get(item.name)?.isLoading
@@ -135,7 +89,13 @@ const FileActionBar = defineComponent({
                         return (
                           <button
                             key={item.icon}
-                            class={styles.button}
+                            class="
+                              group btn btn-xl btn-ghost max-sm:btn-md
+                              rounded-box tooltip tooltip-top hover:bg-base-content/5
+                              relative flex
+                              items-center justify-center
+                              border-none transition-opacity
+                            "
                             data-tip={label}
                             title={label}
                             onClick={() => handleItemClick(item)}
@@ -143,19 +103,17 @@ const FileActionBar = defineComponent({
                             {/* loading */}
                             <span
                               class={[
-                                styles.loading,
-                                ...(isLoading
-                                  ? [styles.loadingShow]
-                                  : []),
+                                'loading loading-spinner loading-xl',
+                                'absolute inset-0 m-auto',
+                                'transition-all',
+                                isLoading ? 'opacity-100' : 'opacity-0',
                               ]}
                             />
                             {/* icon */}
                             <Icon
                               class={[
-                                styles.icon,
-                                ...(isLoading
-                                  ? [styles.iconHide]
-                                  : []),
+                                'drop-shadow-base-200/50 size-8 drop-shadow-sm max-sm:size-5',
+                                isLoading ? 'opacity-20' : '',
                                 iconColor,
                               ]}
                               icon={icon}
@@ -168,7 +126,7 @@ const FileActionBar = defineComponent({
                   {
 
                     (groupIndex < props.data.length - 1) && (
-                      <div class={styles.divider} />
+                      <div class="bg-base-content/20 mx-2 h-8 w-px" />
                     )
                   }
                 </>

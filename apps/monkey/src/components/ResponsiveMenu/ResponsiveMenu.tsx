@@ -3,9 +3,6 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { defineComponent } from 'vue'
 import { useDialog } from '@/components'
 
-/**
- * 下拉菜单
- */
 const Dropdown = defineComponent({
   name: 'Dropdown',
   slots: Object as SlotsType<{
@@ -16,13 +13,14 @@ const Dropdown = defineComponent({
     return () => (
       <div class="dropdown dropdown-end">
         {slots.target?.()}
-        <div class={[
-          'dropdown-content menu',
-          'rounded-box',
-          'bg-base-300/30',
-          'backdrop-blur-2xl backdrop-brightness-30 backdrop-saturate-180',
-          'ring-base-300/10 ring-1',
-        ]}
+        <div
+          class="
+            dropdown-content menu
+            rounded-box
+            bg-base-300/30
+            ring-base-300/10 ring-1 backdrop-blur-2xl
+            backdrop-brightness-30 backdrop-saturate-180
+          "
         >
           {slots.default?.()}
         </div>
@@ -37,9 +35,7 @@ const PullupModalProps = {
     default: '请选择',
   },
 }
-/**
- * 弹出式模态框
- */
+
 const PullupModal = defineComponent({
   name: 'PullupModal',
   props: PullupModalProps,
@@ -79,9 +75,6 @@ const PullupModal = defineComponent({
   },
 })
 
-/**
- * 响应式菜单
- */
 const ResponsiveMenu = defineComponent({
   name: 'ResponsiveMenu',
   props: {

@@ -37,37 +37,6 @@ export const DriveFileBrowserContent = defineComponent({
       props.query.cid.value = data.cid
     }
 
-    const styles = {
-      posCenter: [
-        'absolute inset-0 m-auto',
-      ],
-      // 根容器
-      root: [
-        'flex flex-col h-full',
-        '[--drive-header-height:calc(var(--spacing)*10)]',
-      ],
-      // 头部区域
-      header: [
-        'sticky top-0',
-        'flex items-baseline-last justify-between gap-2',
-      ],
-      // 主内容区域
-      main: [
-        'relative',
-        'flex flex-col',
-        'flex-1',
-        'min-h-0',
-        'p-4',
-      ],
-      loading: [
-        'loading loading-spinner loading-xl',
-      ],
-      pagination: [
-        'mt-4',
-        'flex justify-center',
-      ],
-    }
-
     onBeforeMount(() => {
       console.log('onBeforeMount')
       listStore.refresh()
@@ -86,8 +55,8 @@ export const DriveFileBrowserContent = defineComponent({
     }
 
     return () => (
-      <div class={styles.root}>
-        <div class={styles.header}>
+      <div class="flex h-full flex-col [--drive-header-height:calc(var(--spacing)*10)]">
+        <div class="sticky top-0 flex items-baseline-last justify-between gap-2">
           {/* 头部路径和菜单 */}
           <FilePaths
             paths={listStore.path.value ?? []}
@@ -109,11 +78,11 @@ export const DriveFileBrowserContent = defineComponent({
         </div>
 
         {/* 主内容区域 */}
-        <div class={styles.main}>
+        <div class="relative flex min-h-0 flex-1 flex-col p-4">
           {/* 错误状态 */}
           {listStore.list.error.value && (
             <LoadingError
-              class={styles.posCenter}
+              class="absolute inset-0 m-auto"
               message={listStore.list.error.value}
               size="mini"
             />
@@ -121,13 +90,16 @@ export const DriveFileBrowserContent = defineComponent({
 
           {/* 加载状态 */}
           {listStore.list.isLoading.value && (
-            <div class={[styles.posCenter, styles.loading]} />
+            <div class="loading loading-spinner loading-xl absolute inset-0 m-auto" />
           )}
 
           {/* 文件列表 */}
           {listStore.list.isReady.value && (
             <>
-              <FileList>
+              <FileList
+                actionConfig={[]}
+                listData={listStore.list.state.value?.data ?? []}
+              >
                 {(listStore.list.state.value?.data ?? []).map(item => (
                   <FileListItem
                     key={item.pc}
@@ -140,7 +112,7 @@ export const DriveFileBrowserContent = defineComponent({
 
               {/* 分页器 */}
               {listStore.pagination.state.pageCount > 1 && (
-                <div class={styles.pagination}>
+                <div class="mt-4 flex justify-center">
                   <Pagination
                     currentPage={listStore.pagination.state.page}
                     currentPageSize={listStore.pagination.state.size}

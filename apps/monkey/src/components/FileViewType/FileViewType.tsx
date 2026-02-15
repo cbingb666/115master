@@ -18,22 +18,13 @@ const VIEW_TYPE_OPTIONS = [
   },
 ]
 
-/**
- * 文件视图类型选择器
- */
 const FileViewType = defineComponent({
   name: 'FileViewType',
   props: {
-    /**
-     * 当前视图类型
-     */
     value: {
       type: String as PropType<ViewType>,
       default: 'list',
     },
-    /**
-     * 视图类型改变事件
-     */
     onUpdateValue: {
       type: Function as PropType<(viewType: ViewType) => void>,
       default: () => {},

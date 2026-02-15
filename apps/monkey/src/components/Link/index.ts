@@ -1,2 +1,1 @@
-export { Link } from './Link'
-export type * as LinkTypes from './Link.types'
+export { default as Link } from './Link'

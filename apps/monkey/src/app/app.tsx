@@ -2,7 +2,7 @@ import { defineComponent, KeepAlive } from 'vue'
 import { RouterView } from 'vue-router'
 import { DialogContainer, ToastContainer } from '@/components'
 
-export default defineComponent({
+const App = defineComponent({
   name: 'App',
   setup() {
     return () => (
@@ -112,3 +112,5 @@ export default defineComponent({
     )
   },
 })
+
+export default App

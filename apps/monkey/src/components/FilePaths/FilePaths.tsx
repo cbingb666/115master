@@ -1,25 +1,6 @@
 import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { defineComponent, shallowRef } from 'vue'
-import { clsx } from '@/utils/clsx'
-
-const styles = clsx({
-  root: [
-    'breadcrumbs',
-  ],
-  link: [
-    'text-md',
-    'font-medium',
-    'px-4',
-    'py-0.5',
-    'text-neutral-300',
-    'text-shadow-2xs',
-    'rounded-full',
-    'no-underline!',
-    'hover:bg-base-200/10',
-    'data-[drop-zone=true]:bg-secondary/80',
-  ],
-})
 
 /**
  * 文件路径面包屑导航
@@ -72,14 +53,21 @@ const FilePaths = defineComponent({
     }
 
     return () => (
-      <div class={styles.root}>
+      <div class="breadcrumbs">
         <ul>
           {
             props.paths.map((path) => {
               return (
                 <li key={path.cid}>
                   <a
-                    class={styles.link}
+                    class={[
+                      'text-md font-medium',
+                      'px-4 py-0.5',
+                      'text-neutral-300 text-shadow-2xs',
+                      'rounded-full no-underline!',
+                      'hover:bg-base-200/10',
+                      'data-[drop-zone=true]:bg-secondary/80',
+                    ].join(' ')}
                     data-drop-zone={dropZone.value === path.cid}
                     href={`#/drive/all/${path.cid}`}
                     onClick={() => props.onPathClick?.(path)}

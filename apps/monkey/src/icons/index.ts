@@ -39,9 +39,7 @@ export const ICON_TOP = 'material-symbols:push-pin-outline'
 /** 取消置顶 */
 export const ICON_TOP_SOLID = 'material-symbols:push-pin'
 /** 文件提升 */
-export const ICON_FILE_UP = 'mdi:transfer-up'
-
-// Toast 相关图标
+export const ICON_FILE_IMPROVE = 'mdi:transfer-up'
 /** Toast 成功 */
 export const ICON_TOAST_SUCCESS = 'material-symbols:check-circle-rounded'
 /** Toast 错误 */
@@ -52,7 +50,6 @@ export const ICON_TOAST_WARNING = 'material-symbols:warning-rounded'
 export const ICON_TOAST_INFO = 'material-symbols:info-rounded'
 /** Toast 关闭 */
 export const ICON_TOAST_CLOSE = 'material-symbols:close-small-rounded'
-
 // GitHub
 export const ICON_GITHUB = 'mdi:github'
 // Q&A

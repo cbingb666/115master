@@ -26,7 +26,7 @@
     0 0 14px rgba(0, 0, 0, 0.03);
 }
 
-@utility app-text-shadow-drak {
+@utility app-text-shadow-dark {
   text-shadow:
     0 0 1px rgba(0, 0, 0, 0.02),
     0 0 2px rgba(0, 0, 0, 0.02),
@@ -48,4 +48,19 @@
     backdrop-filter: blur(48px) saturate(180%) brightness(50%);
     mask-image: linear-gradient(to top, transparent, black 50%);
   }
+}
+
+@keyframes app-slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@utility app-animate-slide-in-right {
+  animation: app-slide-in-right 0.3s ease-out;
 }

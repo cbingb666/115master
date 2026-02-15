@@ -5,113 +5,21 @@ import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
 import { useMagicKeys } from '@vueuse/core'
 import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
 import { useMarqueeSelect } from '@/hooks/useMarqueeSelect'
-import { clsx } from '@/utils/clsx'
 import { Utils115 } from '@/utils/utils115'
-import { FileContextmenu, FileListItem } from '..'
+import { FileContextMenu, FileListItem } from '..'
 import { useFileListProvide } from './provide'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 
-const styles = clsx({
-  root: [
-    'relative',
-    'w-full',
-    'px-5',
-    'pt-5',
-    'pb-28',
-    'focus-within:outline-none',
-    // 列表模式
-    'data-[view-type=list]:grid',
-    'data-[view-type=list]:grid-cols-1',
-    'data-[view-type=list]:gap-1',
-    'data-[view-type=list]:w-full',
-    // 卡片模式
-    'data-[view-type=card]:grid',
-    'data-[view-type=card]:grid-cols-2',
-    'data-[view-type=card]:sm:grid-cols-2',
-    'data-[view-type=card]:lg:grid-cols-3',
-    'data-[view-type=card]:xl:grid-cols-4',
-    'data-[view-type=card]:2xl:grid-cols-5',
-    'data-[view-type=card]:items-stretch', // 让所有项目拉伸到相同高度
-    'data-[view-type=card]:gap-3',
-    'data-[view-type=card]:sm:gap-5',
-  ],
-
-  // 拖拽图像样式
-  dragImage: [
+function createDragImage(count: number): HTMLElement {
+  const dragElement = document.createElement('div')
+  dragElement.className = [
     'flex items-center justify-center',
     'bg-primary text-primary-content',
     'rounded-lg shadow-lg',
     'px-4 py-2',
     'text-sm font-medium',
     'min-w-24',
-  ],
-})
-
-export const props = {
-  /** 视图类型 */
-  viewType: {
-    type: String as PropType<'card' | 'list'>,
-    default: 'list',
-  },
-  /** 路径选择模式 */
-  pathSelect: {
-    type: Boolean,
-    default: false,
-  },
-  /** 列表数据 */
-  listData: {
-    type: Array as PropType<WebApi.Entity.FilesItem[]>,
-    required: true,
-  },
-  /** 选中的文件 */
-  checkeds: {
-    type: Object as PropType<Set<WebApi.Entity.FilesItem>>,
-    default: () => new Set(),
-  },
-  /** 操作配置 */
-  actionConfig: {
-    type: Array as PropType<Action[][]>,
-    default: () => [],
-    required: true,
-  },
-  /** 选中文件 */
-  onChecked: {
-    type: Function as PropType<(item: WebApi.Entity.FilesItem, checked: boolean) => void>,
-    default: () => {},
-  },
-  /** 清除选中文件 */
-  onCheckedClear: {
-    type: Function as PropType<() => void>,
-    default: () => {},
-  },
-  /** 单选 */
-  onRadio: {
-    type: Function as PropType<(item: WebApi.Entity.FilesItem) => void>,
-    default: () => {},
-  },
-  // 新增拖拽相关事件
-  onDragStart: {
-    type: Function as PropType<(items: WebApi.Entity.FilesItem[], event: DragEvent) => void>,
-    default: () => {},
-  },
-  /** 拖拽移动事件 */
-  onDragMove: {
-    type: Function as PropType<(cid: string, items: WebApi.Entity.FilesItem[]) => void>,
-    default: () => {},
-  },
-  /** 预览事件 */
-  onPreview: {
-    type: Function as PropType<(item: WebApi.Entity.FilesItem) => void>,
-    default: () => {},
-  },
-}
-
-/**
- * 创建拖拽图像
- */
-function createDragImage(count: number): HTMLElement {
-  const dragElement = document.createElement('div')
-  dragElement.className = styles.dragImage.join(' ')
+  ].join(' ')
   dragElement.textContent = count === 1 ? '移动1个文件' : `移动${count}个文件`
 
   // 设置样式使其在拖拽时可见
@@ -124,22 +32,62 @@ function createDragImage(count: number): HTMLElement {
   return dragElement
 }
 
-/**
- * 文件列表
- */
 const FileList = defineComponent({
   name: 'FileList',
-  props,
+  props: {
+    viewType: {
+      type: String as PropType<'card' | 'list'>,
+      default: 'list',
+    },
+    pathSelect: {
+      type: Boolean,
+      default: false,
+    },
+    listData: {
+      type: Array as PropType<WebApi.Entity.FilesItem[]>,
+      required: true,
+    },
+    checkeds: {
+      type: Object as PropType<Set<WebApi.Entity.FilesItem>>,
+      default: () => new Set(),
+    },
+    actionConfig: {
+      type: Array as PropType<Action[][]>,
+      default: () => [],
+      required: true,
+    },
+    onChecked: {
+      type: Function as PropType<(item: WebApi.Entity.FilesItem, checked: boolean) => void>,
+      default: () => {},
+    },
+    onCheckedClear: {
+      type: Function as PropType<() => void>,
+      default: () => {},
+    },
+    onRadio: {
+      type: Function as PropType<(item: WebApi.Entity.FilesItem) => void>,
+      default: () => {},
+    },
+    onDragStart: {
+      type: Function as PropType<(items: WebApi.Entity.FilesItem[], event: DragEvent) => void>,
+      default: () => {},
+    },
+    onDragMove: {
+      type: Function as PropType<(cid: string, items: WebApi.Entity.FilesItem[]) => void>,
+      default: () => {},
+    },
+    onPreview: {
+      type: Function as PropType<(item: WebApi.Entity.FilesItem) => void>,
+      default: () => {},
+    },
+  },
   setup: (props) => {
     const { viewType, contextmenuPosition, contextmenuShow } = useFileListProvide(props)
 
-    /** 容器引用 */
     const containerRef = ref<HTMLElement>()
 
-    /** 是否拖拽中 */
     const dragging = shallowRef(false)
 
-    /** 快捷键 */
     const keys = useMagicKeys({
       target: () => containerRef.value!,
       passive: false,
@@ -148,33 +96,27 @@ const FileList = defineComponent({
       },
     })
 
-    /** 快捷键：Meta */
     const KeyMeta = keys.Meta
 
-    /** 快捷键：Shift */
     const KeyShift = keys.Shift
 
-    /** 快捷键：Escape */
     const KeyEscape = keys.Escape
 
-    /** 快捷键：Meta + A */
     const KeyMetaA = keys['Meta+A']
 
-    /** 最后一个被选中的项目索引 */
     const lastCheckedIndex = ref<number>(-1)
 
-    /** 当前焦点项目索引 */
     const currentFocusIndex = ref<number>(-1)
 
-    /** 框选功能 */
+    const listDataWithImage = computed(() => {
+      return props.listData?.filter(i => Boolean(i.u))
+    })
+
     useMarqueeSelect({
       container: () => containerRef.value,
       disabled: props.pathSelect, // 路径选择模式下禁用框
     })
 
-    /**
-     * 处理拖拽开始事件
-     */
     const handleDragStart = (item: WebApi.Entity.FilesItem, event: DragEvent) => {
       if (!event.dataTransfer)
         return
@@ -184,44 +126,35 @@ const FileList = defineComponent({
       // 如果当前项没有被选中，先选中它
       if (!props.checkeds.has(item)) {
         props.onChecked(item, true)
-        // 更新最后选中的索引
         if (props.listData) {
           const currentIndex = props.listData.findIndex(data => data.pc === item.pc)
           lastCheckedIndex.value = currentIndex
         }
       }
 
-      /** 获取所有选中的项目，如果没有选中项则使用当前项 */
       const selectedItems = props.checkeds.size > 0
         ? Array.from(props.checkeds)
         : [item]
 
-      /** 设置拖拽数据 */
       event.dataTransfer.setData('application/json', JSON.stringify(selectedItems))
       event.dataTransfer.effectAllowed = 'move'
 
-      /** 创建自定义拖拽图像 */
       const dragImage = createDragImage(selectedItems.length)
       document.body.appendChild(dragImage)
 
-      // 设置拖拽图像
       event.dataTransfer.setDragImage(dragImage, 50, 20)
 
-      // 清理拖拽图像元素
       setTimeout(() => {
         document.body.removeChild(dragImage)
       }, 0)
 
-      // 触发父组件的拖拽开始事件
       props.onDragStart?.(selectedItems, event)
     }
 
-    /** 拖拽结束 */
     const handleDragEnd = (_item: WebApi.Entity.FilesItem, _event: DragEvent) => {
       dragging.value = false
     }
 
-    /** 放置事件 */
     const handleDrop = (item: WebApi.Entity.FilesItem, event: DragEvent) => {
       const data = event.dataTransfer?.getData('application/json')
       if (!data)
@@ -231,7 +164,6 @@ const FileList = defineComponent({
       props.onDragMove?.(item.cid, items)
     }
 
-    /** 右键菜单 */
     const handleContextmenu = (item: WebApi.Entity.FilesItem, e: MouseEvent) => {
       contextmenuShow.value = true
       contextmenuPosition.value = {
@@ -241,7 +173,6 @@ const FileList = defineComponent({
 
       if (props.checkeds.size > 1) {
         props.onChecked(item, true)
-        // 更新最后选中的索引
         if (props.listData) {
           const currentIndex = props.listData.findIndex(data => data.pc === item.pc)
           lastCheckedIndex.value = currentIndex
@@ -252,7 +183,6 @@ const FileList = defineComponent({
       }
     }
 
-    /** 点击事件 */
     const handleClick = (item: WebApi.Entity.FilesItem) => {
       if (!props.listData)
         return
@@ -260,11 +190,9 @@ const FileList = defineComponent({
       const currentIndex = props.listData.findIndex(data => data.pc === item.pc)
 
       if (KeyShift.value && lastCheckedIndex.value !== -1) {
-        /** Shift + 点击：范围选择 */
         const startIndex = Math.min(lastCheckedIndex.value, currentIndex)
         const endIndex = Math.max(lastCheckedIndex.value, currentIndex)
 
-        // 将范围内的所有项目设置为选中状态
         for (let i = startIndex; i <= endIndex; i++) {
           const targetItem = props.listData[i]
           if (targetItem && !props.checkeds.has(targetItem)) {
@@ -275,25 +203,18 @@ const FileList = defineComponent({
         lastCheckedIndex.value = currentIndex
       }
       else if (KeyMeta.value) {
-        /** Meta + 点击：切换选中状态 */
         const isChecked = props.checkeds.has(item)
         props.onChecked(item, !isChecked)
 
-        // 更新最后选中的索引
         if (!isChecked) {
           lastCheckedIndex.value = currentIndex
         }
       }
       else {
-        // 普通点击：单选模式
         props.onRadio?.(item)
         lastCheckedIndex.value = currentIndex
       }
     }
-
-    const listDataWithImage = computed(() => {
-      return props.listData?.filter(i => Boolean(i.u))
-    })
 
     const previewByFancybox = (item: WebApi.Entity.FilesItem, _index: number) => {
       const realIndex = listDataWithImage.value?.findIndex(i => i.pc === item.pc)
@@ -328,7 +249,6 @@ const FileList = defineComponent({
       })
     }
 
-    /** 预览 */
     const handlePreview = async (item: WebApi.Entity.FilesItem, _index: number) => {
       previewByFancybox(item, _index)
     }
@@ -338,12 +258,12 @@ const FileList = defineComponent({
       if (value) {
         props.onCheckedClear?.()
         contextmenuShow.value = false
-        lastCheckedIndex.value = -1 // 重置最后选中的索引
-        currentFocusIndex.value = -1 // 重置焦点索引
+        lastCheckedIndex.value = -1
+        currentFocusIndex.value = -1
       }
     })
 
-    /** 监听 Meta + A 键, 全选 */
+    /** 监听 meta+a 键，全选 */
     watch(KeyMetaA, (value) => {
       if (value) {
         props.listData?.forEach((item) => {
@@ -355,7 +275,20 @@ const FileList = defineComponent({
     return () => (
       <div
         ref={containerRef}
-        class={styles.root}
+        class={[
+          'relative w-full px-5 pt-5 pb-28 focus-within:outline-none',
+          // card
+          'data-[view-type=card]:grid data-[view-type=card]:grid-cols-2',
+          'data-[view-type=card]:items-stretch data-[view-type=card]:gap-3',
+          // list
+          'data-[view-type=list]:grid data-[view-type=list]:w-full',
+          'data-[view-type=list]:grid-cols-1 data-[view-type=list]:gap-1',
+          // card
+          'data-[view-type=card]:sm:grid-cols-2 data-[view-type=card]:sm:gap-5',
+          'data-[view-type=card]:lg:grid-cols-3',
+          'data-[view-type=card]:xl:grid-cols-4',
+          'data-[view-type=card]:2xl:grid-cols-5',
+        ].join(' ')}
         data-view-type={viewType.value}
         tabindex="0"
       >
@@ -383,7 +316,7 @@ const FileList = defineComponent({
           ))
         }
 
-        <FileContextmenu
+        <FileContextMenu
           actionConfig={props.actionConfig}
           position={contextmenuPosition.value}
           show={contextmenuShow.value}

@@ -1,13 +1,14 @@
-import type { FunctionalComponent } from 'vue'
-import type { Props } from '@/components/Link/Link.types'
+import type { FunctionalComponent, HTMLAttributes } from 'vue'
+import type { RouterLinkProps } from 'vue-router'
 import { RouterLink } from 'vue-router'
 
-/**
- * 链接组件
- */
-export const Link: FunctionalComponent<Props> = (props, { slots }) => {
+type Props = DefineProps<RouterLinkProps | HTMLAttributes>
+
+const Link: FunctionalComponent<Props> = (props, { slots }) => {
   if ('to' in props) {
     return <RouterLink {...props}>{ slots.default?.() }</RouterLink>
   }
   return <a {...props}>{ slots.default?.() }</a>
 }
+
+export default Link

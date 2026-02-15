@@ -1,1 +1,1 @@
-export { default as Image } from './index.vue'
+export { default as Image } from './Image'

@@ -1,19 +1,15 @@
 import type { FunctionalComponent, SlotsType } from 'vue'
 import { defineComponent } from 'vue'
-import { clsx } from '@/utils/clsx'
-
-const styles = clsx({
-  root: [
-    'flex',
-    'gap-2',
-    'text-md',
-  ],
-})
 
 const MenuContentWrapper: FunctionalComponent<{ class?: string }> = (props, { slots }) => {
   return (
     <div
-      class={[styles.root, props.class]}
+      class={[
+        'flex',
+        'gap-2',
+        'text-md',
+        props.class,
+      ]}
       {...props}
     >
       {slots.default?.()}
@@ -32,7 +28,6 @@ const FileMenu = defineComponent({
   setup: (_, { slots }) => {
     return () => (
       <>
-        {/* 桌面端菜单 */}
         <MenuContentWrapper>
           {slots.default?.()}
         </MenuContentWrapper>

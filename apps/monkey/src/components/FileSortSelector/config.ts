@@ -1,4 +1,4 @@
-import type { Sort } from '@/components/FileSortSelector/FileSortSelector.types'
+import type { Sort } from './FileSortSelector.types'
 
 export const SORT_OPTIONS: Sort[] = [
   {

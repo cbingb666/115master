@@ -3,10 +3,13 @@ import type { PropType } from 'vue'
 import type { Action } from '@/types/action'
 import { Icon } from '@iconify/vue'
 import { defineComponent, shallowRef, toValue } from 'vue'
-import { Contextmenu } from '../Contextmenu'
+import { ContextMenu } from '../ContextMenu'
 
-const FileContextmenu = defineComponent({
-  name: 'FileContextmenu',
+/**
+ * 文件上下文菜单
+ */
+const FileContextMenu = defineComponent({
+  name: 'FileContextMenu',
   props: {
     /**
      * 是否显示
@@ -29,6 +32,9 @@ const FileContextmenu = defineComponent({
       type: Array as PropType<Action[][]>,
       required: true,
     },
+    /**
+     * 关闭时回调
+     */
     onClose: {
       type: Function,
       default: () => {},
@@ -38,7 +44,7 @@ const FileContextmenu = defineComponent({
     const contextmenuRef = shallowRef<MaybeElement>()
 
     return () => (
-      <Contextmenu
+      <ContextMenu
         ref={contextmenuRef}
         position={props.position}
         show={props.show}
@@ -85,9 +91,9 @@ const FileContextmenu = defineComponent({
             </>
           ))
         }
-      </Contextmenu>
+      </ContextMenu>
     )
   },
 })
 
-export default FileContextmenu
+export default FileContextMenu
