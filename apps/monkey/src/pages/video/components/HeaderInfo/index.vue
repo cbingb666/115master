@@ -26,7 +26,6 @@
               :href="`https://115.com/?cid=${item.cid}&offset=0&tab=&mode=wangpan`"
               target="_blank"
               rel="noreferrer"
-              style="color: var(--color-base-content) !important"
             >
               {{ item.name }}
             </a>

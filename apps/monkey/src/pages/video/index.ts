@@ -109,6 +109,12 @@ export async function videoPage() {
     })
   }
   document.head.append(style)
+  const fixStyle = document.createElement('style')
+  fixStyle.textContent = `
+  #my-app a, #my-app a * {
+    color: var(--color-base-content, inherit) !important;
+  } `
+  document.head.append(fixStyle)
 
   createApp(
     defineAsyncComponent({
