@@ -1,3 +1,6 @@
+/* eslint-disable perfectionist/sort-imports */
+import '@115master/shared/115polyfills'
+
 import globToRegex from 'glob-to-regexp'
 import { createMasterApp } from './app/index'
 import ROUTE_MATCH from './constants/route.match'

@@ -20,6 +20,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./115polyfills": {
+      "types": "./dist/115polyfills/index.d.ts",
+      "default": "./dist/115polyfills/index.js"
     }
   },
   "main": "./dist/index.js",
