@@ -3,14 +3,15 @@ import { unsafeWindow } from '$'
 
 /** 115 官方资源 URL */
 const OFFICIAL_ASSETS = [
-  'https://cdnres.115.com/site/static/js/jquery.js?_vh=ddb84c1_91',
-  'https://cdnassets.115.com/??libs/jquery-1.7.2.js,jquery-extend.js,libs/json2.js,oofUtil.js,paths.js,oofUtil/subscribe.js,commonFrame/urlMaintain.js,ajax/bridge.js?v=1767951162',
-  'https://cdnres.115.com/site/static/js/min/util-min.js?_vh=be49060_91',
-  'https://cdnres.115.com/site/static/js/wl_disk2014/min/core-min.js?_vh=d376e38_91',
+  'https://cdnassets.115.com/??libs/jquery-1.7.2.js,jquery-extend.js,libs/json2.js,oofUtil.js,paths.js,oofUtil/subscribe.js,commonFrame/urlMaintain.js,ajax/bridge.js?v=1770867925',
+  'https://cdnassets.115.com/??libs/jquery-1.7.2.js,jquery-extend.js?v=1770867925',
+  'https://cdnres.115.com/site/static/js/min/util-min.js?_vh=be49060_92',
+  'https://cdnres.115.com/site/static/js/wl_disk2014/min/core-min.js?_vh=d376e38_92',
 ]
 
 const OFFICIAL_STYLES = [
-  'https://cdnres.115.com/site/static/style_v11.2/common/css/dialog_box.css?_vh=f17e241_91',
+  'https://cdnres.115.com/site/static/style_v11.2/common/css/common.css?_vh=107da41_92',
+  'https://cdnres.115.com/site/static/style_v11.2/common/css/dialog_box.css?_vh=f17e241_92',
 ]
 
 /**
