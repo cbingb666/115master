@@ -1,9 +1,12 @@
 import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
-import { Icon } from '@iconify/vue'
+import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, useTemplateRef, watch } from 'vue'
-import { ICON_FILE_FOLDER } from '@/icons'
+import FileItemThumbnail from '@/components/FileItem/FileItemThumbnail'
 import { useOfflineQuotaPackageInfoStore } from '@/store/offlineQuotaPackageInfo'
+import { actressFaceDB } from '@/utils/actressFaceDB'
+import { drive115 } from '@/utils/drive115Instance'
+import { extractEmojis } from '@/utils/string'
 
 const CloudDownload = defineComponent({
   props: {
@@ -38,6 +41,56 @@ const CloudDownload = defineComponent({
       return {
         restPath,
         lastPath,
+      }
+    })
+
+    /** 异步获取女演员封面 */
+    const actressAsyncState = useAsyncState(async () => {
+      const last = pathParts.value.lastPath
+      if (!last?.name) {
+        return null
+      }
+      await actressFaceDB.init()
+      const actress = await actressFaceDB.findActress(last.name.trim())
+      return actress as { url: string } | null
+    }, null, {
+      immediate: true,
+    })
+
+    /** 监听路径变化，重新获取女演员封面 */
+    watch(() => pathParts.value.lastPath?.name, () => {
+      actressAsyncState.execute()
+    })
+
+    const emoji = computed(() => {
+      const last = pathParts.value.lastPath
+      if (last?.name) {
+        return extractEmojis(last.name)[0]
+      }
+      return undefined
+    })
+
+    const thumbnailData = computed(() => {
+      const last = pathParts.value.lastPath
+      if (!last)
+        return null
+
+      /** 使用完整的文件夹信息，如果没有则使用基础信息 */
+      const data = {
+        n: last.name || '',
+        cid: last.cid || '',
+        fc: 0 as const,
+        iv: 0,
+      } as WebApi.Entity.FilesItem
+
+      return {
+        data,
+        isFolder: true,
+        isVideo: false,
+        emoji: emoji.value,
+        actressUrl: actressAsyncState.isReady.value && actressAsyncState.state.value?.url ? actressAsyncState.state.value.url : undefined,
+        hasImagePreview: false,
+        onMouseDown: () => {},
       }
     })
 
@@ -100,7 +153,11 @@ const CloudDownload = defineComponent({
           {/* 当前选中的路径 */}
           <div class="bg-primary/10 border-primary/20 rounded-md border px-3 py-2">
             <div class="flex items-center gap-3">
-              <Icon icon={ICON_FILE_FOLDER} class="text-primary size-8 shrink-0" />
+              <div class="size-14 shrink-0">
+                {thumbnailData.value && (
+                  <FileItemThumbnail {...thumbnailData.value} />
+                )}
+              </div>
               <div class="flex min-w-0 flex-1 flex-col">
                 <span class="text-md font-medium">{pathParts.value?.lastPath?.name}</span>
                 <span class="text-base-content/30 truncate text-sm">
