@@ -1,146 +1,199 @@
+import type { WebApi } from '@115master/drive115'
 import { ref } from 'vue'
-import { useDialog, useToast } from '@/components'
+import {
+  CloudDownload,
+  FileBroswer,
+  useDialog,
+  useToast,
+} from '@/components'
 import { useOfflineSpaceStore } from '@/store/offlineSpace'
 import { useUserAqStore } from '@/store/userAq'
 import { drive115 } from '@/utils/drive115Instance'
-import { CloudDownloadInput } from './CloudDownloadInput'
-import { useMoveAction } from './useMoveAction'
+
+type Path = InstanceType<typeof CloudDownload>['$props']['path']
 
 /** 离线下载操作 */
 export function useCloudDownloadAction() {
   const dialog = useDialog()
   const toast = useToast()
-  const { saveDirectoryDialog } = useMoveAction()
 
-  /** 离线下载 */
-  async function cloudDownload(defaultpid: string = '0', defaultUrls: string = ''): Promise<boolean> {
-    const urlsValue = ref(defaultUrls)
-    const selectedDirectory = ref({
-      cid: defaultpid,
-      name: defaultpid === '0' ? '根目录' : `目录 ${defaultpid}`,
-      path: defaultpid === '0' ? '/' : `/目录${defaultpid}`,
-    })
-    const userStore = useUserAqStore()
-    const spaceStore = useOfflineSpaceStore()
-
-    const handleDirectorySelect = async () => {
-      const result = await saveDirectoryDialog(selectedDirectory.value.cid)
-      if (result) {
-        selectedDirectory.value = result
-      }
+  /** 目录选择对话框 */
+  function picker(
+    pid: string,
+    directory: ReturnType<typeof ref<{ cid: string, path: Path }>>,
+  ) {
+    const query = {
+      keyword: ref(''),
+      page: ref(1),
+      size: ref(20),
+      cid: ref(pid ?? '0'),
+      area: ref(''),
+      suffix: ref(''),
+      type: ref(''),
+      nf: ref('1'),
     }
 
-    const cloudDownloadDialog = new Promise<{ urls: string[], pid: string }>((resolve) => {
+    const path = ref<Path | null>(null)
+
+    dialog.create({
+      title: '选择保存目录',
+      maskClosable: true,
+      className: 'sm:w-11/12! sm:max-w-5xl! h-5/6!',
+      content: () => <FileBroswer query={query} currentPathRef={path} />,
+      confirmCallback: async () => {
+        if (!path.value || !query.cid.value) {
+          await dialog.alert({
+            title: '提示',
+            content: '请选择一个目录',
+          })
+          return
+        }
+        directory.value = {
+          cid: query.cid.value,
+          path: path.value,
+        }
+      },
+    })
+  }
+
+  /** 提交离线下载任务 */
+  function submit(urls: string[], pid: string) {
+    const user = useUserAqStore()
+    const space = useOfflineSpaceStore()
+
+    return drive115.NormalApiPostOfflineAddUrls({
+      ...Object.assign({}, ...urls.map((url, index) => ({ [`url[${index}]`]: url }))),
+      wp_path_id: pid,
+      uid: user.state?.data.uid,
+      sign: space.state?.sign,
+      time: Date.now(),
+    })
+  }
+
+  /** 处理提交结果反馈 */
+  async function feedback(res: Awaited<ReturnType<typeof submit>>): Promise<boolean> {
+    if (!res.state || !res.result || res.result.length === 0) {
+      await dialog.alert({
+        title: '错误',
+        content: res.error_msg || '添加离线下载任务失败',
+      })
+      return false
+    }
+
+    const success = res.result.filter(r => r.state).length
+    const total = res.result.length
+
+    if (success === total) {
+      toast.success(`成功添加 ${success} 个离线下载任务`)
+      return true
+    }
+
+    if (success > 0) {
+      toast.success(`成功添加 ${success}/${total} 个离线下载任务`)
+      const failed = res.result.filter(r => !r.state)
+      if (failed.length > 0) {
+        await dialog.alert({
+          title: '部分任务添加失败',
+          content: failed.map(r => r.error_msg || '未知错误').join('\n'),
+        })
+      }
+      return true
+    }
+
+    await dialog.alert({
+      title: '添加任务失败',
+      content: res.result.map(r => r.error_msg || '未知错误').join('\n'),
+    })
+    return false
+  }
+
+  /** 离线下载 */
+  async function cloudDownload(pid: string = '', path: WebApi.Entity.PathItem[] = [], urls: string = ''): Promise<boolean> {
+    const input = ref(urls)
+
+    // 打开后如果是根目录则默认选择云下载目录，否则保持原目录
+    pid = pid === '0' ? '' : pid
+    const isEmpty = pid === ''
+    const defaultPid = pid
+    const defaultPath = isEmpty
+      ? [
+          {
+            cid: '0',
+            name: '根目录',
+          },
+          {
+            cid: '',
+            name: '云下载',
+          },
+
+        ]
+      : path
+
+    const directory = ref<{
+      cid: string
+      path: Partial<WebApi.Entity.PathItem>[]
+    }>({
+      cid: defaultPid,
+      path: defaultPath,
+    })
+
+    return new Promise<boolean>((resolve) => {
       dialog.create({
         title: '离线下载',
         maskClosable: true,
         className: 'sm:w-11/12! sm:max-w-3xl!',
         content: () => (
-          <CloudDownloadInput
-            currentDirectory={{
-              name: selectedDirectory.value.name,
-              path: selectedDirectory.value.path,
+          <CloudDownload
+            path={directory.value.path}
+            inputValue={input.value}
+            onSelectDirectory={() => picker(directory.value.cid, directory)}
+            onSelectPath={(fileId, fileName, path) => {
+              directory.value = {
+                cid: fileId,
+                path: path && path.length > 0
+                  ? path
+                  : [{
+                      cid: fileId,
+                      name: fileName,
+                    }],
+              }
             }}
-            placeholder="支持HTTP、HTTPS、FTP、磁力链和电驴链接，换行可添加多个"
-            urlsValue={urlsValue.value}
-            onDirectorySelect={handleDirectorySelect}
-            onUrlsChange={(value: string) => urlsValue.value = value}
+            onInput={value => input.value = value}
           />
         ),
-        confirmCallback: () => {
-          const urls = urlsValue.value
+        confirmCallback: async () => {
+          const parsed = input.value
             .split('\n')
             .map(url => url.trim())
             .filter(url => url.length > 0)
-          resolve({ urls, pid: selectedDirectory.value.cid })
+
+          if (parsed.length === 0) {
+            await dialog.alert({ title: '提示', content: '请输入下载链接' })
+            return false
+          }
+
+          if (!directory.value.cid) {
+            await dialog.alert({ title: '提示', content: '请选择保存目录' })
+            return false
+          }
+
+          try {
+            const ok = await feedback(await submit(parsed, directory.value.cid))
+            if (!ok)
+              return false
+            resolve(true)
+          }
+          catch (error) {
+            await dialog.alert({
+              title: '提示',
+              content: `添加离线下载任务失败: ${error instanceof Error ? error.message : '未知错误'}`,
+            })
+            return false
+          }
         },
-        cancelCallback: () => {
-          resolve({ urls: [], pid: '' })
-        },
+        cancelCallback: () => resolve(false),
       })
     })
-
-    const { urls, pid } = await cloudDownloadDialog
-
-    if (!urls || urls.length === 0) {
-      return Promise.resolve(false)
-    }
-
-    if (!pid) {
-      await dialog.alert({
-        title: '提示',
-        content: '请选择保存目录',
-      })
-      return Promise.resolve(false)
-    }
-
-    try {
-      const tasks = urls.map((url, index) => ({
-        [`url[${index}]`]: url,
-      }))
-
-      const urlParams = Object.assign({}, ...tasks)
-
-      const data = {
-        ...urlParams,
-        wp_path_id: pid,
-        uid: userStore.state?.data.uid,
-        sign: spaceStore.state?.sign,
-        time: Date.now(),
-      }
-
-      const res = await drive115.NormalApiPostOfflineAddUrls(data)
-
-      if (res.state && res.result && res.result.length > 0) {
-        const successCount = res.result.filter(r => r.state).length
-        const totalCount = res.result.length
-
-        if (successCount === totalCount) {
-          toast.success(`成功添加 ${successCount} 个离线下载任务`)
-          return Promise.resolve(true)
-        }
-        else if (successCount > 0) {
-          toast.success(`成功添加 ${successCount}/${totalCount} 个离线下载任务`)
-
-          const failedResults = res.result.filter(r => !r.state)
-          if (failedResults.length > 0) {
-            const errorMessage = failedResults
-              .map(r => r.error_msg || '未知错误')
-              .join('\n')
-
-            await dialog.alert({
-              title: '部分任务添加失败',
-              content: errorMessage,
-            })
-          }
-          return Promise.resolve(true)
-        }
-        else {
-          const errorMessage = res.result
-            .map(r => r.error_msg || '未知错误')
-            .join('\n')
-
-          await dialog.alert({
-            title: '添加任务失败',
-            content: errorMessage,
-          })
-        }
-      }
-      else {
-        await dialog.alert({
-          title: '错误',
-          content: res.error_msg || '添加离线下载任务失败',
-        })
-      }
-    }
-    catch (error) {
-      await dialog.alert({
-        title: '提示',
-        content: `添加离线下载任务失败: ${error instanceof Error ? error.message : '未知错误'}`,
-      })
-    }
-
-    return Promise.resolve(false)
   }
 
   return {

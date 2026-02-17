@@ -22,10 +22,21 @@ const FileBroswer = defineComponent({
       },
       required: true,
     },
+    currentPathRef: {
+      type: Object as () => Ref<Partial<WebApi.Entity.PathItem>[] | null>,
+      required: false,
+    },
   },
   setup(props) {
     /** 在组件内部提供状态 */
     const listStore = useDriveFile(props.query)
+
+    /** 同步当前路径到外部 ref */
+    watch(() => listStore.path.value, (newPath) => {
+      if (props.currentPathRef) {
+        props.currentPathRef.value = newPath
+      }
+    }, { immediate: true })
 
     /** 点击路径 */
     const handleClickPath = (data: WebApi.Entity.PathItem) => {

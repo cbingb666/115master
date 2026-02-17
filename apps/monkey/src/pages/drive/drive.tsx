@@ -109,6 +109,7 @@ const Drive = defineComponent({
       )),
       cloudDownload: withRefresh((defaultUrls: string = '') => action.cloudDownload(
         listStore.options.cid.value,
+        listStore.path.value,
         defaultUrls,
       )),
     }

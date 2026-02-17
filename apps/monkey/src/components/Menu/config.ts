@@ -9,7 +9,7 @@ export const MENU_CONFIG: MenuItem[] = [
       name: 'drive',
       params: {
         area: 'all',
-        cid: '0',
+        cid: '',
       },
     },
     activeMatch: {

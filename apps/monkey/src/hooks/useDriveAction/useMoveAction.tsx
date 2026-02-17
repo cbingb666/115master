@@ -39,39 +39,6 @@ export function useMoveAction() {
     })
   }
 
-  /** 保存目录选择对话框 */
-  async function saveDirectoryDialog(defaultpid: string): Promise<{ cid: string, name: string, path: string } | null> {
-    const query = {
-      keyword: ref(''),
-      page: ref(1),
-      size: ref(20),
-      cid: ref(defaultpid ?? '0'),
-      area: ref(''),
-      suffix: ref(''),
-      type: ref(''),
-      nf: ref('1'),
-    }
-
-    return new Promise((resolve) => {
-      dialog.create({
-        title: '选择保存目录',
-        maskClosable: true,
-        className: 'sm:w-11/12! sm:max-w-5xl! h-5/6!',
-        content: () => <FileBroswer query={query} />,
-        confirmCallback: async () => {
-          resolve({
-            cid: query.cid.value,
-            name: query.cid.value === '0' ? '根目录' : `目录 ${query.cid.value}`,
-            path: query.cid.value === '0' ? '/' : `/目录${query.cid.value}`,
-          })
-        },
-        cancelCallback: () => {
-          resolve(null)
-        },
-      })
-    })
-  }
-
   /** 获取移动进度 */
   async function moveGetProgress(move_proid: string) {
     const res = await drive115.webApiGetFilesMoveProgress({
@@ -147,7 +114,6 @@ export function useMoveAction() {
 
   return {
     moveDialog,
-    saveDirectoryDialog,
     moveBatch,
     dragMove,
     improve,
