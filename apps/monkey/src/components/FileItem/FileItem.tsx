@@ -4,15 +4,14 @@ import { Icon } from '@iconify/vue'
 import { defineComponent, withModifiers } from 'vue'
 import { useContextmenu } from '@/hooks/useContextmenu'
 import { ICON_TOP_SOLID } from '@/icons'
-import { useFileListInject } from '../FileList/provide'
 import { Link } from '../Link'
-import FileListItemCheckbox from './FileListItemCheckbox'
-import FileListItemContent from './FileListItemContent'
-import FileListItemThumbnail from './FileListItemThumbnail'
-import { useFileListItem } from './useFileListItem'
+import FileItemCheckbox from './FileItemCheckbox'
+import FileItemContent from './FileItemContent'
+import FileItemThumbnail from './FileItemThumbnail'
+import { useFileItem } from './useFileItem'
 
-const FileListItem = defineComponent({
-  name: 'FileListItem',
+const FileItem = defineComponent({
+  name: 'FileItem',
   props: {
     viewType: {
       type: String as PropType<'card' | 'list'>,
@@ -68,8 +67,6 @@ const FileListItem = defineComponent({
     },
   },
   setup: (props) => {
-    const context = useFileListInject()!
-
     const {
       itemRef,
       isDrogzone,
@@ -87,7 +84,7 @@ const FileListItem = defineComponent({
       handleDragLeave,
       handleDragOver,
       handleDrop,
-    } = useFileListItem({
+    } = useFileItem({
       data: props.data,
       pathSelect: props.pathSelect,
       onPreview: props.onPreview,
@@ -147,13 +144,13 @@ const FileListItem = defineComponent({
         data-checked={props.checked}
         data-dragging={props.dragging}
         data-dropzone={isDrogzone.value}
-        data-view-type={context.viewType.value}
+        data-view-type={props.viewType}
         onDragleave={handleDragLeave}
         onDragover={handleDragOver}
         onDrop={e => handleDrop(e as DragEvent, props.onDrop)}
       >
         {/* 复选框 */}
-        <FileListItemCheckbox
+        <FileItemCheckbox
           checked={props.checked}
           pathSelect={props.pathSelect}
           onChecked={props.onChecked}
@@ -194,7 +191,7 @@ const FileListItem = defineComponent({
               props.onDragStart?.(e as DragEvent)
             }}
           >
-            <FileListItemThumbnail
+            <FileItemThumbnail
               data={props.data}
               isFolder={isFolder.value}
               isVideo={isVideo.value}
@@ -220,7 +217,7 @@ const FileListItem = defineComponent({
           </span>
 
           {/* 内容区域 */}
-          <FileListItemContent
+          <FileItemContent
             data={props.data}
             pathSelect={props.pathSelect}
           />
@@ -230,4 +227,4 @@ const FileListItem = defineComponent({
   },
 })
 
-export default FileListItem
+export default FileItem

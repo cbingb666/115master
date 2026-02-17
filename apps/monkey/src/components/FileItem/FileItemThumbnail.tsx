@@ -5,8 +5,8 @@ import { defineComponent } from 'vue'
 import { isPortraitImage } from '@/utils/image'
 import { Utils115 } from '@/utils/utils115'
 
-const FileListItemThumbnail = defineComponent({
-  name: 'FileListItemThumbnail',
+const FileItemThumbnail = defineComponent({
+  name: 'FileItemThumbnail',
   props: {
     data: {
       type: Object as PropType<WebApi.Entity.FilesItem>,
@@ -220,4 +220,4 @@ const FileListItemThumbnail = defineComponent({
   },
 })
 
-export default FileListItemThumbnail
+export default FileItemThumbnail

@@ -1,5 +1,5 @@
 import { useElementBounding, useEventListener, useMagicKeys, useScrollLock, useThrottleFn } from '@vueuse/core'
-import { computed, nextTick, onMounted, onUnmounted, shallowRef } from 'vue'
+import { computed, onUnmounted, shallowRef, watchEffect } from 'vue'
 
 export interface UseMarqueeSelectOptions {
   /** 容器元素 */
@@ -296,8 +296,10 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     updateSelection()
   }, THROTTLE_TIME)
 
-  /** 初始化 */
-  const initialize = () => {
+  /** 清理函数 */
+  let cleanup: (() => void) | undefined
+
+  watchEffect(() => {
     const containerEl = getContainer()
     if (!containerEl)
       return
@@ -305,17 +307,12 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     containerElement.value = containerEl
 
     // 创建选择框
-    selectionBox.value = createSelectionBox()
-    containerEl.appendChild(selectionBox.value)
-  }
-
-  /** 清理函数 */
-  let cleanup: (() => void) | undefined
-
-  onMounted(() => {
-    nextTick(() => {
-      initialize()
-    })
+    if (!selectionBox.value) {
+      selectionBox.value = createSelectionBox()
+    }
+    if (!containerEl.contains(selectionBox.value)) {
+      containerEl.appendChild(selectionBox.value)
+    }
   })
 
   onUnmounted(() => {

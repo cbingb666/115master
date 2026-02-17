@@ -9,6 +9,8 @@ import { router } from '@/app/router'
 import {
   DriveSearchBar,
   Empty,
+  FileContextMenu,
+  FileItem,
   FileList,
   FileMenu,
   FileNewFolderButton,
@@ -24,6 +26,8 @@ import {
   Navbar,
   Pagination,
   Sider,
+  useFileList,
+  useFilePreview,
   UserInfo,
 } from '@/components'
 import { PAGINATION_DEFAULT_PAGE_SIZE } from '@/constants'
@@ -267,6 +271,20 @@ const Drive = defineComponent({
 
     const viewType = useStorage<'list' | 'card'>('115Master_viewType', 'list')
 
+    const { containerRef, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
+      get pathSelect() { return false },
+      get listData() { return listStore.list.state.value?.data ?? [] },
+      get checkeds() { return listStore.itemChecked.checkedSet.value },
+      onChecked: listStore.itemChecked.updateChecked,
+      onCheckedClear: listStore.itemChecked.clearAllChecked,
+      onRadio: listStore.itemChecked.radioChecked,
+      onDragMove: handleDragMove,
+    })
+
+    const { preview } = useFilePreview({
+      get listData() { return listStore.list.state.value?.data ?? [] },
+    })
+
     function ListHeader() {
       return (
         <Header>
@@ -341,15 +359,23 @@ const Drive = defineComponent({
               && listStore.list.state.value?.data
             ) && (
               <FileList
-                actionConfig={actionConfig.value}
-                checkeds={listStore.itemChecked.checkedSet.value}
-                listData={listStore.list.state.value?.data}
+                containerRef={containerRef}
                 viewType={viewType.value}
-                onChecked={listStore.itemChecked.updateChecked}
-                onCheckedClear={listStore.itemChecked.clearAllChecked}
-                onDragMove={handleDragMove}
-                onRadio={listStore.itemChecked.radioChecked}
               >
+                {listStore.list.state.value?.data.map(item => (
+                  <FileItem
+                    key={item.pc}
+                    viewType={viewType.value}
+                    {...itemProps(item)}
+                    onPreview={() => preview(item)}
+                  />
+                ))}
+                <FileContextMenu
+                  actionConfig={actionConfig.value}
+                  position={contextmenuPosition.value}
+                  show={contextmenuShow.value}
+                  onClose={() => contextmenuShow.value = false}
+                />
               </FileList>
             )
           }

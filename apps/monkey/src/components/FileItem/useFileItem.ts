@@ -23,7 +23,7 @@ interface ActressFaceDBActress {
   timestamp: number
 }
 
-export function useFileListItem(options: {
+export function useFileItem(options: {
   data: WebApi.Entity.FilesItem
   pathSelect?: boolean
   onPreview?: (data: WebApi.Entity.FilesItem) => void

@@ -1,8 +1,8 @@
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
-const FileListItemCheckbox = defineComponent({
-  name: 'FileListItemCheckbox',
+const FileItemCheckbox = defineComponent({
+  name: 'FileItemCheckbox',
   props: {
     checked: {
       type: Boolean,
@@ -85,4 +85,4 @@ const FileListItemCheckbox = defineComponent({
   },
 })
 
-export default FileListItemCheckbox
+export default FileItemCheckbox

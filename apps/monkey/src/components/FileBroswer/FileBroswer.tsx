@@ -2,7 +2,7 @@ import type { WebApi } from '@115master/drive115'
 
 import type { Ref } from 'vue'
 import { defineComponent, onBeforeMount, watch } from 'vue'
-import { FileList, FileListItem, FileMenu, FileNewFolderButton, FilePageSizeSelector, FilePaths, FileSortSelector, LoadingError, Pagination } from '@/components'
+import { FileItem, FileList, FileMenu, FileNewFolderButton, FilePageSizeSelector, FilePaths, FileSortSelector, LoadingError, Pagination } from '@/components'
 import { useDriveFile } from '@/hooks/useDriveFile'
 
 /** 文件浏览器内容组件 */
@@ -96,15 +96,12 @@ const FileBroswer = defineComponent({
           {/* 文件列表 */}
           {listStore.list.isReady.value && (
             <>
-              <FileList
-                actionConfig={[]}
-                listData={listStore.list.state.value?.data ?? []}
-              >
+              <FileList>
                 {(listStore.list.state.value?.data ?? []).map(item => (
-                  <FileListItem
+                  <FileItem
                     key={item.pc}
                     data={item}
-                    pathSelect={false}
+                    pathSelect={true}
                     onClick={handleClickItem}
                   />
                 ))}

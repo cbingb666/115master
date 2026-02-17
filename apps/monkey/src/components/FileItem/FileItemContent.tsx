@@ -4,8 +4,8 @@ import { Icon } from '@iconify/vue'
 import { computed, defineComponent } from 'vue'
 import { formatFileSize, formatYMDHM } from '@/utils/format'
 
-const FileListItemContent = defineComponent({
-  name: 'FileListItemContent',
+const FileItemContent = defineComponent({
+  name: 'FileItemContent',
   props: {
     data: {
       type: Object as PropType<WebApi.Entity.FilesItem>,
@@ -150,4 +150,4 @@ const FileListItemContent = defineComponent({
   },
 })
 
-export default FileListItemContent
+export default FileItemContent
