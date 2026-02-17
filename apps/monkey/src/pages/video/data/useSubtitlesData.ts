@@ -107,7 +107,7 @@ export function useDataSubtitles() {
         .flat()
         .map(subtitle => ({
           ...subtitle,
-          similarity: computedSimilarity(subtitle.label, filename),
+          similarity: subtitle.source === 'Built-in' ? 1 : computedSimilarity(subtitle.label, filename),
         }))
         .sort((a, b) => b.similarity - a.similarity)
         .map(subtitle => ({
