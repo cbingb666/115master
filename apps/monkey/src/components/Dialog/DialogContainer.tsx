@@ -1,5 +1,6 @@
 import type { DialogContainerExpose, ModalProps } from './types.dialog'
-import { defineComponent, ref } from 'vue'
+import { useMagicKeys } from '@vueuse/core'
+import { defineComponent, ref, watch } from 'vue'
 import DialogModal from './DialogModal'
 import { useDialogContainerProvide } from './provide'
 
@@ -67,6 +68,16 @@ const DialogContainer = defineComponent({
     function handleOpened(dialog: ModalProps) {
       dialog.openedCallback?.()
     }
+
+    const keys = useMagicKeys()
+    watch(keys.Escape, (value) => {
+      if (!value)
+        return
+      const visible = dialogs.value.filter(d => d.visible)
+      if (visible.length === 0)
+        return
+      handleClose(visible[visible.length - 1])
+    })
 
     const exposeObj: DialogContainerExpose = {
       addDialog,

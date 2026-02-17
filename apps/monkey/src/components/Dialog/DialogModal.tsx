@@ -1,6 +1,5 @@
 import type { Component, VNode } from 'vue'
-import { useMagicKeys } from '@vueuse/core'
-import { computed, defineComponent, h, isVNode, ref, watch } from 'vue'
+import { computed, defineComponent, h, isVNode, ref } from 'vue'
 
 const DialogModal = defineComponent({
   name: 'DialogModal',
@@ -57,12 +56,6 @@ const DialogModal = defineComponent({
       emit('cancel')
       emit('close')
     }
-
-    const keys = useMagicKeys()
-    watch(keys.Escape, (value) => {
-      if (value)
-        handleCancel()
-    })
 
     return () => {
       const modalClass = props.visible
