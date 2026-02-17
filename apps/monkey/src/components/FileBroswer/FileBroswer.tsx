@@ -6,7 +6,7 @@ import { FileList, FileListItem, FileMenu, FileNewFolderButton, FilePageSizeSele
 import { useDriveFile } from '@/hooks/useDriveFile'
 
 /** 文件浏览器内容组件 */
-export const DriveFileBrowserContent = defineComponent({
+const FileBroswer = defineComponent({
   name: 'DriveFileBrowserContent',
   props: {
     query: {
@@ -130,3 +130,5 @@ export const DriveFileBrowserContent = defineComponent({
     )
   },
 })
+
+export default FileBroswer

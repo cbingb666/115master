@@ -1,7 +1,6 @@
 import type { WebApi } from '@115master/drive115'
 import { ref } from 'vue'
-import { useDialog, useToast } from '@/components'
-import { DriveFileBrowserContent } from '@/hooks/useDriveFileBroswerDialog'
+import { FileBroswer, useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { promiseDelay } from '@/utils/promise'
 import { getFileIds } from './helpers'
@@ -29,7 +28,7 @@ export function useMoveAction() {
         title: '移动到',
         maskClosable: true,
         className: 'sm:w-11/12! sm:max-w-5xl! h-5/6!',
-        content: () => <DriveFileBrowserContent query={query} />,
+        content: () => <FileBroswer query={query} />,
         confirmCallback: () => {
           resolve(query.cid.value)
         },
@@ -58,7 +57,7 @@ export function useMoveAction() {
         title: '选择保存目录',
         maskClosable: true,
         className: 'sm:w-11/12! sm:max-w-5xl! h-5/6!',
-        content: () => <DriveFileBrowserContent query={query} />,
+        content: () => <FileBroswer query={query} />,
         confirmCallback: async () => {
           resolve({
             cid: query.cid.value,
