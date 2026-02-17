@@ -31,8 +31,8 @@ export interface ModalProps {
   classNameContent?: string
   /** 操作按钮的 CSS 类名 */
   classNameActions?: string
-  /** 确认按钮点击回调 */
-  confirmCallback?: () => void
+  /** 确认按钮点击回调, 返回 false 阻止关闭 */
+  confirmCallback?: () => void | false | Promise<void | false>
   /** 取消按钮点击回调 */
   cancelCallback?: () => void
   /** 对话框打开完成回调 */

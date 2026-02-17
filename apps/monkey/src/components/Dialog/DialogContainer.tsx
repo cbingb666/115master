@@ -31,8 +31,9 @@ const DialogContainer = defineComponent({
       }
     }
 
-    function handleConfirm(dialog: ModalProps) {
-      dialog.confirmCallback?.()
+    async function handleConfirm(dialog: ModalProps) {
+      if (await dialog.confirmCallback?.() === false)
+        return
       const index = dialogs.value.findIndex(d => d.id === dialog.id)
       if (index > -1) {
         dialogs.value[index].visible = false

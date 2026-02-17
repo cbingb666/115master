@@ -51,7 +51,6 @@ const DialogModal = defineComponent({
 
     function handleConfirm() {
       emit('confirm')
-      emit('close')
     }
 
     function handleCancel() {
