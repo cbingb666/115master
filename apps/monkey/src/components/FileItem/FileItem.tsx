@@ -107,6 +107,9 @@ const FileItem = defineComponent({
     }
 
     function handleDblClick() {
+      if (props.pathSelect)
+        // 路径选择模式禁止双击打开
+        return
       open()
     }
 
