@@ -48,7 +48,8 @@ const FileItemContent = defineComponent({
           class="
             relative flex-1
             group-data-[view-type=card]:col-span-2 group-data-[view-type=card]:row-start-1
-            group-data-[view-type=list]:space-x-2
+            group-data-[view-type=list]:flex group-data-[view-type=list]:min-w-0
+            group-data-[view-type=list]:items-center group-data-[view-type=list]:gap-2
           "
         >
           {/* 文件名 */}
@@ -56,7 +57,8 @@ const FileItemContent = defineComponent({
             class="
               text-base wrap-anywhere text-neutral-100
               group-data-[view-type=card]:line-clamp-4 group-data-[view-type=card]:font-medium
-              group-data-[view-type=list]:truncate group-data-[view-type=list]:max-sm:block
+              group-data-[view-type=list]:min-w-0 group-data-[view-type=list]:shrink
+              group-data-[view-type=list]:truncate
             "
             title={props.data.ns ?? props.data.n}
             v-html={props.data.ns ?? props.data.n}
@@ -66,7 +68,7 @@ const FileItemContent = defineComponent({
           {isStarred.value && (
             <Icon
               class="
-                inline-flex
+                inline-flex shrink-0
                 group-data-[view-type=card]:size-4
                 group-data-[view-type=list]:size-5
               "
