@@ -1,8 +1,8 @@
-import type { FunctionalComponent, HTMLAttributes } from 'vue'
+import type { AnchorHTMLAttributes, FunctionalComponent } from 'vue'
 import type { RouterLinkProps } from 'vue-router'
 import { RouterLink } from 'vue-router'
 
-type Props = DefineProps<RouterLinkProps | HTMLAttributes>
+type Props = DefineProps<RouterLinkProps | AnchorHTMLAttributes>
 
 const Link: FunctionalComponent<Props> = (props, { slots }) => {
   if ('to' in props) {

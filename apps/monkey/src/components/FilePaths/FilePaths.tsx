@@ -1,6 +1,7 @@
 import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
-import { defineComponent, shallowRef } from 'vue'
+import { defineComponent, shallowRef, withModifiers } from 'vue'
+import { Link } from '../Link'
 
 /**
  * 文件路径面包屑导航
@@ -28,6 +29,13 @@ const FilePaths = defineComponent({
     onDragMove: {
       type: Function as PropType<(cid: string, items: WebApi.Entity.FilesItem[]) => void>,
       default: () => {},
+    },
+    /**
+     * 路径选择模式（用于对话框，不导航）
+     */
+    pathSelect: {
+      type: Boolean,
+      default: false,
     },
   },
   setup: (props) => {
@@ -59,24 +67,26 @@ const FilePaths = defineComponent({
             props.paths.map((path) => {
               return (
                 <li key={path.cid}>
-                  <a
-                    class={[
-                      'text-md font-medium',
-                      'px-4 py-0.5',
-                      'text-neutral-300 text-shadow-2xs',
-                      'rounded-full no-underline!',
-                      'hover:bg-base-200/10',
-                      'data-[drop-zone=true]:bg-secondary/80',
-                    ].join(' ')}
+                  <Link
+                    class="
+                      text-md
+                      hover:bg-base-200/10
+                      data-[drop-zone=true]:bg-secondary/80
+                      rounded-full
+                      px-4 py-0.5 font-medium
+                    text-neutral-300
+                      no-underline!
+                      text-shadow-2xs
+                    "
                     data-drop-zone={dropZone.value === path.cid}
                     href={`#/drive/all/${path.cid}`}
-                    onClick={() => props.onPathClick?.(path)}
+                    onClick={withModifiers(() => props.onPathClick?.(path), ['prevent'])}
                     onDragleave={handleDragleave}
                     onDragover={e => handleDragover(e, path.cid)}
                     onDrop={e => handleDrop(e, path)}
                   >
                     {path.name}
-                  </a>
+                  </Link>
                 </li>
               )
             })
