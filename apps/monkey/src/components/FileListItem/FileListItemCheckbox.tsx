@@ -1,13 +1,6 @@
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
-export interface FileListItemCheckboxProps {
-  checked: boolean
-  pathSelect: boolean
-  onChecked?: (checked: boolean) => void
-  onEnter?: () => void
-}
-
 const FileListItemCheckbox = defineComponent({
   name: 'FileListItemCheckbox',
   props: {

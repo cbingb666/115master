@@ -1,6 +1,4 @@
 import type { WebApi } from '@115master/drive115'
-import type { UseAsyncStateReturn } from '@vueuse/core'
-import type { ComputedRef, Ref, ShallowRef } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
 import { router } from '@/app/router'
@@ -10,40 +8,6 @@ import { actressFaceDB } from '@/utils/actressFaceDB'
 import { formatYMDHM } from '@/utils/format'
 import { extractEmojis } from '@/utils/string'
 import { Utils115 } from '@/utils/utils115'
-
-export interface UseFileListItemOptions {
-  data: WebApi.Entity.FilesItem
-  pathSelect?: boolean
-  onPreview?: (data: WebApi.Entity.FilesItem) => void
-}
-
-export interface UseFileListItemReturn {
-  /** Refs */
-  itemRef: ShallowRef<HTMLElement | undefined>
-  isDrogzone: Ref<boolean>
-  isDragging: Ref<boolean>
-
-  /** Computed */
-  isVideo: ComputedRef<boolean>
-  isFolder: ComputedRef<boolean>
-  emoji: ComputedRef<string | undefined>
-  link: ComputedRef<LinkValue | undefined>
-  hasActressCover: ComputedRef<boolean>
-  hasVideoCover: ComputedRef<boolean>
-  hasImagePreview: ComputedRef<boolean>
-
-  /** States */
-  actressAsyncState: UseAsyncStateReturn<ActressFaceDBActress | null, [], true>
-  videoCoverResult: ReturnType<typeof useSmartVideoCover> | null
-
-  /** Methods */
-  open: () => Promise<void>
-  handleDragLeave: () => void
-  handleDragOver: (e: DragEvent) => void
-  handleDrop: (e: DragEvent, onDrop?: (e: DragEvent) => void) => void
-  isIconUrl: (icon: string) => boolean
-  formatTime: (time: string | number) => string
-}
 
 interface LinkValue {
   to?: string
@@ -59,9 +23,12 @@ interface ActressFaceDBActress {
   timestamp: number
 }
 
-export function useFileListItem(options: UseFileListItemOptions): UseFileListItemReturn {
+export function useFileListItem(options: {
+  data: WebApi.Entity.FilesItem
+  pathSelect?: boolean
+  onPreview?: (data: WebApi.Entity.FilesItem) => void
+}) {
   const { data, onPreview } = options
-
   const dialog = useDialog()
   const itemRef = shallowRef<HTMLElement>()
   const isDrogzone = shallowRef(false)
