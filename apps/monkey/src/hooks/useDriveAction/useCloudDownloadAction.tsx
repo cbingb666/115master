@@ -172,11 +172,6 @@ export function useCloudDownloadAction() {
             return false
           }
 
-          if (!directory.value.cid) {
-            await dialog.alert({ title: '提示', content: '请选择保存目录' })
-            return false
-          }
-
           try {
             const ok = await feedback(await submit(parsed, directory.value.cid))
             if (!ok)
