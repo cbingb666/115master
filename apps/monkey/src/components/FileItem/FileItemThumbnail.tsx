@@ -40,9 +40,13 @@ const FileItemThumbnail = defineComponent({
       type: Boolean,
       required: true,
     },
+    draggable: {
+      type: Boolean,
+      default: true,
+    },
     onMouseDown: {
       type: Function as PropType<(e: MouseEvent) => void>,
-      required: true,
+      required: false,
     },
   },
   setup(props) {
@@ -66,7 +70,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=list]:size-13 group-data-[view-type=list]:border
             group-data-[view-type=list]:border-neutral-800
           "
-          draggable="true"
+          draggable={props.draggable}
           src={props.actressUrl}
           onMousedown={props.onMouseDown}
         />
@@ -85,7 +89,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:overflow-hidden group-data-[view-type=card]:rounded-2xl
             group-data-[view-type=list]:rounded-lg
           "
-          draggable="true"
+          draggable={props.draggable}
           onMousedown={props.onMouseDown}
         >
           <img
@@ -114,7 +118,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=list]:ring-neutral-800
           "
           decoding="async"
-          draggable="true"
+          draggable={props.draggable}
           loading="lazy"
           src={props.data.u}
           onMousedown={props.onMouseDown}
@@ -130,7 +134,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all
             group-data-[view-type=list]:size-14
           "
-          draggable="true"
+          draggable={props.draggable}
           src={iconUrl}
           onMousedown={props.onMouseDown}
         />
@@ -145,7 +149,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[61%]
             group-data-[view-type=list]:size-14
           "
-          draggable="true"
+          draggable={props.draggable}
           onMousedown={props.onMouseDown}
         >
           <Icon
@@ -175,7 +179,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all
             group-data-[view-type=list]:size-14
           "
-          draggable="true"
+          draggable={props.draggable}
           onMousedown={props.onMouseDown}
         >
           <Icon

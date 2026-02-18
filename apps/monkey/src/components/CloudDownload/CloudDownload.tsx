@@ -5,7 +5,6 @@ import { computed, defineComponent, useTemplateRef, watch } from 'vue'
 import FileItemThumbnail from '@/components/FileItem/FileItemThumbnail'
 import { useOfflineQuotaPackageInfoStore } from '@/store/offlineQuotaPackageInfo'
 import { actressFaceDB } from '@/utils/actressFaceDB'
-import { drive115 } from '@/utils/drive115Instance'
 import { extractEmojis } from '@/utils/string'
 
 const CloudDownload = defineComponent({
@@ -90,7 +89,6 @@ const CloudDownload = defineComponent({
         emoji: emoji.value,
         actressUrl: actressAsyncState.isReady.value && actressAsyncState.state.value?.url ? actressAsyncState.state.value.url : undefined,
         hasImagePreview: false,
-        onMouseDown: () => {},
       }
     })
 
@@ -155,7 +153,10 @@ const CloudDownload = defineComponent({
             <div class="flex items-center gap-3">
               <div class="size-14 shrink-0">
                 {thumbnailData.value && (
-                  <FileItemThumbnail {...thumbnailData.value} />
+                  <FileItemThumbnail
+                    {...thumbnailData.value}
+                    draggable={false}
+                  />
                 )}
               </div>
               <div class="flex min-w-0 flex-1 flex-col">
