@@ -1,5 +1,11 @@
 # @115master/monkey
 
+## 1.12.0
+
+### Minor Changes
+
+- [#329](https://github.com/cbingb666/115master/pull/329) [`b328f69`](https://github.com/cbingb666/115master/commit/b328f69cc8af17a449236c8b79ccdb7282462c78) Thanks [@WzLYVg387U](https://github.com/WzLYVg387U)! - feat(monkey/subtitle): prioritize built-in subtitles in the list
+
 ## 1.11.1
 
 ### Patch Changes
