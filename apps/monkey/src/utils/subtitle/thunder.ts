@@ -132,9 +132,29 @@ export class ThunderSubtitle {
    * @param url 字幕下载地址
    */
   private async getSubtitleBlob(url: string): Promise<Blob> {
-    const response = await this.iRequest.get(url)
-    const blob = await response.blob()
-    return blob
+    const response = await this.iRequest.get(url, { responseType: 'arraybuffer' })
+    const arrayBuffer = await response.arrayBuffer()
+
+    let text: string
+
+    try {
+      text = new TextDecoder('utf-8', { fatal: true }).decode(arrayBuffer)
+    }
+    catch {
+      try {
+        text = new TextDecoder('gb18030', { fatal: true }).decode(arrayBuffer)
+      }
+      catch {
+        throw new Error('DECODE_FAILED: Unknown encoding or corrupted binary')
+      }
+    }
+
+    const fffdCount = (text.match(/\uFFFD/g) || []).length
+    if (text.includes('锟斤拷') || fffdCount > 5) {
+      throw new Error('CONTENT_CORRUPTED: "锟斤拷" detected or too many replacement characters')
+    }
+
+    return new Blob([text], { type: 'text/plain;charset=utf-8' })
   }
 }
 
