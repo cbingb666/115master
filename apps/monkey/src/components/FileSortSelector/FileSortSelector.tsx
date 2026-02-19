@@ -90,7 +90,7 @@ const FileSortSelector = defineComponent({
                 <a>
                   <input
                     class="toggle toggle-sm"
-                    checked={props.fc_mix === 1}
+                    checked={props.fc_mix === 0}
                     tabindex="0"
                     type="checkbox"
                     onChange={handleFcMix}
