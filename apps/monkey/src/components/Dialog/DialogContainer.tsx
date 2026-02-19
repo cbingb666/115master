@@ -1,4 +1,4 @@
-import type { DialogContainerExpose, ModalProps } from './types.dialog'
+import type { DialogContainerExpose, ModalProps, ModalPropsInternal } from './types.dialog'
 import { useMagicKeys } from '@vueuse/core'
 import { defineComponent, ref, watch } from 'vue'
 import DialogModal from './DialogModal'
@@ -7,7 +7,7 @@ import { useDialogContainerProvide } from './provide'
 const DialogContainer = defineComponent({
   name: 'DialogContainer',
   setup(_props, { slots, expose }) {
-    const dialogs = ref<ModalProps[]>([])
+    const dialogs = ref<ModalPropsInternal[]>([])
     const containerRef = ref<HTMLDivElement>()
 
     function addDialog(dialog: ModalProps) {
@@ -32,9 +32,10 @@ const DialogContainer = defineComponent({
       }
     }
 
-    async function handleConfirm(dialog: ModalProps) {
+    async function handleConfirm(dialog: ModalPropsInternal) {
       if (await dialog.confirmCallback?.() === false)
         return
+      dialog._historyDispose?.()
       const index = dialogs.value.findIndex(d => d.id === dialog.id)
       if (index > -1) {
         dialogs.value[index].visible = false
@@ -44,7 +45,8 @@ const DialogContainer = defineComponent({
       }
     }
 
-    function handleCancel(dialog: ModalProps) {
+    function handleCancel(dialog: ModalPropsInternal) {
+      dialog._historyDispose?.()
       dialog.cancelCallback?.()
       const index = dialogs.value.findIndex(d => d.id === dialog.id)
       if (index > -1) {
@@ -55,7 +57,8 @@ const DialogContainer = defineComponent({
       }
     }
 
-    function handleClose(dialog: ModalProps) {
+    function handleClose(dialog: ModalPropsInternal) {
+      dialog._historyDispose?.()
       const index = dialogs.value.findIndex(d => d.id === dialog.id)
       if (index > -1) {
         dialogs.value[index].visible = false

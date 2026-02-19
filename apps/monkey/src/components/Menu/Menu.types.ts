@@ -8,6 +8,8 @@ export interface MenuItemActiveMatch {
   name: string
   /** 需要匹配的路由参数 */
   params?: Record<string, string>
+  /** 排除的路由参数值（任一命中即不激活） */
+  notParams?: Record<string, string[]>
 }
 
 /**

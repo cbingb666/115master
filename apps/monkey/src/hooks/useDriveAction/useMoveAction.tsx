@@ -1,6 +1,8 @@
 import type { WebApi } from '@115master/drive115'
 import { ref } from 'vue'
+import { router } from '@/app/router'
 import { FileBroswer, useDialog, useToast } from '@/components'
+import { useQueryNav } from '@/hooks/useDriveNav'
 import { drive115 } from '@/utils/drive115Instance'
 import { promiseDelay } from '@/utils/promise'
 import { getFileIds } from './helpers'
@@ -12,27 +14,43 @@ export function useMoveAction() {
 
   /** 移动对话框 */
   async function moveDialog(defaultpid: string): Promise<string | false> {
-    const query = {
-      keyword: ref(''),
-      page: ref(1),
-      size: ref(20),
-      cid: ref(defaultpid ?? '0'),
-      area: ref(''),
-      suffix: ref(''),
-      type: ref(''),
-      nf: ref('1'),
-    }
+    const cid = ref(defaultpid ?? '0')
 
     return new Promise((resolve) => {
-      dialog.create({
+      let resolved = false
+      let instance: ReturnType<typeof dialog.create>
+
+      const nav = useQueryNav(router, {
+        defaultCid: defaultpid ?? '0',
+        onExit: () => {
+          if (resolved)
+            return
+          resolved = true
+          nav.dispose()
+          instance.hide()
+          resolve(false)
+        },
+      })
+
+      instance = dialog.create({
         title: '移动到',
         maskClosable: true,
-        className: 'sm:w-11/12! sm:max-w-5xl! h-5/6!',
-        content: () => <FileBroswer query={query} />,
+        className: 'sm:w-11/12! sm:max-w-5xl! h-5/6! overflow-hidden',
+        classNameContent: 'min-h-0 overflow-hidden',
+        content: () => <FileBroswer cid={cid} defaultCid={defaultpid ?? '0'} nav={nav} />,
         confirmCallback: () => {
-          resolve(query.cid.value)
+          if (resolved)
+            return
+          resolved = true
+          nav.dispose()
+          instance.hide()
+          resolve(cid.value)
         },
         cancelCallback: () => {
+          if (resolved)
+            return
+          resolved = true
+          nav.dispose()
           resolve(false)
         },
       })
@@ -81,12 +99,13 @@ export function useMoveAction() {
   }
 
   /** 移动批量 */
-  async function moveBatch(defaultPid: string, items: WebApi.Entity.FilesItem[]): Promise<boolean> {
+  async function moveBatch(defaultPid: string, items: WebApi.Entity.FilesItem[]): Promise<{ success: boolean, pid: string }> {
     const pid = await moveDialog(defaultPid)
     if (!pid) {
-      return Promise.resolve(false)
+      return { success: false, pid: '' }
     }
-    return await moveCore(pid, items)
+    const success = await moveCore(pid, items)
+    return { success, pid }
   }
 
   /** 拖拽移动 */
@@ -101,7 +120,7 @@ export function useMoveAction() {
       content: '将文件提升到上级目录，确定提升吗？',
     })
     if (!dialogRes) {
-      return Promise.resolve(false)
+      return false
     }
 
     const moveRes = await moveCore(prevLevelId, items)
@@ -109,7 +128,7 @@ export function useMoveAction() {
       toast.success('提到上级成功')
     }
 
-    return Promise.resolve(false)
+    return moveRes
   }
 
   return {

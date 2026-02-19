@@ -1,11 +1,13 @@
 import type { WebApi } from '@115master/drive115'
 import { ref } from 'vue'
+import { router } from '@/app/router'
 import {
   CloudDownload,
   FileBroswer,
   useDialog,
   useToast,
 } from '@/components'
+import { useQueryNav } from '@/hooks/useDriveNav'
 import { useOfflineSpaceStore } from '@/store/offlineSpace'
 import { useUserAqStore } from '@/store/userAq'
 import { drive115 } from '@/utils/drive115Instance'
@@ -22,36 +24,45 @@ export function useCloudDownloadAction() {
     pid: string,
     directory: ReturnType<typeof ref<{ cid: string, path: Path }>>,
   ) {
-    const query = {
-      keyword: ref(''),
-      page: ref(1),
-      size: ref(20),
-      cid: ref(pid ?? '0'),
-      area: ref(''),
-      suffix: ref(''),
-      type: ref(''),
-      nf: ref('1'),
-    }
-
+    const cid = ref(pid ?? '0')
     const path = ref<Path | null>(null)
 
-    dialog.create({
+    let resolved = false
+    const nav = useQueryNav(router, {
+      defaultCid: pid ?? '0',
+      onExit: () => {
+        if (resolved)
+          return
+        resolved = true
+        nav.dispose()
+        instance.hide()
+      },
+    })
+
+    const instance = dialog.create({
       title: '选择保存目录',
       maskClosable: true,
-      className: 'sm:w-11/12! sm:max-w-5xl! h-5/6!',
-      content: () => <FileBroswer query={query} currentPathRef={path} />,
+      className: 'sm:w-11/12! sm:max-w-5xl! h-5/6! overflow-hidden',
+      classNameContent: 'min-h-0 overflow-hidden',
+      content: () => <FileBroswer cid={cid} defaultCid={pid ?? '0'} currentPathRef={path} nav={nav} />,
       confirmCallback: async () => {
-        if (!path.value || !query.cid.value) {
+        if (!path.value || !cid.value) {
           await dialog.alert({
             title: '提示',
             content: '请选择一个目录',
           })
           return
         }
+        resolved = true
+        nav.dispose()
         directory.value = {
-          cid: query.cid.value,
+          cid: cid.value,
           path: path.value,
         }
+      },
+      cancelCallback: () => {
+        resolved = true
+        nav.dispose()
       },
     })
   }
@@ -138,9 +149,12 @@ export function useCloudDownloadAction() {
     })
 
     return new Promise<boolean>((resolve) => {
-      dialog.create({
+      let resolved = false
+
+      const instance = dialog.create({
         title: '离线下载',
         maskClosable: true,
+        history: true,
         className: 'sm:w-11/12! sm:max-w-3xl!',
         content: () => (
           <CloudDownload
@@ -176,6 +190,10 @@ export function useCloudDownloadAction() {
             const ok = await feedback(await submit(parsed, directory.value.cid))
             if (!ok)
               return false
+            if (resolved)
+              return
+            resolved = true
+            instance.hide()
             resolve(true)
           }
           catch (error) {
@@ -186,7 +204,12 @@ export function useCloudDownloadAction() {
             return false
           }
         },
-        cancelCallback: () => resolve(false),
+        cancelCallback: () => {
+          if (resolved)
+            return
+          resolved = true
+          resolve(false)
+        },
       })
     })
   }

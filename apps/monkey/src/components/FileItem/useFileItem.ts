@@ -83,7 +83,7 @@ export function useFileItem(options: {
 
     if (Utils115.isFolder(data.fc)) {
       return {
-        to: `/drive/all/${data.cid}`,
+        to: `/drive/${data.cid}`,
         target: '_self',
       }
     }

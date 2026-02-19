@@ -8,13 +8,12 @@ export const MENU_CONFIG: MenuItem[] = [
     to: {
       name: 'drive',
       params: {
-        area: 'all',
         cid: '',
       },
     },
     activeMatch: {
       name: 'drive',
-      params: { area: 'all' },
+      notParams: { area: ['star', 'recent', 'trash', 'share', 'search'] },
     },
   },
   // {

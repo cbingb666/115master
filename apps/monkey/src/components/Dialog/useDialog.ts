@@ -1,6 +1,7 @@
 import type { UseDialogHookReturn, UseDialogInstance, UseDialogOptions, UseDialogPromptOptions } from './types'
-import type { DialogContainerContext, ModalProps } from './types.dialog'
+import type { DialogContainerContext, ModalProps, ModalPropsInternal } from './types.dialog'
 import { h, ref } from 'vue'
+import { router } from '@/app/router'
 import PromptContent from './PromptContent'
 import { useDialogContainer } from './provide'
 
@@ -15,40 +16,72 @@ const dialogInstances = new Map<string, {
 }>()
 
 function createDialogInstance(container: DialogContainerContext, id: string, options: UseDialogOptions): UseDialogInstance {
+  let historyDispose: (() => void) | undefined
+
+  if (options.history) {
+    const initial = (history.state?.position as number) ?? 0
+    let disposed = false
+
+    router.push({ query: { ...router.currentRoute.value.query, _dlg: id } })
+
+    const remove = router.afterEach(() => {
+      if (disposed)
+        return
+      const pos = (history.state?.position as number) ?? 0
+      if (pos <= initial) {
+        disposed = true
+        remove()
+        if (container) {
+          container.updateDialog(id, { visible: false })
+          setTimeout(() => container.removeDialog(id), 300)
+        }
+        options.cancelCallback?.()
+      }
+    })
+
+    historyDispose = () => {
+      if (disposed)
+        return
+      disposed = true
+      remove()
+      const pos = (history.state?.position as number) ?? 0
+      const distance = pos - initial
+      if (distance > 0)
+        router.go(-distance)
+    }
+  }
+
   return {
     id,
     show: () => {
       if (container) {
-        const dialogProps: ModalProps = {
+        const dialogProps: ModalPropsInternal = {
           id,
           visible: false,
           ...options,
+          _historyDispose: historyDispose,
         }
         container.addDialog(dialogProps)
-
-        // 在下一个渲染周期中显示对话框，触发淡入动画
         setTimeout(() => {
-          if (container) {
+          if (container)
             container.updateDialog(id, { visible: true })
-          }
         }, 0)
       }
     },
     hide: () => {
+      historyDispose?.()
       if (container) {
         container.updateDialog(id, { visible: false })
-        // 等待动画完成后移除
         setTimeout(() => {
-          if (container) {
+          if (container)
             container.removeDialog(id)
-          }
         }, 300)
       }
     },
     destroy: () => {
-      if (container) {
+      historyDispose?.()
+      if (container)
         container.removeDialog(id)
-      }
       dialogInstances.delete(id)
     },
   }

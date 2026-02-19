@@ -16,13 +16,18 @@ const Menu = defineComponent({
 
       // 优先使用 activeMatch 进行匹配
       if (menu.activeMatch) {
-        const { name, params } = menu.activeMatch
+        const { name, params, notParams } = menu.activeMatch
         const matched = route.matched.some(item => item.name === name)
         if (!matched)
           return false
         if (params) {
           return Object.entries(params).every(
             ([key, value]) => Reflect.get(route.params, key) === value,
+          )
+        }
+        if (notParams) {
+          return !Object.entries(notParams).some(
+            ([key, values]) => values.includes(Reflect.get(route.params, key) as string),
           )
         }
         return true

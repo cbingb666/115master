@@ -6,13 +6,13 @@ import { Link } from '../Link'
 /**
  * 文件路径面包屑导航
  */
-const FilePaths = defineComponent({
-  name: 'FilePaths',
+const FilePath = defineComponent({
+  name: 'FilePath',
   props: {
     /**
      * 路径
      */
-    paths: {
+    path: {
       type: Array as PropType<WebApi.Entity.PathItem[]>,
       required: true,
     },
@@ -64,7 +64,7 @@ const FilePaths = defineComponent({
       <div class="breadcrumbs">
         <ul>
           {
-            props.paths.map((path) => {
+            props.path.map((path) => {
               return (
                 <li key={path.cid}>
                   <Link
@@ -79,7 +79,7 @@ const FilePaths = defineComponent({
                       text-shadow-2xs
                     "
                     data-drop-zone={dropZone.value === path.cid}
-                    href={`#/drive/all/${path.cid}`}
+                    href={path.cid === '0' ? '#/drive' : `#/drive/${path.cid}`}
                     onClick={withModifiers(() => props.onPathClick?.(path), ['prevent'])}
                     onDragleave={handleDragleave}
                     onDragover={e => handleDragover(e, path.cid)}
@@ -97,4 +97,4 @@ const FilePaths = defineComponent({
   },
 })
 
-export default FilePaths
+export default FilePath

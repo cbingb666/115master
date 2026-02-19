@@ -21,7 +21,7 @@ const App = defineComponent({
                     <KeepAlive>
                       {
                         route.meta?.keepAlive && (
-                          <Component key={route.fullPath} />
+                          <Component key={route.name as string} />
                         )
                       }
                     </KeepAlive>

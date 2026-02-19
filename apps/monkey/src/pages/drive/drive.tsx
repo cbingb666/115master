@@ -2,7 +2,6 @@ import type { WebApi } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Icon } from '@iconify/vue'
 import { useStorage, useTitle } from '@vueuse/core'
-import { useRouteParams, useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, onBeforeMount, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { router } from '@/app/router'
@@ -15,7 +14,7 @@ import {
   FileMenu,
   FileNewFolderButton,
   FilePageSizeSelector,
-  FilePaths,
+  FilePath,
   FileSortSelector,
   FileViewType,
   Header,
@@ -30,9 +29,7 @@ import {
   useFilePreview,
   UserInfo,
 } from '@/components'
-import { PAGINATION_DEFAULT_PAGE_SIZE } from '@/constants'
 import { useDriveAction } from '@/hooks/useDriveAction'
-import { useDriveFile } from '@/hooks/useDriveFile'
 import {
   ICON_CANCEL,
   ICON_DELETE,
@@ -42,6 +39,7 @@ import {
   ICON_TOP,
   ICON_TOP_SOLID,
 } from '@/icons'
+import { useDriveStore } from '@/store/driveList'
 import { useDriveSpaceInfoStore } from '@/store/driveSpaceInfo'
 import { formatFileSize } from '@/utils/format'
 
@@ -50,68 +48,48 @@ const Drive = defineComponent({
   setup: () => {
     useTitle('115Master')
 
-    const query = {
-      suffix: useRouteQuery('suffix', ''),
-      type: useRouteQuery('type', ''),
-      cid: useRouteParams<string>('cid'),
-      area: useRouteParams<string>('area', 'all'),
-      page: useRouteQuery<number>('page', 1, {
-        transform: Number,
-      }),
-      size: useStorage('115Master_pageSize', PAGINATION_DEFAULT_PAGE_SIZE),
-      keyword: useRouteQuery<string>('keyword', '', {
-        mode: 'push',
-      }),
-    }
+    const store = useDriveStore()
+    const action = useDriveAction()
+    const spaceInfo = useDriveSpaceInfoStore()
+    const route = useRoute()
 
     const searchKeyword = shallowRef('')
 
-    const action = useDriveAction()
-
-    const spaceInfo = useDriveSpaceInfoStore()
-
-    const listStore = useDriveFile(query)
-
-    const withRefresh = <T extends (...args: any[]) => Promise<boolean>>(fn: T) => {
-      return async (...args: any[]) => {
-        const success = await fn(...args)
-        if (success) {
-          listStore.refresh()
-          listStore.itemChecked.clearAllChecked()
-        }
-      }
-    }
-
     const actionHandlers = {
-      newFolder: withRefresh(() => action.newFolder(
-        listStore.options.cid.value,
-      )),
-      batchTop: withRefresh(() => action.topBatch(
-        listStore.itemChecked.checkedValues.value,
-      )),
-      batchStar: withRefresh(() => action.starBatch(
-        listStore.itemChecked.checkedValues.value,
-      )),
-      batchMove: withRefresh(() => action.moveBatch(
-        listStore.options.cid.value,
-        listStore.itemChecked.checkedValues.value,
-      )),
-      improve: withRefresh(() => action.improve(
-        listStore.itemChecked.checkedValues.value,
-        listStore.prevLevelPath.value?.cid ?? '0',
-      )),
-      rename: withRefresh(() => action.renameItem(
-        listStore.itemChecked.checkedValues.value[0],
-      )),
-      batchDelete: withRefresh(() => action.deleteBatch(
-        listStore.options.cid.value,
-        listStore.itemChecked.checkedValues.value,
-      )),
-      cloudDownload: withRefresh((defaultUrls: string = '') => action.cloudDownload(
-        listStore.options.cid.value,
-        listStore.path.value,
-        defaultUrls,
-      )),
+      newFolder: async () => {
+        if (await action.newFolder(store.nav.cid))
+          store.afterAction()
+      },
+      batchTop: async () => {
+        if (await action.topBatch(store.selection.values))
+          store.afterAction()
+      },
+      batchStar: async () => {
+        if (await action.starBatch(store.selection.values))
+          store.afterAction()
+      },
+      batchMove: async () => {
+        const res = await action.moveBatch(store.nav.cid, store.selection.values)
+        if (res.success)
+          store.afterAction([res.pid])
+      },
+      improve: async () => {
+        const pid = store.prevLevel?.cid ?? '0'
+        if (await action.improve(store.selection.values, pid))
+          store.afterAction([pid])
+      },
+      rename: async () => {
+        if (await action.renameItem(store.selection.values[0]))
+          store.afterAction()
+      },
+      batchDelete: async () => {
+        if (await action.deleteBatch(store.nav.cid, store.selection.values))
+          store.afterAction()
+      },
+      cloudDownload: async (defaultUrls: string = '') => {
+        if (await action.cloudDownload(store.nav.cid, store.path, defaultUrls))
+          store.afterAction()
+      },
     }
 
     const actionAtom: Record<string, Action> = {
@@ -122,7 +100,7 @@ const Drive = defineComponent({
         icon: ICON_TOP,
         activeIcon: ICON_TOP_SOLID,
         activeIconColor: 'text-orange-500',
-        active: computed(() => listStore.itemChecked.checkedValues.value.some(item => item.is_top)),
+        active: computed(() => store.selection.values.some(item => item.is_top)),
         onClick: () => actionHandlers.batchTop(),
       },
       star: {
@@ -133,92 +111,68 @@ const Drive = defineComponent({
         iconColor: 'text-pink-400',
         activeIcon: 'mdi:heart',
         activeIconColor: 'text-pink-400',
-        active: computed(() => listStore.itemChecked.checkedValues.value.some(item => item.m)),
+        active: computed(() => store.selection.values.some(item => item.m)),
         onClick: () => actionHandlers.batchStar(),
       },
       move: {
         name: 'move',
         label: '移动',
         icon: ICON_MOVE,
-        onClick: () => {
-          actionHandlers.batchMove()
-        },
+        onClick: () => actionHandlers.batchMove(),
       },
       improve: {
         name: 'improve',
         label: '提到上级',
         icon: ICON_FILE_IMPROVE,
-        show: computed(() => listStore.prevLevelPath.value !== undefined),
-        onClick: () => {
-          actionHandlers.improve()
-        },
+        show: computed(() => store.prevLevel !== undefined),
+        onClick: () => actionHandlers.improve(),
       },
       rename: {
         name: 'rename',
         label: '重命名',
         icon: ICON_RENAME,
-        show: computed(() => listStore.itemChecked.checkedCount.value === 1),
-        onClick: () => {
-          actionHandlers.rename()
-        },
+        show: computed(() => store.selection.count === 1),
+        onClick: () => actionHandlers.rename(),
       },
       delete: {
         name: 'delete',
         icon: ICON_DELETE,
         label: '删除',
-        onClick: () => {
-          actionHandlers.batchDelete()
-        },
+        onClick: () => actionHandlers.batchDelete(),
       },
       cancel: {
         name: 'cancel',
         icon: ICON_CANCEL,
         label: '取消选择',
-        onClick: () => {
-          listStore.itemChecked.clearAllChecked()
-        },
+        onClick: () => store.selection.clear(),
       },
     }
 
-    const actionConfig = computed<
-      Action[][]
-    >(() => {
-      return [
-        [actionAtom.top, actionAtom.star],
-        [actionAtom.move, actionAtom.improve, actionAtom.rename],
-        [actionAtom.delete],
-        [actionAtom.cancel],
-      ]
-    })
+    const actionConfig = computed<Action[][]>(() => [
+      [actionAtom.top, actionAtom.star],
+      [actionAtom.move, actionAtom.improve, actionAtom.rename],
+      [actionAtom.delete],
+      [actionAtom.cancel],
+    ])
 
-    function handleClickPath(data: WebApi.Res.Files['path'][number]) {
-      router.push({
-        params: {
-          area: 'all',
-          cid: data.cid,
-        },
-      })
+    function handleClickPath(data: WebApi.Entity.PathItem) {
+      router.push({ name: 'drive', params: { cid: data.cid === '0' ? '' : data.cid } })
     }
 
     function handleSort(order: WebApi.Entity.Sorter['o'], asc: WebApi.Entity.Sorter['asc'], fc_mix: WebApi.Entity.Sorter['fc_mix']) {
-      listStore.sorter.change(order, asc, fc_mix)
+      store.page.changeSort(order, asc, fc_mix)
+      store.page.changePage(1)
+      store.refresh()
     }
 
     function handleSearch(value: string) {
-      router.push({
-        path: '/drive/search',
-        query: {
-          keyword: value,
-        },
-      })
+      router.push({ path: '/drive/search', query: { keyword: value } })
     }
 
     async function handleDragMove(cid: string, originItems: WebApi.Entity.FilesItem[]) {
       const success = await action.dragMove(cid, originItems)
-      if (success) {
-        listStore.refresh()
-        listStore.itemChecked.clearAllChecked()
-      }
+      if (success)
+        store.afterAction([cid])
       return success
     }
 
@@ -234,37 +188,24 @@ const Drive = defineComponent({
           <div class="flex h-(--navbar-height) items-center justify-center text-2xl font-bold tracking-tight font-stretch-expanded">
             115Master
           </div>
-          {/* 离线下载 */}
           <button
             class="btn btn-md btn-primary btn-soft btn-text flex-none rounded-full px-6"
             onClick={() => actionHandlers.cloudDownload()}
           >
-            <Icon
-              class="text-2xl"
-              icon="material-symbols:add-link-rounded"
-            />
+            <Icon class="text-2xl" icon="material-symbols:add-link-rounded" />
             离线下载
           </button>
-
           <div class="mt-5 flex-1">
-            {/* 菜单 */}
             <Menu class="flex-1" />
           </div>
-
-          {/* 空间信息 */}
           <div class="mt-2 flex flex-none flex-col gap-2" v-show={spaceInfo.state?.state === true}>
             <div class="text-base-content/70 text-sm">
-              { formatFileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0) }
+              {formatFileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0)}
               {' / '}
-              { formatFileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0) }
+              {formatFileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0)}
             </div>
-            <progress
-              class="progress progress-lg progress-primary w-38"
-              max={100}
-              value={value.value}
-            />
+            <progress class="progress progress-lg progress-primary w-38" max={100} value={value.value} />
           </div>
-
           <div class="bg-base-content/5 my-4 h-px w-full" />
         </>
       )
@@ -274,40 +215,39 @@ const Drive = defineComponent({
 
     const { containerRef, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
       get pathSelect() { return false },
-      get listData() { return listStore.list.state.value?.data ?? [] },
-      get checkeds() { return listStore.itemChecked.checkedSet.value },
-      onChecked: listStore.itemChecked.updateChecked,
-      onCheckedClear: listStore.itemChecked.clearAllChecked,
-      onRadio: listStore.itemChecked.radioChecked,
+      get listData() { return store.list.data?.data ?? [] },
+      get checkeds() { return store.selection.checked },
+      onChecked: store.selection.toggle,
+      onCheckedClear: store.selection.clear,
+      onRadio: store.selection.radio,
       onDragMove: handleDragMove,
     })
 
     const { preview } = useFilePreview({
-      get listData() { return listStore.list.state.value?.data ?? [] },
+      get listData() { return store.list.data?.data ?? [] },
     })
 
     function ListHeader() {
       return (
         <Header>
           <div class="relative flex items-center gap-4">
-            <FilePaths
-              paths={listStore.path.value ?? []}
+            <FilePath
+              path={store.path ?? []}
               onDragMove={handleDragMove}
               onPathClick={handleClickPath}
             />
           </div>
-
           <div class="flex items-center">
             <FileMenu>
               <FileNewFolderButton onClick={actionHandlers.newFolder} />
               <FilePageSizeSelector
-                currentPageSize={listStore.pagination.state.size}
-                onChangePageSize={listStore.pagination.changeSize}
+                currentPageSize={store.page.size}
+                onChangePageSize={store.page.changeSize}
               />
               <FileSortSelector
-                asc={listStore.sorter.state.asc || 0}
-                fc_mix={listStore.sorter.state.fc_mix || 0}
-                order={listStore.sorter.state.order || 'user_ptime'}
+                asc={store.page.asc || 0}
+                fc_mix={store.page.fc_mix || 0}
+                order={store.page.order || 'user_ptime'}
                 onSort={handleSort}
               />
               <FileViewType
@@ -321,126 +261,86 @@ const Drive = defineComponent({
     }
 
     function ListState() {
-      if (listStore.list.error.value) {
-        return (
-          <LoadingError
-            class="absolute inset-0 m-auto"
-            message={listStore.list.error.value}
-            size="mini"
-          />
-        )
-      }
-
-      if (listStore.list.isLoading.value) {
-        return (
-          <div
-            class="loading loading-spinner loading-xl absolute inset-0 m-auto"
-          />
-        )
-      }
-
-      if (listStore.list.isReady.value && listStore.pagination.state.total === 0) {
-        return (
-          <Empty
-            class="absolute inset-0 m-auto"
-            description="没有文件"
-          />
-        )
-      }
-
+      if (store.list.error)
+        return <LoadingError class="absolute inset-0 m-auto" message={store.list.error} size="mini" />
+      if (store.list.loading)
+        return <div class="loading loading-spinner loading-xl absolute inset-0 m-auto" />
+      if (!store.list.loading && store.page.total === 0)
+        return <Empty class="absolute inset-0 m-auto" description="没有文件" />
       return <></>
     }
 
     function List() {
       return (
         <>
-          {
-            (
-              !listStore.list.error.value
-              && listStore.list.state.value?.data
-            ) && (
-              <FileList
-                containerRef={containerRef}
-                viewType={viewType.value}
-              >
-                {listStore.list.state.value?.data.map(item => (
-                  <FileItem
-                    key={item.pc}
-                    viewType={viewType.value}
-                    {...itemProps(item)}
-                    onPreview={() => preview(item)}
-                  />
-                ))}
-                <FileContextMenu
-                  actionConfig={actionConfig.value}
-                  position={contextmenuPosition.value}
-                  show={contextmenuShow.value}
-                  onClose={() => contextmenuShow.value = false}
+          {!store.list.error && store.list.data?.data && (
+            <FileList containerRef={containerRef} viewType={viewType.value}>
+              {store.list.data.data.map((item: WebApi.Entity.FilesItem) => (
+                <FileItem
+                  key={item.pc}
+                  viewType={viewType.value}
+                  {...itemProps(item)}
+                  onPreview={() => preview(item)}
                 />
-              </FileList>
-            )
-          }
+              ))}
+              <FileContextMenu
+                actionConfig={actionConfig.value}
+                position={contextmenuPosition.value}
+                show={contextmenuShow.value}
+                onClose={() => contextmenuShow.value = false}
+              />
+            </FileList>
+          )}
         </>
       )
     }
 
     function FixedBottom() {
-      if (listStore.list.isReady.value && listStore.pagination.state.pageCount > 1) {
+      if (!store.list.loading && store.page.pageCount > 1) {
         return (
           <Pagination
             key="pagination"
             class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2"
-            currentPage={listStore.pagination.state.page}
-            currentPageSize={listStore.pagination.state.size}
+            currentPage={store.page.page}
+            currentPageSize={store.page.size}
             showSizeChanger={false}
-            total={listStore.pagination.state.total}
-            onCurrentPageChange={listStore.pagination.changePage}
-            onPageSizeChange={listStore.pagination.changeSize}
+            total={store.page.total}
+            onCurrentPageChange={store.page.changePage}
+            onPageSizeChange={store.page.changeSize}
           />
         )
       }
       return <></>
     }
 
-    const route = useRoute()
     watch(() => route.query.keyword, (value) => {
       searchKeyword.value = value as string
-    }, {
-      immediate: true,
+    }, { immediate: true })
+
+    // cid 变化时清空选中
+    watch(() => store.nav.cid, () => {
+      store.selection.clear()
     })
 
     onBeforeMount(() => {
-      listStore.refresh()
-    })
-
-    onBeforeMount(() => {
-      if (route.query.offline_url) {
+      if (route.query.offline_url)
         actionHandlers.cloudDownload(route.query.offline_url as string)
-      }
     })
 
     return () => (
       <div class="flex h-full flex-col [--drive-header-height:calc(var(--spacing)*12)]">
         <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
-          {/* navbar */}
           <Navbar>
             {{
               default: () => (
-                <DriveSearchBar
-                  modelValue={searchKeyword.value}
-                  onEnter={handleSearch}
-                />
+                <DriveSearchBar modelValue={searchKeyword.value} onEnter={handleSearch} />
               ),
-              right: () => (
-                <UserInfo />
-              ),
+              right: () => <UserInfo />,
             }}
           </Navbar>
-          {/* sider */}
           <Sider>
-            <SiderContent></SiderContent>
+            <SiderContent />
           </Sider>
-          {/* main */}
           <Main class="relative flex min-h-[calc(100vh-var(--navbar-height))] flex-col">
             <ListHeader />
             <ListState />

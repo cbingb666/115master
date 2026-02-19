@@ -37,6 +37,13 @@ export interface ModalProps {
   cancelCallback?: () => void
   /** 对话框打开完成回调 */
   openedCallback?: () => void
+  /** 启用浏览器历史管理，后退可关闭对话框（alert/confirm/prompt 不适用） */
+  history?: boolean
+}
+
+/** 内部使用的完整 Modal 属性，包含运行时注入字段 */
+export interface ModalPropsInternal extends ModalProps {
+  _historyDispose?: () => void
 }
 
 export interface ModalEmits {

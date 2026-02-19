@@ -8,7 +8,6 @@ export const routes: RouteRecordRaw[] = [
     redirect: {
       name: 'drive',
       params: {
-        area: 'all',
         cid: '0',
       },
     },
