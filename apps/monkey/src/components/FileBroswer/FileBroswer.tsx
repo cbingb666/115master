@@ -71,12 +71,12 @@ const FileBroswer = defineComponent({
       nav.push(data.cid)
     }
 
-    function handleSort(
+    async function handleSort(
       order: WebApi.Entity.Sorter['o'],
       asc: WebApi.Entity.Sorter['asc'],
       fc_mix: WebApi.Entity.Sorter['fc_mix'],
     ) {
-      explorer.page.changeSort(order, asc, fc_mix)
+      await explorer.changeSort(order, asc, fc_mix)
       explorer.page.changePage(1)
       explorer.refresh()
     }

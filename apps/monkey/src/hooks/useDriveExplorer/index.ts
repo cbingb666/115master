@@ -6,6 +6,7 @@ import { computed, nextTick, watch } from 'vue'
 import { useDriveCache } from '@/hooks/useDriveCache'
 import { useDriveList } from '@/hooks/useDriveList'
 import { useDrivePage } from '@/hooks/useDrivePage'
+import { drive115 } from '@/utils/drive115Instance'
 
 interface CacheEntry {
   data: WebApi.Res.Files
@@ -107,10 +108,8 @@ export function useDriveExplorer(options: ExplorerOptions) {
       limit: page.size.value,
       format: 'json',
       natsort: 1,
-      custom_order: 0,
     }
     if (page.order.value || page.asc.value || page.fc_mix.value) {
-      params.custom_order = 1
       params.o = page.order.value
       params.asc = page.asc.value
       params.fc_mix = page.fc_mix.value
@@ -142,6 +141,20 @@ export function useDriveExplorer(options: ExplorerOptions) {
   function invalidate(cid: string) {
     cache.invalidate(cacheKey('all', cid))
     cache.invalidate(cacheKey('star', cid))
+  }
+
+  /** 切换排序并保存到服务器 */
+  async function changeSort(o: WebApi.Entity.Sorter['o'], a: WebApi.Entity.Sorter['asc'], f: WebApi.Entity.Sorter['fc_mix']) {
+    page.changeSort(o, a, f)
+    if (isSearch.value)
+      return
+    const cid = options.nav.cid.value || '0'
+    await drive115.webApiPostFilesOrder({
+      file_id: cid,
+      user_order: o ?? '',
+      user_asc: a ?? 1,
+      fc_mix: f ?? 0,
+    })
   }
 
   /** watch nav.cid + nav.area + page + keyword 变化 */
@@ -228,6 +241,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
     prevLevel,
     refresh,
     invalidate,
+    changeSort,
   }
 }
 

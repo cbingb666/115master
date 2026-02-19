@@ -159,8 +159,8 @@ const Drive = defineComponent({
       router.push({ name: 'drive', params: { cid: data.cid === '0' ? '' : data.cid } })
     }
 
-    function handleSort(order: WebApi.Entity.Sorter['o'], asc: WebApi.Entity.Sorter['asc'], fc_mix: WebApi.Entity.Sorter['fc_mix']) {
-      store.page.changeSort(order, asc, fc_mix)
+    async function handleSort(order: WebApi.Entity.Sorter['o'], asc: WebApi.Entity.Sorter['asc'], fc_mix: WebApi.Entity.Sorter['fc_mix']) {
+      await store.changeSort(order, asc, fc_mix)
       store.page.changePage(1)
       store.refresh()
     }

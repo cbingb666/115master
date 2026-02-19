@@ -51,5 +51,6 @@ export const useDriveStore = defineStore('drive', () => {
     prevLevel: explorer.prevLevel,
     refresh: explorer.refresh,
     invalidate: explorer.invalidate,
+    changeSort: explorer.changeSort,
   }
 })

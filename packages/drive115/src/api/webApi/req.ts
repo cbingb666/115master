@@ -124,7 +124,7 @@ export interface PostFilesOrder {
   user_order: string
   /** 是否升序 */
   user_asc: number
-  /** 是否混合排序 */
+  /** 目录置顶 (是否混合排序) */
   fc_mix?: number
 }
 

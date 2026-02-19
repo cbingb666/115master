@@ -32,7 +32,7 @@ export interface Sorter {
   o?: 'file_name' | 'user_utime' | 'user_ptime' | 'user_otime' | 'file_size'
   /** 是否升序 */
   asc?: 0 | 1
-  /** 是否混合排序 */
+  /** 目录置顶 (是否混合排序) */
   fc_mix?: 0 | 1
 }
 

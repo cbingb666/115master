@@ -19,7 +19,7 @@ export type Files = Base<{
   is_asc: Sorter['asc']
   /** 排序方式 */
   order: Sorter['o']
-  /** 是否混合排序 */
+  /** 目录置顶 (是否混合排序) */
   fc_mix: Sorter['fc_mix']
   /** 偏移量 */
   offset: number
