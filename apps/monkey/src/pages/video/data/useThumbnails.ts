@@ -413,7 +413,7 @@ export function useDataThumbnails(
 
   /** clear */
   const destory = () => {
-    clipper.destroy()
+    clipper?.destroy()
     scheduler.clear()
     releaseCache()
     isInited.value = false
