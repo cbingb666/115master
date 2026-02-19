@@ -16,6 +16,7 @@ export function useDriveList() {
     const gen = ++generation
     loading.value = true
     error.value = null
+    data.value = null
     try {
       let res = await drive115.webApiGetFiles(params)
       if (!res.state) {
@@ -47,6 +48,7 @@ export function useDriveList() {
     const gen = ++generation
     loading.value = true
     error.value = null
+    data.value = null
     try {
       const res = await drive115.webApiGetFilesSearch(params)
       if (!res.state)
