@@ -66,8 +66,6 @@ export function useFileAction() {
     if (dialogRes) {
       const fid = item.fid ?? item.cid
       const res = await drive115.webApiPostFilesBatchRename({
-        fid,
-        file_name: dialogRes,
         [`files_new_name[${fid}]`]: dialogRes,
       })
       if (res.state) {

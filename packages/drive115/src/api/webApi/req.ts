@@ -130,9 +130,9 @@ export interface PostFilesOrder {
 
 /** 重命名文件请求 */
 export interface PostFilesBatchRename {
-  [key: string]: string
-  fid: string
-  file_name: string
+  [key: `files_new_name[${number}]`]: string
+  fid?: string
+  file_name?: string
 }
 
 /** 添加文件夹请求 */
