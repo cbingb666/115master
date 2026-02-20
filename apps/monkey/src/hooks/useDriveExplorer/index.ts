@@ -157,56 +157,73 @@ export function useDriveExplorer(options: ExplorerOptions) {
     })
   }
 
-  /** watch nav.cid + nav.area + page + keyword 变化 */
+  function scrollToTop() {
+    if (options.scroll)
+      setScroll(0)
+  }
+
+  /** 保存当前目录滚动位置到缓存 */
+  function saveScroll(key: string) {
+    if (!options.scroll)
+      return
+    const existing = cache.get(key)
+    if (existing) {
+      cache.set(key, { ...existing, scrollTop: getScroll() })
+      return
+    }
+    if (list.data.value && 'path' in list.data.value)
+      cache.set(key, { data: list.data.value, scrollTop: getScroll() })
+  }
+
+  /** 后退时尝试从缓存恢复 */
+  function restoreCache(key: string): boolean {
+    if (options.nav.direction.value !== 'back' || isSearch.value)
+      return false
+    const cached = cache.get(key)
+    if (!cached)
+      return false
+    list.set(cached.data)
+    page.apply(cached.data)
+    if (options.scroll) {
+      nextTick(() => {
+        requestAnimationFrame(() => setScroll(cached.scrollTop))
+      })
+    }
+    return true
+  }
+
   let prevKey = cacheKey(options.nav.area.value || 'all', options.nav.cid.value || '0')
   watch(
-    [options.nav.cid, options.nav.area, () => page.page.value, () => options.keyword?.value],
-    ([cid, area, , keyword], old) => {
-      const cidChanged = !old || cid !== old[0] || area !== old[1]
-      const keywordChanged = old && keyword !== old[3]
+    [options.nav.cid, options.nav.area, () => page.page.value, () => page.size.value, () => options.keyword?.value],
+    (curr, prev) => {
+      const [cid, area, , size, keyword] = curr
+      const [prevCid, prevArea, , prevSize, prevKeyword] = prev ?? []
 
-      // 搜索关键词变化: 重置页码, 滚动到顶部
-      if (keywordChanged) {
-        page.changePage(1)
-        if (options.scroll)
-          setScroll(0)
+      // pageSize 变化: 清除缓存
+      if (prevSize !== undefined && size !== prevSize) {
+        cache.clear()
+        scrollToTop()
         refresh()
         return
       }
 
+      // 搜索关键词变化: 重置页码
+      if (prevKeyword !== undefined && keyword !== prevKeyword) {
+        page.changePage(1)
+        scrollToTop()
+        refresh()
+        return
+      }
+
+      const cidChanged = !prev || cid !== prevCid || area !== prevArea
       const key = cacheKey(area || 'all', cid || '0')
 
       if (cidChanged) {
-        // 保存旧 cid 的滚动位置
-        if (options.scroll) {
-          const existing = cache.get(prevKey)
-          if (existing)
-            cache.set(prevKey, { ...existing, scrollTop: getScroll() })
-          else if (list.data.value && 'path' in list.data.value)
-            cache.set(prevKey, { data: list.data.value, scrollTop: getScroll() })
-        }
+        saveScroll(prevKey)
         prevKey = key
-
-        // 后退且缓存命中 (仅目录浏览)
-        if (options.nav.direction.value === 'back' && !isSearch.value) {
-          const cached = cache.get(key)
-          if (cached) {
-            list.set(cached.data)
-            page.apply(cached.data)
-            if (options.scroll) {
-              nextTick(() => {
-                requestAnimationFrame(() => {
-                  setScroll(cached.scrollTop)
-                })
-              })
-            }
-            return
-          }
-        }
-
-        // 前进 / 替换: 滚动到顶部
-        if (options.scroll)
-          setScroll(0)
+        if (restoreCache(key))
+          return
+        scrollToTop()
       }
 
       refresh()
