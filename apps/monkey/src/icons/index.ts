@@ -54,3 +54,5 @@ export const ICON_TOAST_CLOSE = 'material-symbols:close-small-rounded'
 export const ICON_GITHUB = 'mdi:github'
 // Q&A
 export const ICON_QA = 'mdi:question-mark-circle'
+// 赞助
+export const ICON_SPONSOR = 'streamline-kameleon-color:coffee-paper-glass-duo'

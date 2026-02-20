@@ -2,32 +2,16 @@ import type { SlotsType } from 'vue'
 import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
 import PKG from '@/../package.json'
-import { ICON_GITHUB, ICON_QA } from '@/icons'
+import { useSponsorDialog } from '@/components/Sponsor/useSponsorDialog'
+import { ICON_GITHUB, ICON_QA, ICON_SPONSOR } from '@/icons'
 
 interface ExternalLinkItem {
   icon?: string
   text?: string
-  href: string
   title?: string
+  href?: string
+  onClick?: () => void
 }
-
-const ExternalLink = [
-  {
-    icon: ICON_GITHUB,
-    href: PKG.homepage,
-    title: 'GitHub',
-  },
-  {
-    icon: ICON_QA,
-    href: `${PKG.homepage}/discussions/categories/q-a`,
-    title: 'Q&A',
-  },
-  {
-    href: `${PKG.homepage}/releases/tag/v${PKG.version}`,
-    title: `v${PKG.version} Release Notes`,
-    text: `v${PKG.version}`,
-  },
-] satisfies ExternalLinkItem[]
 
 const Sider = defineComponent({
   name: 'Sider',
@@ -37,6 +21,31 @@ const Sider = defineComponent({
     right: () => void
   }>,
   setup: (_, { slots }) => {
+    const openSponsor = useSponsorDialog()
+
+    const links: ExternalLinkItem[] = [
+      {
+        icon: ICON_GITHUB,
+        href: PKG.homepage,
+        title: 'GitHub',
+      },
+      {
+        icon: ICON_QA,
+        href: `${PKG.homepage}/discussions/categories/q-a`,
+        title: 'Q&A',
+      },
+      {
+        icon: ICON_SPONSOR,
+        title: '赞助',
+        onClick: openSponsor,
+      },
+      {
+        href: `${PKG.homepage}/releases/tag/v${PKG.version}`,
+        title: `v${PKG.version} Release Notes`,
+        text: `v${PKG.version}`,
+      },
+    ]
+
     return () => (
       <div
         class="
@@ -47,22 +56,31 @@ const Sider = defineComponent({
         {slots.default?.()}
 
         <div class="flex flex-wrap gap-2">
-          {ExternalLink.map(item => (
-            <a
-              key={item.href}
-              class="flex items-baseline-last justify-between text-xs"
-              href={item.href}
-              target="_blank"
-              title={item.title}
-            >
-              {item.icon && (
-                <Icon class="text-lg" icon={item.icon} />
-              )}
-              {item.text && (
-                <span class="text-base-content/50">{item.text}</span>
-              )}
-            </a>
-          ))}
+          {links.map(item => item.onClick
+            ? (
+                <button
+                  key={item.title}
+                  class="flex cursor-pointer items-center justify-between text-xs"
+                  title={item.title}
+                  onClick={item.onClick}
+                >
+                  {item.icon && <Icon class="text-lg" icon={item.icon} />}
+                  {item.text && <span class="text-base-content/50">{item.text}</span>}
+                </button>
+              )
+            : (
+                <a
+                  key={item.href}
+                  class="flex items-baseline-last justify-between text-xs"
+                  href={item.href}
+                  target="_blank"
+                  title={item.title}
+                >
+                  {item.icon && <Icon class="text-lg" icon={item.icon} />}
+                  {item.text && <span class="text-base-content/50">{item.text}</span>}
+                </a>
+              ),
+          )}
         </div>
       </div>
     )

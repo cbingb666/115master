@@ -4,8 +4,16 @@ import {
   DialogContainer,
   GlassDistortionFilter,
   ToastContainer,
+  useSponsorBoot,
 } from '@/components'
 import { appLogger } from '@/utils/logger'
+
+const Boot = defineComponent({
+  setup() {
+    useSponsorBoot()
+    return () => null
+  },
+})
 
 const App = defineComponent({
   name: 'App',
@@ -14,10 +22,12 @@ const App = defineComponent({
       appLogger.error('Vue error captured:', err, instance, info)
       return false
     })
+
     return () => (
       <>
         <GlassDistortionFilter></GlassDistortionFilter>
         <DialogContainer>
+          <Boot />
           <ToastContainer>
             <RouterView>
               {{
