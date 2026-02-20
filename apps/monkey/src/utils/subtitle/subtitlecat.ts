@@ -1,6 +1,7 @@
 import type { Subtitle } from '@/components/XPlayer/types'
 import md5 from 'blueimp-md5'
 import { subtitleCache } from '@/utils/cache/subtitleCache'
+import { convertToUtf8Blob } from '@/utils/encoding'
 import { appLogger } from '@/utils/logger'
 import { GMRequestInstance } from '@/utils/request/gmRequst'
 
@@ -52,17 +53,10 @@ export class SubtitleCat {
   private iRequest = GMRequestInstance
 
   /** 获取字幕Blob */
-  getSubtitleText(url: string): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      this.iRequest
-        .get(url)
-        .then(async (response) => {
-          resolve(await response.blob())
-        })
-        .catch((error) => {
-          reject(error)
-        })
-    })
+  async fetchSubtitleBlob(url: string): Promise<Blob> {
+    const response = await this.iRequest.get(url, { responseType: 'arraybuffer' })
+    const arrayBuffer = await response.arrayBuffer()
+    return await convertToUtf8Blob(arrayBuffer)
   }
 
   /** 获取字幕 url */
@@ -234,7 +228,7 @@ export class SubtitleCat {
     if (!url)
       return undefined
 
-    const blob = await this.getSubtitleText(this.domain + url)
+    const blob = await this.fetchSubtitleBlob(this.domain + url)
 
     return {
       ...item,

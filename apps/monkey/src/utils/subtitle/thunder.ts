@@ -1,7 +1,9 @@
 import type { Subtitle } from '@/components/XPlayer/types'
 import md5 from 'blueimp-md5'
+import { convertToUtf8Blob } from '@/utils/encoding'
 import { appLogger } from '@/utils/logger'
 import { GMRequestInstance } from '@/utils/request/gmRequst'
+
 /**
  * 迅雷字幕 API 返回的单个字幕项
  */
@@ -132,9 +134,9 @@ export class ThunderSubtitle {
    * @param url 字幕下载地址
    */
   private async getSubtitleBlob(url: string): Promise<Blob> {
-    const response = await this.iRequest.get(url)
-    const blob = await response.blob()
-    return blob
+    const response = await this.iRequest.get(url, { responseType: 'arraybuffer' })
+    const arrayBuffer = await response.arrayBuffer()
+    return await convertToUtf8Blob(arrayBuffer)
   }
 }
 

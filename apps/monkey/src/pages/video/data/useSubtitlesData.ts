@@ -4,6 +4,7 @@ import { shallowRef } from 'vue'
 import { jaccardSimilarity } from '@/utils/array'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { drive115 } from '@/utils/drive115'
+import { convertToUtf8Blob } from '@/utils/encoding'
 import { fetchRequest } from '@/utils/request/fetchRequest'
 import { removeFileExtension, splitWords } from '@/utils/string'
 import { subtitlecat } from '@/utils/subtitle/subtitlecat'
@@ -57,10 +58,11 @@ export function useDataSubtitles() {
     const results = await Promise.allSettled(
       res.data.list.map(async (subtitle) => {
         const url = new URL(subtitle.url)
-        url.protocol = 'https://'
-        const res = await fetchRequest.get(url.href)
-        const blob = await res.blob()
+        url.protocol = 'https:'
         const isUpload = !!subtitle.file_id
+        const res = await fetchRequest.get(url.href)
+        const arrayBuffer = await res.arrayBuffer()
+        const blob = await convertToUtf8Blob(arrayBuffer)
         return {
           id: isUpload ? subtitle.file_id : subtitle.sid,
           url: url.href,
