@@ -140,7 +140,7 @@ import type { Subtitle, ThumbnailRequest } from '@/components/XPlayer/types'
 import { Icon } from '@iconify/vue'
 import { useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
-import { computed, h, nextTick, onMounted, ref, shallowRef, toValue } from 'vue'
+import { computed, h, nextTick, onMounted, ref, shallowRef, toValue, watch } from 'vue'
 import iinaIcon from '@/assets/icons/iina-icon.png'
 import ControlBox from '@/components/XPlayer/components/Controls/ControlBox.vue'
 import { ACTION_GROUPS } from '@/components/XPlayer/components/Shortcuts/shortcuts.const'
@@ -459,25 +459,10 @@ async function handleLocalPlay(player: LocalPlayer) {
 }
 
 async function changeVideo(item: Entity.FilesItem) {
-  try {
-    changeing.value = true
-    goToPlayer({
-      pickCode: item.pc,
-    })
-    DataThumbnails.destory()
-    DataSubtitles.execute(0, '')
-    DataVideoSources.clear()
-    DataHistory.clear()
-    if (PLUS_VERSION) {
-      DataMovieInfo.javDBState.execute(0)
-      DataMovieInfo.javBusState.execute(0)
-    }
-    await nextTick()
-    await loadData(false)
-  }
-  finally {
-    changeing.value = false
-  }
+  changeing.value = true
+  goToPlayer({
+    pickCode: item.pc,
+  })
 }
 
 /** 播放器列表切换 */
@@ -577,8 +562,8 @@ async function loadData(isFirst = true) {
       // 加载字幕
       DataSubtitles.execute(0, pickCode, res.file_name, avNumber)
 
-      // 加载播放列表
-      if (isFirst && res.parent_id) {
+      // 加载播放列表（cid 变化时或首次加载）
+      if (res.parent_id && (isFirst || params.cid.value !== res.parent_id)) {
         DataPlaylist.execute(0, res.parent_id)
       }
     }),
@@ -701,4 +686,33 @@ function getActionNameTip(
 onMounted(async () => {
   await loadData()
 })
+
+// 监听路由参数变化，处理浏览器前进/后退
+watch(
+  () => params.pickCode.value,
+  async (newPickCode, oldPickCode) => {
+    // 忽略初始加载（oldPickCode 为 undefined）和相同值的情况
+    if (!oldPickCode || !newPickCode || newPickCode === oldPickCode) {
+      return
+    }
+
+    try {
+      // 清理旧数据
+      DataThumbnails.destory()
+      DataVideoSources.clear()
+      DataHistory.clear()
+      DataSubtitles.clear()
+      if (PLUS_VERSION) {
+        DataMovieInfo.clear()
+      }
+
+      // 重新加载数据
+      await nextTick()
+      await loadData(false)
+    }
+    finally {
+      changeing.value = false
+    }
+  },
+)
 </script>

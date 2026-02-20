@@ -34,8 +34,14 @@ export function useDataMovieInfo() {
     },
   )
 
+  const clear = () => {
+    javBusState.state.value = null
+    javDBState.state.value = null
+  }
+
   return {
     javBusState,
     javDBState,
+    clear,
   }
 }

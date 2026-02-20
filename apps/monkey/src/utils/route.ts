@@ -20,7 +20,7 @@ export function goToPlayer(playingVideoInfo: PlayingVideoInfo, isOpenInTab = fal
     return
   }
 
-  router.push({
+  router.replace({
     name: 'video',
     params: {
       pickCode: playingVideoInfo.pickCode,

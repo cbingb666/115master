@@ -123,5 +123,13 @@ export function useDataSubtitles() {
     },
   )
 
-  return subtitles
+  const clear = () => {
+    subtitles.execute(0, '')
+    currentId.value = undefined
+  }
+
+  return {
+    ...subtitles,
+    clear,
+  }
 }
