@@ -2,6 +2,7 @@ import type { WebApi } from '@115master/drive115'
 import { MarkStatus } from '@115master/drive115'
 import { useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
+import { removeFileExtension } from '@/utils/string'
 import { getFileIds } from './helpers'
 
 /** 文件基础操作（置顶、星标、重命名、新建文件夹） */
@@ -60,7 +61,7 @@ export function useFileAction() {
     const dialogRes = await dialog.prompt({
       title: '重命名',
       placeholder: '请输入文件名',
-      defaultValue: item.n,
+      defaultValue: removeFileExtension(item.n),
     })
 
     if (dialogRes) {
