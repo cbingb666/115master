@@ -46,8 +46,8 @@ export interface MoviesSubtitleItemBuiltIn {
   url: string
 }
 
-/** 网盘字幕项 */
-export interface MoviesSubtitleItemFile extends MoviesSubtitleItemBuiltIn {
+/** 上传字幕项 */
+export interface MoviesSubtitleItemUpload extends MoviesSubtitleItemBuiltIn {
   caption_map_id: string
   /** 文件ID */
   file_id: string
@@ -64,5 +64,4 @@ export interface MoviesSubtitleItemFile extends MoviesSubtitleItemBuiltIn {
 }
 
 /** 字幕项 */
-export type MoviesSubtitleItem = MoviesSubtitleItemBuiltIn
-  & MoviesSubtitleItemFile
+export type MoviesSubtitleItem = MoviesSubtitleItemBuiltIn & MoviesSubtitleItemUpload

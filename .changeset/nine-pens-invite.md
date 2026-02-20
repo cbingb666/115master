@@ -1,5 +1,5 @@
 ---
-"@115master/monkey": minor
+"@115master/monkey": patch
 ---
 
-fix(subtitle115):Upload类型的字幕sid全是0，不能作为subtitle.id
+fix(monkey/subtitle): subtitles uploaded via 115 may lose the sid

@@ -60,12 +60,13 @@ export function useDataSubtitles() {
         url.protocol = 'https://'
         const res = await fetchRequest.get(url.href)
         const blob = await res.blob()
+        const isUpload = !!subtitle.file_id
         return {
-          id: subtitle.file_id ?? subtitle.sid,
+          id: isUpload ? subtitle.file_id : subtitle.sid,
           url: url.href,
           raw: blob,
           label: `${removeFileExtension(subtitle.title)}`,
-          source: subtitle.file_id ? 'Upload' : 'Built-in',
+          source: isUpload ? 'Upload' : 'Built-in',
           srclang: subtitle.language || 'zh-CN',
           format: subtitle.type,
           kind: 'subtitles' as const,
