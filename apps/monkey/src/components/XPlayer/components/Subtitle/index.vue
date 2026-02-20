@@ -19,6 +19,7 @@ import { useElementBounding } from '@vueuse/core'
 import { computed, shallowRef, watch } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { clsx } from '@/utils/clsx'
+import { convertToUtf8Blob } from '@/utils/encoding'
 import { convertSrtToVtt } from '@/utils/subtitle/subtitleTool'
 
 const styles = clsx({
@@ -136,9 +137,24 @@ function parseSubtitle(text: string, format: Subtitle['format']) {
   parseSubtitleVTT(formatedText)
 }
 
-function fetchSubtitle(url: string) {
-  return fetch(url)
-    .then(response => response.blob())
+/**
+ * 从URL加载字幕并转换为Blob
+ * @param url 字幕URL
+ */
+async function fetchSubtitleBlob(url: string) {
+  const response = await fetch(url)
+  const arrayBuffer = await response.arrayBuffer()
+  return convertToUtf8Blob(arrayBuffer)
+}
+
+async function processRawSubtitle(raw: Blob, format: Subtitle['format']) {
+  const text = await raw.text()
+  parseSubtitle(text, format)
+}
+
+async function processUrlSubtitle(url: string, format: Subtitle['format']) {
+  const blob = await fetchSubtitleBlob(url)
+  parseSubtitle(await blob.text(), format)
 }
 
 /**
@@ -150,20 +166,17 @@ async function loadSubtitle(subtitle: Subtitle | null) {
     text.value = null
     return
   }
-  if (subtitle.raw) {
-    parseSubtitle(await subtitle.raw.text(), subtitle.format)
-  }
-  else if (subtitle.url) {
-    try {
-      const subtitleText = await fetchSubtitle(subtitle.url)
-      parseSubtitle(await subtitleText.text(), subtitle.format)
+  try {
+    if (subtitle.raw) {
+      processRawSubtitle(subtitle.raw, subtitle.format)
     }
-    catch (e) {
-      logger.error('请求字幕文件失败', e)
+    else if (subtitle.url) {
+      processUrlSubtitle(subtitle.url, subtitle.format)
     }
   }
-  else {
-    logger.error('字幕数据无有效内容')
+  catch (error) {
+    logger.error('加载字幕失败:', error)
+    text.value = null
   }
 }
 

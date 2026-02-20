@@ -49,6 +49,7 @@
     "glob-to-regexp": "^0.4.1",
     "hls.js": "^1.6.15",
     "iconify-icon": "^3.0.0",
+    "jschardet": "^3.1.4",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "m3u8-parser": "^7.2.0",
