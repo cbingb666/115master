@@ -1,5 +1,5 @@
 import type { PropType } from 'vue'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS } from '@/constants'
 
 type VisiblePageItem = number | '...'
@@ -62,6 +62,12 @@ const Pagination = defineComponent({
     },
   },
   setup: (props) => {
+    const jumpValue = ref('')
+
+    watch(() => props.currentPage, () => {
+      jumpValue.value = ''
+    })
+
     const isFirstPage = computed(() => {
       return props.currentPage === 1
     })
@@ -138,6 +144,29 @@ const Pagination = defineComponent({
       props.onPageSizeChange?.(Number((event.target as HTMLSelectElement).value))
     }
 
+    /** 执行跳转 */
+    function handleJump() {
+      const page = Number(jumpValue.value)
+      if (page < 1 || page > pageCount.value || page === props.currentPage) {
+        jumpValue.value = ''
+        return
+      }
+      props.onCurrentPageChange(page)
+      jumpValue.value = ''
+    }
+
+    /** 处理输入 */
+    function handleJumpInput(event: Event) {
+      const value = (event.target as HTMLInputElement).value.replace(/\D/g, '')
+      jumpValue.value = value
+    }
+
+    /** 回车跳转 */
+    function handleJumpKeydown(event: KeyboardEvent) {
+      if (event.key === 'Enter')
+        handleJump()
+    }
+
     return () => (
       <div
         class="
@@ -175,9 +204,41 @@ const Pagination = defineComponent({
 
           {/* page */}
           {
-            visiblePages.value.map((pageNum) => {
+            visiblePages.value.map((pageNum, index) => {
               const isActive = pageNum === props.currentPage
-              const isDisabled = pageNum === '...'
+              const isEllipsis = pageNum === '...'
+              const lastEllipsisIndex = visiblePages.value.lastIndexOf('...')
+              const isJumpInput = isEllipsis && lastEllipsisIndex === index
+
+              if (isJumpInput) {
+                return (
+                  <input
+                    type="text"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    class="
+                      bg-base-content/5
+                      border-base-content/10
+                      text-base-content/60
+                      focus:border-base-content/30 focus:bg-base-content/10 focus:text-base-content/80
+                      h-10 w-14
+                      appearance-none
+                      rounded-full
+                      border
+                      px-1
+                      text-center
+                      text-sm
+                      focus:outline-none
+                    "
+                    placeholder="..."
+                    min={1}
+                    max={pageCount.value}
+                    value={jumpValue.value}
+                    onInput={handleJumpInput}
+                    onKeydown={handleJumpKeydown}
+                  />
+                )
+              }
 
               return (
                 <button
@@ -190,11 +251,10 @@ const Pagination = defineComponent({
                     text-lg transition-all
                     duration-150
                     text-shadow-lg
-                    ${isDisabled ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
+                    ${isEllipsis ? 'hover:text-base-content/70 hover:bg-transparent' : ''}
                     ${isActive ? 'bg-base-content/15 text-base-content/80 border-base-content/10 border font-semibold' : ''}
                   `}
-                  disabled={isDisabled}
-                  onClick={() => handlePage(pageNum as number)}
+                  onClick={() => isEllipsis ? handlePage(props.currentPage) : handlePage(pageNum as number)}
                 >
                   {pageNum}
                 </button>
