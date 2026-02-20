@@ -61,7 +61,7 @@ export function useDataSubtitles() {
         const res = await fetchRequest.get(url.href)
         const blob = await res.blob()
         return {
-          id: subtitle.sid,
+          id: subtitle.file_id ?? subtitle.sid,
           url: url.href,
           raw: blob,
           label: `${removeFileExtension(subtitle.title)}`,
