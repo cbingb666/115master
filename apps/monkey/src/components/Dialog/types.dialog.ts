@@ -6,13 +6,13 @@ export interface ModalProps {
   /** 对话框唯一标识 */
   id: string
   /** 标题 */
-  title?: string
+  title?: string | (() => VNode) | VNode
   /** 内容 */
   content?: string | Component | (() => VNode) | VNode
   /** 确认按钮文本 */
-  confirmText?: string
+  confirmText?: string | (() => VNode) | VNode
   /** 取消按钮文本 */
-  cancelText?: string
+  cancelText?: string | (() => VNode) | VNode
   /** 是否显示确认按钮 */
   showConfirm?: boolean
   /** 是否显示取消按钮 */

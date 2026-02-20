@@ -5,10 +5,10 @@ const DialogModal = defineComponent({
   name: 'DialogModal',
   props: {
     id: { type: String, required: true },
-    title: { type: String, default: undefined },
+    title: { type: [String, Object, Function], default: undefined },
     content: { type: [String, Object, Function], default: undefined },
-    confirmText: { type: String, default: undefined },
-    cancelText: { type: String, default: undefined },
+    confirmText: { type: [String, Object, Function], default: undefined },
+    cancelText: { type: [String, Object, Function], default: undefined },
     showConfirm: { type: Boolean, default: true },
     showCancel: { type: Boolean, default: false },
     visible: { type: Boolean, default: false },
@@ -27,6 +27,16 @@ const DialogModal = defineComponent({
     const modalRef = ref<HTMLElement>()
 
     const isRenderFunction = computed(() => typeof props.content === 'function')
+
+    function renderNode(value: unknown, fallback: string) {
+      if (value === undefined || value === null)
+        return fallback
+      if (typeof value === 'function')
+        return (value as () => VNode)()
+      if (isVNode(value))
+        return value
+      return value as string
+    }
 
     const isComponentContent = computed(() => {
       return props.content && typeof props.content === 'object' && !isVNode(props.content) && typeof props.content !== 'function'
@@ -99,7 +109,7 @@ const DialogModal = defineComponent({
           <div class={modalBoxClass} onClick={(e: Event) => e.stopPropagation()}>
             {(props.title || slots.title) && (
               <h3 class={titleClass}>
-                {slots.title ? slots.title() : props.title}
+                {slots.title ? slots.title() : renderNode(props.title, '')}
               </h3>
             )}
 
@@ -118,12 +128,12 @@ const DialogModal = defineComponent({
                     <>
                       {props.showCancel && (
                         <button class="btn btn-ghost" onClick={handleCancel}>
-                          {props.cancelText || '取消'}
+                          {renderNode(props.cancelText, '取消')}
                         </button>
                       )}
                       {props.showConfirm && (
                         <button class="btn btn-primary" onClick={handleConfirm}>
-                          {props.confirmText || '确认'}
+                          {renderNode(props.confirmText, '确认')}
                         </button>
                       )}
                     </>
