@@ -42,6 +42,7 @@ const SearchBar = defineComponent({
     function handleEnter() {
       if (inputValue.value) {
         props.onEnter?.(inputValue.value)
+        inputRef.value?.blur()
       }
     }
 
