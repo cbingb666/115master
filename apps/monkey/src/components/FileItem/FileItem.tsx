@@ -66,7 +66,7 @@ const FileItem = defineComponent({
       default: () => {},
     },
   },
-  setup: (props) => {
+  setup: (props, { slots }) => {
     const {
       itemRef,
       isDrogzone,
@@ -194,16 +194,27 @@ const FileItem = defineComponent({
               props.onDragStart?.(e as DragEvent)
             }}
           >
-            <FileItemThumbnail
-              data={props.data}
-              isFolder={isFolder.value}
-              isVideo={isVideo.value}
-              emoji={emoji.value}
-              actressUrl={hasActressCover.value ? actressAsyncState.state.value?.url : undefined}
-              videoCover={hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined}
-              hasImagePreview={hasImagePreview.value}
-              onMouseDown={handleMouseDown}
-            />
+            {slots.thumbnail?.({
+              data: props.data,
+              isFolder: isFolder.value,
+              isVideo: isVideo.value,
+              emoji: emoji.value,
+              actressUrl: hasActressCover.value ? actressAsyncState.state.value?.url : undefined,
+              videoCover: hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined,
+              hasImagePreview: hasImagePreview.value,
+              onMouseDown: handleMouseDown,
+            }) ?? (
+              <FileItemThumbnail
+                data={props.data}
+                isFolder={isFolder.value}
+                isVideo={isVideo.value}
+                emoji={emoji.value}
+                actressUrl={hasActressCover.value ? actressAsyncState.state.value?.url : undefined}
+                videoCover={hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined}
+                hasImagePreview={hasImagePreview.value}
+                onMouseDown={handleMouseDown}
+              />
+            )}
 
             {/* 置顶图标 */}
             <Icon

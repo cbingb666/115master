@@ -2,10 +2,12 @@ import type { WebApi } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
+import { useStorage } from '@vueuse/core'
 import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
 import {
   FileContextMenu,
   FileItem,
+  FileItemThumbnail,
   FileList,
   FileMenu,
   FileNewFolderButton,
@@ -20,7 +22,6 @@ import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useDriveExplorer } from '@/hooks/useDriveExplorer'
 import { useStackNav } from '@/hooks/useDriveNav'
-import { useStorageViewType } from '@/hooks/useStorageViewType'
 import { ICON_DELETE, ICON_RENAME } from '@/icons'
 
 /** 文件浏览器内容组件 */
@@ -48,7 +49,7 @@ const FileBroswer = defineComponent({
     const nav = props.nav ?? useStackNav(props.defaultCid ?? '0')
     const scrollRef = ref<HTMLDivElement>()
     const hasExternalNav = !!props.nav
-    const viewType = useStorageViewType()
+    const viewType = useStorage<'list' | 'card'>('115Master_file_browser_view_type', 'list')
     const explorer = useDriveExplorer({
       nav,
       page: ref(1),
@@ -171,15 +172,25 @@ const FileBroswer = defineComponent({
 
           {!explorer.list.loading.value && explorer.list.data.value && (
             <>
-              <FileList>
+              <FileList viewType={viewType.value}>
                 {(explorer.list.data.value.data ?? []).map(item => (
                   <FileItem
                     key={item.pc}
                     data={item}
                     pathSelect={true}
+                    viewType={viewType.value}
                     onClick={() => handleClickItem(item)}
                     onContextmenu={(e: MouseEvent) => handleContextmenu(item, e)}
-                  />
+                  >
+                    {{
+                      thumbnail: (thumbnailProps: any) => (
+                        <FileItemThumbnail
+                          {...thumbnailProps}
+                          class="[&_span]:group-data-[view-type=card]:text-xl"
+                        />
+                      ),
+                    }}
+                  </FileItem>
                 ))}
                 <FileContextMenu
                   actionConfig={contextmenuActions.value}

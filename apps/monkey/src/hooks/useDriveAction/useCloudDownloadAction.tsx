@@ -42,7 +42,7 @@ export function useCloudDownloadAction() {
     const instance = dialog.create({
       title: '选择保存目录',
       maskClosable: true,
-      className: 'sm:w-11/12! sm:max-w-5xl! h-5/6! overflow-hidden',
+      className: 'sm:max-w-6xl! h-5/6! overflow-hidden',
       classNameContent: 'min-h-0 overflow-hidden',
       content: () => <FileBroswer cid={cid} defaultCid={pid ?? '0'} currentPathRef={path} nav={nav} />,
       confirmCallback: async () => {

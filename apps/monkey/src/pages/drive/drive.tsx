@@ -30,7 +30,6 @@ import {
   UserInfo,
 } from '@/components'
 import { useDriveAction } from '@/hooks/useDriveAction'
-import { useStorageViewType } from '@/hooks/useStorageViewType'
 import {
   ICON_CANCEL,
   ICON_DELETE,
@@ -53,7 +52,7 @@ const Drive = defineComponent({
     const action = useDriveAction()
     const spaceInfo = useDriveSpaceInfoStore()
     const route = useRoute()
-    const viewType = useStorageViewType()
+    const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
     const searchKeyword = shallowRef('')
 
     const actionHandlers = {
