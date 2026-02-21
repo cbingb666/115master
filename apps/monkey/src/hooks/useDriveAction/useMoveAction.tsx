@@ -1,8 +1,5 @@
 import type { WebApi } from '@115master/drive115'
-import { ref } from 'vue'
-import { router } from '@/app/router'
-import { FileBroswer, useDialog, useToast } from '@/components'
-import { useQueryNav } from '@/hooks/useDriveNav'
+import { useDialog, useFileBrowserDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { promiseDelay } from '@/utils/promise'
 import { getFileIds } from './helpers'
@@ -11,53 +8,15 @@ import { getFileIds } from './helpers'
 export function useMoveAction() {
   const dialog = useDialog()
   const toast = useToast()
+  const fileBrowser = useFileBrowserDialog()
 
   /** 移动对话框 */
   async function moveDialog(defaultpid: string): Promise<string | false> {
-    const cid = ref(defaultpid ?? '0')
-
-    return new Promise((resolve) => {
-      let resolved = false
-      let instance: ReturnType<typeof dialog.create>
-
-      const nav = useQueryNav(router, {
-        defaultCid: defaultpid ?? '0',
-        onExit: () => {
-          console.log('[useMoveAction] onExit called, resolved:', resolved)
-          if (resolved)
-            return
-          resolved = true
-          nav.dispose()
-          instance.hide()
-          resolve(false)
-        },
-      })
-
-      instance = dialog.create({
-        title: '移动到',
-        maskClosable: true,
-        className: 'sm:w-11/12! sm:max-w-5xl! h-5/6! overflow-hidden',
-        classNameContent: 'min-h-0 overflow-hidden',
-        content: () => <FileBroswer cid={cid} defaultCid={defaultpid ?? '0'} nav={nav} />,
-        confirmCallback: () => {
-          console.log('[useMoveAction] confirmCallback, resolved:', resolved)
-          if (resolved)
-            return
-          resolved = true
-          nav.dispose()
-          instance.hide()
-          resolve(cid.value)
-        },
-        cancelCallback: () => {
-          console.log('[useMoveAction] cancelCallback, resolved:', resolved)
-          if (resolved)
-            return
-          resolved = true
-          nav.dispose()
-          resolve(false)
-        },
-      })
+    const result = await fileBrowser.open({
+      title: '移动到',
+      defaultCid: defaultpid ?? '0',
     })
+    return result ? result.cid : false
   }
 
   /** 获取移动进度 */

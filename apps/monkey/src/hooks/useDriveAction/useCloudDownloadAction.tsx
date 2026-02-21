@@ -1,13 +1,11 @@
 import type { WebApi } from '@115master/drive115'
 import { ref } from 'vue'
-import { router } from '@/app/router'
 import {
   CloudDownload,
-  FileBroswer,
   useDialog,
+  useFileBrowserDialog,
   useToast,
 } from '@/components'
-import { useQueryNav } from '@/hooks/useDriveNav'
 import { useOfflineSpaceStore } from '@/store/offlineSpace'
 import { useUserAqStore } from '@/store/userAq'
 import { drive115 } from '@/utils/drive115Instance'
@@ -18,55 +16,35 @@ type Path = InstanceType<typeof CloudDownload>['$props']['path']
 export function useCloudDownloadAction() {
   const dialog = useDialog()
   const toast = useToast()
+  const fileBrowser = useFileBrowserDialog()
 
   /** 目录选择对话框 */
-  function picker(
+  async function picker(
     pid: string,
     directory: ReturnType<typeof ref<{ cid: string, path: Path }>>,
   ) {
-    const cid = ref(pid ?? '0')
-    const path = ref<Path | null>(null)
-
-    let resolved = false
-    let instance: ReturnType<typeof dialog.create>
-
-    const nav = useQueryNav(router, {
-      defaultCid: pid ?? '0',
-      onExit: () => {
-        if (resolved)
-          return
-        resolved = true
-        nav.dispose()
-        instance.hide()
-      },
-    })
-
-    instance = dialog.create({
+    const result = await fileBrowser.open({
       title: '选择保存目录',
-      maskClosable: true,
+      defaultCid: pid ?? '0',
       className: 'sm:max-w-6xl! h-5/6! overflow-hidden',
-      classNameContent: 'min-h-0 overflow-hidden',
-      content: () => <FileBroswer cid={cid} defaultCid={pid ?? '0'} currentPathRef={path} nav={nav} />,
-      confirmCallback: async () => {
-        if (!path.value || !cid.value) {
-          await dialog.alert({
-            title: '提示',
-            content: '请选择一个目录',
-          })
-          return
-        }
-        resolved = true
-        nav.dispose()
-        directory.value = {
-          cid: cid.value,
-          path: path.value,
-        }
-      },
-      cancelCallback: () => {
-        resolved = true
-        nav.dispose()
-      },
+      returnPath: true,
     })
+
+    if (!result)
+      return
+
+    if (result.path.length === 0) {
+      await dialog.alert({
+        title: '提示',
+        content: '请选择一个目录',
+      })
+      return
+    }
+
+    directory.value = {
+      cid: result.cid,
+      path: result.path as Path,
+    }
   }
 
   /** 提交离线下载任务 */
