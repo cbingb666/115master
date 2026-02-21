@@ -5,6 +5,7 @@ import type { Action } from '@/types/action'
 import { useStorage } from '@vueuse/core'
 import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
 import {
+  DialogTitle,
   FileContextMenu,
   FileItem,
   FileItemThumbnail,
@@ -28,6 +29,10 @@ import { ICON_DELETE, ICON_RENAME } from '@/icons'
 const FileBroswer = defineComponent({
   name: 'FileBroswer',
   props: {
+    title: {
+      type: String,
+      required: true,
+    },
     defaultCid: {
       type: String,
       default: '0',
@@ -128,33 +133,37 @@ const FileBroswer = defineComponent({
     }
 
     return () => (
-      <div class="flex h-full flex-col">
-        {/* header */}
-        <div class="sticky top-0 z-10 flex items-center justify-between gap-2">
-          <div class="min-w-0 flex-1 overflow-hidden">
-            <FilePath
-              path={explorer.path.value ?? []}
-              onPathClick={handleClickPath}
-            />
-          </div>
+      <div class="flex h-full flex-col px-8!">
+        <DialogTitle title={props.title} className="px-0!">
+          {{
+            actions: () => (
+              <FileMenu class="relative z-10 shrink-0">
+                <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
+                <FilePageSizeSelector
+                  currentPageSize={explorer.page.size.value}
+                  onChangePageSize={explorer.page.changeSize}
+                />
+                <FileSortSelector
+                  asc={explorer.page.asc.value || 0}
+                  fc_mix={explorer.page.fc_mix.value || 0}
+                  order={explorer.page.order.value || 'user_ptime'}
+                  onSort={handleSort}
+                />
+                <FileViewType
+                  value={viewType.value}
+                  onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
+                />
+              </FileMenu>
+            ),
+          }}
+        </DialogTitle>
 
-          <FileMenu class="shrink-0">
-            <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
-            <FilePageSizeSelector
-              currentPageSize={explorer.page.size.value}
-              onChangePageSize={explorer.page.changeSize}
-            />
-            <FileSortSelector
-              asc={explorer.page.asc.value || 0}
-              fc_mix={explorer.page.fc_mix.value || 0}
-              order={explorer.page.order.value || 'user_ptime'}
-              onSort={handleSort}
-            />
-            <FileViewType
-              value={viewType.value}
-              onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
-            />
-          </FileMenu>
+        {/* header */}
+        <div class="sticky top-0 min-w-0 overflow-hidden">
+          <FilePath
+            path={explorer.path.value ?? []}
+            onPathClick={handleClickPath}
+          />
         </div>
 
         <div ref={scrollRef} class="relative flex min-h-0 flex-1 flex-col overflow-y-auto p-4">

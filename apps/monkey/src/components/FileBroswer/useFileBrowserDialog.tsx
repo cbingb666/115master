@@ -50,12 +50,12 @@ export function useFileBrowserDialog() {
       })
 
       instance = dialog.create({
-        title: options.title,
         maskClosable: true,
         className: options.className ?? 'sm:w-11/12! sm:max-w-5xl! h-5/6! overflow-hidden',
-        classNameContent: 'min-h-0 overflow-hidden',
+        classNameContent: 'min-h-0 overflow-hidden p-0!',
         content: () => (
           <FileBroswer
+            title={options.title}
             cid={cid}
             defaultCid={options.defaultCid ?? '0'}
             currentPathRef={options.returnPath ? path : undefined}
