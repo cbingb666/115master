@@ -53,11 +53,17 @@ const FileContextMenu = defineComponent({
         }}
       >
         {
-          props.actionConfig.map((group, index) => (
+          props.actionConfig.map((group, index) => {
+            const items = group.filter(item =>
+              item.show === undefined || toValue(item.show),
+            )
+            if (items.length === 0)
+              return null
+            return (
             <>
               <ul key={index}>
                 {
-                  group.map((item, index) => (
+                  items.map((item, index) => (
                     <li key={index}>
                       <a onClick={() => {
                         item.onClick?.(item)
@@ -89,7 +95,8 @@ const FileContextMenu = defineComponent({
                 <hr class="border-base-content/10 my-1" />
               )}
             </>
-          ))
+            )
+          })
         }
       </ContextMenu>
     )

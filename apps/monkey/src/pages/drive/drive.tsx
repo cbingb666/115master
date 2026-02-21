@@ -92,7 +92,7 @@ const Drive = defineComponent({
       },
     }
 
-    const actionAtom: Record<string, Action> = {
+    const actionAtom = {
       top: {
         name: 'top',
         label: '置顶',
@@ -146,7 +146,7 @@ const Drive = defineComponent({
         label: '取消选择',
         onClick: () => store.selection.clear(),
       },
-    }
+    } satisfies Record<string, Action>
 
     const actionConfig = computed<Action[][]>(() => [
       [actionAtom.top, actionAtom.star],
