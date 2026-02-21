@@ -1,5 +1,6 @@
 import type { Component, VNode } from 'vue'
 import { computed, defineComponent, h, isVNode, ref } from 'vue'
+import DialogTitle from './DialogTitle'
 
 const DialogModal = defineComponent({
   name: 'DialogModal',
@@ -73,7 +74,6 @@ const DialogModal = defineComponent({
         : `modal modal-bottom sm:modal-middle [scrollbar-gutter:unset] p-0! ${props.classNameRoot || ''}`
 
       const modalBoxClass = `modal-box flex flex-col backdrop-blur-2xl bg-base-200 p-0! ${props.className || ''}`
-      const titleClass = `sticky top-0 z-10 text-lg font-bold p-6 pb-4 bg-base-200/5 backdrop-blur-2xl ${props.classNameTitle || ''}`
       const contentClass = `py-2 text-base-content/80 px-6 flex-1 ${props.classNameContent || ''}`
       const actionsClass = `modal-action sticky bottom-0 p-6 ${props.classNameActions || ''}`
 
@@ -107,11 +107,15 @@ const DialogModal = defineComponent({
           onTransitionend={handleTransitionEnd}
         >
           <div class={modalBoxClass} onClick={(e: Event) => e.stopPropagation()}>
-            {(props.title || slots.title) && (
-              <h3 class={titleClass}>
-                {slots.title ? slots.title() : renderNode(props.title, '')}
-              </h3>
-            )}
+            {slots.title
+              ? (
+                  <DialogTitle title={props.title} className={props.classNameTitle}>
+                    {slots.title()}
+                  </DialogTitle>
+                )
+              : (
+                  <DialogTitle title={props.title} className={props.classNameTitle} />
+                )}
 
             {hasContent.value && (
               <div class={contentClass}>
