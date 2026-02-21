@@ -28,6 +28,8 @@ export function useCloudDownloadAction() {
     const path = ref<Path | null>(null)
 
     let resolved = false
+    let instance: ReturnType<typeof dialog.create>
+
     const nav = useQueryNav(router, {
       defaultCid: pid ?? '0',
       onExit: () => {
@@ -39,7 +41,7 @@ export function useCloudDownloadAction() {
       },
     })
 
-    const instance = dialog.create({
+    instance = dialog.create({
       title: '选择保存目录',
       maskClosable: true,
       className: 'sm:max-w-6xl! h-5/6! overflow-hidden',
