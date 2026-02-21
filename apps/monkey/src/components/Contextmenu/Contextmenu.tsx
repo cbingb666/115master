@@ -1,15 +1,29 @@
 import type { MaybeElement } from '@vueuse/core'
 import type { PropType } from 'vue'
-import { useScrollLock } from '@vueuse/core'
 import {
   defineComponent,
   nextTick,
+  onBeforeUnmount,
   shallowRef,
   Teleport,
   Transition,
   watch,
   withModifiers,
 } from 'vue'
+
+function findScrollParent(x: number, y: number): HTMLElement {
+  const el = document.elementFromPoint(x, y)
+  if (!el)
+    return document.documentElement
+  let current = el as HTMLElement | null
+  while (current && current !== document.documentElement) {
+    const style = getComputedStyle(current)
+    if (/auto|scroll/.test(style.overflowY) && current.scrollHeight > current.clientHeight)
+      return current
+    current = current.parentElement
+  }
+  return document.documentElement
+}
 
 const ContextMenu = defineComponent({
   name: 'ContextMenu',
@@ -29,8 +43,26 @@ const ContextMenu = defineComponent({
   },
   setup: (props, { slots }) => {
     const menuRef = shallowRef<MaybeElement>()
-    const lock = useScrollLock(document.body)
     const adjustedPosition = shallowRef({ x: 0, y: 0 })
+    let lockedEl: HTMLElement | null = null
+    let prevOverflow = ''
+
+    function lockScroll() {
+      lockedEl = findScrollParent(props.position.x, props.position.y)
+      if (lockedEl) {
+        prevOverflow = lockedEl.style.overflowY
+        lockedEl.style.overflowY = 'hidden'
+      }
+    }
+
+    function unlockScroll() {
+      if (lockedEl) {
+        lockedEl.style.overflowY = prevOverflow
+        lockedEl = null
+      }
+    }
+
+    onBeforeUnmount(unlockScroll)
 
     const calculatePosition = async () => {
       if (!menuRef.value)
@@ -57,12 +89,12 @@ const ContextMenu = defineComponent({
 
     watch(() => props.show, (value) => {
       if (value) {
-        lock.value = true
+        lockScroll()
         adjustedPosition.value = { x: props.position.x, y: props.position.y }
         nextTick(() => calculatePosition())
       }
       else {
-        lock.value = false
+        unlockScroll()
       }
     })
 
@@ -78,7 +110,7 @@ const ContextMenu = defineComponent({
         <Teleport to="#my-app">
           {props.show && (
             <div
-              class="fixed inset-0 z-1000 cursor-pointer"
+              class="fixed inset-0 z-10000 cursor-pointer"
               onClick={withModifiers(() => props.onClose?.(), ['self', 'stop'])}
               onContextmenu={withModifiers(() => props.onClose?.(), ['prevent'])}
             />
@@ -97,7 +129,7 @@ const ContextMenu = defineComponent({
                 class="
                   menu
                   bg-base-200/70 liquid-glass shadow-base-100/70
-                  fixed top-0 left-0 z-1000 rounded-xl shadow-xl
+                  fixed top-0 left-0 z-10000 rounded-xl shadow-xl
                   before:rounded-xl before:backdrop-blur-xl after:rounded-xl
                 "
                 style={{ left: `${adjustedPosition.value.x}px`, top: `${adjustedPosition.value.y}px` }}

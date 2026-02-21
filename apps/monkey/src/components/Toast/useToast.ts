@@ -83,38 +83,46 @@ function normalizeMessage(message: string | UseToastOptions, options: UseToastOp
   return { ...options, ...message }
 }
 
+/** 解析当前可用的 container，优先 inject，回退全局 */
+function resolveContainer(injected: ToastContainerContext | null | undefined): ToastContainerContext {
+  const container = injected ?? undefined
+  if (container)
+    return container
+  throw new Error('Toast container not found. Please ensure ToastContainer is mounted.')
+}
+
 /** 主要的 hook 函数 */
 export function useToast(): UseToastHookReturn {
-  const container = useToastContainer()
-  if (!container) {
-    throw new Error('Toast container not found. Please ensure ToastContainer is mounted.')
-  }
+  /** setup 阶段尝试 inject，但不 throw — 延迟到实际调用时再校验 */
+  const injected = useToastContainer()
+
   return {
     success: (message: string | UseToastOptions, options: UseToastOptions = {}) => {
       const normalizedOptions = normalizeMessage(message, { ...options, type: 'success' })
-      return showToast(container, normalizedOptions)
+      return showToast(resolveContainer(injected), normalizedOptions)
     },
 
     error: (message: string | UseToastOptions, options: UseToastOptions = {}) => {
       const normalizedOptions = normalizeMessage(message, { ...options, type: 'error' })
-      return showToast(container, normalizedOptions)
+      return showToast(resolveContainer(injected), normalizedOptions)
     },
 
     warning: (message: string | UseToastOptions, options: UseToastOptions = {}) => {
       const normalizedOptions = normalizeMessage(message, { ...options, type: 'warning' })
-      return showToast(container, normalizedOptions)
+      return showToast(resolveContainer(injected), normalizedOptions)
     },
 
     info: (message: string | UseToastOptions, options: UseToastOptions = {}) => {
       const normalizedOptions = normalizeMessage(message, { ...options, type: 'info' })
-      return showToast(container, normalizedOptions)
+      return showToast(resolveContainer(injected), normalizedOptions)
     },
 
     create: (options: UseToastOptions) => {
-      return showToast(container, options)
+      return showToast(resolveContainer(injected), options)
     },
 
     clear: () => {
+      const container = resolveContainer(injected)
       container.clearToasts()
       toastInstances.clear()
     },

@@ -23,6 +23,7 @@ export function useMoveAction() {
       const nav = useQueryNav(router, {
         defaultCid: defaultpid ?? '0',
         onExit: () => {
+          console.log('[useMoveAction] onExit called, resolved:', resolved)
           if (resolved)
             return
           resolved = true
@@ -39,6 +40,7 @@ export function useMoveAction() {
         classNameContent: 'min-h-0 overflow-hidden',
         content: () => <FileBroswer cid={cid} defaultCid={defaultpid ?? '0'} nav={nav} />,
         confirmCallback: () => {
+          console.log('[useMoveAction] confirmCallback, resolved:', resolved)
           if (resolved)
             return
           resolved = true
@@ -47,6 +49,7 @@ export function useMoveAction() {
           resolve(cid.value)
         },
         cancelCallback: () => {
+          console.log('[useMoveAction] cancelCallback, resolved:', resolved)
           if (resolved)
             return
           resolved = true

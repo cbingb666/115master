@@ -30,6 +30,7 @@ import {
   UserInfo,
 } from '@/components'
 import { useDriveAction } from '@/hooks/useDriveAction'
+import { useStorageViewType } from '@/hooks/useStorageViewType'
 import {
   ICON_CANCEL,
   ICON_DELETE,
@@ -52,7 +53,7 @@ const Drive = defineComponent({
     const action = useDriveAction()
     const spaceInfo = useDriveSpaceInfoStore()
     const route = useRoute()
-
+    const viewType = useStorageViewType()
     const searchKeyword = shallowRef('')
 
     const actionHandlers = {
@@ -210,8 +211,6 @@ const Drive = defineComponent({
         </>
       )
     }
-
-    const viewType = useStorage<'list' | 'card'>('115Master_viewType', 'list')
 
     const { containerRef, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
       get pathSelect() { return false },

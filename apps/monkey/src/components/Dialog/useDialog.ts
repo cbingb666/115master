@@ -24,8 +24,8 @@ function createDialogInstance(container: DialogContainerContext, id: string, opt
 
     router.push({ query: { ...router.currentRoute.value.query, _dlg: id } })
 
-    const remove = router.afterEach(() => {
-      if (disposed)
+    const remove = router.afterEach((_to, _from, failure) => {
+      if (disposed || failure)
         return
       const pos = (history.state?.position as number) ?? 0
       if (pos <= initial) {

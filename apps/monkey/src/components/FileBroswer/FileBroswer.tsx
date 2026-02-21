@@ -1,23 +1,31 @@
 import type { WebApi } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
-import { defineComponent, ref, watch } from 'vue'
+import type { Action } from '@/types/action'
+import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
 import {
+  FileContextMenu,
   FileItem,
   FileList,
   FileMenu,
+  FileNewFolderButton,
   FilePageSizeSelector,
   FilePath,
   FileSortSelector,
+  FileViewType,
   LoadingError,
   Pagination,
 } from '@/components'
+import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
+import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useDriveExplorer } from '@/hooks/useDriveExplorer'
 import { useStackNav } from '@/hooks/useDriveNav'
+import { useStorageViewType } from '@/hooks/useStorageViewType'
+import { ICON_DELETE, ICON_RENAME } from '@/icons'
 
 /** 文件浏览器内容组件 */
 const FileBroswer = defineComponent({
-  name: 'DriveFileBrowserContent',
+  name: 'FileBroswer',
   props: {
     defaultCid: {
       type: String,
@@ -39,9 +47,8 @@ const FileBroswer = defineComponent({
   setup(props) {
     const nav = props.nav ?? useStackNav(props.defaultCid ?? '0')
     const scrollRef = ref<HTMLDivElement>()
-
     const hasExternalNav = !!props.nav
-
+    const viewType = useStorageViewType()
     const explorer = useDriveExplorer({
       nav,
       page: ref(1),
@@ -51,6 +58,44 @@ const FileBroswer = defineComponent({
       getScroll: () => scrollRef.value?.scrollTop ?? 0,
       setScroll: (top: number) => scrollRef.value?.scrollTo({ top, behavior: 'instant' }),
     })
+    const { newFolder, renameItem } = useFileAction()
+    const { deleteBatch } = useDeleteAction()
+    const contextmenuShow = shallowRef(false)
+    const contextmenuPosition = shallowRef({ x: 0, y: 0 })
+    const contextmenuItem = shallowRef<WebApi.Entity.FilesItem | null>(null)
+
+    function handleContextmenu(item: WebApi.Entity.FilesItem, e: MouseEvent) {
+      e.preventDefault()
+      contextmenuItem.value = item
+      contextmenuPosition.value = { x: e.clientX, y: e.clientY }
+      contextmenuShow.value = true
+    }
+
+    async function handleNewFolder() {
+      if (await newFolder(nav.cid.value || '0'))
+        explorer.refresh()
+    }
+
+    async function handleRename() {
+      if (!contextmenuItem.value)
+        return
+      if (await renameItem(contextmenuItem.value))
+        explorer.refresh()
+    }
+
+    async function handleDelete() {
+      if (!contextmenuItem.value)
+        return
+      if (await deleteBatch(nav.cid.value || '0', [contextmenuItem.value]))
+        explorer.refresh()
+    }
+
+    const contextmenuActions = computed<Action[][]>(() => [
+      [
+        { name: 'rename', label: '重命名', icon: ICON_RENAME, onClick: handleRename },
+        { name: 'delete', label: '删除', icon: ICON_DELETE, onClick: handleDelete },
+      ],
+    ])
 
     // 同步 cid 到外部
     watch(nav.cid, (cid) => {
@@ -82,13 +127,18 @@ const FileBroswer = defineComponent({
     }
 
     return () => (
-      <div class="flex h-full flex-col [--drive-header-height:calc(var(--spacing)*10)]">
-        <div class="sticky top-0 flex items-baseline-last justify-between gap-2">
-          <FilePath
-            path={explorer.path.value ?? []}
-            onPathClick={handleClickPath}
-          />
-          <FileMenu>
+      <div class="flex h-full flex-col">
+        {/* header */}
+        <div class="sticky top-0 z-10 flex items-center justify-between gap-2">
+          <div class="min-w-0 flex-1 overflow-hidden">
+            <FilePath
+              path={explorer.path.value ?? []}
+              onPathClick={handleClickPath}
+            />
+          </div>
+
+          <FileMenu class="shrink-0">
+            <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
             <FilePageSizeSelector
               currentPageSize={explorer.page.size.value}
               onChangePageSize={explorer.page.changeSize}
@@ -98,6 +148,10 @@ const FileBroswer = defineComponent({
               fc_mix={explorer.page.fc_mix.value || 0}
               order={explorer.page.order.value || 'user_ptime'}
               onSort={handleSort}
+            />
+            <FileViewType
+              value={viewType.value}
+              onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
             />
           </FileMenu>
         </div>
@@ -124,12 +178,19 @@ const FileBroswer = defineComponent({
                     data={item}
                     pathSelect={true}
                     onClick={() => handleClickItem(item)}
+                    onContextmenu={(e: MouseEvent) => handleContextmenu(item, e)}
                   />
                 ))}
+                <FileContextMenu
+                  actionConfig={contextmenuActions.value}
+                  position={contextmenuPosition.value}
+                  show={contextmenuShow.value}
+                  onClose={() => contextmenuShow.value = false}
+                />
               </FileList>
 
               {explorer.page.pageCount.value > 1 && (
-                <div class="mt-4 flex justify-center">
+                <div class="sticky bottom-4 flex justify-center">
                   <Pagination
                     currentPage={explorer.page.page.value}
                     currentPageSize={explorer.page.size.value}

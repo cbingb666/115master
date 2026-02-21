@@ -87,7 +87,7 @@ export const ToastContainer = defineComponent({
         <div
           ref={containerRef}
           class={`
-            pointer-events-none fixed z-9999
+            pointer-events-none fixed z-10000
             flex transform flex-col gap-2
             p-4
             ${positionClass.value}

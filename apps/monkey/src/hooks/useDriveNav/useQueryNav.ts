@@ -40,7 +40,9 @@ export function useQueryNav(r: Router, options: QueryNavOptions): QueryNavReturn
   }
 
   /** 检测用户后退超过 FileBrowser 全部历史 → 调用 onExit */
-  const removeExit = r.afterEach(() => {
+  const removeExit = r.afterEach((_to, _from, failure) => {
+    if (failure)
+      return
     if (position() <= initial && options.onExit)
       options.onExit()
   })

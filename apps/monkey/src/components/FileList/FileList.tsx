@@ -18,7 +18,7 @@ const FileList = defineComponent({
       <div
         ref={props.containerRef}
         class={[
-          'relative w-full px-5 pt-5 pb-28 focus-within:outline-none',
+          'relative w-full px-5 pt-5 pb-10 focus-within:outline-none',
           // card
           'data-[view-type=card]:grid data-[view-type=card]:grid-cols-2',
           'data-[view-type=card]:items-stretch data-[view-type=card]:gap-3',

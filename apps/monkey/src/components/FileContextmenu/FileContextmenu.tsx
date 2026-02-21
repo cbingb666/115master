@@ -60,41 +60,41 @@ const FileContextMenu = defineComponent({
             if (items.length === 0)
               return null
             return (
-            <>
-              <ul key={index}>
-                {
-                  items.map((item, index) => (
-                    <li key={index}>
-                      <a onClick={() => {
-                        item.onClick?.(item)
-                        props.onClose?.()
-                      }}
-                      >
-                        <Icon
-                          class={[
-                            'size-6',
-                            ...(toValue(item.active)
-                              ? [item.activeIconColor || 'text-primary']
-                              : [item.iconColor || '']),
-
-                          ]}
-                          icon={toValue(item.active) && item.activeIcon
-                            ? item.activeIcon
-                            : item.icon}
+              <>
+                <ul key={index}>
+                  {
+                    items.map((item, index) => (
+                      <li key={index}>
+                        <a onClick={() => {
+                          item.onClick?.(item)
+                          props.onClose?.()
+                        }}
                         >
-                        </Icon>
-                        {toValue(item.active) && item.activeLabel
-                          ? item.activeLabel
-                          : item.label}
-                      </a>
-                    </li>
-                  ))
-                }
-              </ul>
-              {index < props.actionConfig.length - 1 && (
-                <hr class="border-base-content/10 my-1" />
-              )}
-            </>
+                          <Icon
+                            class={[
+                              'size-6',
+                              ...(toValue(item.active)
+                                ? [item.activeIconColor || 'text-primary']
+                                : [item.iconColor || '']),
+
+                            ]}
+                            icon={toValue(item.active) && item.activeIcon
+                              ? item.activeIcon
+                              : item.icon}
+                          >
+                          </Icon>
+                          {toValue(item.active) && item.activeLabel
+                            ? item.activeLabel
+                            : item.label}
+                        </a>
+                      </li>
+                    ))
+                  }
+                </ul>
+                {index < props.actionConfig.length - 1 && (
+                  <hr class="border-base-content/10 my-1" />
+                )}
+              </>
             )
           })
         }
