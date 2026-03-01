@@ -141,7 +141,7 @@ const FileSortSelector = defineComponent({
                         return (
                           <button
                             key={`${item.order}-${item.asc}`}
-                            class={`btn btn-xs ${active ? 'btn-primary' : 'btn-ghost hover:btn-primary'}`}
+                            class={`btn btn-xs ${active ? 'btn-primary' : 'btn-glass'}`}
                             aria-label={`${option.name}${item.asc === 1 ? '升序' : '降序'}`}
                             tabindex="0"
                             type="button"
