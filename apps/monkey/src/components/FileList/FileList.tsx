@@ -33,7 +33,7 @@ const FileList = defineComponent({
   },
   setup: (props, { slots }) => {
     return () => (
-      <div class="relative w-full">
+      <div class="relative w-full" data-view-type={props.viewType}>
         {/* Error State */}
         {props.error && (
           <LoadingError
