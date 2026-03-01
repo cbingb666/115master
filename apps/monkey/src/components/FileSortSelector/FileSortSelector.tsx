@@ -92,7 +92,10 @@ const FileSortSelector = defineComponent({
               {..._props}
             >
               <span class="relative mr-3">
-                {props.fc_mix === 0 && <div class="bg-primary absolute top-[50%] -left-2 size-1.5 -translate-y-1/2 rounded-full" />}
+                {
+                  props.fc_mix === 0
+                  && <div class="bg-primary absolute top-1 -left-1 size-1.5 -translate-y-1/2 rounded-full" />
+                }
                 <Icon class="text-xl sm:text-2xl" icon={sortField.value} />
                 <Icon class={`absolute ${props.asc === 1 ? 'top-0' : 'bottom-0'} -right-3 size-3`} icon={sortDir.value} />
               </span>
