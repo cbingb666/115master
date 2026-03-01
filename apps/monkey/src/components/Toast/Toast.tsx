@@ -130,9 +130,9 @@ export const Toast = defineComponent({
         flex items-center
         min-w-80 max-w-md
         cursor-pointer
-        rounded-xl
+        rounded-3xl
         px-4 py-3
-        backdrop-blur-sm
+        backdrop-blur-xl
         relative z-50
         pointer-events-auto
         ${getTypeClass(props.type)}

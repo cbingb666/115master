@@ -61,7 +61,7 @@ const FilePath = defineComponent({
     }
 
     return () => (
-      <div class="breadcrumbs">
+      <div class="breadcrumbs rounded-full">
         <ul>
           {
             props.path.map((path) => {
@@ -69,12 +69,14 @@ const FilePath = defineComponent({
                 <li key={path.cid}>
                   <Link
                     class="
-                      text-md
-                      hover:bg-base-200/10
-                      data-[drop-zone=true]:bg-secondary/80
+                      data-[drop-zone=true]:bg-primary
+                      bg-base-content/15
+                      hover:bg-base-content/25
                       rounded-full
-                      px-4 py-0.5 font-medium
-                    text-neutral-300
+                      px-3
+                      py-0.5
+                      text-sm
+                      font-semibold
                       no-underline!
                       text-shadow-2xs
                     "

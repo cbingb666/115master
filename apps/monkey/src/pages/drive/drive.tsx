@@ -6,7 +6,6 @@ import { computed, defineComponent, onBeforeMount, shallowRef, watch } from 'vue
 import { useRoute } from 'vue-router'
 import { router } from '@/app/router'
 import {
-  DriveSearchBar,
   Empty,
   FileContextMenu,
   FileItem,
@@ -22,16 +21,13 @@ import {
   LoadingError,
   Main,
   Menu,
-  Navbar,
   Pagination,
   Sider,
   useFileList,
   useFilePreview,
-  UserInfo,
 } from '@/components'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import {
-  ICON_CANCEL,
   ICON_DELETE,
   ICON_FILE_IMPROVE,
   ICON_MOVE,
@@ -140,19 +136,12 @@ const Drive = defineComponent({
         label: '删除',
         onClick: () => actionHandlers.batchDelete(),
       },
-      cancel: {
-        name: 'cancel',
-        icon: ICON_CANCEL,
-        label: '取消选择',
-        onClick: () => store.selection.clear(),
-      },
     } satisfies Record<string, Action>
 
     const actionConfig = computed<Action[][]>(() => [
       [actionAtom.top, actionAtom.star],
       [actionAtom.move, actionAtom.improve, actionAtom.rename],
       [actionAtom.delete],
-      [actionAtom.cancel],
     ])
 
     function handleClickPath(data: WebApi.Entity.PathItem) {
@@ -185,19 +174,20 @@ const Drive = defineComponent({
 
       return (
         <>
-          <div class="flex h-(--navbar-height) items-center justify-center text-2xl font-bold tracking-tight font-stretch-expanded">
+          <div class="flex items-center justify-center pt-7 pb-4 text-xl font-bold tracking-tight font-stretch-expanded">
             115Master
           </div>
+          <div class="bg-base-content/5 mb-4 h-px w-full" />
           <button
-            class="btn btn-md btn-primary btn-soft btn-text flex-none rounded-full px-6"
+            class="btn btn-primary btn-glass"
             onClick={() => actionHandlers.cloudDownload()}
           >
             <Icon class="text-2xl" icon="material-symbols:add-link-rounded" />
             离线下载
           </button>
-          <div class="mt-5 flex-1">
-            <Menu class="flex-1" />
-          </div>
+          <div class="bg-base-content/5 my-4 h-px w-full" />
+          <Menu class="flex-1" />
+          <div class="bg-base-content/5 my-4 h-px w-full" />
           <div class="mt-2 flex flex-none flex-col gap-2" v-show={spaceInfo.state?.state === true}>
             <div class="text-base-content/70 text-sm">
               {formatFileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0)}
@@ -228,14 +218,14 @@ const Drive = defineComponent({
     function ListHeader() {
       return (
         <Header>
-          <div class="relative flex items-center gap-4">
+          <div class="relative flex min-w-0 flex-1 items-center gap-4 overflow-hidden">
             <FilePath
               path={store.path ?? []}
               onDragMove={handleDragMove}
               onPathClick={handleClickPath}
             />
           </div>
-          <div class="flex items-center">
+          <div class="flex flex-none items-center">
             <FileMenu>
               <FileNewFolderButton onClick={actionHandlers.newFolder} />
               <FilePageSizeSelector
@@ -262,7 +252,7 @@ const Drive = defineComponent({
       if (store.list.error)
         return <LoadingError class="absolute inset-0 m-auto" message={store.list.error} size="mini" />
       if (store.list.loading)
-        return <div class="loading loading-spinner loading-xl absolute inset-0 m-auto" />
+        return <div class="loading loading-infinity loading-xl absolute inset-24 m-auto" />
       if (!store.list.loading && store.page.total === 0)
         return <Empty class="absolute inset-0 m-auto" description="没有文件" />
       return <></>
@@ -272,9 +262,18 @@ const Drive = defineComponent({
       return (
         <>
           {!store.list.error && store.list.data?.data && (
-            <FileList containerRef={containerRef} viewType={viewType.value}>
+            <FileList
+              class="
+                pt-5
+                pb-20
+                data-[view-type=card]:px-5!
+              "
+              containerRef={containerRef}
+              viewType={viewType.value}
+            >
               {store.list.data.data.map((item: WebApi.Entity.FilesItem) => (
                 <FileItem
+                  class="data-[view-type=list]:px-3"
                   key={item.pc}
                   viewType={viewType.value}
                   {...itemProps(item)}
@@ -296,16 +295,20 @@ const Drive = defineComponent({
     function FixedBottom() {
       if (!store.list.loading && store.page.pageCount > 1) {
         return (
-          <Pagination
-            key="pagination"
-            class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2"
-            currentPage={store.page.page}
-            currentPageSize={store.page.size}
-            showSizeChanger={false}
-            total={store.page.total}
-            onCurrentPageChange={store.page.changePage}
-            onPageSizeChange={store.page.changeSize}
-          />
+          <div class="fixed right-0 bottom-0 left-(--sider-width) flex justify-center">
+            <div class="from-base-100/50 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent"></div>
+            <div class="app-box-glass relative mb-4 rounded-full">
+              <Pagination
+                key="pagination"
+                currentPage={store.page.page}
+                currentPageSize={store.page.size}
+                showSizeChanger={false}
+                total={store.page.total}
+                onCurrentPageChange={store.page.changePage}
+                onPageSizeChange={store.page.changeSize}
+              />
+            </div>
+          </div>
         )
       }
       return <></>
@@ -326,16 +329,8 @@ const Drive = defineComponent({
     })
 
     return () => (
-      <div class="flex h-full flex-col [--drive-header-height:calc(var(--spacing)*12)]">
+      <div class="flex h-full flex-col">
         <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
-          <Navbar>
-            {{
-              default: () => (
-                <DriveSearchBar modelValue={searchKeyword.value} onEnter={handleSearch} />
-              ),
-              right: () => <UserInfo />,
-            }}
-          </Navbar>
           <Sider>
             <SiderContent />
           </Sider>

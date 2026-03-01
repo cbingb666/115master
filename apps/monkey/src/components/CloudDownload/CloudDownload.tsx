@@ -107,17 +107,17 @@ const CloudDownload = defineComponent({
           <div>
             <textarea
               ref="textareaRef"
-              class="resize-vertical font-inherit focus:border-primary w-full rounded-md border border-gray-200 p-3 text-sm leading-5 outline-none"
+              class="textarea textarea-md w-full"
               autofocus
               placeholder="支持HTTP、HTTPS、FTP、磁力链和电驴链接，换行可添加多个"
-              rows={4}
+              rows={5}
               value={props.inputValue}
               onInput={e => props.onInput((e.target as HTMLTextAreaElement).value)}
             />
           </div>
 
           {/* 配额信息 */}
-          <div class="flex items-center gap-2 text-sm text-gray-500">
+          <div class="mt-2 flex items-center gap-2 text-sm text-gray-500">
             本月配额：剩
             {quotaStore.state?.surplus}
             /总
@@ -149,7 +149,7 @@ const CloudDownload = defineComponent({
           </div>
 
           {/* 当前选中的路径 */}
-          <div class="bg-primary/10 border-primary/20 rounded-md border px-3 py-2">
+          <div class="bg-primary/10 rounded-xl px-3 py-2">
             <div class="flex items-center gap-3">
               <div class="size-14 shrink-0">
                 {thumbnailData.value && (

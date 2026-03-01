@@ -170,16 +170,10 @@ const Pagination = defineComponent({
     return () => (
       <div
         class="
-          bg-base-200/70 liquid-glass
-          shadow-base-100/50 inline-flex
+          inline-flex
           items-center
-          rounded-3xl
           px-3
-          py-2
-          shadow-xl
-          before:rounded-3xl
-          before:backdrop-blur-xl
-          after:rounded-3xl
+          py-1.5
         "
       >
         <div class="flex items-center gap-1">
@@ -187,8 +181,8 @@ const Pagination = defineComponent({
           <button
             class={`
               text-base-content text-shadow-base-100/10 hover:bg-base-content/10
-              relative flex h-10
-              w-10 cursor-pointer
+              relative flex h-9
+              w-9 cursor-pointer
               items-center
               justify-center rounded-full
               text-lg transition-all
@@ -221,7 +215,7 @@ const Pagination = defineComponent({
                       border-base-content/10
                       text-base-content/60
                       focus:border-base-content/30 focus:bg-base-content/10 focus:text-base-content/80
-                      h-10 w-14
+                      h-9 w-14
                       appearance-none
                       rounded-full
                       border
@@ -244,8 +238,8 @@ const Pagination = defineComponent({
                 <button
                   class={`
                     text-base-content text-shadow-base-100/10 hover:bg-base-content/10
-                    relative flex h-10
-                    w-10 cursor-pointer
+                    relative flex h-9
+                    w-9 cursor-pointer
                     items-center
                     justify-center rounded-full
                     text-lg transition-all
@@ -266,8 +260,8 @@ const Pagination = defineComponent({
           <button
             class={`
               text-base-content text-shadow-base-100/10 hover:bg-base-content/10
-              relative flex h-10
-              w-10 cursor-pointer
+              relative flex h-9
+              w-9 cursor-pointer
               items-center
               justify-center rounded-full
               text-lg transition-all

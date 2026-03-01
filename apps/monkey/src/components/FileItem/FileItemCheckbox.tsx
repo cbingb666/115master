@@ -46,7 +46,7 @@ const FileItemCheckbox = defineComponent({
         group-data-[view-type=card]:left-3 group-data-[view-type=card]:z-10
         group-data-[view-type=card]:flex group-data-[view-type=card]:items-center
         group-data-[view-type=list]:flex group-data-[view-type=list]:cursor-pointer
-        group-data-[view-type=list]:items-center group-data-[view-type=list]:px-4
+        group-data-[view-type=list]:items-center group-data-[view-type=list]:px-1
       "
       >
         <input
@@ -66,7 +66,7 @@ const FileItemCheckbox = defineComponent({
           onKeydown={handleCheckboxKeyDown}
         />
         {/* 路径选择模式下的隐藏焦点元素 */}
-        {props.pathSelect && (
+        {/* {props.pathSelect && (
           <input
             style={{
               position: 'absolute',
@@ -79,7 +79,7 @@ const FileItemCheckbox = defineComponent({
             type="checkbox"
             onKeydown={handleCheckboxKeyDown}
           />
-        )}
+        )} */}
       </label>
     )
   },

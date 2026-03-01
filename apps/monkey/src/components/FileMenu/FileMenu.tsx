@@ -6,7 +6,7 @@ const MenuContentWrapper: FunctionalComponent<{ class?: string }> = (props, { sl
     <div
       class={[
         'flex',
-        'gap-1',
+        'gap-2',
         'text-md',
         props.class,
       ]}

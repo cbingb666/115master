@@ -51,7 +51,7 @@ export function useFileBrowserDialog() {
 
       instance = dialog.create({
         maskClosable: true,
-        className: options.className ?? 'sm:w-11/12! sm:max-w-5xl! h-5/6! overflow-hidden',
+        className: options.className ?? 'sm:w-11/12! h-7/8! overflow-hidden',
         classNameContent: 'min-h-0 overflow-hidden p-0!',
         content: () => (
           <FileBroswer

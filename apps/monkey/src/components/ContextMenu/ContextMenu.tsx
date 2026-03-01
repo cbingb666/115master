@@ -128,9 +128,12 @@ const ContextMenu = defineComponent({
                 ref={menuRef}
                 class="
                   menu
-                  bg-base-200/70 liquid-glass shadow-base-100/70
-                  fixed top-0 left-0 z-10000 rounded-xl shadow-xl
-                  before:rounded-xl before:backdrop-blur-xl after:rounded-xl
+                  app-box-glass
+                  fixed
+                  top-0
+                  left-0
+                  z-10000 min-w-48
+                  rounded-3xl
                 "
                 style={{ left: `${adjustedPosition.value.x}px`, top: `${adjustedPosition.value.y}px` }}
               >

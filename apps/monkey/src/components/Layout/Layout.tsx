@@ -10,9 +10,9 @@ const Layout = defineComponent({
     return () => (
       <div
         class="
-          min-h-screen
-          [--navbar-height:calc(var(--spacing)*18)] [--sider-width:0]
-          sm:[--sider-width:calc(var(--spacing)*46)]
+          app-bg-mesh min-h-screen
+          [--sider-width:0]
+          sm:[--sider-width:calc(var(--spacing)*60)]
         "
       >
         {slots.default?.()}

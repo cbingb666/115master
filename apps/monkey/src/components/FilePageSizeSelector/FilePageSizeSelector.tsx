@@ -4,22 +4,13 @@ import { defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS } from '@/constants'
 
-/**
- * 文件页大小选择器
- */
 const FilePageSizeSelector = defineComponent({
   name: 'FilePageSizeSelector',
   props: {
-    /**
-     * 当前页大小
-     */
     currentPageSize: {
       type: Number,
       required: true,
     },
-    /**
-     * 改变页大小
-     */
     onChangePageSize: {
       type: Function as PropType<(size: number) => void>,
       default: () => {},
@@ -36,12 +27,12 @@ const FilePageSizeSelector = defineComponent({
         {{
           target: (_props: object) => (
             <button
-              class="btn btn-ghost"
+              class="btn btn-sm btn-glass rounded-full"
               tabindex="0"
               {..._props}
             >
               <Icon class="text-2xl" icon="fluent:document-one-page-multiple-16-regular" />
-              <span class="w-10">{props.currentPageSize}</span>
+              <span class="hidden sm:inline">{props.currentPageSize}</span>
             </button>
           ),
           default: (_props: object) => (

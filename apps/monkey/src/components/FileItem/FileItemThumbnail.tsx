@@ -61,12 +61,11 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:border-base-content/5
             aspect-square
             cursor-grab
-            rounded-lg
+            rounded-full
             object-cover object-top
             group-data-[view-type=card]:absolute
             group-data-[view-type=card]:h-[61%]! group-data-[view-type=card]:rounded-full
             group-data-[view-type=card]:border-3
-            group-data-[view-type=card]:shadow-[0_0_12px_var(--color-black)_inset]
             group-data-[view-type=list]:size-13 group-data-[view-type=list]:border
             group-data-[view-type=list]:border-neutral-800
           "

@@ -30,27 +30,37 @@ const Sider = defineComponent({
         title: 'GitHub',
       },
       {
-        icon: ICON_QA,
-        href: `${PKG.homepage}/discussions/categories/q-a`,
-        title: 'Q&A',
-      },
-      {
         icon: ICON_SPONSOR,
         title: '赞助',
         onClick: openSponsor,
       },
       {
+        icon: ICON_QA,
+        href: `${PKG.homepage}/discussions/categories/q-a`,
+        title: 'Q&A',
+      },
+      {
         href: `${PKG.homepage}/releases/tag/v${PKG.version}`,
-        title: `v${PKG.version} Release Notes`,
-        text: `v${PKG.version}`,
+        title: `V${PKG.version} Release Notes`,
+        text: `V${PKG.version}`,
       },
     ]
 
     return () => (
       <div
         class="
-          fixed top-0 bottom-0 left-0 z-100 flex w-(--sider-width) flex-col
-          px-4 pb-4 max-sm:hidden
+          border-base-content/5 bg-base-100/30
+          fixed
+          top-0 bottom-0
+          left-0 z-100
+          flex
+          w-(--sider-width)
+          flex-col
+          border-r
+          px-4
+          pb-4
+          shadow-2xl
+          max-sm:hidden
         "
       >
         {slots.default?.()}

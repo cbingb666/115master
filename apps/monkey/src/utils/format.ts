@@ -3,12 +3,30 @@ import duration from 'dayjs/plugin/duration'
 
 dayjs.extend(duration)
 
+function toTimestamp(input?: number | string) {
+  if (input === undefined || input === null || input === '')
+    return 0
+
+  const value = Number(input)
+  if (Number.isFinite(value) && value > 0) {
+    if (value < 100000000000)
+      return value * 1000
+    return value
+  }
+
+  const parsed = dayjs(input)
+  if (!parsed.isValid())
+    return 0
+  return parsed.valueOf()
+}
+
 /**
  * 格式化时间戳为日期
- * @param timestamp 时间戳
+ * @param input 时间戳（支持秒或毫秒）
  * @returns 格式化后的日期字符串 YYYY-MM-DD HH:mm
  */
-export function formatYMDHM(timestamp?: number) {
+export function formatYMDHM(input?: number | string) {
+  const timestamp = toTimestamp(input)
   if (!timestamp)
     return ''
   return dayjs(timestamp).format('YYYY-MM-DD HH:mm')
@@ -16,13 +34,39 @@ export function formatYMDHM(timestamp?: number) {
 
 /**
  * 格式化时间戳为日期
- * @param timestamp 时间戳
+ * @param input 时间戳（支持秒或毫秒）
  * @returns 格式化后的日期字符串 YYYY-MM-DD
  */
-export function formatDate(timestamp?: number) {
+export function formatDate(input?: number | string) {
+  const timestamp = toTimestamp(input)
   if (!timestamp)
     return ''
   return dayjs(timestamp).format('YYYY-MM-DD')
+}
+
+/**
+ * 格式化时间戳为近期简短时间
+ * @param input 时间戳（支持秒或毫秒）
+ * @returns 今天显示 HH:mm，昨天显示 昨天 HH:mm，当年显示 MM-DD HH:mm，其它显示 YYYY-MM-DD HH:mm
+ */
+export function formatRecentYMDHM(input?: number | string) {
+  const timestamp = toTimestamp(input)
+  if (!timestamp)
+    return ''
+
+  const date = dayjs(timestamp)
+  const now = dayjs()
+
+  if (date.isSame(now, 'day'))
+    return date.format('HH:mm')
+
+  if (date.isSame(now.subtract(1, 'day'), 'day'))
+    return `昨天 ${date.format('HH:mm')}`
+
+  if (date.isSame(now, 'year'))
+    return date.format('MM-DD HH:mm')
+
+  return date.format('YYYY-MM-DD HH:mm')
 }
 
 /**

@@ -1,11 +1,8 @@
-body,
-html {
-  scrollbar-gutter: stable;
-}
+/* -------------------------------- daisy UI 组件样式重写 ---------------------------- */
 
 /* 重写 range-xs 样式 */
 .range {
-  --range-bg: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  --range-bg: color-mix(in oklab, var(--color-primary) 30%, transparent);
 }
 
 .range-xs {
@@ -22,4 +19,14 @@ html {
   .skeleton {
     background-image: linear-gradient(105deg, #0000 0% 40%, #fff5 50%, #0000 60% 100%);
   }
+}
+
+.input,.textarea {
+  &:focus, &:focus-within {
+    outline: 0;
+  }
+}
+
+.btn-glass {
+  --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 15%, transparent);
 }

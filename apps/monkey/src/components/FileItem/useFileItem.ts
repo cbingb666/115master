@@ -5,7 +5,6 @@ import { router } from '@/app/router'
 import { useDialog } from '@/components'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { actressFaceDB } from '@/utils/actressFaceDB'
-import { formatYMDHM } from '@/utils/format'
 import { extractEmojis } from '@/utils/string'
 import { Utils115 } from '@/utils/utils115'
 
@@ -107,15 +106,6 @@ export function useFileItem(options: {
     return icon.startsWith('https://')
   }
 
-  function formatTime(time: string | number): string {
-    const timeNum = Number(time)
-    if (timeNum) {
-      return formatYMDHM(timeNum * 1000)
-    }
-    // formatYMDHM expects number, convert string to number
-    return formatYMDHM(Number(time) || 0)
-  }
-
   async function open(): Promise<void> {
     if (link.value) {
       if ('to' in link.value) {
@@ -194,6 +184,5 @@ export function useFileItem(options: {
     handleDragOver,
     handleDrop,
     isIconUrl,
-    formatTime,
   }
 }

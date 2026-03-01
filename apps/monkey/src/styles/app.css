@@ -35,6 +35,14 @@
     0 0 14px rgba(0, 0, 0, 0.04);
 }
 
+@utility app-box-glass {
+  background: oklch(5% 0 0 / 0.15);
+  border-color: oklch(100% 0 0 / 0.15);
+  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
+  backdrop-filter: blur(40px);
+  border-width: 1px;
+}
+
 @utility app-glass-border {
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
@@ -48,6 +56,16 @@
     backdrop-filter: blur(48px) saturate(180%) brightness(50%);
     mask-image: linear-gradient(to top, transparent, black 50%);
   }
+}
+
+@utility app-bg-mesh {
+  background-image:
+    radial-gradient(140% 110% at 50% 22%, color-mix(in oklab, #6f90cf 10%, transparent) 0%, transparent 70%),
+    radial-gradient(120% 84% at 4% 20%, color-mix(in oklab, #5d86cf 8%, transparent) 0%, transparent 42%),
+    radial-gradient(140% 110% at 96% 12%, color-mix(in oklab, #166772 8%, transparent) 0%, transparent 40%),
+    radial-gradient(96% 80% at 50% 100%, color-mix(in oklab, #3f5a92 10%, transparent) 0%, transparent 46%);
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 @keyframes app-slide-in-right {

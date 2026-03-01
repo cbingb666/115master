@@ -6,6 +6,10 @@ import { computed, defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { SORT_OPTIONS } from './config'
 
+function dirIcon(asc: WebApi.Entity.Sorter['asc']) {
+  return asc === 1 ? 'material-symbols:arrow-upward-rounded' : 'material-symbols:arrow-downward-rounded'
+}
+
 /**
  * 文件排序选择器
  */
@@ -42,16 +46,20 @@ const FileSortSelector = defineComponent({
     },
   },
   setup: (props) => {
-    const currentSortOption = computed(() => {
+    const current = computed(() => {
       return SORT_OPTIONS.find(option => option.order === props.order && option.asc === props.asc)
     })
 
-    const sortIcon = computed(() => {
-      return currentSortOption.value?.icon ?? 'mdi:sort'
+    const sortLabel = computed(() => {
+      return current.value?.name ?? '排序'
     })
 
-    const sortName = computed(() => {
-      return currentSortOption.value?.name ?? '排序'
+    const sortField = computed(() => {
+      return current.value?.icon ?? 'mdi:sort'
+    })
+
+    const sortDir = computed(() => {
+      return dirIcon(props.asc)
     })
 
     const isSortOptionActive = (option: Sort) => {
@@ -75,21 +83,30 @@ const FileSortSelector = defineComponent({
     return () => (
       <ResponsiveMenu title="请选择排序方式">
         {{
-          target: () => (
+          target: (_props: object) => (
             <button
-              class="btn btn-ghost"
+              class="btn btn-sm btn-glass w-full gap-1.5 rounded-full px-2 sm:px-3"
+              aria-label={`当前排序：${sortLabel.value}`}
+              title={`当前排序：${sortLabel.value}${props.fc_mix === 0 ? '，目录置顶已开启' : ''}`}
               tabindex="0"
+              {..._props}
             >
-              <Icon class="text-2xl" icon={sortIcon.value} />
-              {sortName.value}
+              <span class="relative mr-3">
+                {props.fc_mix === 0 && <div class="bg-primary absolute top-[50%] -left-2 size-1.5 -translate-y-1/2 rounded-full" />}
+                <Icon class="text-xl sm:text-2xl" icon={sortField.value} />
+                <Icon class={`absolute ${props.asc === 1 ? 'top-0' : 'bottom-0'} -right-3 size-3`} icon={sortDir.value} />
+              </span>
+              <span class="relative max-w-24 truncate text-xs sm:max-w-none sm:text-sm">
+                {sortLabel.value}
+              </span>
             </button>
           ),
           default: () => (
             <>
-              <li class="sm:w-32">
+              <li class="">
                 <a>
                   <input
-                    class="toggle toggle-sm"
+                    class="toggle toggle-sm toggle-primary"
                     checked={props.fc_mix === 0}
                     tabindex="0"
                     type="checkbox"
@@ -98,18 +115,45 @@ const FileSortSelector = defineComponent({
                   目录置顶
                 </a>
               </li>
-              {SORT_OPTIONS.map(option => (
-                <li key={option.name} class="sm:w-32">
-                  <a
-                    class={{ 'bg-primary': isSortOptionActive(option) }}
-                    tabindex="0"
-                    onClick={() => handleSort(option)}
-                  >
-                    <Icon class="text-xl" icon={option.icon ?? 'mdi:sort'} />
-                    {option.name}
-                  </a>
-                </li>
-              ))}
+              <li class="border-base-content mx-2 my-1 border-t" />
+              {SORT_OPTIONS.map((option, i, list) => {
+                if (i > 0 && list[i - 1].order === option.order)
+                  return []
+
+                const items = list.filter(item => item.order === option.order)
+                const on = props.order === option.order
+                const item = (
+                  <li key={option.order} class="sm:w-42">
+                    <div
+                      class={{
+                        'flex items-center gap-1 px-3 py-2': true,
+                        'bg-base-content/30': on,
+                      }}
+                    >
+                      <Icon class="text-lg" icon={option.icon} />
+                      <span class="mr-auto ml-2">{option.name}</span>
+                      {items.map((item) => {
+                        const active = isSortOptionActive(item)
+
+                        return (
+                          <button
+                            key={`${item.order}-${item.asc}`}
+                            class={`btn btn-xs ${active ? 'btn-primary' : 'btn-ghost hover:btn-primary'}`}
+                            aria-label={`${option.name}${item.asc === 1 ? '升序' : '降序'}`}
+                            tabindex="0"
+                            type="button"
+                            onClick={() => handleSort(item)}
+                          >
+                            <Icon class="text-sm" icon={dirIcon(item.asc)} />
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </li>
+                )
+
+                return item
+              })}
             </>
           ),
         }}

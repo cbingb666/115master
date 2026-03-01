@@ -2,7 +2,7 @@ import type { WebApi } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { Icon } from '@iconify/vue'
 import { computed, defineComponent } from 'vue'
-import { formatFileSize, formatYMDHM } from '@/utils/format'
+import { formatFileSize, formatRecentYMDHM } from '@/utils/format'
 
 const FileItemContent = defineComponent({
   name: 'FileItemContent',
@@ -17,15 +17,6 @@ const FileItemContent = defineComponent({
     },
   },
   setup(props) {
-    function formatTime(data: typeof props.data): string {
-      const time = data.t
-      const timeNum = Number(time)
-      if (timeNum) {
-        return formatYMDHM(timeNum * 1000)
-      }
-      return formatYMDHM(time)
-    }
-
     const isStarred = computed(() =>
       props.data.m === 1 || props.data.m === '1',
     )
@@ -46,30 +37,46 @@ const FileItemContent = defineComponent({
         {/* 文件名区域 */}
         <span
           class="
-            relative flex-1
+            relative min-w-0 flex-1
             group-data-[view-type=card]:col-span-2 group-data-[view-type=card]:row-start-1
-            group-data-[view-type=list]:flex group-data-[view-type=list]:min-w-0
+            group-data-[view-type=list]:flex
             group-data-[view-type=list]:items-center group-data-[view-type=list]:gap-2
           "
         >
           {/* 文件名 */}
           <span
             class="
-              text-base wrap-anywhere text-neutral-100
-              group-data-[view-type=card]:line-clamp-4 group-data-[view-type=card]:font-medium
-              group-data-[view-type=list]:min-w-0 group-data-[view-type=list]:shrink
+              text-base-content min-w-0 wrap-anywhere
+              group-data-[view-type=card]:line-clamp-4
+              group-data-[view-type=card]:font-medium
+              group-data-[view-type=list]:shrink
               group-data-[view-type=list]:truncate
             "
-            title={props.data.ns ?? props.data.n}
-            v-html={props.data.ns ?? props.data.n}
           >
+            <span
+              title={props.data.ns ?? props.data.n}
+              v-html={props.data.ns ?? props.data.n}
+            >
+            </span>
+            {isStarred.value && (
+              <Icon
+                class="
+                  hidden
+                  group-data-[view-type=card]:ml-1
+                  group-data-[view-type=card]:inline-block
+                  group-data-[view-type=card]:size-4
+                  group-data-[view-type=card]:align-[-0.125em]
+                "
+                icon="material-icon-theme:github-sponsors"
+              />
+            )}
           </span>
           {/* 星标 */}
           {isStarred.value && (
             <Icon
               class="
-                inline-flex shrink-0
-                group-data-[view-type=card]:size-4
+                hidden shrink-0
+                group-data-[view-type=list]:inline-flex
                 group-data-[view-type=list]:size-5
               "
               icon="material-icon-theme:github-sponsors"
@@ -80,13 +87,11 @@ const FileItemContent = defineComponent({
         {/* 标签 */}
         <span
           class="
-            flex flex-wrap items-center
+            flex flex-wrap items-center gap-1
             group-data-[view-type=card]:col-span-2
             group-data-[view-type=card]:row-start-2
-            group-data-[view-type=card]:gap-1
             group-data-[view-type=list]:max-w-50
             group-data-[view-type=list]:justify-end
-            group-data-[view-type=list]:gap-2
           "
           v-show={(props.data.fl?.length ?? 0) > 0}
         >
@@ -95,12 +100,11 @@ const FileItemContent = defineComponent({
               <span
                 key={tag.id}
                 class="
-                  badge bg-base-content/10 group-data-[view-type=card]:badge-xs
-                  group-data-[view-type=list]:badge-sm
+                  badge bg-base-content/10 badge-sm
                   border-none
                 "
                 style={{
-                  backgroundColor: `color-mix(in oklab, ${tag.color} 70%, transparent)`,
+                  backgroundColor: `color-mix(in oklab, ${tag.color} 50%, transparent)`,
                 }}
               >
                 { tag.name }
@@ -111,16 +115,16 @@ const FileItemContent = defineComponent({
 
         {/* 文件大小 */}
         {
-          !props.pathSelect && props.data.s
+          props.data.s
             ? (
                 <span
                   class="
-                    text-base-content/60
+                    app-font-file-size
+                    text-base-content/50
                     group-data-[view-type=card]:col-start-2
                     group-data-[view-type=card]:row-start-3
-                    group-data-[view-type=card]:text-right
                     group-data-[view-type=card]:text-xs
-                    group-data-[view-type=list]:w-24
+                    group-data-[view-type=list]:w-20
                     group-data-[view-type=list]:text-xs
                     sm:group-data-[view-type=list]:text-sm
                   "
@@ -134,18 +138,18 @@ const FileItemContent = defineComponent({
         {/* 修改时间 */}
         <span
           class="
-            text-base-content/60
+            text-base-content/50
+            app-font-time
             group-data-[view-type=card]:col-start-1
             group-data-[view-type=card]:row-start-3
             group-data-[view-type=card]:text-xs
-            group-data-[view-type=list]:w-60
+            group-data-[view-type=list]:w-36
             group-data-[view-type=list]:text-xs
             sm:group-data-[view-type=list]:text-sm
           "
-          v-show={!props.pathSelect}
           data-tip="修改时间"
         >
-          { formatTime(props.data) }
+          { formatRecentYMDHM(props.data.t) }
         </span>
       </div>
     )

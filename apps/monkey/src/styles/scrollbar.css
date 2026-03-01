@@ -4,7 +4,7 @@
     width: calc(var(--spacing) * 2.5);
   }
   &::-webkit-scrollbar-thumb {
-    background-color: color-mix(in oklch, var(--color-base-content) 30%, transparent);
+    background-color: color-mix(in oklab, var(--color-base-content) 30%, transparent);
     @apply rounded-full;
   }
   &::-webkit-scrollbar-track {

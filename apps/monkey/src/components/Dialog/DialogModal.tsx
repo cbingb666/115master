@@ -11,7 +11,7 @@ const DialogModal = defineComponent({
     confirmText: { type: [String, Object, Function], default: undefined },
     cancelText: { type: [String, Object, Function], default: undefined },
     showConfirm: { type: Boolean, default: true },
-    showCancel: { type: Boolean, default: false },
+    showCancel: { type: Boolean, default: true },
     visible: { type: Boolean, default: false },
     maskClosable: { type: Boolean, default: true },
     className: { type: String, default: undefined },
@@ -73,9 +73,9 @@ const DialogModal = defineComponent({
         ? `modal modal-bottom sm:modal-middle [scrollbar-gutter:unset] p-0! modal-open ${props.classNameRoot || ''}`
         : `modal modal-bottom sm:modal-middle [scrollbar-gutter:unset] p-0! ${props.classNameRoot || ''}`
 
-      const modalBoxClass = `modal-box flex flex-col backdrop-blur-2xl bg-base-200 p-0! ${props.className || ''}`
-      const contentClass = `py-2 text-base-content/80 px-6 flex-1 ${props.classNameContent || ''}`
-      const actionsClass = `modal-action sticky bottom-0 p-6 ${props.classNameActions || ''}`
+      const modalBoxClass = `modal-box flex flex-col p-0! bg-base-100/50 backdrop-blur-3xl border-1 border-base-content/15 ${props.className || ''}`
+      const contentClass = `text-base-content/80 px-4 flex-1 ${props.classNameContent || ''}`
+      const actionsClass = `modal-action sticky bottom-0 px-4 pb-4 mt-4 ${props.classNameActions || ''}`
 
       const renderContent = () => {
         if (slots.default) {

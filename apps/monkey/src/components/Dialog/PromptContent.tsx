@@ -71,26 +71,13 @@ const PromptContent = defineComponent({
 
         <input
           ref={inputRef}
-          style={{
-            width: '100%',
-            padding: '8px 12px',
-            border: '1px solid #d9d9d9',
-            borderRadius: '6px',
-            fontSize: '14px',
-            outline: 'none',
-            transition: 'border-color 0.3s',
-          }}
+          name="prompt-input"
+          class="input w-full"
           maxlength={props.options.maxLength}
           placeholder={props.options.placeholder || ''}
           required={props.options.required}
           type={props.options.inputType || 'text'}
           value={props.modelValue}
-          onBlur={(e: Event) => {
-            ;(e.target as HTMLInputElement).style.borderColor = '#d9d9d9'
-          }}
-          onFocus={(e: Event) => {
-            ;(e.target as HTMLInputElement).style.borderColor = '#1890ff'
-          }}
           onInput={handleInput}
           onKeydown={handleKeyDown}
         />

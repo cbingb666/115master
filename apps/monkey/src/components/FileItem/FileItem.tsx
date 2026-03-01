@@ -12,6 +12,7 @@ import { useFileItem } from './useFileItem'
 
 const FileItem = defineComponent({
   name: 'FileItem',
+  inheritAttrs: true,
   props: {
     viewType: {
       type: String as PropType<'card' | 'list'>,
@@ -66,7 +67,7 @@ const FileItem = defineComponent({
       default: () => {},
     },
   },
-  setup: (props, { slots }) => {
+  setup: (props, { slots, attrs }) => {
     const {
       itemRef,
       isDrogzone,
@@ -124,26 +125,30 @@ const FileItem = defineComponent({
     return () => (
       <div
         ref={itemRef}
-        class="
-          group
-          data-[checked=true]:bg-secondary/60! data-[checked=true]:ring-secondary/60
-          data-[checked=true]:hover:bg-secondary/80!
-          data-[checked=true]:hover:ring-secondary/80!
-          data-[dropzone=true]:bg-secondary/90
-          relative
-          flex
-          min-w-0
-          rounded-lg
-          hover:bg-neutral-500/10
-          data-[checked=true]:bg-linear-to-br
-          data-[dragging=true]:opacity-30
-          data-[view-type=card]:h-full
-          data-[view-type=card]:flex-col
-          data-[view-type=card]:rounded-2xl
-          data-[view-type=card]:data-[checked=true]:ring-6
-          data-[view-type=list]:items-stretch
-          data-[view-type=list]:hover:bg-neutral-500/10
-        "
+        class={[
+          `
+            group
+            data-[checked=true]:bg-primary/10! data-[checked=true]:ring-primary/10
+            data-[checked=true]:hover:bg-primary/15!
+            data-[checked=true]:hover:ring-primary/15!
+            data-[dropzone=true]:bg-primary/5
+            relative
+            flex
+            min-w-0
+            rounded-xs
+            hover:bg-neutral-500/10
+            data-[checked=true]:bg-linear-to-br
+            data-[dragging=true]:opacity-30
+            data-[view-type=card]:h-full
+            data-[view-type=card]:flex-col
+            data-[view-type=card]:rounded-2xl
+            data-[view-type=card]:data-[checked=true]:ring-6
+            data-[view-type=list]:items-stretch
+            data-[view-type=list]:even:bg-neutral-500/5
+            data-[view-type=list]:hover:bg-neutral-500/10
+          `,
+          attrs.class,
+        ]}
         data-checked={props.checked}
         data-dragging={props.dragging}
         data-dropzone={isDrogzone.value}
@@ -168,7 +173,7 @@ const FileItem = defineComponent({
             group-data-[view-type=card]:flex-1 group-data-[view-type=card]:flex-col
             group-data-[view-type=list]:flex group-data-[view-type=list]:min-w-0
             group-data-[view-type=list]:flex-1 group-data-[view-type=list]:items-center
-            group-data-[view-type=list]:gap-4 group-data-[view-type=list]:py-3
+            group-data-[view-type=list]:gap-3 group-data-[view-type=list]:py-1
           "
           {...link.value}
           draggable={false}
@@ -222,6 +227,7 @@ const FileItem = defineComponent({
                 size-5 text-orange-500
                 group-data-[view-type=card]:absolute group-data-[view-type=card]:top-3
                 group-data-[view-type=card]:right-3 group-data-[view-type=card]:size-6
+                group-data-[view-type=card]:rotate-45
                 group-data-[view-type=list]:absolute group-data-[view-type=list]:-top-1
                 group-data-[view-type=list]:-left-2 group-data-[view-type=list]:-rotate-45
               "

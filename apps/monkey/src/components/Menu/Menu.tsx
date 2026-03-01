@@ -48,8 +48,8 @@ const Menu = defineComponent({
             <li key={menu.name}>
               <RouterLink
                 class={[
-                  'btn btn-md btn-ghost w-full justify-start gap-3 px-6',
-                  isActive(menu) && 'btn-active btn-primary',
+                  'btn btn-ghost hover:bg-base-content/5 hover:border-base-content/5 w-full justify-start gap-3 px-6',
+                  isActive(menu) && 'bg-base-content/5 border-base-content/5',
                 ]}
                 to={menu.to}
               >

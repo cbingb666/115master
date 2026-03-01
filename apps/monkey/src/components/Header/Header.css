@@ -1,40 +1,44 @@
-.header-scroll-effect {
-  animation: header-scroll-effect 0.6s linear;
+.header-sticky-effect {
+  animation: header-sticky-glass linear both;
   animation-timeline: scroll(root);
-  animation-range: 0 calc(var(--navbar-height) - var(--spacing) * 4);
-  animation-fill-mode: both;
+  animation-range: 0 15vh;
 
-  &:after {
-    animation: header-after-scroll-effect 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+  &::before {
+    content: '';
+    position: absolute;
+    top: calc(-2 * var(--spacing) * 4);
+    left: calc(-2 * var(--spacing) * 4);
+    right: calc(-2 * var(--spacing) * 4);
+    bottom: 0;
+    z-index: -1;
+    pointer-events: none;
+    animation: header-sticky-gradient linear both;
     animation-timeline: scroll(root);
-    animation-range: 0 calc(var(--navbar-height));
-    animation-fill-mode: both;
-  }
-
-  &:before {
-    animation: header-before-scroll-effect 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    animation-timeline: scroll(root);
-    animation-range: 0 calc(var(--navbar-height));
-    animation-fill-mode: both;
+    animation-range: 0 15vh;
   }
 }
 
-@keyframes header-scroll-effect {
-  from {
-    transform: translateY(0);
+@keyframes header-sticky-glass {
+  0%, 30% {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    backdrop-filter: blur(0px);
   }
-  to {
-    transform: translateY(calc(0px - var(--navbar-height) + var(--spacing) * 4));
-    box-shadow: 0 0 128px rgba(0, 0, 0, 0.9);
-    background: color-mix(in oklab, var(--color-black) 70%, transparent);
+  100% {
+    background: oklch(5% 0 0 / 0.15);
+    border-color: oklch(100% 0 0 / 0.15);
+    box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
+    backdrop-filter: blur(40px);
   }
 }
 
-@keyframes header-after-scroll-effect {
-  from {
+@keyframes header-sticky-gradient {
+  0%, 30% {
     opacity: 0;
   }
-  to {
+  100% {
     opacity: 1;
+    background: linear-gradient(to bottom, oklch(15% 0.01 260 / 0.3), transparent);
   }
 }

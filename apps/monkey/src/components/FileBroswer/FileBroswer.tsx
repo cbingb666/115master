@@ -133,8 +133,8 @@ const FileBroswer = defineComponent({
     }
 
     return () => (
-      <div class="flex h-full flex-col px-8!">
-        <DialogTitle title={props.title} className="px-0!">
+      <div class="flex h-full flex-col">
+        <DialogTitle title={props.title} class="pb-0!">
           {{
             actions: () => (
               <FileMenu class="relative z-10 shrink-0">
@@ -159,14 +159,14 @@ const FileBroswer = defineComponent({
         </DialogTitle>
 
         {/* header */}
-        <div class="sticky top-0 min-w-0 overflow-hidden">
+        <div class="sticky top-0 min-w-0 overflow-hidden px-6">
           <FilePath
             path={explorer.path.value ?? []}
             onPathClick={handleClickPath}
           />
         </div>
 
-        <div ref={scrollRef} class="relative flex min-h-0 flex-1 flex-col overflow-y-auto p-4">
+        <div ref={scrollRef} class="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
           {explorer.list.error.value && (
             <LoadingError
               class="absolute inset-0 m-auto"
@@ -181,9 +181,17 @@ const FileBroswer = defineComponent({
 
           {!explorer.list.loading.value && explorer.list.data.value && (
             <>
-              <FileList viewType={viewType.value}>
+              <FileList
+                viewType={viewType.value}
+                class="
+                  pt-3
+                  data-[view-type=card]:gap-3!
+                  data-[view-type=card]:px-7
+                "
+              >
                 {(explorer.list.data.value.data ?? []).map(item => (
                   <FileItem
+                    class="data-[view-type=list]:px-6"
                     key={item.pc}
                     data={item}
                     pathSelect={true}
@@ -210,7 +218,7 @@ const FileBroswer = defineComponent({
               </FileList>
 
               {explorer.page.pageCount.value > 1 && (
-                <div class="sticky bottom-4 flex justify-center">
+                <div class="fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 justify-center">
                   <Pagination
                     currentPage={explorer.page.page.value}
                     currentPageSize={explorer.page.size.value}
