@@ -16,7 +16,6 @@ import {
   FilePath,
   FileSortSelector,
   FileViewType,
-  LoadingError,
   Pagination,
 } from '@/components'
 import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
@@ -167,69 +166,56 @@ const FileBroswer = defineComponent({
         </div>
 
         <div ref={scrollRef} class="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
-          {explorer.list.error.value && (
-            <LoadingError
-              class="absolute inset-0 m-auto"
-              message={explorer.list.error.value}
-              size="mini"
-            />
-          )}
-
-          {explorer.list.loading.value && (
-            <div class="loading loading-spinner loading-xl absolute inset-0 m-auto" />
-          )}
-
-          {!explorer.list.loading.value && explorer.list.data.value && (
-            <>
-              <FileList
+          <FileList
+            viewType={viewType.value}
+            class="
+              pt-3
+              data-[view-type=card]:gap-3!
+              data-[view-type=card]:px-7
+            "
+            loading={explorer.list.loading.value}
+            error={explorer.list.error.value ?? null}
+            empty={!explorer.list.loading.value && (explorer.list.data.value?.data?.length ?? 0) === 0}
+          >
+            {(explorer.list.data.value?.data ?? []).map(item => (
+              <FileItem
+                class="data-[view-type=list]:px-6"
+                key={item.pc}
+                data={item}
+                pathSelect={true}
                 viewType={viewType.value}
-                class="
-                  pt-3
-                  data-[view-type=card]:gap-3!
-                  data-[view-type=card]:px-7
-                "
+                onClick={() => handleClickItem(item)}
+                onContextmenu={(e: MouseEvent) => handleContextmenu(item, e)}
               >
-                {(explorer.list.data.value.data ?? []).map(item => (
-                  <FileItem
-                    class="data-[view-type=list]:px-6"
-                    key={item.pc}
-                    data={item}
-                    pathSelect={true}
-                    viewType={viewType.value}
-                    onClick={() => handleClickItem(item)}
-                    onContextmenu={(e: MouseEvent) => handleContextmenu(item, e)}
-                  >
-                    {{
-                      thumbnail: (thumbnailProps: any) => (
-                        <FileItemThumbnail
-                          {...thumbnailProps}
-                          class="[&_span]:group-data-[view-type=card]:text-xl"
-                        />
-                      ),
-                    }}
-                  </FileItem>
-                ))}
-                <FileContextMenu
-                  actionConfig={contextmenuActions.value}
-                  position={contextmenuPosition.value}
-                  show={contextmenuShow.value}
-                  onClose={() => contextmenuShow.value = false}
-                />
-              </FileList>
+                {{
+                  thumbnail: (thumbnailProps: any) => (
+                    <FileItemThumbnail
+                      {...thumbnailProps}
+                      class="[&_span]:group-data-[view-type=card]:text-xl"
+                    />
+                  ),
+                }}
+              </FileItem>
+            ))}
+            <FileContextMenu
+              actionConfig={contextmenuActions.value}
+              position={contextmenuPosition.value}
+              show={contextmenuShow.value}
+              onClose={() => contextmenuShow.value = false}
+            />
+          </FileList>
 
-              {explorer.page.pageCount.value > 1 && (
-                <div class="fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 justify-center">
-                  <Pagination
-                    currentPage={explorer.page.page.value}
-                    currentPageSize={explorer.page.size.value}
-                    showSizeChanger={false}
-                    total={explorer.page.total.value}
-                    onCurrentPageChange={explorer.page.changePage}
-                    onPageSizeChange={explorer.page.changeSize}
-                  />
-                </div>
-              )}
-            </>
+          {explorer.page.pageCount.value > 1 && (
+            <div class="fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 justify-center">
+              <Pagination
+                currentPage={explorer.page.page.value}
+                currentPageSize={explorer.page.size.value}
+                showSizeChanger={false}
+                total={explorer.page.total.value}
+                onCurrentPageChange={explorer.page.changePage}
+                onPageSizeChange={explorer.page.changeSize}
+              />
+            </div>
           )}
         </div>
       </div>

@@ -6,7 +6,6 @@ import { computed, defineComponent, onBeforeMount, shallowRef, watch } from 'vue
 import { useRoute } from 'vue-router'
 import { router } from '@/app/router'
 import {
-  Empty,
   FileContextMenu,
   FileItem,
   FileList,
@@ -18,7 +17,6 @@ import {
   FileViewType,
   Header,
   Layout,
-  LoadingError,
   Main,
   Menu,
   Pagination,
@@ -154,9 +152,9 @@ const Drive = defineComponent({
       store.refresh()
     }
 
-    function handleSearch(value: string) {
-      router.push({ path: '/drive/search', query: { keyword: value } })
-    }
+    // function handleSearch(value: string) {
+    //   router.push({ path: '/drive/search', query: { keyword: value } })
+    // }
 
     async function handleDragMove(cid: string, originItems: WebApi.Entity.FilesItem[]) {
       const success = await action.dragMove(cid, originItems)
@@ -248,47 +246,36 @@ const Drive = defineComponent({
       )
     }
 
-    function ListState() {
-      if (store.list.error)
-        return <LoadingError class="absolute inset-0 m-auto" message={store.list.error} size="mini" />
-      if (store.list.loading)
-        return <div class="loading loading-infinity loading-xl absolute inset-24 m-auto" />
-      if (!store.list.loading && store.page.total === 0)
-        return <Empty class="absolute inset-0 m-auto" description="没有文件" />
-      return <></>
-    }
-
     function List() {
       return (
-        <>
-          {!store.list.error && store.list.data?.data && (
-            <FileList
-              class="
-                pt-5
-                pb-20
-                data-[view-type=card]:px-5!
-              "
-              containerRef={containerRef}
+        <FileList
+          class="
+            pt-5
+            pb-20
+            data-[view-type=card]:px-5!
+          "
+          containerRef={containerRef}
+          viewType={viewType.value}
+          loading={store.list.loading}
+          error={store.list.error?.message ?? undefined}
+          empty={!store.list.loading && store.page.total === 0}
+        >
+          {store.list.data?.data?.map((item: WebApi.Entity.FilesItem) => (
+            <FileItem
+              class="data-[view-type=list]:px-3"
+              key={item.pc}
               viewType={viewType.value}
-            >
-              {store.list.data.data.map((item: WebApi.Entity.FilesItem) => (
-                <FileItem
-                  class="data-[view-type=list]:px-3"
-                  key={item.pc}
-                  viewType={viewType.value}
-                  {...itemProps(item)}
-                  onPreview={() => preview(item)}
-                />
-              ))}
-              <FileContextMenu
-                actionConfig={actionConfig.value}
-                position={contextmenuPosition.value}
-                show={contextmenuShow.value}
-                onClose={() => contextmenuShow.value = false}
-              />
-            </FileList>
-          )}
-        </>
+              {...itemProps(item)}
+              onPreview={() => preview(item)}
+            />
+          )) ?? []}
+          <FileContextMenu
+            actionConfig={actionConfig.value}
+            position={contextmenuPosition.value}
+            show={contextmenuShow.value}
+            onClose={() => contextmenuShow.value = false}
+          />
+        </FileList>
       )
     }
 
@@ -336,7 +323,6 @@ const Drive = defineComponent({
           </Sider>
           <Main class="relative flex min-h-[calc(100vh-var(--navbar-height))] flex-col">
             <ListHeader />
-            <ListState />
             <List />
             <FixedBottom />
           </Main>
