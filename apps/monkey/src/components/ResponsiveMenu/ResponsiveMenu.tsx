@@ -81,7 +81,7 @@ const Dropdown = defineComponent({
         return
       if (!target.closest('a,button,input,label,[role="menuitem"]'))
         return
-      hide()
+      requestAnimationFrame(() => hide())
     }
 
     const bind = () => {
