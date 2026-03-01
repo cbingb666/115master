@@ -25,9 +25,10 @@ const FileItemContent = defineComponent({
       <div
         class="
           flex-1
-          group-data-[view-type=card]:grid group-data-[view-type=card]:min-w-0
+          group-data-[view-type=card]:grid
+          group-data-[view-type=card]:min-w-0
           group-data-[view-type=card]:grid-cols-[1fr_auto]
-          group-data-[view-type=card]:grid-rows-[auto_auto_auto]
+          group-data-[view-type=card]:grid-rows-[auto_1fr_auto]
           group-data-[view-type=card]:gap-1 group-data-[view-type=card]:p-3
           group-data-[view-type=list]:min-w-0 group-data-[view-type=list]:flex-col
           group-data-[view-type=list]:items-center group-data-[view-type=list]:gap-4
