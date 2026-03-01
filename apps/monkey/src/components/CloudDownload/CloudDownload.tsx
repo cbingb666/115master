@@ -107,7 +107,7 @@ const CloudDownload = defineComponent({
           <div>
             <textarea
               ref="textareaRef"
-              class="textarea textarea-md w-full"
+              class="textarea textarea-md textarea-ghost bg-base-content/10 w-full"
               autofocus
               placeholder="支持HTTP、HTTPS、FTP、磁力链和电驴链接，换行可添加多个"
               rows={5}

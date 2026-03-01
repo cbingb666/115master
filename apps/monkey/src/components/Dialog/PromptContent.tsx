@@ -72,7 +72,7 @@ const PromptContent = defineComponent({
         <input
           ref={inputRef}
           name="prompt-input"
-          class="input w-full"
+          class="input bg-base-content/10 input-ghost w-full"
           maxlength={props.options.maxLength}
           placeholder={props.options.placeholder || ''}
           required={props.options.required}
