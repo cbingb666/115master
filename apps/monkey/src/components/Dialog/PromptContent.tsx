@@ -21,29 +21,33 @@ const PromptContent = defineComponent({
   },
   emits: ['update:modelValue'],
   setup(props, { emit, expose }) {
-    const inputRef = ref<HTMLInputElement | null>(null)
+    const inputRef = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
+    const isMultiline = props.options.multiline || props.options.inputType === 'textarea'
 
     const handleInput = (e: Event) => {
-      const value = (e.target as HTMLInputElement).value
+      const value = (e.target as HTMLInputElement | HTMLTextAreaElement).value
       emit('update:modelValue', value)
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        e.preventDefault()
-        if (props.options.required && !props.modelValue.trim()) {
-          return
-        }
-        if (props.onConfirm) {
-          props.onConfirm()
-        }
+      if (e.key !== 'Enter')
+        return
+      if (isMultiline && e.shiftKey)
+        return
+
+      e.preventDefault()
+      if (props.options.required && !props.modelValue.trim()) {
+        return
+      }
+      if (props.onConfirm) {
+        props.onConfirm()
       }
     }
 
     const focus = () => {
       if (inputRef.value) {
         inputRef.value.focus()
-        if (props.modelValue) {
+        if (!isMultiline && props.modelValue) {
           inputRef.value.select()
         }
       }
@@ -69,18 +73,35 @@ const PromptContent = defineComponent({
           </div>
         )}
 
-        <input
-          ref={inputRef}
-          name="prompt-input"
-          class="input bg-base-content/10 input-ghost w-full"
-          maxlength={props.options.maxLength}
-          placeholder={props.options.placeholder || ''}
-          required={props.options.required}
-          type={props.options.inputType || 'text'}
-          value={props.modelValue}
-          onInput={handleInput}
-          onKeydown={handleKeyDown}
-        />
+        {isMultiline
+          ? (
+              <textarea
+                ref={inputRef}
+                name="prompt-input"
+                class="textarea bg-base-content/10 textarea-ghost w-full"
+                maxlength={props.options.maxLength}
+                placeholder={props.options.placeholder || ''}
+                required={props.options.required}
+                rows={props.options.rows || 3}
+                value={props.modelValue}
+                onInput={handleInput}
+                onKeydown={handleKeyDown}
+              />
+            )
+          : (
+              <input
+                ref={inputRef}
+                name="prompt-input"
+                class="input bg-base-content/10 input-ghost w-full"
+                maxlength={props.options.maxLength}
+                placeholder={props.options.placeholder || ''}
+                required={props.options.required}
+                type={props.options.inputType || 'text'}
+                value={props.modelValue}
+                onInput={handleInput}
+                onKeydown={handleKeyDown}
+              />
+            )}
       </div>
     )
   },

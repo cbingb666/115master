@@ -11,7 +11,11 @@ export interface UseDialogPromptOptions extends UseDialogOptions {
   /** 输入框占位符 */
   placeholder?: string
   /** 输入框类型 */
-  inputType?: 'text' | 'password' | 'email' | 'number'
+  inputType?: 'text' | 'password' | 'email' | 'number' | 'textarea'
+  /** 是否启用多行输入 */
+  multiline?: boolean
+  /** 多行输入行数 */
+  rows?: number
   /** 是否必填 */
   required?: boolean
   /** 最大长度 */

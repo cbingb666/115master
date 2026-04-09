@@ -62,9 +62,19 @@ export function useFileAction() {
       title: '重命名',
       placeholder: '请输入文件名',
       defaultValue: removeFileExtension(item.n),
+      multiline: true,
+      rows: 3,
     })
 
     if (dialogRes) {
+      if (/[\r\n]/.test(dialogRes)) {
+        await dialog.alert({
+          title: '提示',
+          content: '文件名不支持换行',
+        })
+        return Promise.resolve(false)
+      }
+
       const fid = item.fid ?? item.cid
       const res = await drive115.webApiPostFilesBatchRename({
         [`files_new_name[${fid}]`]: dialogRes,
