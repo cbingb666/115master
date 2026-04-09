@@ -2,7 +2,7 @@ import type { WebApi } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Icon } from '@iconify/vue'
 import { useStorage, useTitle } from '@vueuse/core'
-import { computed, defineComponent, onBeforeMount, shallowRef, watch } from 'vue'
+import { computed, defineComponent, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { router } from '@/app/router'
 import {
@@ -25,6 +25,7 @@ import {
   useFilePreview,
 } from '@/components'
 import { useDriveAction } from '@/hooks/useDriveAction'
+import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import {
   ICON_DELETE,
   ICON_FILE_IMPROVE,
@@ -44,10 +45,10 @@ const Drive = defineComponent({
 
     const store = useDriveStore()
     const action = useDriveAction()
+    const search = useGlobalSearch()
     const spaceInfo = useDriveSpaceInfoStore()
     const route = useRoute()
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
-    const searchKeyword = shallowRef('')
 
     const actionHandlers = {
       newFolder: async () => {
@@ -225,6 +226,10 @@ const Drive = defineComponent({
           </div>
           <div class="flex flex-none items-center">
             <FileMenu>
+              <button class="btn btn-sm btn-glass rounded-full" onClick={() => search.open()}>
+                <Icon class="text-xl" icon="mdi:search" />
+                <span class="hidden sm:inline">搜索</span>
+              </button>
               <FileNewFolderButton onClick={actionHandlers.newFolder} />
               <FilePageSizeSelector
                 currentPageSize={store.page.size}
@@ -300,10 +305,6 @@ const Drive = defineComponent({
       }
       return <></>
     }
-
-    watch(() => route.query.keyword, (value) => {
-      searchKeyword.value = value as string
-    }, { immediate: true })
 
     // cid 变化时清空选中
     watch(() => store.nav.cid, () => {

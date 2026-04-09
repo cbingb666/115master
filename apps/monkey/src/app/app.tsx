@@ -3,6 +3,7 @@ import { RouterView } from 'vue-router'
 import {
   DialogContainer,
   GlassDistortionFilter,
+  GlobalSearchModal,
   ToastContainer,
   useSponsorBoot,
 } from '@/components'
@@ -29,6 +30,7 @@ const App = defineComponent({
         <DialogContainer>
           <Boot />
           <ToastContainer>
+            <GlobalSearchModal />
             <RouterView>
               {{
                 default: ({ Component, route }: any) => (
