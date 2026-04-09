@@ -47,9 +47,19 @@ export function useDriveExplorer(options: ExplorerOptions) {
 
   const path = computed((): WebApi.Entity.PathItem[] => {
     if (isSearch.value) {
+      const keyword = options.keyword?.value.trim() ?? ''
       return [
-        { cid: '0', name: '全部', aid: '0', pid: '', isp: '', iss: '', fv: '', fvs: '', p_cid: '' },
-        { cid: '0', name: '搜索结果', aid: '0', pid: '', isp: '', iss: '', fv: '', fvs: '', p_cid: '' },
+        {
+          cid: '0',
+          name: keyword ? `搜索: ${keyword}` : '搜索',
+          aid: '0',
+          pid: '',
+          isp: '',
+          iss: '',
+          fv: '',
+          fvs: '',
+          p_cid: '',
+        },
       ]
     }
     const d = list.data.value
@@ -77,12 +87,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
       offset,
       limit: page.size.value,
       format: 'json',
-      fc_mix: 0,
       search_value: options.keyword?.value ?? '',
-    }
-    if (page.order.value || page.asc.value) {
-      params.o = page.order.value
-      params.asc = page.asc.value
     }
     if (options.suffix?.value)
       params.suffix = options.suffix.value

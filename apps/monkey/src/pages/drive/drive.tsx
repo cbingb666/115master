@@ -49,6 +49,7 @@ const Drive = defineComponent({
     const spaceInfo = useDriveSpaceInfoStore()
     const route = useRoute()
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
+    const isSearch = computed(() => store.nav.area === 'search')
 
     const actionHandlers = {
       newFolder: async () => {
@@ -144,6 +145,8 @@ const Drive = defineComponent({
     ])
 
     function handleClickPath(data: WebApi.Entity.PathItem) {
+      if (isSearch.value)
+        return
       router.push({ name: 'drive', params: { cid: data.cid === '0' ? '' : data.cid } })
     }
 
@@ -230,17 +233,19 @@ const Drive = defineComponent({
                 <Icon class="text-xl" icon="mdi:search" />
                 <span class="hidden sm:inline">搜索</span>
               </button>
-              <FileNewFolderButton onClick={actionHandlers.newFolder} />
+              {!isSearch.value && <FileNewFolderButton onClick={actionHandlers.newFolder} />}
               <FilePageSizeSelector
                 currentPageSize={store.page.size}
                 onChangePageSize={store.page.changeSize}
               />
-              <FileSortSelector
-                asc={store.page.asc || 0}
-                fc_mix={store.page.fc_mix || 0}
-                order={store.page.order || 'user_ptime'}
-                onSort={handleSort}
-              />
+              {!isSearch.value && (
+                <FileSortSelector
+                  asc={store.page.asc || 0}
+                  fc_mix={store.page.fc_mix || 0}
+                  order={store.page.order || 'user_ptime'}
+                  onSort={handleSort}
+                />
+              )}
               <FileViewType
                 value={viewType.value}
                 onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
