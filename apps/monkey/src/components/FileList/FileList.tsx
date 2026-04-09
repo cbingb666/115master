@@ -2,6 +2,7 @@ import type { PropType, Ref } from 'vue'
 import { defineComponent } from 'vue'
 import Empty from '../Empty/Empty'
 import LoadingError from '../LoadingError/LoadingError'
+import Progress from '../Progress/Progress'
 
 const FileList = defineComponent({
   name: 'FileList',
@@ -44,9 +45,7 @@ const FileList = defineComponent({
         )}
 
         {/* Loading State */}
-        {!props.error && props.loading && (
-          <div class="loading loading-infinity loading-xl absolute inset-24 m-auto" />
-        )}
+        {!props.error && <Progress active={props.loading} />}
 
         {/* Empty State */}
         {!props.error && !props.loading && props.empty && (
