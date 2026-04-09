@@ -19,6 +19,7 @@ export interface ExplorerOptions {
   page: Ref<number>
   size: Ref<number>
   keyword?: Ref<string>
+  fc?: WebApi.Req.GetFilesSearch['fc']
   suffix?: Ref<string>
   type?: Ref<string>
   nf?: Ref<string>
@@ -87,6 +88,8 @@ export function useDriveExplorer(options: ExplorerOptions) {
       params.suffix = options.suffix.value
     if (options.type?.value)
       params.type = Number(options.type.value)
+    if (options.fc)
+      params.fc = options.fc
 
     const ok = await list.search(params)
     if (ok && list.data.value)

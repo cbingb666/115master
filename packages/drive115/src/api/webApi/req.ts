@@ -20,6 +20,8 @@ export interface GetFilesSearch extends BaseParams, PaginationParams, Sorter {
   date?: string
   /** 是否目录和文件混合，如果为 0 则目录在前（目录置顶） */
   fc_mix?: 0 | 1
+  /** 只显示文件或文件夹。1 只显示文件夹，2 只显示文件 */
+  fc?: 1 | 2
   /** 标签 id */
   file_label?: string
   /** 提取码 */

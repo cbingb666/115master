@@ -2,7 +2,8 @@ import type { WebApi } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
-import { useStorage } from '@vueuse/core'
+import { Icon } from '@iconify/vue'
+import { useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
 import {
   DialogTitle,
@@ -22,7 +23,7 @@ import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useDriveExplorer } from '@/hooks/useDriveExplorer'
 import { useStackNav } from '@/hooks/useDriveNav'
-import { ICON_DELETE, ICON_RENAME } from '@/icons'
+import { ICON_CLOSE, ICON_DELETE, ICON_RENAME } from '@/icons'
 
 /** 文件浏览器内容组件 */
 const FileBroswer = defineComponent({
@@ -40,6 +41,10 @@ const FileBroswer = defineComponent({
       type: Object as () => Ref<string>,
       required: true,
     },
+    keyword: {
+      type: Object as () => Ref<string>,
+      required: false,
+    },
     currentPathRef: {
       type: Object as () => Ref<Partial<WebApi.Entity.PathItem>[] | null>,
       required: false,
@@ -51,14 +56,23 @@ const FileBroswer = defineComponent({
   },
   setup(props) {
     const nav = props.nav ?? useStackNav(props.defaultCid ?? '0')
+    const keywordInput = ref(props.keyword?.value ?? '')
+    const keyword = ref(props.keyword?.value ?? '')
     const scrollRef = ref<HTMLDivElement>()
     const hasExternalNav = !!props.nav
     const viewType = useStorage<'list' | 'card'>('115Master_file_browser_view_type', 'list')
+    const source = {
+      cid: computed(() => keyword.value.trim() ? '0' : nav.cid.value),
+      area: computed(() => keyword.value.trim() ? 'search' : nav.area.value),
+      direction: nav.direction,
+    }
     const explorer = useDriveExplorer({
-      nav,
+      nav: source,
       page: ref(1),
       size: ref(20),
+      fc: 1,
       nf: ref('1'),
+      keyword,
       scroll: hasExternalNav,
       getScroll: () => scrollRef.value?.scrollTop ?? 0,
       setScroll: (top: number) => scrollRef.value?.scrollTo({ top, behavior: 'instant' }),
@@ -107,6 +121,28 @@ const FileBroswer = defineComponent({
       props.cid.value = cid
     })
 
+    watch(() => props.keyword?.value, (value) => {
+      if (value === undefined)
+        return
+      if (value !== keyword.value)
+        keyword.value = value
+      if (value !== keywordInput.value)
+        keywordInput.value = value
+    }, { immediate: true })
+
+    watchDebounced(keywordInput, (value) => {
+      keyword.value = value
+      if (props.keyword)
+        props.keyword.value = value
+    }, { debounce: 300, maxWait: 1000 })
+
+    function clearKeyword() {
+      keywordInput.value = ''
+      keyword.value = ''
+      if (props.keyword)
+        props.keyword.value = ''
+    }
+
     // 同步路径到外部
     watch(explorer.path, (p) => {
       if (props.currentPathRef)
@@ -118,6 +154,9 @@ const FileBroswer = defineComponent({
     }
 
     function handleClickItem(data: WebApi.Entity.FilesItem) {
+      if (keyword.value) {
+        clearKeyword()
+      }
       nav.push(data.cid)
     }
 
@@ -136,40 +175,79 @@ const FileBroswer = defineComponent({
         <DialogTitle title={props.title} class="pb-0!">
           {{
             actions: () => (
-              <FileMenu class="relative z-10 shrink-0">
-                <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
-                <FilePageSizeSelector
-                  currentPageSize={explorer.page.size.value}
-                  onChangePageSize={explorer.page.changeSize}
-                />
-                <FileSortSelector
-                  asc={explorer.page.asc.value || 0}
-                  fc_mix={explorer.page.fc_mix.value || 0}
-                  order={explorer.page.order.value || 'user_ptime'}
-                  onSort={handleSort}
-                />
-                <FileViewType
-                  value={viewType.value}
-                  onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
-                />
-              </FileMenu>
+              <div class="flex items-center gap-2">
+                <label
+                  class="
+                    input input-ghost bg-base-content/10
+                    focus-within:bg-base-content/15
+                    h-9 w-sm max-w-[60vw] rounded-full
+                  "
+                >
+                  <Icon class="text-base-content/55 shrink-0 text-2xl" icon="mdi:search" />
+                  <input
+                    class="grow bg-transparent text-sm"
+                    value={keywordInput.value}
+                    type="text"
+                    placeholder="搜索目录"
+                    onInput={e => keywordInput.value = (e.target as HTMLInputElement).value}
+                    onKeyup={(e: KeyboardEvent) => {
+                      if (e.key !== 'Enter')
+                        return
+                      keyword.value = keywordInput.value
+                      if (props.keyword)
+                        props.keyword.value = keywordInput.value
+                    }}
+                  />
+                  {keywordInput.value && (
+                    <button
+                      class="btn btn-ghost btn-xs btn-circle h-6 min-h-6 w-6"
+                      type="button"
+                      title="清空搜索"
+                      onClick={clearKeyword}
+                    >
+                      <Icon class="text-base-content/65 text-base" icon={ICON_CLOSE} />
+                    </button>
+                  )}
+                </label>
+                <FileMenu class="relative z-10 shrink-0">
+                  <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
+                  <FilePageSizeSelector
+                    currentPageSize={explorer.page.size.value}
+                    onChangePageSize={explorer.page.changeSize}
+                  />
+                  <FileSortSelector
+                    asc={explorer.page.asc.value || 0}
+                    fc_mix={explorer.page.fc_mix.value || 0}
+                    order={explorer.page.order.value || 'user_ptime'}
+                    onSort={handleSort}
+                  />
+                  <FileViewType
+                    value={viewType.value}
+                    onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
+                  />
+                </FileMenu>
+              </div>
             ),
           }}
         </DialogTitle>
 
         {/* header */}
-        <div class="sticky top-0 min-w-0 overflow-hidden px-6">
-          <FilePath
-            path={explorer.path.value ?? []}
-            onPathClick={handleClickPath}
-          />
+        <div class="border-base-content/10 bg-base-100/55 sticky top-0 z-10 min-w-0 border-b px-6 py-2 backdrop-blur-md">
+          <div class="mt-1 flex min-w-0 items-center gap-3">
+            <div class="min-w-0 flex-1 overflow-hidden">
+              <FilePath
+                path={explorer.path.value ?? []}
+                onPathClick={handleClickPath}
+              />
+            </div>
+          </div>
         </div>
 
         <div ref={scrollRef} class="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
           <FileList
             viewType={viewType.value}
             class="
-              pt-3
+              pt-1
               data-[view-type=card]:gap-3!
               data-[view-type=card]:px-7
             "

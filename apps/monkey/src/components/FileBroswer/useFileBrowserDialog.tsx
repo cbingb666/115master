@@ -28,6 +28,7 @@ export function useFileBrowserDialog() {
 
   function open(options: FileBrowserDialogOptions): Promise<FileBrowserDialogResult | false> {
     const cid = ref(options.defaultCid ?? '0')
+    const keyword = ref('')
     const path = ref<WebApi.Entity.PathItem[] | null>(null)
 
     return new Promise((resolve) => {
@@ -39,6 +40,7 @@ export function useFileBrowserDialog() {
         if (resolved)
           return
         resolved = true
+        keyword.value = ''
         nav.dispose()
         instance.hide()
         resolve(false)
@@ -57,6 +59,7 @@ export function useFileBrowserDialog() {
           <FileBroswer
             title={options.title}
             cid={cid}
+            keyword={keyword}
             defaultCid={options.defaultCid ?? '0'}
             currentPathRef={options.returnPath ? path : undefined}
             nav={nav}
@@ -66,6 +69,7 @@ export function useFileBrowserDialog() {
           if (resolved)
             return
           resolved = true
+          keyword.value = ''
           nav.dispose()
           instance.hide()
           resolve({
@@ -77,6 +81,7 @@ export function useFileBrowserDialog() {
           if (resolved)
             return
           resolved = true
+          keyword.value = ''
           nav.dispose()
           resolve(false)
         },
