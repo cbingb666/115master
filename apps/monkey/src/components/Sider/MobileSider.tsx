@@ -56,7 +56,7 @@ const MobileSider = defineComponent({
         <div
           class="
             sm:hidden
-            border-base-content/5 bg-base-100/30
+            border-base-content/5 bg-base-100/80
             fixed
             top-0 bottom-0
             left-0 z-130
@@ -65,6 +65,7 @@ const MobileSider = defineComponent({
             flex-col
             border-r
             px-4
+            pt-4
             pb-4
             shadow-2xl
             transition-transform duration-300 ease-out
@@ -74,18 +75,6 @@ const MobileSider = defineComponent({
             transform: isOpen.value ? 'translateX(0)' : 'translateX(-100%)',
           }}
         >
-          {/* 关闭按钮 */}
-          <div class="flex justify-end pt-4 pb-2">
-            <button
-              type="button"
-              aria-label="关闭菜单"
-              class="p-2 -mr-2"
-              onClick={close}
-            >
-              <Icon icon="lucide:x" class="text-xl" />
-            </button>
-          </div>
-
           {slots.default?.()}
           <Links>
             {slots.left?.()}
