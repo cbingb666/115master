@@ -19,7 +19,8 @@
 }
 
 @keyframes header-sticky-glass {
-  0%, 30% {
+  0%,
+  30% {
     background: transparent;
     border-color: transparent;
     box-shadow: none;
@@ -34,7 +35,8 @@
 }
 
 @keyframes header-sticky-gradient {
-  0%, 30% {
+  0%,
+  30% {
     opacity: 0;
   }
   100% {

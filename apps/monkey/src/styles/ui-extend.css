@@ -21,8 +21,10 @@
   }
 }
 
-.input,.textarea {
-  &:focus, &:focus-within {
+.input,
+.textarea {
+  &:focus,
+  &:focus-within {
     outline: 0;
   }
 }

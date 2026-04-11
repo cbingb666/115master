@@ -49,7 +49,7 @@ const FileList = defineComponent({
 
         {/* Empty State */}
         {!props.error && !props.loading && props.empty && (
-          <div class="absolute inset-0 flex pt-30 justify-center">
+          <div class="absolute inset-0 flex justify-center pt-30">
             <Empty
               description={props.emptyDescription}
               size="xl"
