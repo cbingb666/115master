@@ -232,7 +232,7 @@ const FileBroswer = defineComponent({
         </DialogTitle>
 
         {/* header */}
-        <div class="border-base-content/10 bg-base-100/55 sticky top-0 z-10 min-w-0 border-b px-6 py-2 backdrop-blur-md">
+        <div class={['border-base-content/10 sticky top-0 z-10 min-w-0 border-b px-6 py-2', viewType.value === 'card' && 'mb-5']}>
           <div class="mt-1 flex min-w-0 items-center gap-3">
             <div class="min-w-0 flex-1 overflow-hidden">
               <FilePath
