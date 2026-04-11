@@ -262,6 +262,9 @@ const FileBroswer = defineComponent({
                 data={item}
                 pathSelect={true}
                 viewType={viewType.value}
+                cid={source.cid.value}
+                order={explorer.page.order.value}
+                asc={explorer.page.asc.value}
                 onClick={() => handleClickItem(item)}
                 onContextmenu={(e: MouseEvent) => handleContextmenu(item, e)}
               >

@@ -275,6 +275,9 @@ const Drive = defineComponent({
               class="data-[view-type=list]:px-3"
               key={item.pc}
               viewType={viewType.value}
+              cid={store.nav.cid}
+              order={store.page.order}
+              asc={store.page.asc}
               {...itemProps(item)}
               onPreview={() => preview(item)}
             />
