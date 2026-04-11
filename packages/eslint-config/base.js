@@ -3,6 +3,9 @@ import { antfu } from '@antfu/eslint-config'
 export const baseConfig = antfu({
   formatters: true,
   vue: true,
+  ignores: [
+    'docs/**',
+  ],
   rules: {
     /** 禁用 alert */
     'no-alert': 'off',
