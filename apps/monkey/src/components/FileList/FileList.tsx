@@ -29,7 +29,7 @@ const FileList = defineComponent({
     },
     emptyDescription: {
       type: String,
-      default: '没有文件',
+      default: '空文件夹',
     },
   },
   setup: (props, { slots }) => {
@@ -49,10 +49,12 @@ const FileList = defineComponent({
 
         {/* Empty State */}
         {!props.error && !props.loading && props.empty && (
-          <Empty
-            class="absolute inset-0 m-auto"
-            description={props.emptyDescription}
-          />
+          <div class="absolute inset-0 flex pt-30 justify-center">
+            <Empty
+              description={props.emptyDescription}
+              size="xl"
+            />
+          </div>
         )}
 
         {/* Content */}
