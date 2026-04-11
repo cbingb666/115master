@@ -66,6 +66,21 @@ const FileItem = defineComponent({
       type: Function as PropType<(data: WebApi.Entity.FilesItem) => void>,
       default: () => {},
     },
+    /** 文件夹 CID（用于图片预览） */
+    cid: {
+      type: String,
+      default: undefined,
+    },
+    /** 排序字段 */
+    order: {
+      type: String as PropType<WebApi.Entity.Sorter['o']>,
+      default: undefined,
+    },
+    /** 是否升序 */
+    asc: {
+      type: Number as PropType<WebApi.Entity.Sorter['asc']>,
+      default: undefined,
+    },
   },
   setup: (props, { slots, attrs }) => {
     const {
@@ -88,6 +103,9 @@ const FileItem = defineComponent({
     } = useFileItem({
       data: props.data,
       pathSelect: props.pathSelect,
+      cid: props.cid,
+      order: props.order,
+      asc: props.asc,
       onPreview: props.onPreview,
     })
 
