@@ -1,17 +1,7 @@
 import type { SlotsType } from 'vue'
-import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
-import PKG from '@/../package.json'
-import { useSponsorDialog } from '@/components/Sponsor/useSponsorDialog'
-import { ICON_GITHUB, ICON_QA, ICON_SPONSOR } from '@/icons'
-
-interface ExternalLinkItem {
-  icon?: string
-  text?: string
-  title?: string
-  href?: string
-  onClick?: () => void
-}
+import DesktopSider from './DesktopSider'
+import MobileSider from './MobileSider'
 
 const Sider = defineComponent({
   name: 'Sider',
@@ -20,79 +10,16 @@ const Sider = defineComponent({
     left: () => void
     right: () => void
   }>,
-  setup: (_, { slots }) => {
-    const openSponsor = useSponsorDialog()
-
-    const links: ExternalLinkItem[] = [
-      {
-        icon: ICON_GITHUB,
-        href: PKG.homepage,
-        title: 'GitHub',
-      },
-      {
-        icon: ICON_SPONSOR,
-        title: '赞助',
-        onClick: openSponsor,
-      },
-      {
-        icon: ICON_QA,
-        href: `${PKG.homepage}/discussions/categories/q-a`,
-        title: 'Q&A',
-      },
-      {
-        href: `${PKG.homepage}/releases/tag/v${PKG.version}`,
-        title: `V${PKG.version} Release Notes`,
-        text: `V${PKG.version}`,
-      },
-    ]
-
+  setup(_, { slots }) {
     return () => (
-      <div
-        class="
-          border-base-content/5 bg-base-100/30
-          fixed
-          top-0 bottom-0
-          left-0 z-100
-          flex
-          w-(--sider-width)
-          flex-col
-          border-r
-          px-4
-          pb-4
-          shadow-2xl
-          max-sm:hidden
-        "
-      >
-        {slots.default?.()}
-
-        <div class="flex flex-wrap gap-2">
-          {links.map(item => item.onClick
-            ? (
-                <button
-                  key={item.title}
-                  class="flex cursor-pointer items-center justify-between text-xs"
-                  title={item.title}
-                  onClick={item.onClick}
-                >
-                  {item.icon && <Icon class="text-lg" icon={item.icon} />}
-                  {item.text && <span class="text-base-content/50">{item.text}</span>}
-                </button>
-              )
-            : (
-                <a
-                  key={item.href}
-                  class="flex items-baseline-last justify-between text-xs"
-                  href={item.href}
-                  target="_blank"
-                  title={item.title}
-                >
-                  {item.icon && <Icon class="text-lg" icon={item.icon} />}
-                  {item.text && <span class="text-base-content/50">{item.text}</span>}
-                </a>
-              ),
-          )}
-        </div>
-      </div>
+      <>
+        <DesktopSider>
+          {{ default: slots.default, left: slots.left }}
+        </DesktopSider>
+        <MobileSider>
+          {{ default: slots.default, left: slots.left }}
+        </MobileSider>
+      </>
     )
   },
 })
