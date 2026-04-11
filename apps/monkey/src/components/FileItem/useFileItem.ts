@@ -3,6 +3,7 @@ import { useAsyncState } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
 import { router } from '@/app/router'
 import { useDialog } from '@/components'
+import { useFolderImagePreview } from '@/hooks/useFolderImagePreview'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { actressFaceDB } from '@/utils/actressFaceDB'
 import { extractEmojis } from '@/utils/string'
@@ -22,16 +23,30 @@ interface ActressFaceDBActress {
   timestamp: number
 }
 
-export function useFileItem(options: {
+interface UseFileItemOptions {
   data: WebApi.Entity.FilesItem
   pathSelect?: boolean
+  cid?: string
+  order?: WebApi.Entity.Sorter['o']
+  asc?: WebApi.Entity.Sorter['asc']
   onPreview?: (data: WebApi.Entity.FilesItem) => void
-}) {
+}
+
+export function useFileItem(options: UseFileItemOptions) {
   const { data, onPreview } = options
   const dialog = useDialog()
   const itemRef = shallowRef<HTMLElement>()
   const isDrogzone = shallowRef(false)
   const isDragging = shallowRef(false)
+
+  /** 添加 folder image preview 支持 */
+  const folderPreview = options.cid
+    ? useFolderImagePreview({
+        cid: options.cid,
+        order: options.order ?? 'user_ptime',
+        asc: options.asc ?? 0,
+      })
+    : null
 
   const isVideo = computed(() => data.iv === 1)
   const isFolder = computed(() => data.fc === 0)
@@ -118,8 +133,14 @@ export function useFileItem(options: {
       }
     }
 
+    // 图片预览：优先使用 folder preview
     if (data.u) {
-      onPreview?.(data)
+      if (folderPreview) {
+        await folderPreview.open(data)
+      }
+      else {
+        onPreview?.(data)
+      }
       return
     }
 
