@@ -159,8 +159,14 @@ const FileItemThumbnail = defineComponent({
             <span class="
               absolute inset-0 m-auto flex items-center justify-center
               drop-shadow-sm drop-shadow-blue-500
-              group-data-[view-type=card]:translate-y-1 group-data-[view-type=card]:text-5xl
-              group-data-[view-type=list]:translate-y-0.5 group-data-[view-type=list]:text-2xl
+              group-data-[view-type=card]:translate-y-1
+              group-data-[view-type=card]:text-xl
+              group-data-[view-type=list]:translate-y-0.5
+              group-data-[view-type=list]:text-lg
+              sm:group-data-[view-type=card]:text-xl
+              sm:group-data-[view-type=list]:text-xl
+              lg:group-data-[view-type=card]:text-4xl
+              lg:group-data-[view-type=list]:text-2xl
             "
             >
               {props.emoji}
