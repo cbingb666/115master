@@ -18,3 +18,9 @@ export const ICON_RIGHT = 'bytesize:chevron-right'
 export const ICON_LEFT = 'bytesize:chevron-left'
 // 移动文件
 export const ICON_DRIVE_FILE_MOVE = 'material-symbols:drive-file-move-outline'
+// Aria2 推送
+export const ICON_ARIA2 = 'material-symbols:cloud-download-rounded'
+// 设置齿轮
+export const ICON_ARIA2_SETTINGS = 'material-symbols:settings-rounded'
+// 下拉箭头
+export const ICON_CHEVRON_DOWN = 'material-symbols:keyboard-arrow-down-rounded'

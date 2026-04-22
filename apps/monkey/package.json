@@ -54,6 +54,7 @@
     "lodash": "^4.17.21",
     "m3u8-parser": "^7.2.0",
     "mitt": "^3.0.1",
+    "nanoid": "^5.1.9",
     "photoswipe": "^5.4.4",
     "tailwindcss": "^4.1.7",
     "vue": "^3.5.13"

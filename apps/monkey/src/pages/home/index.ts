@@ -1,3 +1,6 @@
+import { createApp, h } from 'vue'
+import Aria2SettingsDialog from '@/components/Aria2SettingsDialog/index.vue'
+import MasterToast from '@/components/MasterToast/index.vue'
 import { registerMagnetTaskHandler } from '@/pages/magnet'
 import { ModManager } from './BaseMod'
 import FileListMod from './FileListMod'
@@ -36,6 +39,22 @@ class HomePage {
       new TopFilePathMod(),
       new TopHeaderMod(),
     ])
+    this.mountToast()
+    this.mountAria2SettingsDialog()
+  }
+
+  /** 挂载 MasterToast 到主文档 body */
+  private mountToast(): void {
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    createApp({ render: () => h(MasterToast) }).mount(host)
+  }
+
+  /** 挂载 Aria2 设置对话框到主文档 body */
+  private mountAria2SettingsDialog(): void {
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    createApp({ render: () => h(Aria2SettingsDialog) }).mount(host)
   }
 }
 

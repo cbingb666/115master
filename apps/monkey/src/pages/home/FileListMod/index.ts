@@ -5,6 +5,7 @@ import { appLogger } from '@/utils/logger'
 import { isReload } from '@/utils/route'
 import { FileItemModLoader } from './FileItemLoader'
 import { FileItemModActressInfo } from './FileItemMod/actressInfo'
+import { FileItemModAria2Push } from './FileItemMod/aria2Push'
 import { FileItemModClickPlay } from './FileItemMod/clickPlay'
 import { FileItemModDownload } from './FileItemMod/download'
 import { FileItemModExtInfo } from './FileItemMod/extInfo'
@@ -20,6 +21,7 @@ const itemMods = [
   FileItemModActressInfo,
   FileItemModVideoCover,
   FileItemModExtMenu,
+  FileItemModAria2Push,
   FileItemModClickPlay,
   FileItemModDownload,
 ]
