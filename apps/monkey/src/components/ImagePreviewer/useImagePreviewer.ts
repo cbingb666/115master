@@ -82,7 +82,7 @@ export function useImagePreviewer(options: UseImagePreviewerOptions = {}) {
         '--fancybox-backdrop-bg': 'rgba(0, 0, 0, 1)',
       },
       Carousel: {
-        transition: 'crossfade',
+        transition: false,
         Toolbar: {
           display: {
             left: ['counter'],
