@@ -79,13 +79,20 @@ export function useImagePreviewer(options: UseImagePreviewerOptions = {}) {
     Fancybox.show(buildDataSource(initialImages), {
       startIndex: pageStartIndex,
       mainStyle: {
-        '--fancybox-backdrop-bg': 'rgba(0, 0, 0, 1)',
+        '--fancybox-backdrop-bg': 'rgba(0, 0, 0, 0.98)',
       },
       Carousel: {
         transition: false,
         Toolbar: {
           display: {
             left: ['counter'],
+            middle: [
+              'rotateCCW',
+              'rotateCW',
+              'flipX',
+              'flipY',
+              'reset',
+            ],
             right: ['thumbs', 'download', 'fullscreen', 'close'],
           },
         },
