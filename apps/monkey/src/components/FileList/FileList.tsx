@@ -62,7 +62,7 @@ const FileList = defineComponent({
           <div
             ref={props.containerRef}
             class={[
-              'relative w-full focus-within:outline-none',
+              'relative w-full min-h-full focus-within:outline-none',
               // card
               'data-[view-type=card]:grid data-[view-type=card]:grid-cols-2',
               'data-[view-type=card]:items-stretch data-[view-type=card]:gap-3',
