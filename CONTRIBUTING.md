@@ -35,6 +35,16 @@ pnpm test:coverage    # 测试覆盖率报告
 pnpm analyze          # 构建分析
 ```
 
+## 测试
+
+```bash
+pnpm test          # 运行所有测试
+pnpm test:watch    # 监听模式运行测试
+pnpm test:coverage # 运行测试并生成覆盖率报告
+```
+
+覆盖率使用 `v8` provider，输出 `text` 和 `html` 两种报告格式。运行 `pnpm test:coverage` 后，各包的覆盖率报告会生成在对应包的 `coverage/` 目录下。提交 PR 前建议先运行覆盖率检查，确保核心逻辑有测试覆盖。
+
 ## 版本管理
 
 本项目使用 [Changesets](https://github.com/changesets/changesets) 管理版本和 CHANGELOG。
@@ -65,5 +75,6 @@ pnpm analyze          # 构建分析
 1. Fork 本仓库并创建分支
 2. 完成开发和测试
 3. 运行 `pnpm changeset` 添加变更记录
-4. 确保 `pnpm type-check` 和 `pnpm lint` 通过
-5. 提交 PR
+4. 确保 `pnpm type-check`、`pnpm lint` 和 `pnpm test` 通过
+5. 建议运行 `pnpm test:coverage` 检查测试覆盖情况
+6. 提交 PR
