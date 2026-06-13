@@ -10,6 +10,7 @@ import {
 } from '../constants/urls.ts'
 import { Drive115Error, Drive115ErrorCode } from '../error.ts'
 import { normalizeResponse } from '../response.ts'
+import { DownloadResultSchema } from '../schemas.ts'
 import { getXUrl } from '../utils/url.ts'
 import { BaseApiClient } from './base.ts'
 
@@ -68,9 +69,17 @@ export class VideoApiClient extends BaseApiClient {
     const result = JSON.parse(
       this.crypto115.m115_decode(res.data, encoded.key),
     )
-    const downloadInfo = Object.values(result)[0] as DownloadResult
+    const entries = Object.values(result)
+    const parsed = DownloadResultSchema.safeParse(entries[0])
+    if (!parsed.success) {
+      throw new Drive115Error(
+        'Invalid download response',
+        Drive115ErrorCode.DecodeError,
+        parsed.error,
+      )
+    }
 
-    return downloadInfo
+    return parsed.data
   }
 
   /** 获取 m3u8 根 url */

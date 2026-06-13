@@ -38,7 +38,8 @@
   "dependencies": {
     "@115master/shared": "workspace:*",
     "big-integer": "^1.6.52",
-    "blueimp-md5": "^2.19.0"
+    "blueimp-md5": "^2.19.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@115master/eslint-config": "workspace:*",
