@@ -46,7 +46,7 @@ export class FileItemModDownload extends FileItemModBase {
         e.preventDefault()
 
         try {
-          const res = await drive115.getFileDownloadUrl(
+          const res = await drive115.video.getFileDownloadUrl(
             this.itemInfo.attributes.pick_code,
           )
           if (res.url.url) {

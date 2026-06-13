@@ -1,4 +1,4 @@
-import type { Entity, Sorter } from '@115master/drive115'
+import type { Base, Entity } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Icon } from '@iconify/vue'
 import { useStorage, useTitle } from '@vueuse/core'
@@ -150,7 +150,7 @@ const Drive = defineComponent({
       router.push({ name: 'drive', params: { cid: data.cid === '0' ? '' : data.cid } })
     }
 
-    async function handleSort(order: Sorter['o'], asc: Sorter['asc'], fc_mix: Sorter['fc_mix']) {
+    async function handleSort(order: Base.Sorter['o'], asc: Base.Sorter['asc'], fc_mix: Base.Sorter['fc_mix']) {
       await store.changeSort(order, asc, fc_mix)
       store.page.changePage(1)
       store.refresh()

@@ -1,5 +1,5 @@
 import type { Entity } from '@115master/drive115'
-import { MarkStatus } from '@115master/drive115'
+import { MarkStatus } from '@115master/drive115/clients/file'
 import { useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'

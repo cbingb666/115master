@@ -1,7 +1,4 @@
-import type { ILogger } from '@115master/shared'
-import type { DownloadResult, M3u8Item } from './clients/video/model.ts'
 import type { Drive115CoreDeps } from './core/deps.ts'
-import type { FileApi } from './share/index.ts'
 import { FileApiClient } from './clients/file/index.ts'
 import { ImageApiClient } from './clients/image/index.ts'
 import { OfflineApiClient } from './clients/offline/index.ts'
@@ -11,10 +8,7 @@ import { VideoApiClient } from './clients/video/index.ts'
 /**
  * Drive115 依赖配置
  */
-export interface Drive115Deps extends Drive115CoreDeps {
-  /** 日志实例 */
-  logger?: ILogger
-}
+export interface Drive115Deps extends Drive115CoreDeps {}
 
 /**
  * 115 驱动入口
@@ -31,61 +25,11 @@ export class Drive115 {
   /** 图片 API */
   image: ImageApiClient
 
-  private logger?: ILogger
-
   constructor(deps: Drive115Deps) {
     this.file = new FileApiClient(deps)
     this.video = new VideoApiClient(deps)
     this.offline = new OfflineApiClient(deps)
     this.user = new UserApiClient(deps)
     this.image = new ImageApiClient(deps)
-    this.logger = deps.logger?.sub('Drive115')
-  }
-
-  /** 获取文件列表 */
-  async getFiles(params: FileApi.Req.GetFiles) {
-    return this.file.getFilesWithFallback(params)
-  }
-
-  /** 获取播放列表 */
-  async getPlaylist(cid: string, offset = 0) {
-    const params: FileApi.Req.GetFiles = {
-      aid: 1,
-      cid,
-      offset,
-      limit: 1150,
-      show_dir: 0,
-      nf: '',
-      qid: 0,
-      type: 4,
-      source: '',
-      format: 'json',
-      is_q: '',
-      is_share: '',
-      r_all: 1,
-      o: 'file_name',
-      asc: 1,
-      cur: 1,
-      natsort: 1,
-    }
-
-    return this.getFiles(params)
-  }
-
-  /** 获取 m3u8 列表 */
-  async getM3u8(pickcode: string): Promise<M3u8Item[]> {
-    const url = this.video.getM3u8Url(pickcode)
-    return this.video.getM3u8Info(url, pickcode)
-  }
-
-  /** 获取下载地址 */
-  async getFileDownloadUrl(pickcode: string): Promise<DownloadResult> {
-    try {
-      return await this.video.proPostAppChromeDownurl(pickcode)
-    }
-    catch (error) {
-      this.logger?.warn('第一种获取下载链接失败', error)
-      return await this.video.webApiFilesDownload(pickcode)
-    }
   }
 }

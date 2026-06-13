@@ -20,6 +20,14 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./clients/file": {
+      "types": "./dist/clients/file/index.d.ts",
+      "default": "./dist/clients/file/index.js"
+    },
+    "./clients/video": {
+      "types": "./dist/clients/video/index.d.ts",
+      "default": "./dist/clients/video/index.js"
     }
   },
   "main": "./dist/index.js",
@@ -36,7 +44,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist node_modules/.tmp/tsconfig.tsbuildinfo"
   },
   "dependencies": {
     "@115master/shared": "workspace:*",

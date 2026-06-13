@@ -444,7 +444,7 @@ async function handleLocalPlay(player: LocalPlayer) {
   if (!params.pickCode.value) {
     throw new Error('pickCode is required')
   }
-  const download = await drive115.getFileDownloadUrl(params.pickCode.value)
+  const download = await drive115.video.getFileDownloadUrl(params.pickCode.value)
   switch (player) {
     case 'mpv':
       open(webLinkShortcutsMpv(download))

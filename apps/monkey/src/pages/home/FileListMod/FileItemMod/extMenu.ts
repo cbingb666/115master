@@ -1,6 +1,6 @@
 import { GM_openInTab } from '$'
+import { CONSTANT } from '@115master/drive115'
 import iinaIcon from '@/assets/icons/iina-icon.png'
-import { VOD_URL_115 } from '@/constants/115'
 import { FileListType, IvType } from '@/pages/home/types'
 import { drive115 } from '@/utils/drive115Instance'
 import { isMac } from '@/utils/platform'
@@ -42,7 +42,7 @@ export class FileItemModExtMenu extends FileItemModBase {
           GM_openInTab(
             new URL(
               `/?pickcode=${this.itemInfo.attributes.pick_code}&share_id=0`,
-              VOD_URL_115,
+              CONSTANT.URL_115.VOD,
             ).href,
             { active: true },
           )
@@ -58,7 +58,7 @@ export class FileItemModExtMenu extends FileItemModBase {
               visible: this.itemInfo.attributes.iv === IvType.Yes,
               click: async () => {
                 try {
-                  const download = await drive115.getFileDownloadUrl(
+                  const download = await drive115.video.getFileDownloadUrl(
                     this.itemInfo.attributes.pick_code,
                   )
                   open(webLinkIINA(download))

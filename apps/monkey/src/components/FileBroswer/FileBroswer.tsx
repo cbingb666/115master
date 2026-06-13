@@ -1,4 +1,4 @@
-import type { Entity, Sorter } from '@115master/drive115'
+import type { Base, Entity } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
@@ -163,9 +163,9 @@ const FileBroswer = defineComponent({
     }
 
     async function handleSort(
-      order: Sorter['o'],
-      asc: Sorter['asc'],
-      fc_mix: Sorter['fc_mix'],
+      order: Base.Sorter['o'],
+      asc: Base.Sorter['asc'],
+      fc_mix: Base.Sorter['fc_mix'],
     ) {
       await explorer.changeSort(order, asc, fc_mix)
       explorer.page.changePage(1)

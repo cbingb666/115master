@@ -1,7 +1,7 @@
 import type { VideoSource } from '@/components/XPlayer'
+import { QUALITY_NUM_MAP } from '@115master/drive115/clients/video'
 import { ref } from 'vue'
 import { VIDEO_SOURCE_EXTENSION } from '@/components/XPlayer/index.const'
-import { qualityNumMap } from '@/constants/quality'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFileExtensionByUrl } from '@/utils/file'
 import { appLogger } from '@/utils/logger'
@@ -16,8 +16,8 @@ export function useDataVideoSources() {
 
   const fetch = async (pickCode: string) => {
     const [download, m3u8List] = await Promise.allSettled([
-      drive115.getFileDownloadUrl(pickCode),
-      drive115.getM3u8(pickCode),
+      drive115.video.getFileDownloadUrl(pickCode),
+      drive115.video.getM3u8(pickCode),
     ])
 
     if (download.status === 'fulfilled') {
@@ -63,7 +63,7 @@ export function useDataVideoSources() {
           extension: VIDEO_SOURCE_EXTENSION.m3u8,
           quality: item.quality,
           displayQuality:
-            qualityNumMap[item.quality as keyof typeof qualityNumMap],
+            QUALITY_NUM_MAP[item.quality as keyof typeof QUALITY_NUM_MAP],
         })),
       )
     }

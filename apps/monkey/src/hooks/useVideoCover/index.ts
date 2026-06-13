@@ -201,7 +201,7 @@ async function getVideoCoversFromCache(sha1: string, times: number[]): Promise<V
  */
 async function getVideoCover(sha1: string, pickCode: string, times: number[]): Promise<VideoCover[]> {
   /** 获取 m3u8 列表 */
-  const m3u8List = await drive115.getM3u8(pickCode)
+  const m3u8List = await drive115.video.getM3u8(pickCode)
 
   /** 获取源 */
   const source = m3u8List.sort((a, b) => a.quality - b.quality)[0]

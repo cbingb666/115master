@@ -1,4 +1,4 @@
-export const qualityNumMap = {
+export const QUALITY_NUM_MAP = {
   360: '360P',
   480: '480P',
   720: '720P',
@@ -7,7 +7,7 @@ export const qualityNumMap = {
   9999: '原画',
 }
 
-export const qualityCodeMap = {
+export const QUALITY_CODE_MAP = {
   '3G': 360,
   'SD': 480,
   'HD': 720,

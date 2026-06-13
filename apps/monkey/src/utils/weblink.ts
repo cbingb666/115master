@@ -1,4 +1,4 @@
-import type { DownloadResult } from '@115master/drive115'
+import type { DownloadResult } from '@115master/drive115/clients/video'
 /**
  * 使用 shortcuts 打开 mpv 播放网页
  */

@@ -1,6 +1,6 @@
 import type { FileApi } from '@115master/drive115'
 import { GM_xmlhttpRequest } from '$'
-import { NORMAL_URL_115 } from '@/constants/115'
+import { CONSTANT } from '@115master/drive115'
 import { ICON_FILE_FOLDER, ICON_FILE_IMAGE } from '@/icons'
 
 export class Utils115 {
@@ -141,7 +141,7 @@ export class Utils115 {
     if (ico === 'txt') {
       params.set('t', '1')
     }
-    return new URL(`?${params.toString()}`, NORMAL_URL_115)
+    return new URL(`?${params.toString()}`, CONSTANT.URL_115.NORMAL)
   }
 
   /**

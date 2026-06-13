@@ -1,4 +1,4 @@
-import type { Entity, FileApi, Sorter } from '@115master/drive115'
+import type { Base, Entity, FileApi } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { Router } from 'vue-router'
 import type { NavSource } from '@/hooks/useDriveNav/types'
@@ -152,7 +152,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
   }
 
   /** 切换排序并保存到服务器 */
-  async function changeSort(o: Sorter['o'], a: Sorter['asc'], f: Sorter['fc_mix']) {
+  async function changeSort(o: Base.Sorter['o'], a: Base.Sorter['asc'], f: Base.Sorter['fc_mix']) {
     page.changeSort(o, a, f)
     if (isSearch.value)
       return

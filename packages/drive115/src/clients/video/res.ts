@@ -1,4 +1,4 @@
-import type { ApiResponseBase } from '../../share/shared.ts'
+import type { ApiResponseBase } from '../../share/base.ts'
 
 /** 应用浏览器下载 */
 export type FilesAppChromeDown = ApiResponseBase<{

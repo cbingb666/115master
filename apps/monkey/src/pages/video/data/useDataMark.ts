@@ -1,5 +1,5 @@
 import type { useDataFileInfo } from './useDataFileInfo'
-import { MarkStatus } from '@115master/drive115'
+import { MarkStatus } from '@115master/drive115/clients/file'
 import { shallowRef, watch } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
 

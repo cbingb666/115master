@@ -1,5 +1,5 @@
+import type { ApiResponseBase } from '../../share/base.ts'
 import type { FilesItem } from '../../share/entity.ts'
-import type { ApiResponseBase } from '../../share/shared.ts'
 
 /** 获取图片列表 */
 export type GetFilesImglist = ApiResponseBase<{

@@ -1,6 +1,6 @@
 import type { Req, Res } from './index.ts'
 import { normalizeResponse } from '../../core/response.ts'
-import { NORMAL_URL_115 } from '../../share/constants/urls.ts'
+import { URL_115 } from '../../share/constant.ts'
 import { BaseApiClient } from '../base.ts'
 
 /**
@@ -10,7 +10,7 @@ export class OfflineApiClient extends BaseApiClient {
   /** 获取离线空间 */
   async getOfflineSpace(data: Req.OfflineSpace = {}) {
     const response = await this.fetchRequest.get(
-      new URL('/web/lixian/space', NORMAL_URL_115).href,
+      new URL('/web/lixian/space', URL_115.NORMAL).href,
       {
         params: {
           ct: 'lixian',
@@ -27,7 +27,7 @@ export class OfflineApiClient extends BaseApiClient {
   /** 获取离线配额 */
   async getOfflineGetQuotaPackageInfo(data: Req.OfflineGetQuotaPackageInfo = {}) {
     const response = await this.fetchRequest.get(
-      new URL('/web/lixian', NORMAL_URL_115).href,
+      new URL('/web/lixian', URL_115.NORMAL).href,
       {
         params: {
           ct: 'lixian',
@@ -43,7 +43,7 @@ export class OfflineApiClient extends BaseApiClient {
   /** 添加一组离线任务 */
   async postOfflineAddUrls(data: Req.OfflineAddUrls) {
     const response = await this.fetchRequest.post(
-      new URL('/web/lixian/', NORMAL_URL_115).href,
+      new URL('/web/lixian/', URL_115.NORMAL).href,
       {
         params: {
           ct: 'lixian',

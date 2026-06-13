@@ -1,4 +1,4 @@
-import { NORMAL_URL_115 } from '@/constants/115'
+import { CONSTANT } from '@115master/drive115'
 import { FileType } from '@/pages/home/types'
 import { FileItemModBase } from './base'
 
@@ -36,7 +36,7 @@ export class FileItemModFolderLink extends FileItemModBase {
     if (aNode.href.includes('javascript:;')) {
       const newHref = new URL(
         `/?cid=${this.itemInfo.attributes.cate_id}&offset=0&tab=&mode=wangpan`,
-        NORMAL_URL_115,
+        CONSTANT.URL_115.NORMAL,
       ).href
       aNode.href = newHref
     }

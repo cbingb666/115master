@@ -9,7 +9,7 @@ import { drive115 } from '@/utils/drive115Instance'
 export function useDataPlaylist() {
   const playlist = useAsyncState(
     async (cid: string) => {
-      const res = await drive115.getPlaylist(cid)
+      const res = await drive115.file.getPlaylist(cid)
       return res
     },
     null,

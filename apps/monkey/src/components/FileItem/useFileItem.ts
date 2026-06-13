@@ -1,4 +1,4 @@
-import type { Entity, Sorter } from '@115master/drive115'
+import type { Base, Entity } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
 import { router } from '@/app/router'
@@ -28,8 +28,8 @@ interface UseFileItemOptions {
   data: Entity.FilesItem
   pathSelect?: boolean
   cid?: string
-  order?: Sorter['o']
-  asc?: Sorter['asc']
+  order?: Base.Sorter['o']
+  asc?: Base.Sorter['asc']
   onPreview?: (data: Entity.FilesItem) => void
 }
 

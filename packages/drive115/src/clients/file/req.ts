@@ -1,4 +1,4 @@
-import type { BaseParams, PaginationParams, Sorter } from '../../share/shared.ts'
+import type { BaseParams, PaginationParams, Sorter } from '../../share/base.ts'
 
 /** 获取文件搜索结果请求参数 */
 export interface GetFilesSearch extends BaseParams, PaginationParams, Sorter {

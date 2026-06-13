@@ -1,4 +1,4 @@
-import type { ApiResponseBase } from '../../share/shared.ts'
+import type { ApiResponseBase } from '../../share/base.ts'
 
 /** 获取用户信息 */
 export type UserAq = ApiResponseBase<{

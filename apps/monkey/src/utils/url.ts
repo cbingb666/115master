@@ -1,4 +1,4 @@
-export { getXUrl } from '@115master/drive115'
+export { getXUrl } from '@115master/drive115/clients/video'
 
 /**
  * 获取 url 参数

@@ -2,14 +2,9 @@ import type { Req, Res } from './index.ts'
 import type { DownloadResult, M3u8Item } from './model.ts'
 import { Drive115Error, Drive115ErrorCode } from '../../core/error.ts'
 import { normalizeResponse } from '../../core/response.ts'
-import { qualityCodeMap } from '../../share/constants/quality.ts'
-import {
-  NORMAL_URL_115,
-  PRO_API_URL_115,
-  VOD_URL_115,
-  WEB_API_URL_115,
-} from '../../share/constants/urls.ts'
+import { URL_115 } from '../../share/constant.ts'
 import { BaseApiClient } from '../base.ts'
+import { QUALITY_CODE_MAP } from './constant.ts'
 import { DownloadResultSchema } from './schema.ts'
 import { getXUrl } from './url.ts'
 
@@ -20,7 +15,7 @@ export class VideoApiClient extends BaseApiClient {
   /** 获取原文件地址 (普通下载，有限制下载大小) */
   async webApiFilesDownload(pickcode: string): Promise<DownloadResult> {
     const response = await this.fetchRequest.get(
-      new URL(`/files/download?pickcode=${pickcode}`, WEB_API_URL_115).href,
+      new URL(`/files/download?pickcode=${pickcode}`, URL_115.WEB_API).href,
     )
 
     const res = normalizeResponse<Res.FilesDownload>(await response.json())
@@ -53,7 +48,7 @@ export class VideoApiClient extends BaseApiClient {
     const data = `data=${encodeURIComponent(encoded.data)}`
 
     const response = await this.proApiRequest.post(
-      new URL(`/app/chrome/downurl?t=${tm}&c=9999`, PRO_API_URL_115).href,
+      new URL(`/app/chrome/downurl?t=${tm}&c=9999`, URL_115.PRO_API).href,
       {
         body: data,
       },
@@ -84,7 +79,7 @@ export class VideoApiClient extends BaseApiClient {
   /** 获取视频文件信息 */
   async getFilesVideo(params: Req.GetFilesVideo) {
     const response = await this.fetchRequest.get(
-      new URL('/files/video', WEB_API_URL_115).href,
+      new URL('/files/video', URL_115.WEB_API).href,
       { params },
     )
 
@@ -93,7 +88,7 @@ export class VideoApiClient extends BaseApiClient {
 
   /** 获取 m3u8 根 url */
   getM3u8Url(pickcode: string): string {
-    return new URL(`/api/video/m3u8/${pickcode}.m3u8`, NORMAL_URL_115).href
+    return new URL(`/api/video/m3u8/${pickcode}.m3u8`, URL_115.NORMAL).href
   }
 
   /** 解析 m3u8 列表 */
@@ -117,7 +112,7 @@ export class VideoApiClient extends BaseApiClient {
       const normalized = normalizeResponse<Res.VideoM3u8>(res)
       if (normalized.state === false) {
         if (normalized.code === Drive115ErrorCode.CaptchaRequired) {
-          const verifyUrl = new URL(`?pickcode=${pickcode}`, VOD_URL_115).href
+          const verifyUrl = new URL(`?pickcode=${pickcode}`, URL_115.VOD).href
           throw new Drive115Error(
             '你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~',
             Drive115ErrorCode.CaptchaRequired,
@@ -143,7 +138,7 @@ export class VideoApiClient extends BaseApiClient {
           m3u8List.push({
             name,
             quality:
-              qualityCodeMap[name as unknown as keyof typeof qualityCodeMap],
+              QUALITY_CODE_MAP[name as unknown as keyof typeof QUALITY_CODE_MAP],
             url: getXUrl(url),
           })
         }
@@ -153,5 +148,22 @@ export class VideoApiClient extends BaseApiClient {
     // 按照 UD HD BD 排序
     m3u8List.sort((a, b) => b.quality - a.quality)
     return m3u8List
+  }
+
+  /** 获取 m3u8 列表 */
+  async getM3u8(pickcode: string): Promise<M3u8Item[]> {
+    const url = this.getM3u8Url(pickcode)
+    return this.getM3u8Info(url, pickcode)
+  }
+
+  /** 获取下载地址 */
+  async getFileDownloadUrl(pickcode: string): Promise<DownloadResult> {
+    try {
+      return await this.proPostAppChromeDownurl(pickcode)
+    }
+    catch (error) {
+      this.deps.logger?.warn('第一种获取下载链接失败', error)
+      return await this.webApiFilesDownload(pickcode)
+    }
   }
 }
