@@ -1,16 +1,7 @@
-type ResBase<T> = {
-  state: boolean
-  code: number
-  errNo: number
-  error: string
-  error_msg: string
-} & T
-
-/** 获取视频 m3u8 地址 */
-export type VideoM3u8 = ResBase<string>
+import type { ApiResponseBase } from '../../api/entity.ts'
 
 /** 获取离线空间 */
-export type OfflineSpace = ResBase<{
+export type OfflineSpace = ApiResponseBase<{
   /** 签名 */
   sign: string
   bt_url: string
@@ -22,7 +13,7 @@ export type OfflineSpace = ResBase<{
 }>
 
 /** 获取离线配额 */
-export type OfflineGetQuotaPackageInfo = ResBase<{
+export type OfflineGetQuotaPackageInfo = ApiResponseBase<{
   /** 总计 */
   count: number
   /** 剩余 */
@@ -46,8 +37,8 @@ export type OfflineGetQuotaPackageInfo = ResBase<{
 }>
 
 /** 添加一组离线任务 */
-export type OfflineAddUrls = ResBase<{
-  result: ResBase<{
+export type OfflineAddUrls = ApiResponseBase<{
+  result: ApiResponseBase<{
     info_hash: string
     state: boolean
     files: {

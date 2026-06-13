@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
@@ -46,7 +46,7 @@ const FileBroswer = defineComponent({
       required: false,
     },
     currentPathRef: {
-      type: Object as () => Ref<Partial<WebApi.Entity.PathItem>[] | null>,
+      type: Object as () => Ref<Partial<Entity.PathItem>[] | null>,
       required: false,
     },
     nav: {
@@ -81,9 +81,9 @@ const FileBroswer = defineComponent({
     const { deleteBatch } = useDeleteAction()
     const contextmenuShow = shallowRef(false)
     const contextmenuPosition = shallowRef({ x: 0, y: 0 })
-    const contextmenuItem = shallowRef<WebApi.Entity.FilesItem | null>(null)
+    const contextmenuItem = shallowRef<Entity.FilesItem | null>(null)
 
-    function handleContextmenu(item: WebApi.Entity.FilesItem, e: MouseEvent) {
+    function handleContextmenu(item: Entity.FilesItem, e: MouseEvent) {
       e.preventDefault()
       contextmenuItem.value = item
       contextmenuPosition.value = { x: e.clientX, y: e.clientY }
@@ -149,21 +149,23 @@ const FileBroswer = defineComponent({
         props.currentPathRef.value = p
     }, { immediate: true })
 
-    function handleClickPath(data: WebApi.Entity.PathItem) {
+    function handleClickPath(data: Entity.PathItem) {
       nav.push(data.cid)
     }
 
-    function handleClickItem(data: WebApi.Entity.FilesItem) {
+    function handleClickItem(data: Entity.FilesItem) {
       if (keyword.value) {
         clearKeyword()
       }
-      nav.push(data.cid)
+      if (data.fc === 0) {
+        nav.push(data.cid)
+      }
     }
 
     async function handleSort(
-      order: WebApi.Entity.Sorter['o'],
-      asc: WebApi.Entity.Sorter['asc'],
-      fc_mix: WebApi.Entity.Sorter['fc_mix'],
+      order: Entity.Sorter['o'],
+      asc: Entity.Sorter['asc'],
+      fc_mix: Entity.Sorter['fc_mix'],
     ) {
       await explorer.changeSort(order, asc, fc_mix)
       explorer.page.changePage(1)

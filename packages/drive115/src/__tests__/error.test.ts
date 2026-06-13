@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Drive115Error, Drive115ErrorCode } from '../error.ts'
+import { Drive115Error, Drive115ErrorCode } from '../core/error.ts'
 
 describe('drive115Error', () => {
   it('should hold message, code, cause and details', () => {

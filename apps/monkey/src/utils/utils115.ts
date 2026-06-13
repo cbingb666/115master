@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { FileApi } from '@115master/drive115'
 import { GM_xmlhttpRequest } from '$'
 import { NORMAL_URL_115 } from '@/constants/115'
 import { ICON_FILE_FOLDER, ICON_FILE_IMAGE } from '@/icons'
@@ -35,13 +35,13 @@ export class Utils115 {
     return map[ico] ?? `${ASSETS_URL}/other/unknown.png?_vh=f0a959d_88`
   }
 
-  static getFolderIcon(data: WebApi.Res.Files['data'][number]) {
+  static getFolderIcon(data: FileApi.Res.Files['data'][number]) {
     if (Utils115.isFolder(data.fc)) {
       return ICON_FILE_FOLDER
     }
   }
 
-  static getFileIcon(data: WebApi.Res.Files['data'][number]) {
+  static getFileIcon(data: FileApi.Res.Files['data'][number]) {
     if (Utils115.isVideo(data.iv)) {
       return Utils115.getVideoIcon(data.vdi ?? 0)
     }

@@ -1,4 +1,4 @@
-import type { BaseParams, PaginationParams, Sorter } from '../entity.ts'
+import type { BaseParams, PaginationParams, Sorter } from '../../api/entity.ts'
 
 /** 获取文件搜索结果请求参数 */
 export interface GetFilesSearch extends BaseParams, PaginationParams, Sorter {
@@ -69,13 +69,6 @@ export interface GetFiles extends BaseParams, PaginationParams, Sorter {
   r_all?: number
 }
 
-/** 获取视频文件信息请求 */
-export interface GetFilesVideo {
-  pickcode: string
-  share_id: string
-  local: string
-}
-
 /** 文件星标状态 */
 export enum MarkStatus {
   Mark = '1',
@@ -113,8 +106,7 @@ export interface GetMoviesSubtitle {
 }
 
 /** 获取文件信息请求 */
-export interface GetFilesIndexInfo {
-}
+export interface GetFilesIndexInfo {}
 
 /**
  * 设置文件排序
@@ -169,21 +161,6 @@ export interface PostFilesMove {
 export interface GetFilesMoveProgress {
   /** 移动任务 id */
   move_proid: string
-}
-
-/** 获取图片列表请求 */
-export interface GetFilesImglist extends BaseParams, PaginationParams, Sorter {
-  /** 目录 ID */
-  cid: string
-  /** 文件 ID */
-  file_id: string
-  next: 0 | 1
-}
-
-/** 获取图片请求 */
-export interface GetFilesImage {
-  /** 提取码 */
-  pickcode: string
 }
 
 /** 置顶文件请求 */

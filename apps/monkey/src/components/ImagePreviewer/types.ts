@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 
 /** 图片预览项 */
 export interface ImagePreviewItem {
@@ -9,7 +9,7 @@ export interface ImagePreviewItem {
   /** 文件名 */
   caption: string
   /** 文件数据 */
-  fileData: WebApi.Entity.FilesItem
+  fileData: Entity.FilesItem
   /** 在总列表中的索引 */
   globalIndex: number
 }

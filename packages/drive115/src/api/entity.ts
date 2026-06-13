@@ -1,8 +1,6 @@
 /** 基础请求参数 */
 export interface BaseParams {
-  /**
-   * 返回格式
-   */
+  /** 返回格式 */
   format?: 'json'
 }
 
@@ -14,18 +12,6 @@ export interface PaginationParams {
   limit: number
 }
 
-/** 分页响应 */
-export interface PaginationResponse<T> {
-  /** 总数 */
-  count: number
-  /** 数据 */
-  data: T[]
-  /** 当前页 */
-  cur: number
-  /** 是否升序 */
-  is_asc: number
-}
-
 /** 排序 */
 export interface Sorter {
   /** 排序方式 */
@@ -34,6 +20,15 @@ export interface Sorter {
   asc?: 0 | 1
   /** 目录置顶 (是否混合排序) */
   fc_mix?: 0 | 1
+}
+
+/** 统一响应基类型 */
+export type ApiResponseBase<T> = T & {
+  state: boolean
+  errNo?: number
+  code?: number
+  error?: string
+  error_msg?: string
 }
 
 export interface TagItem {
@@ -101,16 +96,18 @@ export interface FileItemBase {
 
 /** 文件项 */
 export interface FileItem extends FileItemBase {
+  fc: 1
   fid: string
 }
 
 /** 目录项 */
 export interface FolderItem extends FileItemBase {
+  fc: 0
   cid: string
 }
 
-/** 文件列表项 */
-export type FilesItem = FileItem & FolderItem
+/** 文件列表项（判别联合：fc 为 1 是文件，0 是目录） */
+export type FilesItem = FileItem | FolderItem
 
 /** 播放列表项 */
 export interface PlaylistItem {

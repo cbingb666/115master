@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { Icon } from '@iconify/vue'
 import { computed, defineComponent } from 'vue'
@@ -8,7 +8,7 @@ const FileItemContent = defineComponent({
   name: 'FileItemContent',
   props: {
     data: {
-      type: Object as PropType<WebApi.Entity.FilesItem>,
+      type: Object as PropType<Entity.FilesItem>,
       required: true,
     },
     pathSelect: {

@@ -1,7 +1,8 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import { MarkStatus } from '@115master/drive115'
 import { useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
+import { getFilesItemId } from '@/utils/filesItem'
 import { removeFileExtension } from '@/utils/string'
 import { getFileIds } from './helpers'
 
@@ -11,7 +12,7 @@ export function useFileAction() {
   const toast = useToast()
 
   /** 置顶批量 */
-  async function topBatch(items: WebApi.Entity.FilesItem[]): Promise<boolean> {
+  async function topBatch(items: Entity.FilesItem[]): Promise<boolean> {
     const hasTop = items.some(item => item.is_top === 1)
     const top = hasTop ? 0 : 1
     const fileIds = getFileIds(items)
@@ -34,7 +35,7 @@ export function useFileAction() {
   }
 
   /** 星标批量 */
-  async function starBatch(items: WebApi.Entity.FilesItem[]): Promise<boolean> {
+  async function starBatch(items: Entity.FilesItem[]): Promise<boolean> {
     const hasStar = items.some(item => item.m === 1 || item.m === '1')
     const star = hasStar ? MarkStatus.Unmark : MarkStatus.Mark
     const fileIds = getFileIds(items)
@@ -57,7 +58,7 @@ export function useFileAction() {
   }
 
   /** 重命名 */
-  async function renameItem(item: WebApi.Entity.FilesItem): Promise<boolean> {
+  async function renameItem(item: Entity.FilesItem): Promise<boolean> {
     const dialogRes = await dialog.prompt({
       title: '重命名',
       placeholder: '请输入文件名',
@@ -75,7 +76,7 @@ export function useFileAction() {
         return Promise.resolve(false)
       }
 
-      const fid = item.fid ?? item.cid
+      const fid = getFilesItemId(item)
       const res = await drive115.file.batchRenameFiles({
         [`files_new_name[${fid}]`]: dialogRes,
       })

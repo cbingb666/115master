@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
 import { useMagicKeys } from '@vueuse/core'
 import { computed, ref, shallowRef, watch } from 'vue'
@@ -29,13 +29,13 @@ function createDragImage(count: number): HTMLElement {
 
 export interface FileListInteractionProps {
   pathSelect: boolean
-  listData: WebApi.Entity.FilesItem[]
-  checkeds: Set<WebApi.Entity.FilesItem>
-  onChecked: (item: WebApi.Entity.FilesItem, checked: boolean) => void
+  listData: Entity.FilesItem[]
+  checkeds: Set<Entity.FilesItem>
+  onChecked: (item: Entity.FilesItem, checked: boolean) => void
   onCheckedClear: () => void
-  onRadio: (item: WebApi.Entity.FilesItem) => void
-  onDragStart?: (items: WebApi.Entity.FilesItem[], event: DragEvent) => void
-  onDragMove?: (cid: string, items: WebApi.Entity.FilesItem[]) => void
+  onRadio: (item: Entity.FilesItem) => void
+  onDragStart?: (items: Entity.FilesItem[], event: DragEvent) => void
+  onDragMove?: (cid: string, items: Entity.FilesItem[]) => void
 }
 
 export function useFileList(props: FileListInteractionProps) {
@@ -65,7 +65,7 @@ export function useFileList(props: FileListInteractionProps) {
     disabled: props.pathSelect,
   })
 
-  const handleDragStart = (item: WebApi.Entity.FilesItem, event: DragEvent) => {
+  const handleDragStart = (item: Entity.FilesItem, event: DragEvent) => {
     if (!event.dataTransfer)
       return
 
@@ -96,20 +96,23 @@ export function useFileList(props: FileListInteractionProps) {
     props.onDragStart?.(selected, event)
   }
 
-  const handleDragEnd = (_item: WebApi.Entity.FilesItem, _event: DragEvent) => {
+  const handleDragEnd = (_item: Entity.FilesItem, _event: DragEvent) => {
     dragging.value = false
   }
 
-  const handleDrop = (item: WebApi.Entity.FilesItem, event: DragEvent) => {
+  const handleDrop = (item: Entity.FilesItem, event: DragEvent) => {
+    if (item.fc !== 0)
+      return
+
     const data = event.dataTransfer?.getData('application/json')
     if (!data)
       return
 
-    const items = JSON.parse(data) as WebApi.Entity.FilesItem[]
+    const items = JSON.parse(data) as Entity.FilesItem[]
     props.onDragMove?.(item.cid, items)
   }
 
-  const handleContextmenu = (item: WebApi.Entity.FilesItem, e: MouseEvent) => {
+  const handleContextmenu = (item: Entity.FilesItem, e: MouseEvent) => {
     contextmenuShow.value = true
     contextmenuPosition.value = {
       x: e.clientX,
@@ -128,7 +131,7 @@ export function useFileList(props: FileListInteractionProps) {
     }
   }
 
-  const handleClick = (item: WebApi.Entity.FilesItem) => {
+  const handleClick = (item: Entity.FilesItem) => {
     if (!props.listData)
       return
 
@@ -180,7 +183,7 @@ export function useFileList(props: FileListInteractionProps) {
     }
   })
 
-  const itemProps = (item: WebApi.Entity.FilesItem) => ({
+  const itemProps = (item: Entity.FilesItem) => ({
     'data-selection-key': item.pc,
     'checked': props.checkeds.has(item),
     'data': item,
@@ -203,12 +206,12 @@ export function useFileList(props: FileListInteractionProps) {
   }
 }
 
-export function useFilePreview(props: { listData: WebApi.Entity.FilesItem[] }) {
+export function useFilePreview(props: { listData: Entity.FilesItem[] }) {
   const images = computed(() => {
     return props.listData?.filter(i => Boolean(i.u))
   })
 
-  const preview = (item: WebApi.Entity.FilesItem) => {
+  const preview = (item: Entity.FilesItem) => {
     const realIndex = images.value?.findIndex(i => i.pc === item.pc)
     const dataSource = images.value?.map((item, index) => {
       return {

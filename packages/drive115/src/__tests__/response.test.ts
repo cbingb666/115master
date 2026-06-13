@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeResponse } from '../response.ts'
+import { normalizeResponse } from '../core/response.ts'
 
 describe('normalizeResponse', () => {
   it('maps webApi shape to state/code/message', () => {

@@ -13,7 +13,7 @@ type CarouselSlide = CarouselSlideType & {
 
 /**
  * 115RawImage
- * @deprecated 目前 WebApiGetFilesImage 接口在长按翻页时会触发并发限流，暂时不得使用
+ * @deprecated 目前 ImageApi.GetFilesImage 接口在长按翻页时会触发并发限流，暂时不得使用
  * @description 加载115原始图片，并且会重写 Lazyload 实现
  * @returns 返回 Fancybox 插件
  */

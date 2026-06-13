@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity, FileApi } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { Router } from 'vue-router'
 import type { NavSource } from '@/hooks/useDriveNav/types'
@@ -9,7 +9,7 @@ import { useDrivePage } from '@/hooks/useDrivePage'
 import { drive115 } from '@/utils/drive115Instance'
 
 interface CacheEntry {
-  data: WebApi.Res.Files
+  data: FileApi.Res.Files
   scrollTop: number
 }
 
@@ -19,7 +19,7 @@ export interface ExplorerOptions {
   page: Ref<number>
   size: Ref<number>
   keyword?: Ref<string>
-  fc?: WebApi.Req.GetFilesSearch['fc']
+  fc?: FileApi.Req.GetFilesSearch['fc']
   suffix?: Ref<string>
   type?: Ref<string>
   nf?: Ref<string>
@@ -45,7 +45,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
 
   const isSearch = computed(() => options.nav.area.value === 'search')
 
-  const path = computed((): WebApi.Entity.PathItem[] => {
+  const path = computed((): Entity.PathItem[] => {
     if (isSearch.value) {
       const keyword = options.keyword?.value.trim() ?? ''
       return [
@@ -68,7 +68,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
     return []
   })
 
-  const prevLevel = computed((): WebApi.Entity.PathItem | undefined => {
+  const prevLevel = computed((): Entity.PathItem | undefined => {
     const d = list.data.value
     if (d && 'path' in d)
       return d.path[d.path.length - 2]
@@ -80,7 +80,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
     const cid = options.nav.cid.value || '0'
     const offset = (page.page.value - 1) * page.size.value
 
-    const params: WebApi.Req.GetFilesSearch = {
+    const params: FileApi.Req.GetFilesSearch = {
       aid: 1,
       cid,
       show_dir: 1,
@@ -108,7 +108,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
     const area = options.nav.area.value || 'all'
     const offset = (page.page.value - 1) * page.size.value
 
-    const params: WebApi.Req.GetFiles = {
+    const params: FileApi.Req.GetFiles = {
       aid: 1,
       cid,
       show_dir: 1,
@@ -134,7 +134,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
     const ok = await list.execute(params)
     if (ok && list.data.value) {
       page.apply(list.data.value)
-      cache.set(cacheKey(area, cid), { data: list.data.value as WebApi.Res.Files, scrollTop: 0 })
+      cache.set(cacheKey(area, cid), { data: list.data.value as FileApi.Res.Files, scrollTop: 0 })
     }
     return ok
   }
@@ -152,7 +152,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
   }
 
   /** 切换排序并保存到服务器 */
-  async function changeSort(o: WebApi.Entity.Sorter['o'], a: WebApi.Entity.Sorter['asc'], f: WebApi.Entity.Sorter['fc_mix']) {
+  async function changeSort(o: Entity.Sorter['o'], a: Entity.Sorter['asc'], f: Entity.Sorter['fc_mix']) {
     page.changeSort(o, a, f)
     if (isSearch.value)
       return

@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import type { PropType } from 'vue'
 import type { Sort } from './FileSortSelector.types'
 import { Icon } from '@iconify/vue'
@@ -6,7 +6,7 @@ import { computed, defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { SORT_OPTIONS } from './config'
 
-function dirIcon(asc: WebApi.Entity.Sorter['asc']) {
+function dirIcon(asc: Entity.Sorter['asc']) {
   return asc === 1 ? 'material-symbols:arrow-upward-rounded' : 'material-symbols:arrow-downward-rounded'
 }
 
@@ -20,28 +20,28 @@ const FileSortSelector = defineComponent({
      * 排序方式
      */
     order: {
-      type: String as PropType<WebApi.Entity.Sorter['o']>,
+      type: String as PropType<Entity.Sorter['o']>,
       required: true,
     },
     /**
      * 升序
      */
     asc: {
-      type: Number as PropType<WebApi.Entity.Sorter['asc']>,
+      type: Number as PropType<Entity.Sorter['asc']>,
       required: true,
     },
     /**
      * 目录置顶
      */
     fc_mix: {
-      type: Number as PropType<WebApi.Entity.Sorter['fc_mix']>,
+      type: Number as PropType<Entity.Sorter['fc_mix']>,
       required: true,
     },
     /**
      * 切换排序
      */
     onSort: {
-      type: Function as PropType<(order: WebApi.Entity.Sorter['o'], asc: WebApi.Entity.Sorter['asc'], fc_mix: WebApi.Entity.Sorter['fc_mix']) => void>,
+      type: Function as PropType<(order: Entity.Sorter['o'], asc: Entity.Sorter['asc'], fc_mix: Entity.Sorter['fc_mix']) => void>,
       required: true,
     },
   },

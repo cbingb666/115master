@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { defineComponent, shallowRef, withModifiers } from 'vue'
 import { Link } from '../Link'
@@ -13,21 +13,21 @@ const FilePath = defineComponent({
      * 路径
      */
     path: {
-      type: Array as PropType<WebApi.Entity.PathItem[]>,
+      type: Array as PropType<Entity.PathItem[]>,
       required: true,
     },
     /**
      * 点击路径
      */
     onPathClick: {
-      type: Function as PropType<(path: WebApi.Entity.PathItem) => void>,
+      type: Function as PropType<(path: Entity.PathItem) => void>,
       default: () => {},
     },
     /**
      * 拖拽移动
      */
     onDragMove: {
-      type: Function as PropType<(cid: string, items: WebApi.Entity.FilesItem[]) => void>,
+      type: Function as PropType<(cid: string, items: Entity.FilesItem[]) => void>,
       default: () => {},
     },
     /**
@@ -50,12 +50,12 @@ const FilePath = defineComponent({
       dropZone.value = undefined
     }
 
-    const handleDrop = (e: DragEvent, item: WebApi.Entity.PathItem) => {
+    const handleDrop = (e: DragEvent, item: Entity.PathItem) => {
       const data = e.dataTransfer?.getData('application/json')
       if (!data)
         return
 
-      const items = JSON.parse(data) as WebApi.Entity.FilesItem[]
+      const items = JSON.parse(data) as Entity.FilesItem[]
       props.onDragMove?.(item.cid, items)
       dropZone.value = undefined
     }

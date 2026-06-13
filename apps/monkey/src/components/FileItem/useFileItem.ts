@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
 import { router } from '@/app/router'
@@ -6,6 +6,7 @@ import { useDialog } from '@/components'
 import { useFolderImagePreview } from '@/hooks/useFolderImagePreview'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { actressFaceDB } from '@/utils/actressFaceDB'
+import { getFilesItemId } from '@/utils/filesItem'
 import { extractEmojis } from '@/utils/string'
 import { Utils115 } from '@/utils/utils115'
 
@@ -24,12 +25,12 @@ interface ActressFaceDBActress {
 }
 
 interface UseFileItemOptions {
-  data: WebApi.Entity.FilesItem
+  data: Entity.FilesItem
   pathSelect?: boolean
   cid?: string
-  order?: WebApi.Entity.Sorter['o']
-  asc?: WebApi.Entity.Sorter['asc']
-  onPreview?: (data: WebApi.Entity.FilesItem) => void
+  order?: Entity.Sorter['o']
+  asc?: Entity.Sorter['asc']
+  onPreview?: (data: Entity.FilesItem) => void
 }
 
 export function useFileItem(options: UseFileItemOptions) {
@@ -95,7 +96,7 @@ export function useFileItem(options: UseFileItemOptions) {
       }
     }
 
-    if (Utils115.isFolder(data.fc)) {
+    if (data.fc === 0) {
       return {
         to: `/drive/${data.cid}`,
         target: '_self',
@@ -179,8 +180,8 @@ export function useFileItem(options: UseFileItemOptions) {
     }
 
     /** 如果拖拽的文件中包含当前文件，则不进行拖拽 */
-    const items = JSON.parse(dropData) as WebApi.Entity.FilesItem[]
-    if (items.some(item => item.cid === data.cid)) {
+    const items = JSON.parse(dropData) as Entity.FilesItem[]
+    if (items.some(item => getFilesItemId(item) === getFilesItemId(data))) {
       return
     }
 

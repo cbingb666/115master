@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, useTemplateRef, watch } from 'vue'
@@ -14,7 +14,7 @@ const CloudDownload = defineComponent({
       required: true,
     },
     path: {
-      type: Array as PropType<Partial<WebApi.Entity.PathItem>[]>,
+      type: Array as PropType<Partial<Entity.PathItem>[]>,
       required: true,
     },
     onInput: {
@@ -26,7 +26,7 @@ const CloudDownload = defineComponent({
       required: true,
     },
     onSelectPath: {
-      type: Function as PropType<(fileId: string, fileName: string, path?: WebApi.Entity.PathItem[]) => void>,
+      type: Function as PropType<(fileId: string, fileName: string, path?: Entity.PathItem[]) => void>,
       required: true,
     },
   },
@@ -80,7 +80,7 @@ const CloudDownload = defineComponent({
         cid: last.cid || '',
         fc: 0 as const,
         iv: 0,
-      } as WebApi.Entity.FilesItem
+      } as Entity.FilesItem
 
       return {
         data,

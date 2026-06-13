@@ -1,18 +1,20 @@
-import type { IRequest } from '@115master/shared'
-
-/**
- * Drive115Core 依赖配置
- */
-export interface Drive115CoreDeps {
-  /** Fetch 请求实例 */
-  fetchRequest: IRequest
-  /** Pro API 请求实例（用于 115 浏览器环境下的下载请求） */
-  proApiRequest: IRequest
+/** 播放中的视频信息 */
+export interface PlayingVideoInfo {
+  /** 文件唯一标识 */
+  pickCode: string
 }
 
-/**
- * 下载结果
- */
+/** m3u8 视频信息 */
+export interface M3u8Item {
+  /** 名称 */
+  name: string
+  /** 地址 */
+  url: string
+  /** 质量 */
+  quality: number
+}
+
+/** 下载结果 */
 export interface DownloadResult {
   /** URL 信息 */
   url: {

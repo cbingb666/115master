@@ -1,6 +1,7 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
+import { getFilesItemId } from '@/utils/filesItem'
 
 /** 获取文件ID */
-export function getFileIds(items: WebApi.Entity.FilesItem[]): string[] {
-  return items.map(item => item.fid ?? item.cid)
+export function getFileIds(items: Entity.FilesItem[]): string[] {
+  return items.map(item => getFilesItemId(item))
 }

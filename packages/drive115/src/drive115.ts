@@ -1,12 +1,12 @@
 import type { ILogger } from '@115master/shared'
-import type { WebApi } from './api/index.ts'
-import type { DownloadResult, Drive115CoreDeps } from './deps.ts'
-import type { M3u8Item } from './types.ts'
-import { FileApiClient } from './clients/file.ts'
-import { ImageApiClient } from './clients/image.ts'
-import { OfflineApiClient } from './clients/offline.ts'
-import { UserApiClient } from './clients/user.ts'
-import { VideoApiClient } from './clients/video.ts'
+import type { FileApi } from './api/index.ts'
+import type { Drive115CoreDeps } from './core/deps.ts'
+import type { DownloadResult, M3u8Item } from './core/types.ts'
+import { FileApiClient } from './clients/file/index.ts'
+import { ImageApiClient } from './clients/image/index.ts'
+import { OfflineApiClient } from './clients/offline/index.ts'
+import { UserApiClient } from './clients/user/index.ts'
+import { VideoApiClient } from './clients/video/index.ts'
 
 /**
  * Drive115 依赖配置
@@ -43,13 +43,13 @@ export class Drive115 {
   }
 
   /** 获取文件列表 */
-  async getFiles(params: WebApi.Req.GetFiles) {
+  async getFiles(params: FileApi.Req.GetFiles) {
     return this.file.getFilesWithFallback(params)
   }
 
   /** 获取播放列表 */
   async getPlaylist(cid: string, offset = 0) {
-    const params: WebApi.Req.GetFiles = {
+    const params: FileApi.Req.GetFiles = {
       aid: 1,
       cid,
       offset,
@@ -81,7 +81,7 @@ export class Drive115 {
   /** 获取下载地址 */
   async getFileDownloadUrl(pickcode: string): Promise<DownloadResult> {
     try {
-      return await this.video.ProPostAppChromeDownurl(pickcode)
+      return await this.video.proPostAppChromeDownurl(pickcode)
     }
     catch (error) {
       this.logger?.warn('第一种获取下载链接失败', error)

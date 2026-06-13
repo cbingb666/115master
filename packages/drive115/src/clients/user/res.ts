@@ -1,12 +1,7 @@
-type ResBase<T> = {
-  state: boolean
-  code: number
-  errNo: number
-  error: string
-  error_msg: string
-} & T
+import type { ApiResponseBase } from '../../api/entity.ts'
 
-export type UserAq = ResBase<{
+/** 获取用户信息 */
+export type UserAq = ApiResponseBase<{
   data: {
     /** 用户 ID */
     uid: number

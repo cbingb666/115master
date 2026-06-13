@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { ListData } from '@/hooks/useDriveList'
 import { computed, shallowRef } from 'vue'
@@ -6,9 +6,9 @@ import { computed, shallowRef } from 'vue'
 export function useDrivePage(options: { page: Ref<number>, size: Ref<number> }) {
   const total = shallowRef(0)
   const pageCount = computed(() => Math.ceil(total.value / options.size.value))
-  const order = shallowRef<WebApi.Entity.Sorter['o']>()
-  const asc = shallowRef<WebApi.Entity.Sorter['asc']>()
-  const fc_mix = shallowRef<WebApi.Entity.Sorter['fc_mix']>()
+  const order = shallowRef<Entity.Sorter['o']>()
+  const asc = shallowRef<Entity.Sorter['asc']>()
+  const fc_mix = shallowRef<Entity.Sorter['fc_mix']>()
 
   function changePage(p: number) {
     if (p !== options.page.value)
@@ -22,7 +22,7 @@ export function useDrivePage(options: { page: Ref<number>, size: Ref<number> }) 
     }
   }
 
-  function changeSort(o: WebApi.Entity.Sorter['o'], a: WebApi.Entity.Sorter['asc'], f: WebApi.Entity.Sorter['fc_mix']) {
+  function changeSort(o: Entity.Sorter['o'], a: Entity.Sorter['asc'], f: Entity.Sorter['fc_mix']) {
     if (o !== order.value || a !== asc.value || f !== fc_mix.value) {
       order.value = o
       asc.value = a

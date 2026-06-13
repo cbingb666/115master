@@ -1,8 +1,8 @@
-import type { WebApi } from '@115master/drive115'
+import type { FileApi } from '@115master/drive115'
 import { shallowRef } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
 
-export type ListData = WebApi.Res.Files | WebApi.Res.GetFilesSearch
+export type ListData = FileApi.Res.Files | FileApi.Res.GetFilesSearch
 
 export function useDriveList() {
   const data = shallowRef<ListData | null>(null)
@@ -12,7 +12,7 @@ export function useDriveList() {
   /** 请求版本号, 用于丢弃过期请求 */
   let generation = 0
 
-  async function execute(params: WebApi.Req.GetFiles): Promise<boolean> {
+  async function execute(params: FileApi.Req.GetFiles): Promise<boolean> {
     const gen = ++generation
     loading.value = true
     error.value = null
@@ -38,7 +38,7 @@ export function useDriveList() {
     }
   }
 
-  async function search(params: WebApi.Req.GetFilesSearch): Promise<boolean> {
+  async function search(params: FileApi.Req.GetFilesSearch): Promise<boolean> {
     const gen = ++generation
     loading.value = true
     error.value = null

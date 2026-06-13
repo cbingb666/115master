@@ -1,4 +1,4 @@
-import type { WebApi } from '@115master/drive115'
+import type { Entity } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Icon } from '@iconify/vue'
 import { useStorage, useTitle } from '@vueuse/core'
@@ -144,13 +144,13 @@ const Drive = defineComponent({
       [actionAtom.delete],
     ])
 
-    function handleClickPath(data: WebApi.Entity.PathItem) {
+    function handleClickPath(data: Entity.PathItem) {
       if (isSearch.value)
         return
       router.push({ name: 'drive', params: { cid: data.cid === '0' ? '' : data.cid } })
     }
 
-    async function handleSort(order: WebApi.Entity.Sorter['o'], asc: WebApi.Entity.Sorter['asc'], fc_mix: WebApi.Entity.Sorter['fc_mix']) {
+    async function handleSort(order: Entity.Sorter['o'], asc: Entity.Sorter['asc'], fc_mix: Entity.Sorter['fc_mix']) {
       await store.changeSort(order, asc, fc_mix)
       store.page.changePage(1)
       store.refresh()
@@ -160,7 +160,7 @@ const Drive = defineComponent({
     //   router.push({ path: '/drive/search', query: { keyword: value } })
     // }
 
-    async function handleDragMove(cid: string, originItems: WebApi.Entity.FilesItem[]) {
+    async function handleDragMove(cid: string, originItems: Entity.FilesItem[]) {
       const success = await action.dragMove(cid, originItems)
       if (success)
         store.afterAction([cid])
@@ -270,7 +270,7 @@ const Drive = defineComponent({
           error={store.list.error?.message ?? undefined}
           empty={!store.list.loading && store.page.total === 0}
         >
-          {store.list.data?.data?.map((item: WebApi.Entity.FilesItem) => (
+          {store.list.data?.data?.map((item: Entity.FilesItem) => (
             <FileItem
               class="data-[view-type=list]:px-3"
               key={item.pc}

@@ -1,6 +1,7 @@
 import type { IRequest } from '@115master/shared'
 import { describe, expect, it, vi } from 'vitest'
-import { FileApiClient } from '../clients/file.ts'
+import { FileApiClient } from '../clients/file/client.ts'
+import { Drive115Error } from '../core/error.ts'
 
 function createMockRequest(get = vi.fn(), post = vi.fn()): IRequest {
   return {
@@ -84,6 +85,7 @@ describe('fileApiClient.getFilesWithFallback', () => {
       proApiRequest: fetchRequest,
     })
 
+    await expect(client.getFilesWithFallback({} as never)).rejects.toThrow(Drive115Error)
     await expect(client.getFilesWithFallback({} as never)).rejects.toThrow('获取播放列表失败')
   })
 })
