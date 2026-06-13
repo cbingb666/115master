@@ -18,15 +18,9 @@ export function useDriveList() {
     error.value = null
     data.value = null
     try {
-      let res = await drive115.webApiGetFiles(params)
-      if (!res.state) {
-        // 默认接口错误时使用 aps 接口
-        params.o = res.order
-        params.asc = res.is_asc
-        res = await drive115.ApsGetNatsortFiles(params)
-        if (!res.state)
-          throw new Error(res.error)
-      }
+      const res = await drive115.file.getFilesWithFallback(params)
+      if (!res.state)
+        throw new Error(res.message)
       if (gen !== generation)
         return false
       data.value = res
@@ -50,9 +44,9 @@ export function useDriveList() {
     error.value = null
     data.value = null
     try {
-      const res = await drive115.webApiGetFilesSearch(params)
+      const res = await drive115.file.searchFiles(params)
       if (!res.state)
-        throw new Error(res.error)
+        throw new Error(res.message)
       if (gen !== generation)
         return false
       data.value = res

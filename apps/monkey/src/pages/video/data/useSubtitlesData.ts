@@ -51,7 +51,7 @@ export function useDataSubtitles() {
 
   /** 通过 115 获取字幕 */
   const getFrom115 = async (pickcode: string): Promise<Subtitle[]> => {
-    const res = await drive115.webApiGetMoviesSubtitle({
+    const res = await drive115.file.getMoviesSubtitle({
       pickcode,
     })
     const results = await Promise.allSettled(

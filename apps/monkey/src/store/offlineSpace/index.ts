@@ -5,7 +5,7 @@ import { drive115 } from '@/utils/drive115Instance'
 /** 离线空间 Store */
 export const useOfflineSpaceStore = defineStore('offlineSpace', () => {
   return useAsyncState(async () => {
-    const res = await drive115.NormalApiGetOfflineSpace()
+    const res = await drive115.offline.getOfflineSpace()
     return res
   }, null, {
     immediate: true,

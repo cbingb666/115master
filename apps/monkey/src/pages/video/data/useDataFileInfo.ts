@@ -7,7 +7,7 @@ import { drive115 } from '@/utils/drive115Instance'
 export function useDataFileInfo() {
   const fileInfo = useAsyncState(
     async (pickCode: string) => {
-      const response = await drive115.webApiGetFilesVideo({
+      const response = await drive115.file.getFilesVideo({
         pickcode: pickCode,
         share_id: '0',
         local: '1',

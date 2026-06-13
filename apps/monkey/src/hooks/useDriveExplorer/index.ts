@@ -157,7 +157,7 @@ export function useDriveExplorer(options: ExplorerOptions) {
     if (isSearch.value)
       return
     const cid = options.nav.cid.value || '0'
-    await drive115.webApiPostFilesOrder({
+    await drive115.file.setFilesOrder({
       file_id: cid,
       user_order: o ?? '',
       user_asc: a ?? 1,

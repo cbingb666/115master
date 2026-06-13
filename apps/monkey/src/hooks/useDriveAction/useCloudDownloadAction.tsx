@@ -52,7 +52,7 @@ export function useCloudDownloadAction() {
     const user = useUserAqStore()
     const space = useOfflineSpaceStore()
 
-    return drive115.NormalApiPostOfflineAddUrls({
+    return drive115.offline.postOfflineAddUrls({
       ...Object.assign({}, ...urls.map((url, index) => ({ [`url[${index}]`]: url }))),
       wp_path_id: pid,
       uid: user.state?.data.uid,

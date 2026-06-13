@@ -5,7 +5,7 @@ import { drive115 } from '@/utils/drive115Instance'
 /** 用户账户信息 Store */
 export const useUserAqStore = defineStore('userAq', () => {
   return useAsyncState(async () => {
-    const res = await drive115.MyApiGetUserAq()
+    const res = await drive115.user.getUserAq()
     if (!res.state) {
       throw new Error(res.error)
     }

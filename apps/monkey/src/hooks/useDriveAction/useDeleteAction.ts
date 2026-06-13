@@ -27,7 +27,7 @@ export function useDeleteAction() {
     const fids = Object.fromEntries(
       fileIds.map((val, index) => [`fid[${index}]`, val]),
     )
-    const res = await drive115.webApiPostRbDelete({
+    const res = await drive115.file.deleteFiles({
       pid,
       ...fids,
     })

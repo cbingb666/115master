@@ -4,7 +4,7 @@ import { drive115 } from '@/utils/drive115Instance'
 
 export const useDriveSpaceInfoStore = defineStore('driveSpaceInfo', () => {
   return useAsyncState(async () => {
-    const res = await drive115.webApiGetFilesIndexInfo()
+    const res = await drive115.file.getFilesIndexInfo()
     return res
   }, null, {
     immediate: true,

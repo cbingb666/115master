@@ -21,7 +21,7 @@ export function useMoveAction() {
 
   /** 获取移动进度 */
   async function moveGetProgress(move_proid: string) {
-    const res = await drive115.webApiGetFilesMoveProgress({
+    const res = await drive115.file.getFilesMoveProgress({
       move_proid,
     })
     if (res.progress === 100) {
@@ -38,7 +38,7 @@ export function useMoveAction() {
       fileIds.map((val, index) => [`fid[${index}]`, val]),
     )
     const move_proid = Date.now().toString()
-    const res = await drive115.webApiPostFilesMove({
+    const res = await drive115.file.moveFiles({
       pid,
       ...fids,
       move_proid,

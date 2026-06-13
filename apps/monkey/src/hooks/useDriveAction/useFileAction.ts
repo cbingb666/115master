@@ -15,7 +15,7 @@ export function useFileAction() {
     const hasTop = items.some(item => item.is_top === 1)
     const top = hasTop ? 0 : 1
     const fileIds = getFileIds(items)
-    const res = await drive115.webApiPostFilesTop({
+    const res = await drive115.file.topFiles({
       file_id: fileIds.join(','),
       top,
     })
@@ -38,7 +38,7 @@ export function useFileAction() {
     const hasStar = items.some(item => item.m === 1 || item.m === '1')
     const star = hasStar ? MarkStatus.Unmark : MarkStatus.Mark
     const fileIds = getFileIds(items)
-    const res = await drive115.webApiPostFilesStar({
+    const res = await drive115.file.starFiles({
       file_id: fileIds,
       star,
     })
@@ -76,7 +76,7 @@ export function useFileAction() {
       }
 
       const fid = item.fid ?? item.cid
-      const res = await drive115.webApiPostFilesBatchRename({
+      const res = await drive115.file.batchRenameFiles({
         [`files_new_name[${fid}]`]: dialogRes,
       })
       if (res.state) {
@@ -106,7 +106,7 @@ export function useFileAction() {
     })
 
     if (dialogRes) {
-      const res = await drive115.webApiPostFilesAdd({
+      const res = await drive115.file.addFolder({
         pid,
         cname: dialogRes,
       })

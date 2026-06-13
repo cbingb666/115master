@@ -9,7 +9,7 @@ export function useMark(DataFileInfo: ReturnType<typeof useDataFileInfo>) {
 
   /** 切换收藏状态 */
   const toggleMark = async () => {
-    const res = await drive115.webApiPostFilesStar({
+    const res = await drive115.file.starFiles({
       file_id: DataFileInfo.state.file_id,
       star: isMark.value ? MarkStatus.Unmark : MarkStatus.Mark,
     })

@@ -5,7 +5,7 @@ import { drive115 } from '@/utils/drive115Instance'
 /** 离线配额 Store */
 export const useOfflineQuotaPackageInfoStore = defineStore('offlineQuotaPackageInfo', () => {
   return useAsyncState(async () => {
-    const res = await drive115.NormalApiGetOfflineGetQuotaPackageInfo()
+    const res = await drive115.offline.getOfflineGetQuotaPackageInfo()
     return res
   }, null, {
     immediate: true,

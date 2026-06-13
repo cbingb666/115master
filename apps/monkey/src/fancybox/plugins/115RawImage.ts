@@ -35,7 +35,7 @@ export const Carousel115RawImage: CarouselPlugin = () => {
     console.log('slide', slide)
     if (slide.pickcode) {
       console.log('pickcode', slide.pickcode)
-      const res = await drive115.WebApiGetFilesImage({
+      const res = await drive115.image.getFilesImage({
         pickcode: slide.pickcode,
       })
       const url = res.data.source_url

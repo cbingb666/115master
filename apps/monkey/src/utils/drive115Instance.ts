@@ -1,10 +1,10 @@
-import { Drive115Wrap } from '@115master/drive115'
+import { Drive115 } from '@115master/drive115'
 import { appLogger } from '@/utils/logger'
 import { is115Browser } from '@/utils/platform'
 import { fetchRequest } from '@/utils/request/fetchRequest'
 import { GMRequest } from '@/utils/request/gmRequst'
 
-export const drive115 = new Drive115Wrap({
+export const drive115 = new Drive115({
   fetchRequest,
   proApiRequest: is115Browser ? new GMRequest() : fetchRequest,
   logger: appLogger,

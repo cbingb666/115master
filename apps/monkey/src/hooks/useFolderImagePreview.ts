@@ -47,7 +47,7 @@ export function useFolderImagePreview(options: UseFolderImagePreviewOptions) {
 
     while (hasMore) {
       const offset = (page - 1) * BATCH_SIZE
-      const res = await drive115.webApiGetFiles({
+      const res = await drive115.file.getFiles({
         aid: 1,
         cid: options.cid || '0',
         show_dir: 1,
