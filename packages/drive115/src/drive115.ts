@@ -1,6 +1,6 @@
 import type { ILogger } from '@115master/shared'
 import type { WebApi } from './api/index.ts'
-import type { DownloadResult, Drive115CoreDeps } from './core.ts'
+import type { DownloadResult, Drive115CoreDeps } from './deps.ts'
 import type { M3u8Item } from './types.ts'
 import { FileApiClient } from './clients/file.ts'
 import { ImageApiClient } from './clients/image.ts'

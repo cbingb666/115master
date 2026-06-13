@@ -1,5 +1,5 @@
 import type { IRequest } from '@115master/shared'
-import type { Drive115CoreDeps } from '../core.ts'
+import type { Drive115CoreDeps } from '../deps.ts'
 import { Crypto115 } from '../crypto.ts'
 
 /**

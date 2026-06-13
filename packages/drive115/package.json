@@ -33,6 +33,9 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -46,6 +49,7 @@
     "@115master/tsconfig": "workspace:*",
     "@types/big-integer": "^0.0.35",
     "@types/blueimp-md5": "^2.18.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
   }
 }

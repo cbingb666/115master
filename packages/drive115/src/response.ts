@@ -25,7 +25,12 @@ export function normalizeResponse<T>(raw: unknown): Drive115Response<T> {
   const data = raw as Record<string, unknown>
   const state = Boolean(data.state)
   const code = Number(data.errNo ?? data.code ?? 0)
-  const message = String(data.error ?? data.error_msg ?? '')
+  const message
+    = typeof data.error === 'string' && data.error.length > 0
+      ? data.error
+      : typeof data.error_msg === 'string'
+        ? data.error_msg
+        : ''
 
   return { ...data, state, code, message } as Drive115Response<T>
 }

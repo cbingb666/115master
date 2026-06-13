@@ -1,5 +1,5 @@
 import type { NormalApi, ProApi, WebApi } from '../api/index.ts'
-import type { DownloadResult } from '../core.ts'
+import type { DownloadResult } from '../deps.ts'
 import type { M3u8Item } from '../types.ts'
 import { qualityCodeMap } from '../constants/index.ts'
 import {
