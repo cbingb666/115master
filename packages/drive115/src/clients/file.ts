@@ -9,6 +9,23 @@ import { BaseApiClient } from './base.ts'
  * 文件相关 API
  */
 export class FileApiClient extends BaseApiClient {
+  /** 获取文件列表，主接口失败时回退到 APS 接口 */
+  async getFilesWithFallback(params: WebApi.Req.GetFiles) {
+    const primary = await this.getFiles(params)
+    if (primary.state)
+      return primary
+
+    const fallback = await this.ApsGetNatsortFiles({
+      ...params,
+      o: primary.order,
+      asc: primary.is_asc,
+    })
+    if (fallback.state)
+      return fallback
+
+    throw new Error(`获取播放列表失败: ${JSON.stringify(fallback)}`)
+  }
+
   /** 获取文件列表 (以前老旧的文件夹需要使用它来获取) */
   async ApsGetNatsortFiles(params: WebApi.Req.GetFiles) {
     const response = await this.fetchRequest.get(

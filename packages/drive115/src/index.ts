@@ -15,6 +15,10 @@ export { Crypto115 } from './crypto.ts'
 
 export type { M115EncodeResult } from './crypto.ts'
 
+// Drive115
+export { Drive115 } from './drive115.ts'
+export type { Drive115Deps } from './drive115.ts'
+
 // Error
 export { Drive115Error, Drive115ErrorCode } from './error.ts'
 export { Rsa115 } from './rsa.ts'
