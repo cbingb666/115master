@@ -1,5 +1,6 @@
 import type { NormalApi } from '../api/index.ts'
 import { NORMAL_URL_115 } from '../constants/urls.ts'
+import { normalizeResponse } from '../response.ts'
 import { BaseApiClient } from './base.ts'
 
 /**
@@ -19,7 +20,8 @@ export class OfflineApiClient extends BaseApiClient {
         data,
       },
     )
-    return (await response.json()) as NormalApi.Res.OfflineSpace
+
+    return normalizeResponse<NormalApi.Res.OfflineSpace>(await response.json())
   }
 
   /** 获取离线配额 */
@@ -34,7 +36,8 @@ export class OfflineApiClient extends BaseApiClient {
         data,
       },
     )
-    return (await response.json()) as NormalApi.Res.OfflineGetQuotaPackageInfo
+
+    return normalizeResponse<NormalApi.Res.OfflineGetQuotaPackageInfo>(await response.json())
   }
 
   /** 添加一组离线任务 */
@@ -50,6 +53,7 @@ export class OfflineApiClient extends BaseApiClient {
         credentials: 'include',
       },
     )
-    return (await response.json()) as NormalApi.Res.OfflineAddUrls
+
+    return normalizeResponse<NormalApi.Res.OfflineAddUrls>(await response.json())
   }
 }

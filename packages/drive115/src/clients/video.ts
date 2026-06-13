@@ -9,6 +9,7 @@ import {
   WEB_API_URL_115,
 } from '../constants/urls.ts'
 import { Drive115Error, Drive115ErrorCode } from '../error.ts'
+import { normalizeResponse } from '../response.ts'
 import { getXUrl } from '../utils/url.ts'
 import { BaseApiClient } from './base.ts'
 
@@ -22,9 +23,9 @@ export class VideoApiClient extends BaseApiClient {
       new URL(`/files/download?pickcode=${pickcode}`, WEB_API_URL_115).href,
     )
 
-    const res = (await response.json()) as WebApi.Res.FilesDownload
+    const res = normalizeResponse<WebApi.Res.FilesDownload>(await response.json())
 
-    if (res.errNo === 990001) {
+    if (res.code === Drive115ErrorCode.SessionExpired) {
       throw new Drive115Error('登录已过期，请重新登录', Drive115ErrorCode.SessionExpired)
     }
 
@@ -58,7 +59,7 @@ export class VideoApiClient extends BaseApiClient {
       },
     )
 
-    const res = (await response.json()) as ProApi.Res.FilesAppChromeDownurl
+    const res = normalizeResponse<ProApi.Res.FilesAppChromeDownurl>(await response.json())
 
     if (!res.state) {
       throw new Drive115Error(`获取下载地址失败: ${JSON.stringify(res)}`, Drive115ErrorCode.Unknown)
@@ -95,8 +96,9 @@ export class VideoApiClient extends BaseApiClient {
         throw new Drive115Error.NotFoundM3u8File()
       }
 
-      if (res && res.state === false) {
-        if (res.code === 911) {
+      const normalized = normalizeResponse<NormalApi.Res.VideoM3u8>(res)
+      if (normalized.state === false) {
+        if (normalized.code === Drive115ErrorCode.CaptchaRequired) {
           const verifyUrl = new URL(`?pickcode=${pickcode}`, VOD_URL_115).href
           throw new Drive115Error(
             '你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~',
@@ -106,7 +108,7 @@ export class VideoApiClient extends BaseApiClient {
           )
         }
         throw new Drive115Error(
-          `获取m3u8文件失败: ${res.error}`,
+          `获取m3u8文件失败: ${normalized.message}`,
           Drive115ErrorCode.Unknown,
         )
       }

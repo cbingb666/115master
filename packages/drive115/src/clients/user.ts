@@ -1,5 +1,6 @@
 import type { MyApi } from '../api/index.ts'
 import { MY_URL_115 } from '../constants/urls.ts'
+import { normalizeResponse } from '../response.ts'
 import { BaseApiClient } from './base.ts'
 
 /**
@@ -18,6 +19,7 @@ export class UserApiClient extends BaseApiClient {
         data,
       },
     )
-    return (await response.json()) as MyApi.Res.UserAq
+
+    return normalizeResponse<MyApi.Res.UserAq>(await response.json())
   }
 }

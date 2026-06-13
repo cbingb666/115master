@@ -1,5 +1,6 @@
 import type { ProApi, WebApi } from '../api/index.ts'
 import { PRO_API_URL_115, WEB_API_URL_115 } from '../constants/urls.ts'
+import { normalizeResponse } from '../response.ts'
 import { BaseApiClient } from './base.ts'
 
 /**
@@ -12,7 +13,8 @@ export class ImageApiClient extends BaseApiClient {
       new URL('/files/imglist', WEB_API_URL_115).href,
       { params },
     )
-    return (await response.json()) as WebApi.Res.GetFilesImglist
+
+    return normalizeResponse<WebApi.Res.GetFilesImglist>(await response.json())
   }
 
   /** 获取图片列表 */
@@ -27,7 +29,8 @@ export class ImageApiClient extends BaseApiClient {
         },
       },
     )
-    return (await response.json()) as ProApi.Res.AndroidFilesImglist
+
+    return normalizeResponse<ProApi.Res.AndroidFilesImglist>(await response.json())
   }
 
   /** 获取图片 */
@@ -37,6 +40,6 @@ export class ImageApiClient extends BaseApiClient {
       { params },
     )
 
-    return (await response.json()) as WebApi.Res.GetFilesImage
+    return normalizeResponse<WebApi.Res.GetFilesImage>(await response.json())
   }
 }
