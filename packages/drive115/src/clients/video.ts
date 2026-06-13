@@ -1,0 +1,137 @@
+import type { NormalApi, ProApi, WebApi } from '../api/index.ts'
+import type { DownloadResult } from '../core.ts'
+import type { M3u8Item } from '../types.ts'
+import { qualityCodeMap } from '../constants/index.ts'
+import {
+  NORMAL_URL_115,
+  PRO_API_URL_115,
+  VOD_URL_115,
+  WEB_API_URL_115,
+} from '../constants/urls.ts'
+import { Drive115Error, Drive115ErrorCode } from '../error.ts'
+import { getXUrl } from '../utils/url.ts'
+import { BaseApiClient } from './base.ts'
+
+/**
+ * 视频相关 API
+ */
+export class VideoApiClient extends BaseApiClient {
+  /** 获取原文件地址 (普通下载，有限制下载大小) */
+  async webApiFilesDownload(pickcode: string): Promise<DownloadResult> {
+    const response = await this.fetchRequest.get(
+      new URL(`/files/download?pickcode=${pickcode}`, WEB_API_URL_115).href,
+    )
+
+    const res = (await response.json()) as WebApi.Res.FilesDownload
+
+    if (res.errNo === 990001) {
+      throw new Drive115Error('登录已过期，请重新登录', Drive115ErrorCode.SessionExpired)
+    }
+
+    if (!res.state || !res.file_url) {
+      throw new Drive115Error(
+        `服务器返回数据格式错误: ${JSON.stringify(res)}`,
+        Drive115ErrorCode.DecodeError,
+      )
+    }
+
+    return {
+      url: {
+        url: res.file_url,
+      },
+    }
+  }
+
+  /** 获取原文件地址 (Pro 下载，无限制下载大小) */
+  async ProPostAppChromeDownurl(
+    pickcode: string,
+  ): Promise<DownloadResult> {
+    const tm = Math.floor(Date.now() / 1000).toString()
+    const src = JSON.stringify({ pickcode })
+    const encoded = this.crypto115.m115_encode(src, tm)
+    const data = `data=${encodeURIComponent(encoded.data)}`
+
+    const response = await this.proApiRequest.post(
+      new URL(`/app/chrome/downurl?t=${tm}&c=9999`, PRO_API_URL_115).href,
+      {
+        body: data,
+      },
+    )
+
+    const res = (await response.json()) as ProApi.Res.FilesAppChromeDownurl
+
+    if (!res.state) {
+      throw new Drive115Error(`获取下载地址失败: ${JSON.stringify(res)}`, Drive115ErrorCode.Unknown)
+    }
+
+    const result = JSON.parse(
+      this.crypto115.m115_decode(res.data, encoded.key),
+    )
+    const downloadInfo = Object.values(result)[0] as DownloadResult
+
+    return downloadInfo
+  }
+
+  /** 获取 m3u8 根 url */
+  getM3u8Url(pickcode: string): string {
+    return new URL(`/api/video/m3u8/${pickcode}.m3u8`, NORMAL_URL_115).href
+  }
+
+  /** 解析 m3u8 列表 */
+  async getM3u8Info(url: string, pickcode: string): Promise<M3u8Item[]> {
+    const response = await this.fetchRequest.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const htmlText = await response.text()
+    if (!htmlText.startsWith('#')) {
+      let res: NormalApi.Res.VideoM3u8 | undefined
+      try {
+        res = JSON.parse(htmlText) as NormalApi.Res.VideoM3u8
+      }
+      catch {
+        throw new Drive115Error.NotFoundM3u8File()
+      }
+
+      if (res && res.state === false) {
+        if (res.code === 911) {
+          const verifyUrl = new URL(`?pickcode=${pickcode}`, VOD_URL_115).href
+          throw new Drive115Error(
+            '你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~',
+            Drive115ErrorCode.CaptchaRequired,
+            undefined,
+            { verifyUrl },
+          )
+        }
+        throw new Drive115Error(
+          `获取m3u8文件失败: ${res.error}`,
+          Drive115ErrorCode.Unknown,
+        )
+      }
+    }
+    const lines = htmlText.split('\n')
+    const m3u8List: M3u8Item[] = []
+
+    htmlText.split('\n').forEach((line, index) => {
+      if (line.includes('NAME="')) {
+        const extXStreamInf = line.match(/#EXT-X-STREAM-INF/)
+        if (extXStreamInf) {
+          const name = line.match(/NAME="([^"]*)"/)?.[1] ?? ''
+          const url = lines[index + 1]?.trim()
+          m3u8List.push({
+            name,
+            quality:
+              qualityCodeMap[name as unknown as keyof typeof qualityCodeMap],
+            url: getXUrl(url),
+          })
+        }
+      }
+    })
+
+    // 按照 UD HD BD 排序
+    m3u8List.sort((a, b) => b.quality - a.quality)
+    return m3u8List
+  }
+}
