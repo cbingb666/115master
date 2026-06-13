@@ -8,7 +8,7 @@ import {
   PRO_API_HOST_115,
   VOD_HOST_115,
   WEB_API_HOST_115,
-} from '../../constants/urls.ts'
+} from '../../share/constants/urls.ts'
 
 describe('urls', () => {
   it('uses correct 115 host names', () => {

@@ -9,12 +9,3 @@ export { normalizeResponse } from './response.ts'
 export type { Drive115Response } from './response.ts'
 
 export { Rsa115 } from './rsa.ts'
-
-export {
-  DownloadResultSchema,
-  FilesItemSchema,
-  FilesResponseSchema,
-  ProFilesAppChromeDownurlSchema,
-} from './schemas.ts'
-
-export type { DownloadResult, M3u8Item, PlayingVideoInfo } from './types.ts'

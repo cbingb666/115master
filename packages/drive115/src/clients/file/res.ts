@@ -1,4 +1,5 @@
-import type { ApiResponseBase, FilesItem, MoviesSubtitleItem, PathItem, Sorter } from '../../api/entity.ts'
+import type { FilesItem, MoviesSubtitleItem, PathItem } from '../../share/entity.ts'
+import type { ApiResponseBase, Sorter } from '../../share/shared.ts'
 
 /** 获取文件列表 */
 export type Files = ApiResponseBase<{

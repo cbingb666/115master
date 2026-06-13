@@ -1,4 +1,4 @@
-import type { ApiResponseBase } from '../../api/entity.ts'
+import type { ApiResponseBase } from '../../share/shared.ts'
 
 /** 获取离线空间 */
 export type OfflineSpace = ApiResponseBase<{

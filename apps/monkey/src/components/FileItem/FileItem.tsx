@@ -1,4 +1,4 @@
-import type { Entity } from '@115master/drive115'
+import type { Entity, Sorter } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { Icon } from '@iconify/vue'
 import { defineComponent, withModifiers } from 'vue'
@@ -73,12 +73,12 @@ const FileItem = defineComponent({
     },
     /** 排序字段 */
     order: {
-      type: String as PropType<Entity.Sorter['o']>,
+      type: String as PropType<Sorter['o']>,
       default: undefined,
     },
     /** 是否升序 */
     asc: {
-      type: Number as PropType<Entity.Sorter['asc']>,
+      type: Number as PropType<Sorter['asc']>,
       default: undefined,
     },
   },

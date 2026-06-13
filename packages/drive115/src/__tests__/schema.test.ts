@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DownloadResultSchema } from '../core/schemas.ts'
+import { DownloadResultSchema } from '../clients/video/schema.ts'
 
 describe('downloadResultSchema', () => {
   it('accepts valid download result', () => {

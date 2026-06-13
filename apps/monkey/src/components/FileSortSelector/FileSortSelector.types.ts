@@ -1,8 +1,8 @@
-import type { Entity } from '@115master/drive115'
+import type { Sorter } from '@115master/drive115'
 
 export interface Sort {
   name: string
-  order: Entity.Sorter['o']
-  asc: Entity.Sorter['asc']
+  order: Sorter['o']
+  asc: Sorter['asc']
   icon: string
 }

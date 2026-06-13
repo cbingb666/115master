@@ -1,4 +1,4 @@
-import type { Entity } from '@115master/drive115'
+import type { Entity, Sorter } from '@115master/drive115'
 import type { ImagePreviewItem } from '@/components/ImagePreviewer/types'
 import { useAsyncState } from '@vueuse/core'
 import { computed, ref } from 'vue'
@@ -11,9 +11,9 @@ const DEFAULT_PAGE_SIZE = 1000
 
 interface UseFolderImagePreviewOptions {
   cid: string
-  order: Entity.Sorter['o']
-  asc: Entity.Sorter['asc']
-  fcMix?: Entity.Sorter['fc_mix']
+  order: Sorter['o']
+  asc: Sorter['asc']
+  fcMix?: Sorter['fc_mix']
   pageSize?: number
 }
 

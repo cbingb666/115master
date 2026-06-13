@@ -1,17 +1,17 @@
-import type { VideoApi } from '../../api/index.ts'
-import type { DownloadResult, M3u8Item } from '../../core/types.ts'
-import { qualityCodeMap } from '../../constants/index.ts'
+import type { Req, Res } from './index.ts'
+import type { DownloadResult, M3u8Item } from './model.ts'
+import { Drive115Error, Drive115ErrorCode } from '../../core/error.ts'
+import { normalizeResponse } from '../../core/response.ts'
+import { qualityCodeMap } from '../../share/constants/quality.ts'
 import {
   NORMAL_URL_115,
   PRO_API_URL_115,
   VOD_URL_115,
   WEB_API_URL_115,
-} from '../../constants/urls.ts'
-import { Drive115Error, Drive115ErrorCode } from '../../core/error.ts'
-import { normalizeResponse } from '../../core/response.ts'
-import { DownloadResultSchema } from '../../core/schemas.ts'
-import { getXUrl } from '../../utils/url.ts'
+} from '../../share/constants/urls.ts'
 import { BaseApiClient } from '../base.ts'
+import { DownloadResultSchema } from './schema.ts'
+import { getXUrl } from './url.ts'
 
 /**
  * 视频相关 API
@@ -23,7 +23,7 @@ export class VideoApiClient extends BaseApiClient {
       new URL(`/files/download?pickcode=${pickcode}`, WEB_API_URL_115).href,
     )
 
-    const res = normalizeResponse<VideoApi.Res.FilesDownload>(await response.json())
+    const res = normalizeResponse<Res.FilesDownload>(await response.json())
 
     if (res.code === Drive115ErrorCode.SessionExpired) {
       throw new Drive115Error('登录已过期，请重新登录', Drive115ErrorCode.SessionExpired)
@@ -59,7 +59,7 @@ export class VideoApiClient extends BaseApiClient {
       },
     )
 
-    const res = normalizeResponse<VideoApi.Res.FilesAppChromeDownurl>(await response.json())
+    const res = normalizeResponse<Res.FilesAppChromeDownurl>(await response.json())
 
     if (!res.state) {
       throw new Drive115Error(`获取下载地址失败: ${JSON.stringify(res)}`, Drive115ErrorCode.Unknown)
@@ -82,13 +82,13 @@ export class VideoApiClient extends BaseApiClient {
   }
 
   /** 获取视频文件信息 */
-  async getFilesVideo(params: VideoApi.Req.GetFilesVideo) {
+  async getFilesVideo(params: Req.GetFilesVideo) {
     const response = await this.fetchRequest.get(
       new URL('/files/video', WEB_API_URL_115).href,
       { params },
     )
 
-    return normalizeResponse<VideoApi.Res.FilesVideo>(await response.json())
+    return normalizeResponse<Res.FilesVideo>(await response.json())
   }
 
   /** 获取 m3u8 根 url */
@@ -106,15 +106,15 @@ export class VideoApiClient extends BaseApiClient {
 
     const htmlText = await response.text()
     if (!htmlText.startsWith('#')) {
-      let res: VideoApi.Res.VideoM3u8 | undefined
+      let res: Res.VideoM3u8 | undefined
       try {
-        res = JSON.parse(htmlText) as VideoApi.Res.VideoM3u8
+        res = JSON.parse(htmlText) as Res.VideoM3u8
       }
       catch {
         throw new Drive115Error.NotFoundM3u8File()
       }
 
-      const normalized = normalizeResponse<VideoApi.Res.VideoM3u8>(res)
+      const normalized = normalizeResponse<Res.VideoM3u8>(res)
       if (normalized.state === false) {
         if (normalized.code === Drive115ErrorCode.CaptchaRequired) {
           const verifyUrl = new URL(`?pickcode=${pickcode}`, VOD_URL_115).href

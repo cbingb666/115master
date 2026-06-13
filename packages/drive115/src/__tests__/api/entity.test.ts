@@ -1,4 +1,4 @@
-import type { FilesItem } from '../../api/entity.ts'
+import type { FilesItem } from '../../share/entity.ts'
 import { describe, expect, it } from 'vitest'
 
 describe('filesItem', () => {

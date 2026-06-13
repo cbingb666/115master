@@ -1,10 +1,10 @@
-import type { FileApi } from '../../api/index.ts'
+import type { Req, Res } from './index.ts'
+import { Drive115Error, Drive115ErrorCode } from '../../core/error.ts'
+import { normalizeResponse } from '../../core/response.ts'
 import {
   APS_URL_115,
   WEB_API_URL_115,
-} from '../../constants/urls.ts'
-import { Drive115Error, Drive115ErrorCode } from '../../core/error.ts'
-import { normalizeResponse } from '../../core/response.ts'
+} from '../../share/constants/urls.ts'
 import { BaseApiClient } from '../base.ts'
 
 /**
@@ -12,12 +12,12 @@ import { BaseApiClient } from '../base.ts'
  */
 export class FileApiClient extends BaseApiClient {
   /** 获取文件列表，主接口失败时回退到 APS 接口 */
-  async getFilesWithFallback(params: FileApi.Req.GetFiles) {
-    const primary = normalizeResponse<FileApi.Res.Files>(await this.getFilesRaw(params))
+  async getFilesWithFallback(params: Req.GetFiles) {
+    const primary = normalizeResponse<Res.Files>(await this.getFilesRaw(params))
     if (primary.state)
       return primary
 
-    const fallback = normalizeResponse<FileApi.Res.Files>(
+    const fallback = normalizeResponse<Res.Files>(
       await this.apsGetNatsortFilesRaw(params, primary.order, primary.is_asc),
     )
     if (fallback.state)
@@ -30,147 +30,147 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 获取文件列表 (以前老旧的文件夹需要使用它来获取) */
-  async apsGetNatsortFiles(params: FileApi.Req.GetFiles) {
-    return normalizeResponse<FileApi.Res.Files>(await this.apsGetNatsortFilesRaw(params))
+  async apsGetNatsortFiles(params: Req.GetFiles) {
+    return normalizeResponse<Res.Files>(await this.apsGetNatsortFilesRaw(params))
   }
 
   /** 获取文件列表 */
-  async getFiles(params: FileApi.Req.GetFiles) {
-    return normalizeResponse<FileApi.Res.Files>(await this.getFilesRaw(params))
+  async getFiles(params: Req.GetFiles) {
+    return normalizeResponse<Res.Files>(await this.getFilesRaw(params))
   }
 
   /** 获取播放历史 */
-  async getFilesHistory(params: FileApi.Req.GetFilesHistory) {
+  async getFilesHistory(params: Req.GetFilesHistory) {
     const response = await this.fetchRequest.get(
       new URL('/files/history', WEB_API_URL_115).href,
       { params },
     )
 
-    return normalizeResponse<FileApi.Res.FilesHistory>(await response.json())
+    return normalizeResponse<Res.FilesHistory>(await response.json())
   }
 
   /** 更新播放历史 */
-  async updateFilesHistory(data: FileApi.Req.PostFilesHistory) {
+  async updateFilesHistory(data: Req.PostFilesHistory) {
     const response = await this.fetchRequest.post(
       new URL('/files/history', WEB_API_URL_115).href,
       { data },
     )
 
-    return normalizeResponse<FileApi.Res.FilesHistory>(await response.json())
+    return normalizeResponse<Res.FilesHistory>(await response.json())
   }
 
   /** 设置文件星标 */
-  async starFiles(params: FileApi.Req.FilesStar): Promise<FileApi.Res.FilesStar> {
+  async starFiles(params: Req.FilesStar): Promise<Res.FilesStar> {
     const response = await this.fetchRequest.post(
       new URL('/files/star', WEB_API_URL_115).href,
       { data: params },
     )
 
-    return normalizeResponse<FileApi.Res.FilesStar>(await response.json())
+    return normalizeResponse<Res.FilesStar>(await response.json())
   }
 
   /** 获取电影字幕 */
-  async getMoviesSubtitle(params: FileApi.Req.GetMoviesSubtitle) {
+  async getMoviesSubtitle(params: Req.GetMoviesSubtitle) {
     const response = await this.fetchRequest.get(
       new URL('/movies/subtitle', WEB_API_URL_115).href,
       { params },
     )
 
-    return normalizeResponse<FileApi.Res.MoviesSubtitle>(await response.json())
+    return normalizeResponse<Res.MoviesSubtitle>(await response.json())
   }
 
   /** 获取文件信息 */
-  async getFilesIndexInfo(params: FileApi.Req.GetFilesIndexInfo = {}) {
+  async getFilesIndexInfo(params: Req.GetFilesIndexInfo = {}) {
     const response = await this.fetchRequest.get(
       new URL('/files/index_info', WEB_API_URL_115).href,
       { params },
     )
 
-    return normalizeResponse<FileApi.Res.FilesIndexInfo>(await response.json())
+    return normalizeResponse<Res.FilesIndexInfo>(await response.json())
   }
 
   /** 设置文件排序 */
-  async setFilesOrder(params: FileApi.Req.PostFilesOrder) {
+  async setFilesOrder(params: Req.PostFilesOrder) {
     const response = await this.fetchRequest.post(
       new URL('/files/order', WEB_API_URL_115).href,
       { data: params },
     )
 
-    return normalizeResponse<FileApi.Res.PostFilesOrder>(await response.json())
+    return normalizeResponse<Res.PostFilesOrder>(await response.json())
   }
 
   /** 重命名文件 (批量) */
-  async batchRenameFiles(params: FileApi.Req.PostFilesBatchRename) {
+  async batchRenameFiles(params: Req.PostFilesBatchRename) {
     const response = await this.fetchRequest.post(
       new URL('/files/batch_rename', WEB_API_URL_115).href,
       { data: params },
     )
 
-    return normalizeResponse<FileApi.Res.PostFilesBatchRename>(await response.json())
+    return normalizeResponse<Res.PostFilesBatchRename>(await response.json())
   }
 
   /** 添加文件夹 */
-  async addFolder(params: FileApi.Req.PostFilesAdd) {
+  async addFolder(params: Req.PostFilesAdd) {
     const response = await this.fetchRequest.post(
       new URL('/files/add', WEB_API_URL_115).href,
       { data: params },
     )
 
-    return normalizeResponse<FileApi.Res.PostFilesAdd>(await response.json())
+    return normalizeResponse<Res.PostFilesAdd>(await response.json())
   }
 
   /** 删除文件 */
-  async deleteFiles(params: FileApi.Req.PostRbDelete) {
+  async deleteFiles(params: Req.PostRbDelete) {
     const response = await this.fetchRequest.post(
       new URL('/rb/delete', WEB_API_URL_115).href,
       { data: params },
     )
 
-    return normalizeResponse<FileApi.Res.PostRbDelete>(await response.json())
+    return normalizeResponse<Res.PostRbDelete>(await response.json())
   }
 
   /** 移动文件 */
-  async moveFiles(params: FileApi.Req.PostFilesMove) {
+  async moveFiles(params: Req.PostFilesMove) {
     const response = await this.fetchRequest.post(
       new URL('/files/move', WEB_API_URL_115).href,
       { data: params },
     )
 
-    return normalizeResponse<FileApi.Res.PostFilesMove>(await response.json())
+    return normalizeResponse<Res.PostFilesMove>(await response.json())
   }
 
   /** 获取移动进度 */
-  async getFilesMoveProgress(params: FileApi.Req.GetFilesMoveProgress) {
+  async getFilesMoveProgress(params: Req.GetFilesMoveProgress) {
     const response = await this.fetchRequest.get(
       new URL('/files/move_progress', WEB_API_URL_115).href,
       { params },
     )
 
-    return normalizeResponse<FileApi.Res.GetFilesMoveProgress>(await response.json())
+    return normalizeResponse<Res.GetFilesMoveProgress>(await response.json())
   }
 
   /** 搜索 */
-  async searchFiles(params: FileApi.Req.GetFilesSearch) {
+  async searchFiles(params: Req.GetFilesSearch) {
     const response = await this.fetchRequest.get(
       new URL('/files/search', WEB_API_URL_115).href,
       { params },
     )
 
-    return normalizeResponse<FileApi.Res.GetFilesSearch>(await response.json())
+    return normalizeResponse<Res.GetFilesSearch>(await response.json())
   }
 
   /** 置顶文件 */
-  async topFiles(params: FileApi.Req.PostFilesTop) {
+  async topFiles(params: Req.PostFilesTop) {
     const response = await this.fetchRequest.post(
       new URL('/files/top', WEB_API_URL_115).href,
       { data: params },
     )
 
-    return normalizeResponse<FileApi.Res.PostFilesTop>(await response.json())
+    return normalizeResponse<Res.PostFilesTop>(await response.json())
   }
 
   private async apsGetNatsortFilesRaw(
-    params: FileApi.Req.GetFiles,
+    params: Req.GetFiles,
     order?: string,
     isAsc?: number,
   ) {
@@ -187,7 +187,7 @@ export class FileApiClient extends BaseApiClient {
     return response.json()
   }
 
-  private async getFilesRaw(params: FileApi.Req.GetFiles) {
+  private async getFilesRaw(params: Req.GetFiles) {
     const response = await this.fetchRequest.get(
       new URL('/files', WEB_API_URL_115).href,
       { params },

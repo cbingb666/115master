@@ -1,4 +1,4 @@
-import type { BaseParams, PaginationParams, Sorter } from '../../api/entity.ts'
+import type { BaseParams, PaginationParams, Sorter } from '../../share/shared.ts'
 
 /** 获取图片列表请求 */
 export interface GetFilesImglist extends BaseParams, PaginationParams, Sorter {

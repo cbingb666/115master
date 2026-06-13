@@ -1,3 +1,6 @@
 export { VideoApiClient } from './client.ts'
+export type * from './model.ts'
 export type * as Req from './req.ts'
 export type * as Res from './res.ts'
+export * from './schema.ts'
+export * from './url.ts'
