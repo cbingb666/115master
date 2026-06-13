@@ -11,6 +11,7 @@ import {
   WEB_API_URL_115,
 } from './constants/urls.ts'
 import { Crypto115 } from './crypto.ts'
+import { Drive115Error, Drive115ErrorCode } from './error.ts'
 import { getXUrl } from './utils/url.ts'
 
 /**
@@ -21,8 +22,6 @@ export interface Drive115CoreDeps {
   fetchRequest: IRequest
   /** Pro API 请求实例（用于 115 浏览器环境下的下载请求） */
   proApiRequest: IRequest
-  /** 打开验证页面回调 */
-  onOpenVerifyTab?: (url: string) => void
 }
 
 /**
@@ -48,21 +47,6 @@ export interface DownloadResult {
 }
 
 /**
- * 115驱动错误
- */
-export class Drive115Error {
-  /** 未找到 m3u8 文件 */
-  static NotFoundM3u8File = class extends Error {
-    constructor() {
-      super('Not found m3u8 file')
-    }
-  }
-}
-
-// TODO: 超时登录错误 errNo 990001
-// TODO: 验证账号弹窗被拦截 911
-
-/**
  * 115 驱动核心类
  */
 export class Drive115Core {
@@ -70,20 +54,6 @@ export class Drive115Core {
   protected crypto115 = new Crypto115()
   /** 依赖配置 */
   protected deps: Drive115CoreDeps
-  /** 基础 URL */
-  private BASE_URL = NORMAL_URL_115
-  /** 我的 URL */
-  private MY_URL = MY_URL_115
-  /** 网页 API URL */
-  private WEB_API_URL = WEB_API_URL_115
-  /** Pro API URL */
-  private PRO_API_URL = PRO_API_URL_115
-  /** VOD URL */
-  private VOD_URL_115 = VOD_URL_115
-  /** APS URL */
-  private APS_URL_115 = APS_URL_115
-  /** 是否正在验证 */
-  private verifying = false
 
   constructor(deps: Drive115CoreDeps) {
     this.deps = deps
@@ -92,17 +62,20 @@ export class Drive115Core {
   /** 获取原文件地址 (普通下载，有限制下载大小) */
   async webApiFilesDownload(pickcode: string): Promise<DownloadResult> {
     const response = await this.deps.fetchRequest.get(
-      new URL(`/files/download?pickcode=${pickcode}`, this.WEB_API_URL).href,
+      new URL(`/files/download?pickcode=${pickcode}`, WEB_API_URL_115).href,
     )
 
     const res = (await response.json()) as WebApi.Res.FilesDownload
 
     if (res.errNo === 990001) {
-      alert('登录已过期，请重新登录')
+      throw new Drive115Error('登录已过期，请重新登录', Drive115ErrorCode.SessionExpired)
     }
 
     if (!res.state || !res.file_url) {
-      throw new Error(`服务器返回数据格式错误: ${JSON.stringify(res)}`)
+      throw new Drive115Error(
+        `服务器返回数据格式错误: ${JSON.stringify(res)}`,
+        Drive115ErrorCode.DecodeError,
+      )
     }
 
     return {
@@ -122,7 +95,7 @@ export class Drive115Core {
     const data = `data=${encodeURIComponent(encoded.data)}`
 
     const response = await this.deps.proApiRequest.post(
-      new URL(`/app/chrome/downurl?t=${tm}&c=9999`, this.PRO_API_URL).href,
+      new URL(`/app/chrome/downurl?t=${tm}&c=9999`, PRO_API_URL_115).href,
       {
         body: data,
       },
@@ -144,7 +117,7 @@ export class Drive115Core {
 
   /** 获取 m3u8 根 url */
   getM3u8Url(pickcode: string): string {
-    return new URL(`/api/video/m3u8/${pickcode}.m3u8`, this.BASE_URL).href
+    return new URL(`/api/video/m3u8/${pickcode}.m3u8`, NORMAL_URL_115).href
   }
 
   /** 解析 m3u8 列表 */
@@ -167,9 +140,18 @@ export class Drive115Core {
 
       if (res && res.state === false) {
         if (res.code === 911) {
-          this.jumpVerify(pickcode)
+          const verifyUrl = new URL(`?pickcode=${pickcode}`, VOD_URL_115).href
+          throw new Drive115Error(
+            '你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~',
+            Drive115ErrorCode.CaptchaRequired,
+            undefined,
+            { verifyUrl },
+          )
         }
-        throw new Error(`获取m3u8文件失败: ${res.error}`)
+        throw new Drive115Error(
+          `获取m3u8文件失败: ${res.error}`,
+          Drive115ErrorCode.Unknown,
+        )
       }
     }
     const lines = htmlText.split('\n')
@@ -199,7 +181,7 @@ export class Drive115Core {
   /** 获取文件列表 (以前老旧的文件夹需要使用它来获取) */
   async ApsGetNatsortFiles(params: WebApi.Req.GetFiles) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/natsort/files.php', this.APS_URL_115).href,
+      new URL('/natsort/files.php', APS_URL_115).href,
       {
         params,
       },
@@ -210,7 +192,7 @@ export class Drive115Core {
   /** 获取文件列表 */
   async webApiGetFiles(params: WebApi.Req.GetFiles) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/files', this.WEB_API_URL).href,
+      new URL('/files', WEB_API_URL_115).href,
       {
         params,
       },
@@ -222,7 +204,7 @@ export class Drive115Core {
   /** 获取视频文件信息 */
   async webApiGetFilesVideo(params: WebApi.Req.GetFilesVideo) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/files/video', this.WEB_API_URL).href,
+      new URL('/files/video', WEB_API_URL_115).href,
       {
         params,
       },
@@ -234,7 +216,7 @@ export class Drive115Core {
   /** 获取播放历史 */
   async webApiGetWebApiFilesHistory(params: WebApi.Req.GetFilesHistory) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/files/history', this.WEB_API_URL).href,
+      new URL('/files/history', WEB_API_URL_115).href,
       {
         params,
       },
@@ -246,7 +228,7 @@ export class Drive115Core {
   /** 更新播放历史 */
   async webApiPostWebApiFilesHistory(data: WebApi.Req.PostFilesHistory) {
     const response = await this.deps.fetchRequest.post(
-      new URL('/files/history', this.WEB_API_URL).href,
+      new URL('/files/history', WEB_API_URL_115).href,
       {
         data,
       },
@@ -260,7 +242,7 @@ export class Drive115Core {
     params: WebApi.Req.FilesStar,
   ): Promise<WebApi.Res.FilesStar> {
     const response = await this.deps.fetchRequest.post(
-      new URL('/files/star', this.WEB_API_URL).href,
+      new URL('/files/star', WEB_API_URL_115).href,
       {
         data: params,
       },
@@ -272,7 +254,7 @@ export class Drive115Core {
   /** 获取电影字幕 */
   async webApiGetMoviesSubtitle(params: WebApi.Req.GetMoviesSubtitle) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/movies/subtitle', this.WEB_API_URL).href,
+      new URL('/movies/subtitle', WEB_API_URL_115).href,
       {
         params,
       },
@@ -284,7 +266,7 @@ export class Drive115Core {
   /** 获取文件信息 */
   async webApiGetFilesIndexInfo(params: WebApi.Req.GetFilesIndexInfo = {}) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/files/index_info', this.WEB_API_URL).href,
+      new URL('/files/index_info', WEB_API_URL_115).href,
       {
         params,
       },
@@ -296,7 +278,7 @@ export class Drive115Core {
   /** 设置文件排序 */
   async webApiPostFilesOrder(params: WebApi.Req.PostFilesOrder) {
     const response = await this.deps.fetchRequest.post(
-      new URL('/files/order', this.WEB_API_URL).href,
+      new URL('/files/order', WEB_API_URL_115).href,
       {
         data: params,
       },
@@ -307,7 +289,7 @@ export class Drive115Core {
   /** 重命名文件 (批量) */
   async webApiPostFilesBatchRename(params: WebApi.Req.PostFilesBatchRename) {
     const response = await this.deps.fetchRequest.post(
-      new URL('/files/batch_rename', this.WEB_API_URL).href,
+      new URL('/files/batch_rename', WEB_API_URL_115).href,
       {
         data: params,
       },
@@ -319,7 +301,7 @@ export class Drive115Core {
   /** 添加文件夹 */
   async webApiPostFilesAdd(params: WebApi.Req.PostFilesAdd) {
     const response = await this.deps.fetchRequest.post(
-      new URL('/files/add', this.WEB_API_URL).href,
+      new URL('/files/add', WEB_API_URL_115).href,
       {
         data: params,
       },
@@ -331,7 +313,7 @@ export class Drive115Core {
   /** 删除文件 */
   async webApiPostRbDelete(params: WebApi.Req.PostRbDelete) {
     const response = await this.deps.fetchRequest.post(
-      new URL('/rb/delete', this.WEB_API_URL).href,
+      new URL('/rb/delete', WEB_API_URL_115).href,
       {
         data: params,
       },
@@ -343,7 +325,7 @@ export class Drive115Core {
   /** 移动文件 */
   async webApiPostFilesMove(params: WebApi.Req.PostFilesMove) {
     const response = await this.deps.fetchRequest.post(
-      new URL('/files/move', this.WEB_API_URL).href,
+      new URL('/files/move', WEB_API_URL_115).href,
       {
         data: params,
       },
@@ -355,7 +337,7 @@ export class Drive115Core {
   /** 获取移动进度 */
   async webApiGetFilesMoveProgress(params: WebApi.Req.GetFilesMoveProgress) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/files/move_progress', this.WEB_API_URL).href,
+      new URL('/files/move_progress', WEB_API_URL_115).href,
       {
         params,
       },
@@ -367,7 +349,7 @@ export class Drive115Core {
   /** 搜索 */
   async webApiGetFilesSearch(params: WebApi.Req.GetFilesSearch) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/files/search', this.WEB_API_URL).href,
+      new URL('/files/search', WEB_API_URL_115).href,
       {
         params,
       },
@@ -379,7 +361,7 @@ export class Drive115Core {
   /** 获取离线空间 */
   async NormalApiGetOfflineSpace(data: NormalApi.Req.OfflineSpace = {}) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/web/lixian/space', this.BASE_URL).href,
+      new URL('/web/lixian/space', NORMAL_URL_115).href,
       {
         params: {
           ct: 'lixian',
@@ -395,7 +377,7 @@ export class Drive115Core {
   /** 获取离线配额 */
   async NormalApiGetOfflineGetQuotaPackageInfo(data: NormalApi.Req.OfflineGetQuotaPackageInfo = {}) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/web/lixian', this.BASE_URL).href,
+      new URL('/web/lixian', NORMAL_URL_115).href,
       {
         params: {
           ct: 'lixian',
@@ -410,7 +392,7 @@ export class Drive115Core {
   /** 添加一组离线任务 */
   async NormalApiPostOfflineAddUrls(data: NormalApi.Req.OfflineAddUrls) {
     const response = await this.deps.fetchRequest.post(
-      new URL('/web/lixian/', this.BASE_URL).href,
+      new URL('/web/lixian/', NORMAL_URL_115).href,
       {
         params: {
           ct: 'lixian',
@@ -426,7 +408,7 @@ export class Drive115Core {
   /** 获取用户信息 */
   async MyApiGetUserAq(data: MyApi.Req.UserAq = {}) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/', this.MY_URL).href,
+      new URL('/', MY_URL_115).href,
       {
         params: {
           ct: 'ajax',
@@ -441,7 +423,7 @@ export class Drive115Core {
   /** 获取图片列表 */
   async WebApiGetFilesImglist(params: WebApi.Req.GetFilesImglist) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/files/imglist', this.WEB_API_URL).href,
+      new URL('/files/imglist', WEB_API_URL_115).href,
       { params },
     )
     return (await response.json()) as WebApi.Res.GetFilesImglist
@@ -451,7 +433,7 @@ export class Drive115Core {
   async ProApiGetAndroidFilesImglist(params: ProApi.Req.AndroidFilesImglist) {
     const { tm, encoded } = this.ProApiEncodeData(params)
     const response = await this.deps.fetchRequest.get(
-      new URL('/android/files/imglist', this.PRO_API_URL).href,
+      new URL('/android/files/imglist', PRO_API_URL_115).href,
       {
         params: {
           t: tm,
@@ -465,7 +447,7 @@ export class Drive115Core {
   /** 获取图片 */
   async WebApiGetFilesImage(params: WebApi.Req.GetFilesImage) {
     const response = await this.deps.fetchRequest.get(
-      new URL('/files/image', this.WEB_API_URL).href,
+      new URL('/files/image', WEB_API_URL_115).href,
       { params },
     )
 
@@ -475,7 +457,7 @@ export class Drive115Core {
   /** 置顶文件 */
   async webApiPostFilesTop(params: WebApi.Req.PostFilesTop) {
     const response = await this.deps.fetchRequest.post(
-      new URL('/files/top', this.WEB_API_URL).href,
+      new URL('/files/top', WEB_API_URL_115).href,
       {
         data: params,
       },
@@ -493,19 +475,6 @@ export class Drive115Core {
       tm,
       encoded,
       encodedData,
-    }
-  }
-
-  /** 跳转验证 */
-  private jumpVerify(pickcode: string) {
-    if (this.verifying) {
-      return
-    }
-    this.verifying = true
-    alert('你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~')
-    const url = new URL(`?pickcode=${pickcode}`, this.VOD_URL_115).href
-    if (this.deps.onOpenVerifyTab) {
-      this.deps.onOpenVerifyTab(url)
     }
   }
 }

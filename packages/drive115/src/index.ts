@@ -8,12 +8,15 @@ export { MarkStatus } from './api/webApi/req.ts'
 export * from './constants/index.ts'
 
 // Core
-export { Drive115Core, Drive115Error } from './core.ts'
+export { Drive115Core } from './core.ts'
 export type { DownloadResult, Drive115CoreDeps } from './core.ts'
 // Crypto
 export { Crypto115 } from './crypto.ts'
 
 export type { M115EncodeResult } from './crypto.ts'
+
+// Error
+export { Drive115Error, Drive115ErrorCode } from './error.ts'
 export { Rsa115 } from './rsa.ts'
 
 // Types
