@@ -6,14 +6,25 @@
     "allow": [
       "mcp__context7__resolve-library-id",
       "mcp__context7__query-docs",
-      "Bash(pnpm * dev)",
-      "Bash(pnpm * dev:plus)",
-      "Bash(pnpm * build)",
-      "Bash(pnpm * build:plus)",
-      "Bash(pnpm * test)",
-      "Bash(pnpm * lint)",
-      "Bash(pnpm * lint:fix)",
-      "Bash(pnpm * type-check)"
+      "Bash(pnpm dev)",
+      "Bash(pnpm dev:plus)",
+      "Bash(pnpm build)",
+      "Bash(pnpm build:plus)",
+      "Bash(pnpm test)",
+      "Bash(pnpm test:coverage)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm lint:fix)",
+      "Bash(pnpm type-check)",
+      "Bash(pnpm clean)",
+      "Bash(pnpm --filter * dev)",
+      "Bash(pnpm --filter * dev:plus)",
+      "Bash(pnpm --filter * build)",
+      "Bash(pnpm --filter * build:plus)",
+      "Bash(pnpm --filter * test)",
+      "Bash(pnpm --filter * lint)",
+      "Bash(pnpm --filter * lint:fix)",
+      "Bash(pnpm --filter * type-check)",
+      "Bash(pnpm --filter * clean)"
     ]
   }
 }
