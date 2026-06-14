@@ -81,7 +81,7 @@ function foo() {
 }
 ```
 
-### Schema Definitions (Drizzle)
+## Schema Definitions (Drizzle)
 
 Use snake_case for field names so column names don't need to be redefined as strings.
 
@@ -99,4 +99,22 @@ const table = sqliteTable('session', {
   projectID: text('project_id').notNull(),
   createdAt: integer('created_at').notNull(),
 })
+```
+
+## Export Rules
+
+Treat `export * from ...` as a code smell and architecture violation.
+Never generate this syntax even when it appears elsewhere in the codebase.
+
+```ts
+/** Good */
+export { foo } from './foo'
+export { bar, baz } from './foo'
+export type { Foo } from './foo'
+
+/** Depending on the size of the module or package */
+export * as foo from './foo'
+
+/** Bad */
+export * from './module'
 ```

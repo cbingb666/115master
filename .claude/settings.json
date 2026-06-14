@@ -1,5 +1,19 @@
 {
   "worktree": {
     "baseRef": "head"
+  },
+  "permissions": {
+    "allow": [
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(pnpm * dev)",
+      "Bash(pnpm * dev:plus)",
+      "Bash(pnpm * build)",
+      "Bash(pnpm * build:plus)",
+      "Bash(pnpm * test)",
+      "Bash(pnpm * lint)",
+      "Bash(pnpm * lint:fix)",
+      "Bash(pnpm * type-check)"
+    ]
   }
 }
