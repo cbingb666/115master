@@ -2,11 +2,12 @@
  * 模糊时间
  * @param time 时间
  * @param blur 模糊时间
+ * @param max 最大值
  * @returns 模糊时间
  */
 export function blurTime(time: number, blur: number, max: number) {
-  const _blurTime = time - (time % blur) + blur / 2
-  return Math.max(0, Math.min(_blurTime, max))
+  const blurred = time - (time % blur) + blur / 2
+  return Math.max(0, Math.min(blurred, max))
 }
 
 /**
@@ -20,9 +21,8 @@ export function blurTime(time: number, blur: number, max: number) {
  * getDuration("00:00:01") // 1
  */
 export function getDuration(time?: string) {
-  if (!time) {
+  if (!time)
     return 0
-  }
   const [seconds = 0, minutes = 0, hours = 0] = time
     .split(':')
     .map(Number)

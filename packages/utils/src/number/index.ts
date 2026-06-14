@@ -11,11 +11,11 @@
  * boundary(11, 1, 10) // 10
  */
 export function boundary(value: number, min: number, max: number) {
-  if (value < min) {
+  if (value < min)
     return min
-  }
-  if (value > max) {
+
+  if (value > max)
     return max
-  }
+
   return value
 }

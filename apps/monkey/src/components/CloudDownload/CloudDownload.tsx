@@ -1,11 +1,11 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
+import { string } from '@115master/utils'
 import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, useTemplateRef, watch } from 'vue'
 import FileItemThumbnail from '@/components/FileItem/FileItemThumbnail'
 import { useOfflineQuotaPackageInfoStore } from '@/store/offlineQuotaPackageInfo'
 import { actressFaceDB } from '@/utils/actressFaceDB'
-import { extractEmojis } from '@/utils/string'
 
 const CloudDownload = defineComponent({
   props: {
@@ -64,7 +64,7 @@ const CloudDownload = defineComponent({
     const emoji = computed(() => {
       const last = pathParts.value.lastPath
       if (last?.name) {
-        return extractEmojis(last.name)[0]
+        return string.extractEmojis(last.name)[0]
       }
       return undefined
     })

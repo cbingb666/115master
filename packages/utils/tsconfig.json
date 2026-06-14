@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    "lib": ["ES2020", "DOM"],
     "baseUrl": ".",
     "rootDir": "./src",
     "declaration": true,

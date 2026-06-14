@@ -145,7 +145,7 @@
               日期
             </span>
             <span :class="styles.content.value">
-              {{ formatDate(movieInfo.state.value?.date) ?? '-' }}
+              {{ format.date(movieInfo.state.value?.date) ?? '-' }}
             </span>
           </div>
 
@@ -154,7 +154,7 @@
               时长
             </span>
             <span :class="styles.content.value">
-              {{ formatDuration(movieInfo.state.value?.duration) ?? '-' }}
+              {{ format.duration(movieInfo.state.value?.duration) ?? '-' }}
             </span>
           </div>
 
@@ -226,6 +226,7 @@
 
 <script lang="ts" setup>
 import type { useDataMovieInfo } from '@/pages/video/data/useDataMovieInfo'
+import { format } from '@115master/utils'
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
 import {
   computed,
@@ -238,7 +239,6 @@ import {
   LoadingError,
 } from '@/components'
 import { clsx } from '@/utils/clsx'
-import { formatDate, formatDuration } from '@/utils/format'
 import CopyButton from './components/CopyButton.vue'
 import 'photoswipe/style.css'
 

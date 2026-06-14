@@ -1,10 +1,10 @@
 import type { VideoSource } from '@/components/XPlayer'
 import { Api } from '@115master/drive115'
 
+import { file } from '@115master/utils'
 import { ref } from 'vue'
 import { VIDEO_SOURCE_EXTENSION } from '@/components/XPlayer/index.const'
 import { drive115 } from '@/utils/drive115Instance'
-import { getFileExtensionByUrl } from '@/utils/file'
 import { appLogger } from '@/utils/logger'
 import { setVideoCookie } from '..'
 
@@ -42,7 +42,7 @@ export function useDataVideoSources() {
       }
 
       const extension
-        = getFileExtensionByUrl(download.value.url.url)
+        = file.getFileExtensionByUrl(download.value.url.url)
           ?? VIDEO_SOURCE_EXTENSION.unknown
 
       list.value.unshift({

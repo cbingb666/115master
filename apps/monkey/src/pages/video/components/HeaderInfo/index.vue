@@ -15,7 +15,7 @@
         </span>
         <!-- 文件大小 -->
         <span :class="styles.fileInfo.size">
-          {{ formatFileSize(Number(fileInfo.state?.file_size)) }}
+          {{ format.fileSize(Number(fileInfo.state?.file_size)) }}
         </span>
       </div>
       <!-- 目录 -->
@@ -41,9 +41,9 @@
 import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import type { useDataFileInfo } from '@/pages/video/data/useDataFileInfo'
 import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
+import { format } from '@115master/utils'
 import { computed } from 'vue'
 import { clsx } from '@/utils/clsx'
-import { formatFileSize } from '@/utils/format'
 
 const props = defineProps<{
   /** 播放器上下文 */

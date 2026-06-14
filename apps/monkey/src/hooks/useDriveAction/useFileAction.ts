@@ -1,9 +1,9 @@
 import type { Share } from '@115master/drive115'
 import { Api } from '@115master/drive115'
+import { string } from '@115master/utils'
 import { useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'
-import { removeFileExtension } from '@/utils/string'
 import { getFileIds } from './helpers'
 
 /** 文件基础操作（置顶、星标、重命名、新建文件夹） */
@@ -62,7 +62,7 @@ export function useFileAction() {
     const dialogRes = await dialog.prompt({
       title: '重命名',
       placeholder: '请输入文件名',
-      defaultValue: removeFileExtension(item.n),
+      defaultValue: string.removeFileExtension(item.n),
       multiline: true,
       rows: 3,
     })

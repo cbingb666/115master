@@ -3,8 +3,8 @@ import type { AvcFrameData } from './demuxerTsNew'
 import type { ChunkReader } from './io/ChunkIO'
 import type { FetchIO } from './io/FetchIO'
 import type { Logger } from '@/utils/logger'
+import { promise } from '@115master/utils'
 import { appLogger } from '@/utils/logger'
-import { promiseDelay } from '@/utils/promise'
 import { DecoderFlowError } from './DecoderFlowError'
 import { DemuxerTsNew } from './demuxerTsNew'
 import { microsecTimebase, secTimebase, timebaseConvert } from './timebase'
@@ -469,7 +469,7 @@ export class DecoderFlow {
    */
   private async _processSampleQueue(): Promise<void> {
     if (this.sampleQueue.length === 0) {
-      await promiseDelay(0)
+      await promise.promiseDelay(0)
       return
     }
 

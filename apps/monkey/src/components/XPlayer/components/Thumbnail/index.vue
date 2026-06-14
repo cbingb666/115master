@@ -60,14 +60,13 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 import type { ThumbnailFrame } from '@/components/XPlayer/types'
+import { image as imageUtil, number } from '@115master/utils'
 import { refManualReset } from '@vueuse/core'
 import { computed, onUnmounted, shallowRef, toValue, watch } from 'vue'
 import { LoadingError } from '@/components'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { clsx } from '@/utils/clsx'
-import { getImageResize } from '@/utils/image'
-import { boundary } from '@/utils/number'
 
 interface Props {
   /** 是否显示 */
@@ -229,7 +228,7 @@ function usePreviewContainer() {
       const offset = offsetCenter + offsetX
       const min = 0
       const max = props.progressBarWidth - thumbnailWidth
-      const result = boundary(offset, min, max)
+      const result = number.boundary(offset, min, max)
       previewTransform.value = result
     },
   )
@@ -269,7 +268,7 @@ function useRenderThumbnail(
     if (renderImage && renderTime === lastHoverTime) {
       const imgWidth = renderImage.img.width
       const imgHeight = renderImage.img.height
-      const { width: resizeWidth, height: resizeHeight } = getImageResize(
+      const { width: resizeWidth, height: resizeHeight } = imageUtil.resize(
         imgWidth,
         imgHeight,
         width,

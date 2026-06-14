@@ -137,6 +137,7 @@ import type {
 import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import type XPlayerInstance from '@/components/XPlayer/index.vue'
 import type { Subtitle, ThumbnailRequest } from '@/components/XPlayer/types'
+import { format } from '@115master/utils'
 import { Icon } from '@iconify/vue'
 import { useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
@@ -154,7 +155,6 @@ import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { clsx } from '@/utils/clsx'
 import { core115 } from '@/utils/core115'
 import { drive115 } from '@/utils/drive115Instance'
-import { formatFileSize } from '@/utils/format'
 import { getAvNumber } from '@/utils/getNumber'
 import { appLogger } from '@/utils/logger'
 import { isMac } from '@/utils/platform'
@@ -637,7 +637,7 @@ async function playPreviousOrNext(ctx: PlayerContext, dir: number) {
             {
               class: 'text-xs text-base-content/70',
             },
-            formatFileSize(Number(nextItem.s)),
+            format.fileSize(Number(nextItem.s)),
           ),
         ],
       ),

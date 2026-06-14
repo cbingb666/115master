@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
+import dayjsDuration from 'dayjs/plugin/duration'
 
-dayjs.extend(duration)
+dayjs.extend(dayjsDuration)
 
 function toTimestamp(input?: number | string) {
   if (input === undefined || input === null || input === '')
@@ -21,11 +21,11 @@ function toTimestamp(input?: number | string) {
 }
 
 /**
- * 格式化时间戳为日期
+ * 格式化时间戳为日期时间
  * @param input 时间戳（支持秒或毫秒）
  * @returns 格式化后的日期字符串 YYYY-MM-DD HH:mm
  */
-export function formatYMDHM(input?: number | string) {
+export function dateTime(input?: number | string) {
   const timestamp = toTimestamp(input)
   if (!timestamp)
     return ''
@@ -37,7 +37,7 @@ export function formatYMDHM(input?: number | string) {
  * @param input 时间戳（支持秒或毫秒）
  * @returns 格式化后的日期字符串 YYYY-MM-DD
  */
-export function formatDate(input?: number | string) {
+export function date(input?: number | string) {
   const timestamp = toTimestamp(input)
   if (!timestamp)
     return ''
@@ -49,7 +49,7 @@ export function formatDate(input?: number | string) {
  * @param input 时间戳（支持秒或毫秒）
  * @returns 今天显示 HH:mm，昨天显示 昨天 HH:mm，当年显示 MM-DD HH:mm，其它显示 YYYY-MM-DD HH:mm
  */
-export function formatRecentYMDHM(input?: number | string) {
+export function recentDateTime(input?: number | string) {
   const timestamp = toTimestamp(input)
   if (!timestamp)
     return ''
@@ -74,19 +74,18 @@ export function formatRecentYMDHM(input?: number | string) {
  * @param minutes 分钟数
  * @returns 格式化后的时长字符串，例如：2小时 30分钟
  */
-export function formatDuration(minutes?: number) {
+export function duration(minutes?: number) {
   if (!minutes)
     return ''
   const hours = Math.floor(minutes / 60)
   const remainingMinutes = minutes % 60
   const parts = []
 
-  if (hours > 0) {
+  if (hours > 0)
     parts.push(`${hours}小时`)
-  }
-  if (remainingMinutes > 0) {
+
+  if (remainingMinutes > 0)
     parts.push(`${remainingMinutes}分钟`)
-  }
 
   return parts.join(' ')
 }
@@ -96,7 +95,7 @@ export function formatDuration(minutes?: number) {
  * @param bytes 字节数
  * @returns 格式化后的文件大小字符串，例如：1.23 MB
  */
-export function formatFileSize(bytes: number): string {
+export function fileSize(bytes: number): string {
   if (!bytes)
     return '未知'
   const units = ['B', 'KB', 'MB', 'GB', 'TB']

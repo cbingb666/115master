@@ -46,7 +46,7 @@
       </div>
       <!-- 大小 -->
       <div :class="styles.info.size">
-        {{ formatFileSize(Number(item.s)) }}
+        {{ format.fileSize(Number(item.s)) }}
       </div>
     </div>
   </a>
@@ -54,6 +54,7 @@
 
 <script setup lang="ts">
 import type { Share } from '@115master/drive115'
+import { format } from '@115master/utils'
 import { Icon } from '@iconify/vue'
 import { computed, shallowRef } from 'vue'
 import { LoadingError } from '@/components'
@@ -61,7 +62,6 @@ import { formatTime } from '@/components/XPlayer/utils/time'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { ICON_STAR_FILL } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import { formatFileSize } from '@/utils/format'
 
 const props = defineProps<{
   item: Share.Entity.FilesItem

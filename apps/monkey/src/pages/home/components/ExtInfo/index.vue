@@ -63,7 +63,7 @@
               <div :class="[styles.item.container, styles.secondary]">
                 <span :class="styles.item.label">日期</span>
                 <span v-if="extInfo.state.value?.date" :class="styles.item.value">
-                  {{ formatDate(extInfo.state.value?.date) }}
+                  {{ format.date(extInfo.state.value?.date) }}
                 </span>
                 <span v-else :class="styles.item.value">-</span>
               </div>
@@ -71,7 +71,7 @@
               <div :class="[styles.item.container, styles.secondary]">
                 <span :class="styles.item.label">时长</span>
                 <span v-if="extInfo.state.value?.duration" :class="styles.item.value">
-                  {{ formatDuration(extInfo.state.value?.duration) }}
+                  {{ format.duration(extInfo.state.value?.duration) }}
                 </span>
                 <span v-else :class="styles.item.value">-</span>
               </div>
@@ -141,6 +141,7 @@
 </template>
 
 <script setup lang="ts">
+import { format } from '@115master/utils'
 import { useAsyncState, useElementVisibility } from '@vueuse/core'
 import { onMounted, ref, watch } from 'vue'
 import {
@@ -149,7 +150,6 @@ import {
   LoadingError,
 } from '@/components'
 import { clsx } from '@/utils/clsx'
-import { formatDate, formatDuration } from '@/utils/format'
 import { Jav, JavBus, JavDB } from '@/utils/jav'
 import { MissAV } from '@/utils/jav/missAV'
 

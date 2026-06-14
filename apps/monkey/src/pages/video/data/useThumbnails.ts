@@ -4,20 +4,17 @@ import type {
   VideoSource,
 } from '@/components/XPlayer/types'
 import type { LaneConfig } from '@/utils/scheduler'
+import { array, image as imageUtil, time as timeUtil } from '@115master/utils'
 import { tryOnUnmounted } from '@vueuse/core'
 import { chain } from 'lodash'
 import { shallowRef } from 'vue'
 import { FRIENDLY_ERROR_MESSAGE } from '@/constants'
-import { intervalArray } from '@/utils/array'
 import { M3U8ClipperNew } from '@/utils/clipper/m3u8Clipper'
-import { getImageResize } from '@/utils/image'
 import { appLogger } from '@/utils/logger'
 import {
-
   Scheduler,
   SchedulerError,
 } from '@/utils/scheduler'
-import { blurTime } from '@/utils/time'
 
 /** 缩略图生成器配置 */
 const CLIPPER_OPTIONS = {
@@ -259,7 +256,7 @@ export function useDataThumbnails(
       }
 
       /** 获取缩略图尺寸 */
-      const resize = getImageResize(
+      const resize = imageUtil.resize(
         result.videoFrame.displayWidth,
         result.videoFrame.displayHeight,
         CLIPPER_OPTIONS.maxWidth,
@@ -329,7 +326,7 @@ export function useDataThumbnails(
     }
 
     /** 计算请求时间 */
-    const seekBlurTime = blurTime(
+    const seekBlurTime = timeUtil.blurTime(
       time,
       samplingInterval.value,
       clipper.hlsIo.duration,
@@ -374,7 +371,7 @@ export function useDataThumbnails(
     }
 
     /** 获取所有缩略图时间点 */
-    const times = chain(intervalArray(0, clipper.hlsIo.duration, samplingInterval.value))
+    const times = chain(array.intervalArray(0, clipper.hlsIo.duration, samplingInterval.value))
       .filter(time => !hasCache(time))
       .shuffle()
       .value()
@@ -384,7 +381,7 @@ export function useDataThumbnails(
       scheduler
         .add(
           async () => {
-            const seekTime = blurTime(
+            const seekTime = timeUtil.blurTime(
               time,
               samplingInterval.value,
               clipper.hlsIo.duration,

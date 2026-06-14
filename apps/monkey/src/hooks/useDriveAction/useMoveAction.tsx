@@ -1,7 +1,7 @@
 import type { Share } from '@115master/drive115'
+import { promise } from '@115master/utils'
 import { useDialog, useFileBrowserDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
-import { promiseDelay } from '@/utils/promise'
 import { getFileIds } from './helpers'
 
 /** 移动操作 */
@@ -27,7 +27,7 @@ export function useMoveAction() {
     if (res.progress === 100) {
       return Promise.resolve(res.progress)
     }
-    await promiseDelay(3000)
+    await promise.promiseDelay(3000)
     return moveGetProgress(move_proid)
   }
 

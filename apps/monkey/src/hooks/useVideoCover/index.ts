@@ -1,13 +1,13 @@
 import type { Ref } from 'vue'
 import { Core } from '@115master/drive115'
 
+import { image as imageUtil } from '@115master/utils'
 import { useElementVisibility, useScroll } from '@vueuse/core'
 import { onUnmounted, reactive, watch } from 'vue'
 import { FRIENDLY_ERROR_MESSAGE } from '@/constants'
 import { videoCoverCache } from '@/utils/cache'
 import { M3U8ClipperNew } from '@/utils/clipper/m3u8Clipper'
 import { drive115 } from '@/utils/drive115Instance'
-import { getImageResize } from '@/utils/image'
 import { Scheduler, SchedulerError, TaskStatus } from '@/utils/scheduler'
 
 /** 最大宽度 */
@@ -133,7 +133,7 @@ async function generateVideoCoverRaw(clipper: M3U8ClipperNew, time: number): Pro
   }
 
   /** 缩放 */
-  const resize = getImageResize(
+  const resize = imageUtil.resize(
     result.videoFrame.displayWidth,
     result.videoFrame.displayHeight,
     MAX_WIDTH,

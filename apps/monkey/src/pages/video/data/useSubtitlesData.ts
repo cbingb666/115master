@@ -1,11 +1,10 @@
 import type { Subtitle } from '@/components/XPlayer/types'
 import { fetchRequest } from '@115master/shared'
+import { array, string } from '@115master/utils'
 import { useAsyncState } from '@vueuse/core'
 import { shallowRef } from 'vue'
-import { jaccardSimilarity } from '@/utils/array'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { drive115 } from '@/utils/drive115Instance'
-import { removeFileExtension, splitWords } from '@/utils/string'
 import { subtitlecat } from '@/utils/subtitle/subtitlecat'
 import { thunderSubtitle } from '@/utils/subtitle/thunder'
 
@@ -39,7 +38,7 @@ export function useDataSubtitles() {
     const res = await thunderSubtitle.fetchSubtitle(filename)
     const subtitles = res.map(subtitle => ({
       id: subtitle.id,
-      label: removeFileExtension(subtitle.title),
+      label: string.removeFileExtension(subtitle.title),
       srclang: 'zh-CN',
       source: 'Thunder',
       raw: subtitle.raw,
@@ -64,7 +63,7 @@ export function useDataSubtitles() {
           id: subtitle.sid,
           url: url.href,
           raw: blob,
-          label: `${removeFileExtension(subtitle.title)}`,
+          label: `${string.removeFileExtension(subtitle.title)}`,
           source: subtitle.file_id ? 'Upload' : 'Built-in',
           srclang: subtitle.language || 'zh-CN',
           format: subtitle.type,
@@ -79,7 +78,7 @@ export function useDataSubtitles() {
 
   /** 计算相似度 */
   const computedSimilarity = (a: string, b: string) => {
-    return jaccardSimilarity(splitWords(a), splitWords(b))
+    return array.jaccardSimilarity(string.splitWords(a), string.splitWords(b))
   }
 
   /** 字幕数据 */

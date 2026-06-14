@@ -1,4 +1,4 @@
-import type { ICache, RequestOptions } from '@115master/shared'
+import type { IRequestCache, RequestOptions } from '@115master/shared'
 import { appLogger } from '@/utils/logger'
 import { CacheCore } from './core'
 import { STORE_NAME } from './core/const'
@@ -26,7 +26,7 @@ export interface GMRequestCacheItem {
  * GMRequest 缓存管理器
  * 用于缓存 GMRequest 的请求结果
  */
-export class GMRequestCache implements ICache {
+export class GMRequestCache implements IRequestCache {
   /** 日志 */
   protected logger = appLogger.sub('GMRequestCache')
   /** 缓存实例 */

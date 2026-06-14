@@ -37,9 +37,8 @@ export function jaccardSimilarity(arr1: string[], arr2: string[]) {
 
   const unionSize = set1.size + set2.size - intersectionSize
 
-  if (unionSize === 0) {
-    return 0 // Or handle as an error, depending on requirements
-  }
+  if (unionSize === 0)
+    return 0
 
   return intersectionSize / unionSize
 }

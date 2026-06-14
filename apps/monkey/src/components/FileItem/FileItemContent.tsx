@@ -1,8 +1,8 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
+import { format } from '@115master/utils'
 import { Icon } from '@iconify/vue'
 import { computed, defineComponent } from 'vue'
-import { formatFileSize, formatRecentYMDHM } from '@/utils/format'
 
 const FileItemContent = defineComponent({
   name: 'FileItemContent',
@@ -130,7 +130,7 @@ const FileItemContent = defineComponent({
                     sm:group-data-[view-type=list]:text-sm
                   "
                 >
-                  { formatFileSize(Number(props.data.s)) }
+                  { format.fileSize(Number(props.data.s)) }
                 </span>
               )
             : null
@@ -150,7 +150,7 @@ const FileItemContent = defineComponent({
           "
           data-tip="修改时间"
         >
-          { formatRecentYMDHM(props.data.t) }
+          { format.recentDateTime(props.data.t) }
         </span>
       </div>
     )

@@ -89,9 +89,6 @@ importers:
       dayjs:
         specifier: ^1.11.13
         version: 1.11.19
-      emoji-regex:
-        specifier: ^10.4.0
-        version: 10.6.0
       glob-to-regexp:
         specifier: ^0.4.1
         version: 0.4.1
@@ -138,6 +135,9 @@ importers:
       '@115master/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      '@115master/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@libmedia/avpipeline':
         specifier: ^1.2.0
         version: 1.2.0
@@ -209,7 +209,7 @@ importers:
         version: 5.1.0(vue@3.5.27(typescript@5.9.3))
       vitest:
         specifier: ^4.1.8
-        version: 4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+        version: 4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(happy-dom@20.10.3)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
       vue-tsc:
         specifier: ^2.2.10
         version: 2.2.12(typescript@5.9.3)
@@ -243,13 +243,13 @@ importers:
         version: 2.18.2
       '@vitest/coverage-v8':
         specifier: ^3.0.5
-        version: 3.2.6(vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+        version: 3.2.6(vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
       vitest:
         specifier: ^3.0.5
-        version: 3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+        version: 3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
   packages/eslint-config:
     dependencies:
@@ -295,6 +295,13 @@ importers:
         version: link:../eslint-config
 
   packages/utils:
+    dependencies:
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.19
+      emoji-regex:
+        specifier: ^10.4.0
+        version: 10.6.0
     devDependencies:
       '@115master/eslint-config':
         specifier: workspace:*
@@ -304,13 +311,16 @@ importers:
         version: link:../tsconfig
       '@vitest/coverage-v8':
         specifier: ^3.0.5
-        version: 3.2.6(vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+        version: 3.2.6(vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+      happy-dom:
+        specifier: ^20.10.3
+        version: 20.10.3
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
       vitest:
         specifier: ^3.0.5
-        version: 3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+        version: 3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
 packages:
 
@@ -1265,6 +1275,12 @@ packages:
   '@types/web-bluetooth@0.0.21':
     resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
 
+  '@types/whatwg-mimetype@3.0.2':
+    resolution: {integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==}
+
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+
   '@typescript-eslint/eslint-plugin@8.54.0':
     resolution: {integrity: sha512-hAAP5io/7csFStuOmR782YmTthKBJ9ND3WVL60hcOjvtGFb+HJxH4O5huAcmcZ9v9G8P+JETiZ/G1B8MALnWZQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -1690,6 +1706,10 @@ packages:
     resolution: {integrity: sha512-ZC5Bd0LgJXgwGqUknZY/vkUQ04r8NXnJZ3yYi4vDmSiZmC/pdSN0NbNRPxZpbtO4uAfDUAFffO8IZoM3Gj8IkA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
+
+  buffer-image-size@0.6.4:
+    resolution: {integrity: sha512-nEh+kZOPY1w+gcCMobZ6ETUp9WfibndnosbpwB1iJk/8Gt5ZF2bhS6+B6bPYz424KtwsR6Rflc3tCz1/ghX2dQ==}
+    engines: {node: '>=4.0'}
 
   builtin-modules@5.0.0:
     resolution: {integrity: sha512-bkXY9WsVpY7CvMhKSR6pZilZu9Ln5WDrKVBUXf2S443etkmEO4V58heTecXcUIsNsi4Rx8JUO4NfX1IcQl4deg==}
@@ -2401,6 +2421,10 @@ packages:
 
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
+
+  happy-dom@20.10.3:
+    resolution: {integrity: sha512-Hjdiy8RziuCcn5z04QI/rlsNuQoG8P0xxjgvsSMpi89cvIXIOcucQtiHS1yHSShxoBcSCeYqAskINmTiy/mlfw==}
+    engines: {node: '>=20.0.0'}
 
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
@@ -3744,6 +3768,10 @@ packages:
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
+  whatwg-mimetype@3.0.0:
+    resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
+    engines: {node: '>=12'}
+
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
@@ -3772,6 +3800,18 @@ packages:
   wrap-ansi@9.0.2:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
+
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
 
   wsl-utils@0.1.0:
     resolution: {integrity: sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==}
@@ -4826,6 +4866,12 @@ snapshots:
 
   '@types/web-bluetooth@0.0.21': {}
 
+  '@types/whatwg-mimetype@3.0.2': {}
+
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 25.2.2
+
   '@typescript-eslint/eslint-plugin@8.54.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
@@ -4939,7 +4985,7 @@ snapshots:
       vite: 6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
       vue: 3.5.27(typescript@5.9.3)
 
-  '@vitest/coverage-v8@3.2.6(vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
+  '@vitest/coverage-v8@3.2.6(vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -4954,7 +5000,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.2
       tinyrainbow: 2.0.0
-      vitest: 3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+      vitest: 3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -4970,7 +5016,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+      vitest: 4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(happy-dom@20.10.3)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
 
   '@vitest/eslint-plugin@1.6.6(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)(vitest@4.1.8)':
     dependencies:
@@ -4979,7 +5025,7 @@ snapshots:
       eslint: 9.39.2(jiti@2.6.1)
     optionalDependencies:
       typescript: 5.9.3
-      vitest: 4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+      vitest: 4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(happy-dom@20.10.3)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -5063,7 +5109,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.1.0
-      vitest: 4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+      vitest: 4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(happy-dom@20.10.3)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
 
   '@vitest/utils@3.2.6':
     dependencies:
@@ -5373,6 +5419,10 @@ snapshots:
       electron-to-chromium: 1.5.283
       node-releases: 2.0.27
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
+
+  buffer-image-size@0.6.4:
+    dependencies:
+      '@types/node': 25.2.2
 
   builtin-modules@5.0.0: {}
 
@@ -6121,6 +6171,19 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   graphemer@1.4.0: {}
+
+  happy-dom@20.10.3:
+    dependencies:
+      '@types/node': 25.2.2
+      '@types/whatwg-mimetype': 3.0.2
+      '@types/ws': 8.18.1
+      buffer-image-size: 0.6.4
+      entities: 7.0.1
+      whatwg-mimetype: 3.0.0
+      ws: 8.21.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   has-flag@4.0.0: {}
 
@@ -7430,7 +7493,7 @@ snapshots:
       lightningcss: 1.30.2
       yaml: 2.8.2
 
-  vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2):
+  vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.6
@@ -7458,6 +7521,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 25.2.2
+      happy-dom: 20.10.3
     transitivePeerDependencies:
       - jiti
       - less
@@ -7472,7 +7536,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)):
+  vitest@4.1.8(@types/node@25.2.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(happy-dom@20.10.3)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)):
     dependencies:
       '@vitest/expect': 4.1.8
       '@vitest/mocker': 4.1.8(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
@@ -7498,6 +7562,7 @@ snapshots:
       '@types/node': 25.2.2
       '@vitest/coverage-v8': 4.1.8(vitest@4.1.8)
       '@vitest/ui': 4.1.8(vitest@4.1.8)
+      happy-dom: 20.10.3
     transitivePeerDependencies:
       - msw
 
@@ -7538,6 +7603,8 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
+  whatwg-mimetype@3.0.0: {}
+
   whatwg-url@5.0.0:
     dependencies:
       tr46: 0.0.3
@@ -7571,6 +7638,8 @@ snapshots:
       ansi-styles: 6.2.3
       string-width: 7.2.0
       strip-ansi: 7.1.2
+
+  ws@8.21.0: {}
 
   wsl-utils@0.1.0:
     dependencies:

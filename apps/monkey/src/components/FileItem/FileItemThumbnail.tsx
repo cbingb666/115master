@@ -1,8 +1,8 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
+import { image as imageUtil } from '@115master/utils'
 import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
-import { isPortraitImage } from '@/utils/image'
 import { Utils115 } from '@/utils/utils115'
 
 const FileItemThumbnail = defineComponent({
@@ -98,7 +98,7 @@ const FileItemThumbnail = defineComponent({
               group-data-[view-type=card]:group-hover:scale-105
               group-data-[view-type=card]:data-[portrait=true]:object-contain
             "
-            data-portrait={isPortraitImage(props.videoCover.width, props.videoCover.height)}
+            data-portrait={imageUtil.isPortrait(props.videoCover.width, props.videoCover.height)}
             src={props.videoCover.img}
           />
         </div>

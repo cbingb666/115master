@@ -1,7 +1,7 @@
+import { image as imageUtil } from '@115master/utils'
 import { defineComponent, ref, watch } from 'vue'
 import { LoadingError } from '@/components'
 import { imageCache } from '@/utils/cache/imageCache'
-import { blobToBase64, compressImage } from '@/utils/image'
 import { GMRequest } from '@/utils/request/gmRequest'
 
 const Image = defineComponent({
@@ -38,7 +38,7 @@ const Image = defineComponent({
       if (props.cache) {
         const cache = await imageCache.get(src)
         if (cache) {
-          return await blobToBase64(cache.value)
+          return await imageUtil.blobToBase64(cache.value)
         }
       }
       const res = await gmRequst.get(src, {
@@ -48,14 +48,14 @@ const Image = defineComponent({
         responseType: 'blob',
       })
       const blob = new Blob([await res.blob()], { type: 'image/jpeg' })
-      const compressedBlob = await compressImage(blob, {
+      const compressedBlob = await imageUtil.compress(blob, {
         maxWidth: 720,
         maxHeight: 720,
         quality: 0.8,
         type: 'image/webp',
       })
       props.cache && imageCache.set(props.src, compressedBlob)
-      return await blobToBase64(compressedBlob)
+      return await imageUtil.blobToBase64(compressedBlob)
     }
 
     async function loadImage(_src: string) {

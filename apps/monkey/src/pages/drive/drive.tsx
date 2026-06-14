@@ -1,5 +1,6 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
+import { format } from '@115master/utils'
 import { Icon } from '@iconify/vue'
 import { useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, watch } from 'vue'
@@ -36,7 +37,6 @@ import {
 } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
 import { useDriveSpaceInfoStore } from '@/store/driveSpaceInfo'
-import { formatFileSize } from '@/utils/format'
 
 const Drive = defineComponent({
   name: 'Drive',
@@ -192,9 +192,9 @@ const Drive = defineComponent({
           <div class="bg-base-content/5 my-4 h-px w-full" />
           <div class="mt-2 flex flex-none flex-col gap-2" v-show={spaceInfo.state?.state === true}>
             <div class="text-base-content/70 text-sm">
-              {formatFileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0)}
+              {format.fileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0)}
               {' / '}
-              {formatFileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0)}
+              {format.fileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0)}
             </div>
             <progress class="progress progress-lg progress-primary w-38" max={100} value={value.value} />
           </div>

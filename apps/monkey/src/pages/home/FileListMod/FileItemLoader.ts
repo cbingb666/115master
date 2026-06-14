@@ -1,8 +1,8 @@
 import type { FileItemModBase, FileListMod } from './FileItemMod/base'
 import type { FileItemAttributes, FileListType, ItemInfo } from '@/pages/home/types'
+import { time } from '@115master/utils'
 import { PLUS_VERSION } from '@/constants'
 import { getAvNumber } from '@/utils/getNumber'
-import { getDuration } from '@/utils/time'
 
 /**
  * 文件列表 Item 修改加载器
@@ -44,7 +44,7 @@ export class FileItemModLoader {
 
   /** 获取视频时长 */
   private get duration(): number {
-    return getDuration(this.durationNode?.getAttribute('duration') ?? '')
+    return time.getDuration(this.durationNode?.getAttribute('duration') ?? '')
   }
 
   /** itemInfo */

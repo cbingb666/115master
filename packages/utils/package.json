@@ -38,10 +38,15 @@
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist node_modules/.tmp/tsconfig.tsbuildinfo"
   },
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "emoji-regex": "^10.4.0"
+  },
   "devDependencies": {
     "@115master/eslint-config": "workspace:*",
     "@115master/tsconfig": "workspace:*",
     "@vitest/coverage-v8": "^3.0.5",
+    "happy-dom": "^20.10.3",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"
   }

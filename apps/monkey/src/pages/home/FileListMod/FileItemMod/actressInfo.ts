@@ -1,7 +1,7 @@
+import { image as imageUtil } from '@115master/utils'
 import { FileListType } from '@/pages/home/types'
 import { actressFaceDB } from '@/utils/actressFaceDB'
 import { imageCache } from '@/utils/cache'
-import { compressImage } from '@/utils/image'
 import { appLogger } from '@/utils/logger'
 import { FileItemModBase } from './base'
 
@@ -50,7 +50,7 @@ export class FileItemModActressInfo extends FileItemModBase {
             const blob = await response.blob()
 
             /** 压缩图片后再缓存 */
-            const compressedBlob = await compressImage(blob, {
+            const compressedBlob = await imageUtil.compress(blob, {
               maxWidth: 200,
               maxHeight: 200,
               quality: 0.8,
