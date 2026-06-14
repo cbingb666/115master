@@ -1,5 +1,4 @@
 export { FileApiClient } from './client.ts'
-export { MarkStatus } from './req.ts'
-export type * as Req from './req.ts'
+export * as Req from './req.ts'
 export type * as Res from './res.ts'
-export * from './schema.ts'
+export * as Schema from './schema.ts'

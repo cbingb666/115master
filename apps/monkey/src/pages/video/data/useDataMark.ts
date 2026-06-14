@@ -1,5 +1,5 @@
 import type { useDataFileInfo } from './useDataFileInfo'
-import { MarkStatus } from '@115master/drive115/clients/file'
+import { Req } from '@115master/drive115/clients/file'
 import { shallowRef, watch } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
 
@@ -11,7 +11,7 @@ export function useMark(DataFileInfo: ReturnType<typeof useDataFileInfo>) {
   const toggleMark = async () => {
     const res = await drive115.file.starFiles({
       file_id: DataFileInfo.state.file_id,
-      star: isMark.value ? MarkStatus.Unmark : MarkStatus.Mark,
+      star: isMark.value ? Req.MarkStatus.Unmark : Req.MarkStatus.Mark,
     })
     if (res.state) {
       isMark.value = !isMark.value
@@ -22,7 +22,7 @@ export function useMark(DataFileInfo: ReturnType<typeof useDataFileInfo>) {
   watch(
     () => DataFileInfo.state.is_mark,
     (newVal) => {
-      isMark.value = newVal !== undefined ? newVal === MarkStatus.Mark : null
+      isMark.value = newVal !== undefined ? newVal === Req.MarkStatus.Mark : null
     },
   )
 

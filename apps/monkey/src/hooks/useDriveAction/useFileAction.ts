@@ -1,5 +1,5 @@
 import type { Entity } from '@115master/drive115'
-import { MarkStatus } from '@115master/drive115/clients/file'
+import { Req } from '@115master/drive115/clients/file'
 import { useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'
@@ -37,7 +37,7 @@ export function useFileAction() {
   /** 星标批量 */
   async function starBatch(items: Entity.FilesItem[]): Promise<boolean> {
     const hasStar = items.some(item => item.m === 1 || item.m === '1')
-    const star = hasStar ? MarkStatus.Unmark : MarkStatus.Mark
+    const star = hasStar ? Req.MarkStatus.Unmark : Req.MarkStatus.Mark
     const fileIds = getFileIds(items)
     const res = await drive115.file.starFiles({
       file_id: fileIds,

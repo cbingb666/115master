@@ -1,4 +1,6 @@
-export { getXUrl } from '@115master/drive115/clients/video'
+import { Url } from '@115master/drive115/clients/video'
+
+export const getXUrl = Url.getXUrl
 
 /**
  * 获取 url 参数

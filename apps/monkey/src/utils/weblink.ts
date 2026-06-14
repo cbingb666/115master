@@ -1,4 +1,7 @@
-import type { DownloadResult } from '@115master/drive115/clients/video'
+import type { Model } from '@115master/drive115/clients/video'
+
+type DownloadResult = Model.DownloadResult
+
 /**
  * 使用 shortcuts 打开 mpv 播放网页
  */
