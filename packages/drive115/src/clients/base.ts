@@ -1,4 +1,5 @@
 import type { IRequest } from '@115master/shared'
+import type { M115EncodeResult } from '../core/crypto.ts'
 import type { Drive115CoreDeps } from '../core/deps.ts'
 import { Crypto115 } from '../core/crypto.ts'
 
@@ -22,7 +23,7 @@ export class BaseApiClient {
   }
 
   /** Pro API 通用编码 */
-  protected proApiEncodeData(data: object) {
+  protected proApiEncodeData(data: object): { tm: string, encoded: M115EncodeResult, encodedData: string } {
     const tm = Math.floor(Date.now() / 1000).toString()
     const src = JSON.stringify(data)
     const encoded = this.crypto115.m115_encode(src, tm)

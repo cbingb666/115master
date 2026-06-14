@@ -1,3 +1,4 @@
+import type { Drive115Response } from '../../core/response.ts'
 import type { Req, Res } from './index.ts'
 import type { DownloadResult, M3u8Item } from './model.ts'
 import { Drive115Error, Drive115ErrorCode } from '../../core/error.ts'
@@ -42,10 +43,7 @@ export class VideoApiClient extends BaseApiClient {
   async proPostAppChromeDownurl(
     pickcode: string,
   ): Promise<DownloadResult> {
-    const tm = Math.floor(Date.now() / 1000).toString()
-    const src = JSON.stringify({ pickcode })
-    const encoded = this.crypto115.m115_encode(src, tm)
-    const data = `data=${encodeURIComponent(encoded.data)}`
+    const { tm, encoded, encodedData: data } = this.proApiEncodeData({ pickcode })
 
     const response = await this.proApiRequest.post(
       new URL(`/app/chrome/downurl?t=${tm}&c=9999`, URL_115.PRO_API).href,
@@ -77,7 +75,7 @@ export class VideoApiClient extends BaseApiClient {
   }
 
   /** 获取视频文件信息 */
-  async getFilesVideo(params: Req.GetFilesVideo) {
+  async getFilesVideo(params: Req.GetFilesVideo): Promise<Drive115Response<Res.FilesVideo>> {
     const response = await this.fetchRequest.get(
       new URL('/files/video', URL_115.WEB_API).href,
       { params },

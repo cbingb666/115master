@@ -9,5 +9,3 @@ export const drive115 = new Drive115({
   proApiRequest: is115Browser ? new GMRequest() : fetchRequest,
   logger: appLogger,
 })
-
-export type { Entity } from '@115master/drive115'

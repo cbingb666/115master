@@ -1,12 +1,12 @@
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import { computed, shallowRef, triggerRef } from 'vue'
 
 export function useDriveSelection() {
-  const checked = shallowRef<Set<Entity.FilesItem>>(new Set())
+  const checked = shallowRef<Set<Share.Entity.FilesItem>>(new Set())
   const values = computed(() => Array.from(checked.value))
   const count = computed(() => checked.value.size)
 
-  function toggle(item: Entity.FilesItem, on: boolean) {
+  function toggle(item: Share.Entity.FilesItem, on: boolean) {
     if (on)
       checked.value.add(item)
     else
@@ -14,7 +14,7 @@ export function useDriveSelection() {
     triggerRef(checked)
   }
 
-  function radio(item: Entity.FilesItem) {
+  function radio(item: Share.Entity.FilesItem) {
     checked.value = new Set([item])
   }
 
@@ -22,7 +22,7 @@ export function useDriveSelection() {
     checked.value = new Set()
   }
 
-  function has(item: Entity.FilesItem) {
+  function has(item: Share.Entity.FilesItem) {
     return checked.value.has(item)
   }
 

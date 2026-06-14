@@ -1,8 +1,8 @@
-import type { Base } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 
 export interface Sort {
   name: string
-  order: Base.Sorter['o']
-  asc: Base.Sorter['asc']
+  order: Share.Base.Sorter['o']
+  asc: Share.Base.Sorter['asc']
   icon: string
 }

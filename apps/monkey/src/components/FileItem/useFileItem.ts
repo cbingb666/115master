@@ -1,4 +1,4 @@
-import type { Base, Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
 import { router } from '@/app/router'
@@ -25,12 +25,12 @@ interface ActressFaceDBActress {
 }
 
 interface UseFileItemOptions {
-  data: Entity.FilesItem
+  data: Share.Entity.FilesItem
   pathSelect?: boolean
   cid?: string
-  order?: Base.Sorter['o']
-  asc?: Base.Sorter['asc']
-  onPreview?: (data: Entity.FilesItem) => void
+  order?: Share.Base.Sorter['o']
+  asc?: Share.Base.Sorter['asc']
+  onPreview?: (data: Share.Entity.FilesItem) => void
 }
 
 export function useFileItem(options: UseFileItemOptions) {
@@ -180,7 +180,7 @@ export function useFileItem(options: UseFileItemOptions) {
     }
 
     /** 如果拖拽的文件中包含当前文件，则不进行拖拽 */
-    const items = JSON.parse(dropData) as Entity.FilesItem[]
+    const items = JSON.parse(dropData) as Share.Entity.FilesItem[]
     if (items.some(item => getFilesItemId(item) === getFilesItemId(data))) {
       return
     }

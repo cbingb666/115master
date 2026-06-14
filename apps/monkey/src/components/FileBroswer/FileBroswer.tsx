@@ -1,4 +1,4 @@
-import type { Base, Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
@@ -46,7 +46,7 @@ const FileBroswer = defineComponent({
       required: false,
     },
     currentPathRef: {
-      type: Object as () => Ref<Partial<Entity.PathItem>[] | null>,
+      type: Object as () => Ref<Partial<Share.Entity.PathItem>[] | null>,
       required: false,
     },
     nav: {
@@ -81,9 +81,9 @@ const FileBroswer = defineComponent({
     const { deleteBatch } = useDeleteAction()
     const contextmenuShow = shallowRef(false)
     const contextmenuPosition = shallowRef({ x: 0, y: 0 })
-    const contextmenuItem = shallowRef<Entity.FilesItem | null>(null)
+    const contextmenuItem = shallowRef<Share.Entity.FilesItem | null>(null)
 
-    function handleContextmenu(item: Entity.FilesItem, e: MouseEvent) {
+    function handleContextmenu(item: Share.Entity.FilesItem, e: MouseEvent) {
       e.preventDefault()
       contextmenuItem.value = item
       contextmenuPosition.value = { x: e.clientX, y: e.clientY }
@@ -149,11 +149,11 @@ const FileBroswer = defineComponent({
         props.currentPathRef.value = p
     }, { immediate: true })
 
-    function handleClickPath(data: Entity.PathItem) {
+    function handleClickPath(data: Share.Entity.PathItem) {
       nav.push(data.cid)
     }
 
-    function handleClickItem(data: Entity.FilesItem) {
+    function handleClickItem(data: Share.Entity.FilesItem) {
       if (keyword.value) {
         clearKeyword()
       }
@@ -163,9 +163,9 @@ const FileBroswer = defineComponent({
     }
 
     async function handleSort(
-      order: Base.Sorter['o'],
-      asc: Base.Sorter['asc'],
-      fc_mix: Base.Sorter['fc_mix'],
+      order: Share.Base.Sorter['o'],
+      asc: Share.Base.Sorter['asc'],
+      fc_mix: Share.Base.Sorter['fc_mix'],
     ) {
       await explorer.changeSort(order, asc, fc_mix)
       explorer.page.changePage(1)

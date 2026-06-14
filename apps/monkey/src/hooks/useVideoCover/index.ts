@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
-import { Drive115Error } from '@115master/drive115'
+import { Core } from '@115master/drive115'
+
 import { useElementVisibility, useScroll } from '@vueuse/core'
 import { onUnmounted, reactive, watch } from 'vue'
 import { FRIENDLY_ERROR_MESSAGE } from '@/constants'
@@ -322,7 +323,7 @@ export function useSmartVideoCover(options: Ref<VideoCoverOptions>, config: Smar
       if (error instanceof SchedulerError.TaskCancelled) {
         return
       }
-      if (error instanceof Drive115Error.NotFoundM3u8File) {
+      if (error instanceof Core.Drive115Error.NotFoundM3u8File) {
         videoCover.error
           = FRIENDLY_ERROR_MESSAGE.CANNOT_VIDEO_COVER_WITHOUT_TRANSCODING
         return

@@ -1,4 +1,4 @@
-import type { Base, Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import type { ImagePreviewItem } from '@/components/ImagePreviewer/types'
 import { useAsyncState } from '@vueuse/core'
 import { computed, ref } from 'vue'
@@ -11,9 +11,9 @@ const DEFAULT_PAGE_SIZE = 1000
 
 interface UseFolderImagePreviewOptions {
   cid: string
-  order: Base.Sorter['o']
-  asc: Base.Sorter['asc']
-  fcMix?: Base.Sorter['fc_mix']
+  order: Share.Base.Sorter['o']
+  asc: Share.Base.Sorter['asc']
+  fcMix?: Share.Base.Sorter['fc_mix']
   pageSize?: number
 }
 
@@ -41,7 +41,7 @@ export function useFolderImagePreview(options: UseFolderImagePreviewOptions) {
 
   /** 获取文件夹所有图片 */
   async function fetchAllImages(): Promise<ImagePreviewItem[]> {
-    const allItems: Entity.FilesItem[] = []
+    const allItems: Share.Entity.FilesItem[] = []
     let page = 1
     let hasMore = true
 
@@ -85,7 +85,7 @@ export function useFolderImagePreview(options: UseFolderImagePreviewOptions) {
   }
 
   /** 打开预览器 */
-  async function open(startItem: Entity.FilesItem) {
+  async function open(startItem: Share.Entity.FilesItem) {
     // 如果数据未加载，先加载
     if (!isReady.value) {
       await execute()

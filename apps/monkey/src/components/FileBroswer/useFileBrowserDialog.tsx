@@ -1,4 +1,4 @@
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import type { QueryNavReturn } from '@/hooks/useDriveNav/useQueryNav'
 import { ref } from 'vue'
 import { router } from '@/app/router'
@@ -19,7 +19,7 @@ export interface FileBrowserDialogOptions {
 
 export interface FileBrowserDialogResult {
   cid: string
-  path: Entity.PathItem[]
+  path: Share.Entity.PathItem[]
 }
 
 /** 文件浏览器对话框 */
@@ -29,7 +29,7 @@ export function useFileBrowserDialog() {
   function open(options: FileBrowserDialogOptions): Promise<FileBrowserDialogResult | false> {
     const cid = ref(options.defaultCid ?? '0')
     const keyword = ref('')
-    const path = ref<Entity.PathItem[] | null>(null)
+    const path = ref<Share.Entity.PathItem[] | null>(null)
 
     return new Promise((resolve) => {
       let resolved = false
@@ -74,7 +74,7 @@ export function useFileBrowserDialog() {
           instance.hide()
           resolve({
             cid: cid.value,
-            path: (path.value ?? []) as Entity.PathItem[],
+            path: (path.value ?? []) as Share.Entity.PathItem[],
           })
         },
         cancelCallback: () => {

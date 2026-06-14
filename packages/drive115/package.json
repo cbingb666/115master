@@ -20,14 +20,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./clients/file": {
-      "types": "./dist/clients/file/index.d.ts",
-      "default": "./dist/clients/file/index.js"
-    },
-    "./clients/video": {
-      "types": "./dist/clients/video/index.d.ts",
-      "default": "./dist/clients/video/index.js"
     }
   },
   "main": "./dist/index.js",

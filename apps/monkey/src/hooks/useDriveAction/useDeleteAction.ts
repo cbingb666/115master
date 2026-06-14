@@ -1,4 +1,4 @@
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import { useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFileIds } from './helpers'
@@ -17,7 +17,7 @@ export function useDeleteAction() {
   }
 
   /** 删除批量 */
-  async function deleteBatch(pid: string, items: Entity.FilesItem[]): Promise<boolean> {
+  async function deleteBatch(pid: string, items: Share.Entity.FilesItem[]): Promise<boolean> {
     const confirm = await deleteConfirm()
     if (!confirm) {
       return Promise.resolve(false)

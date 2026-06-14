@@ -1,6 +1,7 @@
 import type { PlayingVideoInfo } from '@/types/player'
 import { GM_openInTab, GM_setValue } from '$'
-import { CONSTANT } from '@115master/drive115'
+import { Share } from '@115master/drive115'
+
 import { router } from '@/app/router'
 import GM_VALUE_KEY from '@/constants/gm.value.key'
 
@@ -12,7 +13,7 @@ import GM_VALUE_KEY from '@/constants/gm.value.key'
 export function goToPlayer(playingVideoInfo: PlayingVideoInfo, isOpenInTab = false) {
   GM_setValue(GM_VALUE_KEY.PLAYING_VIDEO_INFO, playingVideoInfo)
 
-  const url = `https://${CONSTANT.HOST_115.NORMAL}/web/lixian/master/#/video/${playingVideoInfo.pickCode}`
+  const url = `https://${Share.CONSTANT.HOST_115.NORMAL}/web/lixian/master/#/video/${playingVideoInfo.pickCode}`
   if (isOpenInTab) {
     GM_openInTab(url, {
       active: true,

@@ -1,5 +1,4 @@
-import type { Entity } from '@115master/drive115'
-
+import type { Share } from '@115master/drive115'
 /** 图片预览项 */
 export interface ImagePreviewItem {
   /** 原图 URL */
@@ -9,7 +8,7 @@ export interface ImagePreviewItem {
   /** 文件名 */
   caption: string
   /** 文件数据 */
-  fileData: Entity.FilesItem
+  fileData: Share.Entity.FilesItem
   /** 在总列表中的索引 */
   globalIndex: number
 }

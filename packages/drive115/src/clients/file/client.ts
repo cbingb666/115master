@@ -1,3 +1,4 @@
+import type { Drive115Response } from '../../core/response.ts'
 import type { Req, Res } from './index.ts'
 import { Drive115Error, Drive115ErrorCode } from '../../core/error.ts'
 import { normalizeResponse } from '../../core/response.ts'
@@ -9,7 +10,7 @@ import { BaseApiClient } from '../base.ts'
  */
 export class FileApiClient extends BaseApiClient {
   /** 获取文件列表，主接口失败时回退到 APS 接口 */
-  async getFilesWithFallback(params: Req.GetFiles) {
+  async getFilesWithFallback(params: Req.GetFiles): Promise<Drive115Response<Res.Files>> {
     const primary = normalizeResponse<Res.Files>(await this.getFilesRaw(params))
     if (primary.state)
       return primary
@@ -27,17 +28,17 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 获取文件列表 (以前老旧的文件夹需要使用它来获取) */
-  async apsGetNatsortFiles(params: Req.GetFiles) {
+  async apsGetNatsortFiles(params: Req.GetFiles): Promise<Drive115Response<Res.Files>> {
     return normalizeResponse<Res.Files>(await this.apsGetNatsortFilesRaw(params))
   }
 
   /** 获取文件列表 */
-  async getFiles(params: Req.GetFiles) {
+  async getFiles(params: Req.GetFiles): Promise<Drive115Response<Res.Files>> {
     return normalizeResponse<Res.Files>(await this.getFilesRaw(params))
   }
 
   /** 获取播放列表 */
-  async getPlaylist(cid: string, offset = 0) {
+  async getPlaylist(cid: string, offset = 0): Promise<Drive115Response<Res.Files>> {
     const params: Req.GetFiles = {
       aid: 1,
       cid,
@@ -62,7 +63,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 获取播放历史 */
-  async getFilesHistory(params: Req.GetFilesHistory) {
+  async getFilesHistory(params: Req.GetFilesHistory): Promise<Drive115Response<Res.FilesHistory>> {
     const response = await this.fetchRequest.get(
       new URL('/files/history', URL_115.WEB_API).href,
       { params },
@@ -72,7 +73,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 更新播放历史 */
-  async updateFilesHistory(data: Req.PostFilesHistory) {
+  async updateFilesHistory(data: Req.PostFilesHistory): Promise<Drive115Response<Res.FilesHistory>> {
     const response = await this.fetchRequest.post(
       new URL('/files/history', URL_115.WEB_API).href,
       { data },
@@ -92,7 +93,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 获取电影字幕 */
-  async getMoviesSubtitle(params: Req.GetMoviesSubtitle) {
+  async getMoviesSubtitle(params: Req.GetMoviesSubtitle): Promise<Drive115Response<Res.MoviesSubtitle>> {
     const response = await this.fetchRequest.get(
       new URL('/movies/subtitle', URL_115.WEB_API).href,
       { params },
@@ -102,7 +103,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 获取文件信息 */
-  async getFilesIndexInfo(params: Req.GetFilesIndexInfo = {}) {
+  async getFilesIndexInfo(params: Req.GetFilesIndexInfo = {}): Promise<Drive115Response<Res.FilesIndexInfo>> {
     const response = await this.fetchRequest.get(
       new URL('/files/index_info', URL_115.WEB_API).href,
       { params },
@@ -112,7 +113,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 设置文件排序 */
-  async setFilesOrder(params: Req.PostFilesOrder) {
+  async setFilesOrder(params: Req.PostFilesOrder): Promise<Drive115Response<Res.PostFilesOrder>> {
     const response = await this.fetchRequest.post(
       new URL('/files/order', URL_115.WEB_API).href,
       { data: params },
@@ -122,7 +123,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 重命名文件 (批量) */
-  async batchRenameFiles(params: Req.PostFilesBatchRename) {
+  async batchRenameFiles(params: Req.PostFilesBatchRename): Promise<Drive115Response<Res.PostFilesBatchRename>> {
     const response = await this.fetchRequest.post(
       new URL('/files/batch_rename', URL_115.WEB_API).href,
       { data: params },
@@ -132,7 +133,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 添加文件夹 */
-  async addFolder(params: Req.PostFilesAdd) {
+  async addFolder(params: Req.PostFilesAdd): Promise<Drive115Response<Res.PostFilesAdd>> {
     const response = await this.fetchRequest.post(
       new URL('/files/add', URL_115.WEB_API).href,
       { data: params },
@@ -142,7 +143,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 删除文件 */
-  async deleteFiles(params: Req.PostRbDelete) {
+  async deleteFiles(params: Req.PostRbDelete): Promise<Drive115Response<Res.PostRbDelete>> {
     const response = await this.fetchRequest.post(
       new URL('/rb/delete', URL_115.WEB_API).href,
       { data: params },
@@ -152,7 +153,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 移动文件 */
-  async moveFiles(params: Req.PostFilesMove) {
+  async moveFiles(params: Req.PostFilesMove): Promise<Drive115Response<Res.PostFilesMove>> {
     const response = await this.fetchRequest.post(
       new URL('/files/move', URL_115.WEB_API).href,
       { data: params },
@@ -162,7 +163,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 获取移动进度 */
-  async getFilesMoveProgress(params: Req.GetFilesMoveProgress) {
+  async getFilesMoveProgress(params: Req.GetFilesMoveProgress): Promise<Drive115Response<Res.GetFilesMoveProgress>> {
     const response = await this.fetchRequest.get(
       new URL('/files/move_progress', URL_115.WEB_API).href,
       { params },
@@ -172,7 +173,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 搜索 */
-  async searchFiles(params: Req.GetFilesSearch) {
+  async searchFiles(params: Req.GetFilesSearch): Promise<Drive115Response<Res.GetFilesSearch>> {
     const response = await this.fetchRequest.get(
       new URL('/files/search', URL_115.WEB_API).href,
       { params },
@@ -182,7 +183,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 置顶文件 */
-  async topFiles(params: Req.PostFilesTop) {
+  async topFiles(params: Req.PostFilesTop): Promise<Drive115Response<Res.PostFilesTop>> {
     const response = await this.fetchRequest.post(
       new URL('/files/top', URL_115.WEB_API).href,
       { data: params },

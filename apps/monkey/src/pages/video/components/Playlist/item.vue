@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import { Icon } from '@iconify/vue'
 import { computed, shallowRef } from 'vue'
 import { LoadingError } from '@/components'
@@ -64,12 +64,12 @@ import { clsx } from '@/utils/clsx'
 import { formatFileSize } from '@/utils/format'
 
 const props = defineProps<{
-  item: Entity.FilesItem
+  item: Share.Entity.FilesItem
   active: boolean
 }>()
 
 const emit = defineEmits<{
-  play: [Entity.FilesItem]
+  play: [Share.Entity.FilesItem]
 }>()
 
 /** 播放列表视频封面数量 */
@@ -158,7 +158,7 @@ const progressPercent = computed(() => {
 })
 
 /** 播放处理 */
-function handlePlay(item: Entity.FilesItem) {
+function handlePlay(item: Share.Entity.FilesItem) {
   emit('play', item)
 }
 </script>

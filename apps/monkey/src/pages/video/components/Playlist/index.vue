@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import type PlaylistItemVue from './item.vue'
 import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
 import { Icon } from '@iconify/vue'
@@ -56,7 +56,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  play: [item: Entity.FilesItem]
+  play: [item: Share.Entity.FilesItem]
   close: []
 }>()
 
@@ -108,7 +108,7 @@ const playlistItemRefs
   = useTemplateRef<InstanceType<typeof PlaylistItemVue>[]>('playlistItemRefs')
 
 /** 点击播放 */
-function handlePlay(item: Entity.FilesItem) {
+function handlePlay(item: Share.Entity.FilesItem) {
   if (item.pc === props.pickCode) {
     return
   }

@@ -1,4 +1,4 @@
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import { ref } from 'vue'
 import {
   CloudDownload,
@@ -99,7 +99,7 @@ export function useCloudDownloadAction() {
   }
 
   /** 离线下载 */
-  async function cloudDownload(pid: string = '', path: Entity.PathItem[] = [], urls: string = ''): Promise<boolean> {
+  async function cloudDownload(pid: string = '', path: Share.Entity.PathItem[] = [], urls: string = ''): Promise<boolean> {
     const input = ref(urls)
 
     // 打开后如果是根目录则默认选择云下载目录，否则保持原目录
@@ -122,7 +122,7 @@ export function useCloudDownloadAction() {
 
     const directory = ref<{
       cid: string
-      path: Partial<Entity.PathItem>[]
+      path: Partial<Share.Entity.PathItem>[]
     }>({
       cid: defaultPid,
       path: defaultPath,

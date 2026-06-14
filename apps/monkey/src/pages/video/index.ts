@@ -1,26 +1,26 @@
 import { GM_cookie } from '$'
-import { CONSTANT } from '@115master/drive115'
+import { Share } from '@115master/drive115'
 
 export function setVideoCookie(cookieDetail: Parameters<typeof GM_cookie.set>[0] & {
   sameSite: 'no_restriction'
 }) {
   return new Promise((resolve, reject) => {
     const iframe = document.createElement('iframe')
-    iframe.src = `${CONSTANT.URL_115.DL}/video/token`
+    iframe.src = `${Share.CONSTANT.URL_115.DL}/video/token`
     iframe.style.display = 'none'
     window.addEventListener('message', (event) => {
-      if (event.origin === CONSTANT.URL_115.DL && event.data.event === 'ready') {
+      if (event.origin === Share.CONSTANT.URL_115.DL && event.data.event === 'ready') {
         iframe.contentWindow?.postMessage(
           {
             event: 'set-cookies',
             data: cookieDetail,
           },
-          CONSTANT.URL_115.DL,
+          Share.CONSTANT.URL_115.DL,
         )
       }
 
       if (
-        event.origin === CONSTANT.URL_115.DL
+        event.origin === Share.CONSTANT.URL_115.DL
         && event.data.event === 'set-cookies-callback'
       ) {
         if (event.data.data) {
@@ -41,17 +41,17 @@ export function videoTokenPage() {
     {
       event: 'ready',
     },
-    CONSTANT.URL_115.NORMAL,
+    Share.CONSTANT.URL_115.NORMAL,
   )
   window.addEventListener('message', (event) => {
-    if (event.origin === CONSTANT.URL_115.NORMAL && event.data.event === 'set-cookies') {
+    if (event.origin === Share.CONSTANT.URL_115.NORMAL && event.data.event === 'set-cookies') {
       GM_cookie.set(event.data.data, (error) => {
         window.parent.postMessage(
           {
             event: 'set-cookies-callback',
             data: error,
           },
-          CONSTANT.URL_115.NORMAL,
+          Share.CONSTANT.URL_115.NORMAL,
         )
       })
     }

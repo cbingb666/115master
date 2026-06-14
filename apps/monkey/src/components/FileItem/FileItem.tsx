@@ -1,4 +1,4 @@
-import type { Base, Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { Icon } from '@iconify/vue'
 import { defineComponent, withModifiers } from 'vue'
@@ -19,7 +19,7 @@ const FileItem = defineComponent({
       default: 'list',
     },
     data: {
-      type: Object as PropType<Entity.FilesItem>,
+      type: Object as PropType<Share.Entity.FilesItem>,
       required: true,
     },
     pathSelect: {
@@ -35,7 +35,7 @@ const FileItem = defineComponent({
       default: false,
     },
     onClick: {
-      type: Function as PropType<(data: Entity.FilesItem) => void>,
+      type: Function as PropType<(data: Share.Entity.FilesItem) => void>,
       default: () => {},
     },
     onChecked: {
@@ -63,7 +63,7 @@ const FileItem = defineComponent({
       default: () => {},
     },
     onPreview: {
-      type: Function as PropType<(data: Entity.FilesItem) => void>,
+      type: Function as PropType<(data: Share.Entity.FilesItem) => void>,
       default: () => {},
     },
     /** 文件夹 CID（用于图片预览） */
@@ -73,12 +73,12 @@ const FileItem = defineComponent({
     },
     /** 排序字段 */
     order: {
-      type: String as PropType<Base.Sorter['o']>,
+      type: String as PropType<Share.Base.Sorter['o']>,
       default: undefined,
     },
     /** 是否升序 */
     asc: {
-      type: Number as PropType<Base.Sorter['asc']>,
+      type: Number as PropType<Share.Base.Sorter['asc']>,
       default: undefined,
     },
   },

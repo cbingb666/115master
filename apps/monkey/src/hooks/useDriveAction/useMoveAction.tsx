@@ -1,4 +1,4 @@
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import { useDialog, useFileBrowserDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { promiseDelay } from '@/utils/promise'
@@ -32,7 +32,7 @@ export function useMoveAction() {
   }
 
   /** 移动核心 */
-  async function moveCore(pid: string, items: Entity.FilesItem[]): Promise<boolean> {
+  async function moveCore(pid: string, items: Share.Entity.FilesItem[]): Promise<boolean> {
     const fileIds = getFileIds(items)
     const fids = Object.fromEntries(
       fileIds.map((val, index) => [`fid[${index}]`, val]),
@@ -61,7 +61,7 @@ export function useMoveAction() {
   }
 
   /** 移动批量 */
-  async function moveBatch(defaultPid: string, items: Entity.FilesItem[]): Promise<{ success: boolean, pid: string }> {
+  async function moveBatch(defaultPid: string, items: Share.Entity.FilesItem[]): Promise<{ success: boolean, pid: string }> {
     const pid = await moveDialog(defaultPid)
     if (!pid) {
       return { success: false, pid: '' }
@@ -71,12 +71,12 @@ export function useMoveAction() {
   }
 
   /** 拖拽移动 */
-  async function dragMove(cid: string, originItems: Entity.FilesItem[]) {
+  async function dragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
     return await moveCore(cid, originItems)
   }
 
   /** 提到上级 */
-  async function improve(items: Entity.FilesItem[], prevLevelId: string): Promise<boolean> {
+  async function improve(items: Share.Entity.FilesItem[], prevLevelId: string): Promise<boolean> {
     const dialogRes = await dialog.confirm({
       title: '提到上级',
       content: '将文件提升到上级目录，确定提升吗？',

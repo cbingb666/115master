@@ -1,4 +1,4 @@
-import type { VideoApi } from '@115master/drive115'
+import type { Api } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
 import { reactive } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
@@ -14,7 +14,7 @@ export function useDataFileInfo() {
       })
       return response
     },
-    {} as VideoApi.Res.FilesVideo,
+    {} as Api.VideoApi.Res.FilesVideo,
     {
       immediate: false,
     },

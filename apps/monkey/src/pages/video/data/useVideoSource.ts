@@ -1,5 +1,6 @@
 import type { VideoSource } from '@/components/XPlayer'
-import { CONSTANT } from '@115master/drive115/clients/video'
+import { Api } from '@115master/drive115'
+
 import { ref } from 'vue'
 import { VIDEO_SOURCE_EXTENSION } from '@/components/XPlayer/index.const'
 import { drive115 } from '@/utils/drive115Instance'
@@ -63,7 +64,7 @@ export function useDataVideoSources() {
           extension: VIDEO_SOURCE_EXTENSION.m3u8,
           quality: item.quality,
           displayQuality:
-            CONSTANT.QUALITY_NUM_MAP[item.quality as keyof typeof CONSTANT.QUALITY_NUM_MAP],
+            Api.VideoApi.CONSTANT.QUALITY_NUM_MAP[item.quality as keyof typeof Api.VideoApi.CONSTANT.QUALITY_NUM_MAP],
         })),
       )
     }

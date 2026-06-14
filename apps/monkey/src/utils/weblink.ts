@@ -1,6 +1,6 @@
-import type { Model } from '@115master/drive115/clients/video'
+import type { Api } from '@115master/drive115'
 
-type DownloadResult = Model.DownloadResult
+type DownloadResult = Api.VideoApi.Model.DownloadResult
 
 /**
  * 使用 shortcuts 打开 mpv 播放网页

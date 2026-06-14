@@ -1,4 +1,4 @@
-import type { Base } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { ListData } from '@/hooks/useDriveList'
 import { computed, shallowRef } from 'vue'
@@ -6,9 +6,9 @@ import { computed, shallowRef } from 'vue'
 export function useDrivePage(options: { page: Ref<number>, size: Ref<number> }) {
   const total = shallowRef(0)
   const pageCount = computed(() => Math.ceil(total.value / options.size.value))
-  const order = shallowRef<Base.Sorter['o']>()
-  const asc = shallowRef<Base.Sorter['asc']>()
-  const fc_mix = shallowRef<Base.Sorter['fc_mix']>()
+  const order = shallowRef<Share.Base.Sorter['o']>()
+  const asc = shallowRef<Share.Base.Sorter['asc']>()
+  const fc_mix = shallowRef<Share.Base.Sorter['fc_mix']>()
 
   function changePage(p: number) {
     if (p !== options.page.value)
@@ -22,7 +22,7 @@ export function useDrivePage(options: { page: Ref<number>, size: Ref<number> }) 
     }
   }
 
-  function changeSort(o: Base.Sorter['o'], a: Base.Sorter['asc'], f: Base.Sorter['fc_mix']) {
+  function changeSort(o: Share.Base.Sorter['o'], a: Share.Base.Sorter['asc'], f: Share.Base.Sorter['fc_mix']) {
     if (o !== order.value || a !== asc.value || f !== fc_mix.value) {
       order.value = o
       asc.value = a

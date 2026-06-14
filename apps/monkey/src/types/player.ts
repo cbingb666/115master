@@ -1,5 +1,4 @@
-import type { Base } from '@115master/drive115'
-import type { Model } from '@115master/drive115/clients/video'
+import type { Api, Share } from '@115master/drive115'
 
-export type M3u8Item = Model.M3u8Item
-export type PlayingVideoInfo = Base.PlayingVideoInfo
+export type M3u8Item = Api.VideoApi.Model.M3u8Item
+export type PlayingVideoInfo = Share.Base.PlayingVideoInfo

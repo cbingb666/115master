@@ -1,4 +1,4 @@
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
 import { reactive } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
@@ -19,7 +19,7 @@ export function useDataPlaylist() {
   )
 
   /** 更新播放列表项 */
-  const updateItem = (pickCode: string, data: Partial<Entity.FileItem>) => {
+  const updateItem = (pickCode: string, data: Partial<Share.Entity.FileItem>) => {
     if (!playlist.state.value)
       return
     const index = playlist.state.value.data.findIndex(i => i.pc === pickCode)
@@ -27,7 +27,7 @@ export function useDataPlaylist() {
       playlist.state.value.data[index] = {
         ...playlist.state.value.data[index],
         ...data,
-      } as Entity.FileItem
+      } as Share.Entity.FileItem
     }
   }
 

@@ -1,6 +1,7 @@
-import type { FileApi } from '@115master/drive115'
+import type { Api } from '@115master/drive115'
 import { GM_xmlhttpRequest } from '$'
-import { CONSTANT } from '@115master/drive115'
+import { Share } from '@115master/drive115'
+
 import { ICON_FILE_FOLDER, ICON_FILE_IMAGE } from '@/icons'
 
 export class Utils115 {
@@ -35,13 +36,13 @@ export class Utils115 {
     return map[ico] ?? `${ASSETS_URL}/other/unknown.png?_vh=f0a959d_88`
   }
 
-  static getFolderIcon(data: FileApi.Res.Files['data'][number]) {
+  static getFolderIcon(data: Api.FileApi.Res.Files['data'][number]) {
     if (Utils115.isFolder(data.fc)) {
       return ICON_FILE_FOLDER
     }
   }
 
-  static getFileIcon(data: FileApi.Res.Files['data'][number]) {
+  static getFileIcon(data: Api.FileApi.Res.Files['data'][number]) {
     if (Utils115.isVideo(data.iv)) {
       return Utils115.getVideoIcon(data.vdi ?? 0)
     }
@@ -141,7 +142,7 @@ export class Utils115 {
     if (ico === 'txt') {
       params.set('t', '1')
     }
-    return new URL(`?${params.toString()}`, CONSTANT.URL_115.NORMAL)
+    return new URL(`?${params.toString()}`, Share.CONSTANT.URL_115.NORMAL)
   }
 
   /**

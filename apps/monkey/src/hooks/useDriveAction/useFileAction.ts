@@ -1,5 +1,5 @@
-import type { Entity } from '@115master/drive115'
-import { Req } from '@115master/drive115/clients/file'
+import type { Share } from '@115master/drive115'
+import { Api } from '@115master/drive115'
 import { useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'
@@ -12,7 +12,7 @@ export function useFileAction() {
   const toast = useToast()
 
   /** 置顶批量 */
-  async function topBatch(items: Entity.FilesItem[]): Promise<boolean> {
+  async function topBatch(items: Share.Entity.FilesItem[]): Promise<boolean> {
     const hasTop = items.some(item => item.is_top === 1)
     const top = hasTop ? 0 : 1
     const fileIds = getFileIds(items)
@@ -35,9 +35,9 @@ export function useFileAction() {
   }
 
   /** 星标批量 */
-  async function starBatch(items: Entity.FilesItem[]): Promise<boolean> {
+  async function starBatch(items: Share.Entity.FilesItem[]): Promise<boolean> {
     const hasStar = items.some(item => item.m === 1 || item.m === '1')
-    const star = hasStar ? Req.MarkStatus.Unmark : Req.MarkStatus.Mark
+    const star = hasStar ? Api.FileApi.Req.MarkStatus.Unmark : Api.FileApi.Req.MarkStatus.Mark
     const fileIds = getFileIds(items)
     const res = await drive115.file.starFiles({
       file_id: fileIds,
@@ -58,7 +58,7 @@ export function useFileAction() {
   }
 
   /** 重命名 */
-  async function renameItem(item: Entity.FilesItem): Promise<boolean> {
+  async function renameItem(item: Share.Entity.FilesItem): Promise<boolean> {
     const dialogRes = await dialog.prompt({
       title: '重命名',
       placeholder: '请输入文件名',

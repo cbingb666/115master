@@ -1,6 +1,6 @@
-import { Url } from '@115master/drive115/clients/video'
+import { Api } from '@115master/drive115'
 
-export const getXUrl = Url.getXUrl
+export const getXUrl = Api.VideoApi.Url.getXUrl
 
 /**
  * 获取 url 参数

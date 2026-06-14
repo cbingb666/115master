@@ -126,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Entity } from '@115master/drive115'
+import type { Share } from '@115master/drive115'
 import type { FileActionMenuTypes } from './components/FileActionMenu'
 import type {
   ActionKey,
@@ -458,7 +458,7 @@ async function handleLocalPlay(player: LocalPlayer) {
   }
 }
 
-async function changeVideo(item: Entity.FilesItem) {
+async function changeVideo(item: Share.Entity.FilesItem) {
   changeing.value = true
   goToPlayer({
     pickCode: item.pc,

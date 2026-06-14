@@ -1,5 +1,6 @@
 import { GM_openInTab } from '$'
-import { CONSTANT } from '@115master/drive115'
+import { Share } from '@115master/drive115'
+
 import iinaIcon from '@/assets/icons/iina-icon.png'
 import { FileListType, IvType } from '@/pages/home/types'
 import { drive115 } from '@/utils/drive115Instance'
@@ -42,7 +43,7 @@ export class FileItemModExtMenu extends FileItemModBase {
           GM_openInTab(
             new URL(
               `/?pickcode=${this.itemInfo.attributes.pick_code}&share_id=0`,
-              CONSTANT.URL_115.VOD,
+              Share.CONSTANT.URL_115.VOD,
             ).href,
             { active: true },
           )
