@@ -1,0 +1,5 @@
+export { CLEANUP_BATCH_SIZE, DEFAULT_STORE_NAME, META_STORE_NAME, STORAGE_QUOTA_THRESHOLD } from './const.ts'
+export { CacheCore } from './core.ts'
+export { MetaStore } from './metaStore.ts'
+export { QuotaManager } from './quotaManager.ts'
+export type { CacheCoreOptions, CacheMetaItem, CacheValue, StorageUsage } from './types.ts'

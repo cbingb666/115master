@@ -1,6 +1,7 @@
 import type { ProcessedSubtitle } from '@/utils/subtitle/subtitlecat'
+import { CacheCore } from '@115master/shared'
 import { appLogger } from '@/utils/logger'
-import { CacheCore } from './core'
+import { STORE_NAME } from './const'
 
 /** 字幕缓存项 */
 interface SubtitleCacheItem {
@@ -23,8 +24,10 @@ export class SubtitleCache extends CacheCore<SubtitleCacheItem> {
 
   constructor() {
     super({
+      name: STORE_NAME,
       storeName: 'subtitle_cache',
       version: 2,
+      logger: appLogger.sub('SubtitleCache'),
     })
   }
 

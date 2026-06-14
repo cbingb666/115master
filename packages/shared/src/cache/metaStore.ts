@@ -1,23 +1,7 @@
+import type { ILogger } from '../logger/types.ts'
+import type { CacheMetaItem } from './types.ts'
 import localforage from 'localforage'
-import { appLogger } from '@/utils/logger'
-import { META_STORE_NAME, STORE_NAME } from './const'
-
-export interface CacheMetaItem {
-  /** 原始缓存键 */
-  key: string
-  /** 完整键（包含 name 和 storeName） */
-  fullKey: string
-  /** 存储实例名称 */
-  storeName: string
-  /** 最后访问时间戳 */
-  lastAccessed: number
-  /** 缓存项大小（字节） */
-  size?: number
-  /** 创建时间戳 */
-  createdAt: number
-  /** 更新时间戳 */
-  updatedAt: number
-}
+import { DEFAULT_STORE_NAME, META_STORE_NAME } from './const.ts'
 
 /**
  * 元数据存储管理器
@@ -25,7 +9,7 @@ export interface CacheMetaItem {
  */
 export class MetaStore {
   /** 日志 */
-  protected logger = appLogger.sub('MetaStore')
+  protected logger: ILogger
   /** 存储实例 */
   private storage: LocalForage
   /** 缓存名称 */
@@ -37,10 +21,16 @@ export class MetaStore {
    * 构造函数
    * @param name 缓存名称
    * @param storeName 存储实例名称
+   * @param logger 日志实例
    */
-  constructor(name: string = STORE_NAME, storeName = 'cache') {
+  constructor(
+    name: string = DEFAULT_STORE_NAME,
+    storeName = 'cache',
+    logger: ILogger = console as unknown as ILogger,
+  ) {
     this.name = name
     this.storeName = storeName
+    this.logger = logger.sub('MetaStore')
     this.storage = localforage.createInstance({
       name: this.name,
       storeName: META_STORE_NAME,
@@ -75,9 +65,7 @@ export class MetaStore {
         fullKey,
         storeName: this.storeName,
         lastAccessed: now,
-        // 如果提供了创建时间，使用提供的值；否则使用现有值或当前时间
         createdAt: createdAt ?? existingMeta?.createdAt ?? now,
-        // 如果提供了更新时间，使用提供的值；否则使用当前时间
         updatedAt: updatedAt ?? now,
       }
 
@@ -85,7 +73,6 @@ export class MetaStore {
         meta.size = size
       }
       else if (existingMeta?.size !== undefined) {
-        // 保留现有大小信息
         meta.size = existingMeta.size
       }
 
@@ -122,10 +109,8 @@ export class MetaStore {
     const items: CacheMetaItem[] = []
 
     await this.storage.iterate<CacheMetaItem, void>((value) => {
-      // 只返回属于当前 name 和 storeName 的元数据
-      if (value.storeName === this.storeName) {
+      if (value.storeName === this.storeName)
         items.push(value)
-      }
     })
 
     return items
@@ -155,9 +140,8 @@ export class MetaStore {
   async clear(): Promise<void> {
     const allItems = await this.getAllMeta()
 
-    for (const item of allItems) {
+    for (const item of allItems)
       await this.storage.removeItem(item.fullKey)
-    }
   }
 
   /**

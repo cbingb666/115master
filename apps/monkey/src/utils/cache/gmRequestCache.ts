@@ -1,7 +1,7 @@
 import type { IRequestCache, RequestOptions } from '@115master/shared'
+import { CacheCore } from '@115master/shared'
 import { appLogger } from '@/utils/logger'
-import { CacheCore } from './core'
-import { STORE_NAME } from './core/const'
+import { STORE_NAME } from './const'
 
 /** 可序列化的响应数据 */
 export interface SerializableResponse {
@@ -44,6 +44,7 @@ export class GMRequestCache implements IRequestCache {
       name: STORE_NAME,
       storeName,
       enableQuotaManagement: true,
+      logger: appLogger.sub('GMRequestCache'),
     })
     this.defaultCacheTime = defaultCacheTime
   }

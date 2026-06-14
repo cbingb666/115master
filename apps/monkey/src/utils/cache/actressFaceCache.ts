@@ -1,5 +1,7 @@
 import type { ActressImageInfo } from '@/types/actress'
-import { CacheCore } from './core/index'
+import { CacheCore } from '@115master/shared'
+import { appLogger } from '@/utils/logger'
+import { STORE_NAME } from './const'
 
 const ACTRESS_FACE_CACHE_KEY = 'actress_face_json_cache'
 
@@ -14,7 +16,9 @@ export interface ActressFaceData {
 class ActressFaceCache extends CacheCore<ActressFaceData | ActressImageInfo> {
   constructor() {
     super({
+      name: STORE_NAME,
       storeName: ACTRESS_FACE_CACHE_KEY,
+      logger: appLogger.sub('ActressFaceCache'),
     })
   }
 
