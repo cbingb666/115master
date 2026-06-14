@@ -3,15 +3,17 @@ import type { IRequestCache, RequestOptions, ResponseType } from './types.ts'
 import { merge } from 'lodash'
 import { IRequest } from './types.ts'
 
-/** 是否是 Chrome 浏览器 */
-const isChrome = GM_info.userAgentData.brands.some(
-  brand => brand.brand === 'Google Chrome',
-)
-
 /** 默认请求选项 */
 const DEFAULT_OPTIONS: RequestOptions = {
   cacheStatus: [200],
   cache: 'no-cache',
+}
+
+function isChrome() {
+  return (
+    typeof GM_info !== 'undefined'
+    && GM_info.userAgentData.brands.some(brand => brand.brand === 'Google Chrome')
+  )
 }
 
 /** GM实现 */
@@ -44,7 +46,7 @@ export class GMRequest extends IRequest {
 
     // 谷歌浏览器才允许修改重定向行为，其他浏览器默认跟随重定向
     /** 否则会造成并发请求中 404 请求，也会导致其他的请求被 canceled */
-    const redirect = isChrome ? options.redirect || 'manual' : 'follow'
+    const redirect = isChrome() ? options.redirect || 'manual' : 'follow'
 
     const requestUrl = urlRe.href
 
