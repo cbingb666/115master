@@ -1,6 +1,6 @@
-import type { RequestOptions, ResponseType } from './types'
+import type { RequestOptions, ResponseType } from './types.ts'
 import { merge } from 'lodash'
-import { IRequest } from './types'
+import { IRequest } from './types.ts'
 
 /** 默认请求选项 */
 const DEFAULT_OPTIONS: RequestOptions = {

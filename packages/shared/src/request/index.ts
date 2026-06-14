@@ -1,2 +1,5 @@
+export { FetchRequest } from './fetchRequest.ts'
+export { fetchRequest } from './fetchRequest.ts'
+export { GMRequest } from './gmRequest.ts'
 export { IRequest } from './types.ts'
-export type { RequestOptions, ResponseType } from './types.ts'
+export type { IRequestCache, RequestOptions, ResponseType } from './types.ts'

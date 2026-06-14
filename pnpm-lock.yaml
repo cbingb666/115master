@@ -267,6 +267,10 @@ importers:
         version: 4.0.0-beta.0(tailwindcss@4.1.18)
 
   packages/shared:
+    dependencies:
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.23
     devDependencies:
       '@115master/eslint-config':
         specifier: workspace:*
@@ -274,9 +278,15 @@ importers:
       '@115master/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/lodash':
+        specifier: ^4.17.15
+        version: 4.17.23
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
+      vite-plugin-monkey:
+        specifier: ^5.0.5
+        version: 5.0.9(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
 
   packages/tsconfig:
     devDependencies:

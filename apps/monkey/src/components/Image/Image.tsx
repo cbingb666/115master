@@ -2,7 +2,7 @@ import { defineComponent, ref, watch } from 'vue'
 import { LoadingError } from '@/components'
 import { imageCache } from '@/utils/cache/imageCache'
 import { blobToBase64, compressImage } from '@/utils/image'
-import { GMRequest } from '@/utils/request/gmRequst'
+import { GMRequest } from '@/utils/request/gmRequest'
 
 const Image = defineComponent({
   name: 'Image',

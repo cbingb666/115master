@@ -2,7 +2,7 @@ import type { Subtitle } from '@/components/XPlayer/types'
 import md5 from 'blueimp-md5'
 import { subtitleCache } from '@/utils/cache/subtitleCache'
 import { appLogger } from '@/utils/logger'
-import { GMRequestInstance } from '@/utils/request/gmRequst'
+import { GMRequestInstance } from '@/utils/request/gmRequest'
 
 /**
  * subtitlecat 搜索结果

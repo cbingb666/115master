@@ -1,8 +1,7 @@
-import type { RequestOptions, ResponseType } from './types'
-import { GM_info, GM_xmlhttpRequest } from '$'
+/// <reference types="vite-plugin-monkey/global" />
+import type { IRequestCache, RequestOptions, ResponseType } from './types.ts'
 import { merge } from 'lodash'
-import { GMRequestCache } from '@/utils/cache/gmRequestCache'
-import { IRequest } from './types'
+import { IRequest } from './types.ts'
 
 /** 是否是 Chrome 浏览器 */
 const isChrome = GM_info.userAgentData.brands.some(
@@ -20,15 +19,15 @@ export class GMRequest extends IRequest {
   /** 请求选项 */
   options: RequestOptions = {}
   /** 缓存实例 */
-  private cache: GMRequestCache
+  private cache?: IRequestCache
 
-  constructor(options: RequestOptions = {}, cacheName = 'gm-request-cache') {
+  constructor(options: RequestOptions = {}, cache?: IRequestCache) {
     super()
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
     }
-    this.cache = new GMRequestCache(cacheName)
+    this.cache = cache
   }
 
   async request(
@@ -50,11 +49,11 @@ export class GMRequest extends IRequest {
     const requestUrl = urlRe.href
 
     /** 检查是否启用缓存 */
-    const useCache = options.cache !== 'no-cache'
+    const useCache = options.cache !== 'no-cache' && this.cache
 
     // 如果启用缓存，尝试从缓存中获取响应
     if (useCache) {
-      const cachedResponse = await this.cache.get(requestUrl, options)
+      const cachedResponse = await this.cache!.get(requestUrl, options)
       if (cachedResponse) {
         return cachedResponse
       }
@@ -90,7 +89,7 @@ export class GMRequest extends IRequest {
 
           // 如果启用缓存，将响应存入缓存
           if (useCache) {
-            await this.cache.set(requestUrl, response.clone(), options)
+            await this.cache!.set(requestUrl, response.clone(), options)
           }
 
           resolve(response)
@@ -135,6 +134,8 @@ export class GMRequest extends IRequest {
     url: string,
     options?: RequestOptions,
   ): Promise<void> {
+    if (!this.cache)
+      return
     await this.cache.remove(url, options)
   }
 
@@ -142,6 +143,8 @@ export class GMRequest extends IRequest {
    * 清除所有缓存
    */
   async clearAllCache(): Promise<void> {
+    if (!this.cache)
+      return
     await this.cache.clear()
   }
 
@@ -149,7 +152,7 @@ export class GMRequest extends IRequest {
    * 获取缓存管理器
    * @returns 缓存管理器实例
    */
-  getCache(): GMRequestCache {
+  getCache(): IRequestCache | undefined {
     return this.cache
   }
 
@@ -173,6 +176,3 @@ export class GMRequest extends IRequest {
     return headers
   }
 }
-
-/** GMRequest 实例 */
-export const GMRequestInstance = new GMRequest()
