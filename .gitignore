@@ -31,8 +31,9 @@ yalc.lock
 # vitest
 coverage
 
-# git worktrees
+# worktrees
 .worktrees/
+.claude/worktrees/
 
 # Turborepo
 .turbo
