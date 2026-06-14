@@ -1,34 +1,20 @@
+import type { ILogger } from '../logger/types.ts'
+import type { CacheCoreOptions, CacheValue } from './types.ts'
 import localforage from 'localforage'
-import { appLogger } from '@/utils/logger'
-import { STORE_NAME } from './const'
-import { QuotaManager } from './quotaManager'
+import { DEFAULT_STORE_NAME } from './const.ts'
+import { QuotaManager } from './quotaManager.ts'
 
-/** 缓存项接口 */
-interface CacheValue<T> {
-  /** 缓存值 */
-  value: T
-  /** 添加大小属性，用于跟踪缓存项大小 */
-  size?: number
-  /** 创建时间戳 */
-  createdAt: number
-  /** 更新时间戳 */
-  updatedAt: number
-  /**
-   * 版本
-   * (1.6.2 以前没有向 Value 写入此字段, 此版本是 Cache 版本与项目版本无关)
-   * 目前它用于在 Get 时删除旧版本的缓存项 (默认行为)
-   */
-  version?: number
-}
-
-/** 缓存核心类 */
+/**
+ * 缓存核心类
+ * @description 基于 localforage 的通用缓存基类，支持 TTL/version、大小估算与配额超限自动清理
+ */
 export class CacheCore<T> {
   /** 存储实例 */
   storage: LocalForage
   /** 储存配置 */
   storageOptions: LocalForageOptions
   /** 日志 */
-  protected logger = appLogger.sub('CacheCore')
+  protected logger
   /** 空间限额管理器 */
   private quotaManager: QuotaManager
   /** 是否启用空间限额管理 */
@@ -42,16 +28,12 @@ export class CacheCore<T> {
    * 构造函数
    * @param options 存储配置
    */
-  constructor(
-    options: LocalForageOptions & {
-      enableQuotaManagement?: boolean
-    } = {},
-  ) {
-    const { enableQuotaManagement = true, ...storageOptions } = options
+  constructor(options: CacheCoreOptions = {}) {
+    const { enableQuotaManagement = true, logger = console as unknown as ILogger, ...storageOptions } = options
     this.storageOptions = storageOptions
+    this.logger = logger
 
-    // 获取存储配置
-    this.name = storageOptions.name || STORE_NAME
+    this.name = storageOptions.name || DEFAULT_STORE_NAME
     this.storeName = storageOptions.storeName || 'cache'
 
     this.storage = localforage.createInstance({
@@ -64,7 +46,12 @@ export class CacheCore<T> {
     })
 
     this.enableQuotaManagement = enableQuotaManagement
-    this.quotaManager = new QuotaManager(this, this.name, this.storeName)
+    this.quotaManager = new QuotaManager(
+      async key => this.storage.removeItem(key),
+      this.name,
+      this.storeName,
+      logger,
+    )
   }
 
   /**
@@ -75,12 +62,9 @@ export class CacheCore<T> {
   async get(key: string): Promise<CacheValue<T> | null> {
     const cache = await this.storage.getItem<CacheValue<T>>(key)
 
-    // 如果启用了空间限额管理，记录访问时间
-    if (cache && this.enableQuotaManagement) {
+    if (cache && this.enableQuotaManagement)
       await this.quotaManager.recordAccess(key, cache.size)
-    }
 
-    // 检查版本，如果版本不匹配则删除缓存项
     if ((cache?.version || 0) < (this.storageOptions.version || 0)) {
       this.remove(key)
       return null
@@ -93,33 +77,26 @@ export class CacheCore<T> {
    * 设置缓存项
    * @param key 缓存键
    * @param value 缓存值
-   * @returns Promise<void>
    */
   async set(key: string, value: T): Promise<void> {
     try {
-      /** 计算缓存项大小（近似值） */
       let size: number | undefined
-      if (this.enableQuotaManagement) {
+      if (this.enableQuotaManagement)
         size = this.estimateSize(value, key)
-      }
 
-      /** 获取当前时间戳 */
       const now = Date.now()
-
-      /** 检查是否已存在该缓存项，以确定是创建还是更新 */
       const existingCache = await this.storage.getItem<CacheValue<T>>(key)
 
       const cacheValue: CacheValue<T> = {
         value,
         ...(size !== undefined ? { size } : {}),
-        createdAt: existingCache?.createdAt || now, // 如果是新项目则设置创建时间，否则保留原创建时间
-        updatedAt: now, // 更新时间总是当前时间
+        createdAt: existingCache?.createdAt || now,
+        updatedAt: now,
         version: this.storageOptions.version,
       }
 
       await this.storage.setItem(key, cacheValue)
 
-      // 如果启用了空间限额管理，记录访问时间和大小
       if (this.enableQuotaManagement) {
         await this.quotaManager.recordAccess(
           key,
@@ -128,7 +105,6 @@ export class CacheCore<T> {
           cacheValue.updatedAt,
         )
 
-        // 检查是否需要清理空间
         await this.quotaManager.autoCleanup()
       }
     }
@@ -139,13 +115,10 @@ export class CacheCore<T> {
       ) {
         this.logger.error('缓存失败: 超出配额')
 
-        // 如果启用了空间限额管理，尝试清理空间后重试
         if (this.enableQuotaManagement) {
           const cleaned = await this.quotaManager.cleanup()
-          if (cleaned.length > 0) {
-            // 清理成功，重试设置缓存
+          if (cleaned.length > 0)
             await this.set(key, value)
-          }
         }
       }
       else {
@@ -161,10 +134,8 @@ export class CacheCore<T> {
   async remove(key: string) {
     await this.storage.removeItem(key)
 
-    // 如果启用了空间限额管理，删除元数据
-    if (this.enableQuotaManagement) {
+    if (this.enableQuotaManagement)
       await this.quotaManager.recordRemoval(key)
-    }
   }
 
   /**
@@ -173,10 +144,8 @@ export class CacheCore<T> {
   async clear() {
     await this.storage.clear()
 
-    // 如果启用了空间限额管理，清空元数据
-    if (this.enableQuotaManagement) {
+    if (this.enableQuotaManagement)
       await this.quotaManager.clearAllMeta()
-    }
   }
 
   /**
@@ -239,32 +208,25 @@ export class CacheCore<T> {
    */
   private estimateSize(value: T, key: string): number | undefined {
     try {
-      // 处理 Blob 类型
-      if (value instanceof Blob) {
+      if (value instanceof Blob)
         return value.size
-      }
 
-      // 处理 Blob 数组
       if (
         Array.isArray(value)
         && value.length > 0
         && value[0] instanceof Blob
       ) {
-        // 计算所有 Blob 的总大小
         return value.reduce((total, item) => {
-          if (item instanceof Blob) {
+          if (item instanceof Blob)
             return total + item.size
-          }
           return total
         }, 0)
       }
 
-      /** 处理其他类型：尝试序列化并计算大小 */
       const valueStr = JSON.stringify(value)
       return new Blob([valueStr]).size
     }
     catch (e) {
-      // 如果无法序列化或计算大小，则记录警告
       this.logger.warn(`无法估算缓存项 ${key} 的大小:`, e)
       return undefined
     }

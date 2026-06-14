@@ -1,6 +1,7 @@
 import type { Subtitle } from '@/components/XPlayer/types'
+import { CacheCore } from '@115master/shared'
 import { appLogger } from '@/utils/logger'
-import { CacheCore } from './core'
+import { STORE_NAME } from './const'
 
 /** 字幕偏好 Type */
 export type SubtitlePreference = Subtitle
@@ -16,8 +17,10 @@ export class SubtitlePreferenceManager extends CacheCore<SubtitlePreference> {
   /** 构造函数 */
   constructor() {
     super({
+      name: STORE_NAME,
       storeName: STORE_PREFIX,
       enableQuotaManagement: false,
+      logger: appLogger.sub('SubtitlePreferenceManager'),
     })
   }
 

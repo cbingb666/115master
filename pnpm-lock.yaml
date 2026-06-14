@@ -268,6 +268,9 @@ importers:
 
   packages/shared:
     dependencies:
+      localforage:
+        specifier: ^1.10.0
+        version: 1.10.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.23
@@ -281,12 +284,21 @@ importers:
       '@types/lodash':
         specifier: ^4.17.15
         version: 4.17.23
+      '@vitest/coverage-v8':
+        specifier: ^3.2.6
+        version: 3.2.6(vitest@3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+      happy-dom:
+        specifier: ^20.10.3
+        version: 20.10.3
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
       vite-plugin-monkey:
         specifier: ^5.0.5
         version: 5.0.9(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+      vitest:
+        specifier: ^3.2.6
+        version: 3.2.6(@types/debug@4.1.12)(@types/node@25.2.2)(happy-dom@20.10.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
   packages/tsconfig:
     devDependencies:

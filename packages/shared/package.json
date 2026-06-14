@@ -37,16 +37,23 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "localforage": "^1.10.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@115master/eslint-config": "workspace:*",
     "@115master/tsconfig": "workspace:*",
     "@types/lodash": "^4.17.15",
+    "@vitest/coverage-v8": "^3.2.6",
+    "happy-dom": "^20.10.3",
     "typescript": "^5.7.3",
-    "vite-plugin-monkey": "^5.0.5"
+    "vite-plugin-monkey": "^5.0.5",
+    "vitest": "^3.2.6"
   }
 }

@@ -1,19 +1,7 @@
-import type { CacheCore } from './index'
-import { appLogger } from '@/utils/logger'
-import { CLEANUP_BATCH_SIZE, STORAGE_QUOTA_THRESHOLD } from './const'
-import { MetaStore } from './metaStore'
-
-/**
- * 存储空间使用情况
- */
-export interface StorageUsage {
-  /** 已使用空间（字节） */
-  usage: number
-  /** 总空间配额（字节） */
-  quota: number
-  /** 使用率（0-1之间） */
-  usageRatio: number
-}
+import type { ILogger } from '../logger/types.ts'
+import type { StorageUsage } from './types.ts'
+import { CLEANUP_BATCH_SIZE, STORAGE_QUOTA_THRESHOLD } from './const.ts'
+import { MetaStore } from './metaStore.ts'
 
 /**
  * 空间限额管理器
@@ -21,25 +9,28 @@ export interface StorageUsage {
  */
 export class QuotaManager {
   /** 日志 */
-  protected logger = appLogger.sub('QuotaManager')
+  protected logger: ILogger
   /** 元数据存储 */
   private metaStore: MetaStore
-  /** 缓存实例 */
-  private cacheInstance: CacheCore<unknown>
+  /** 删除缓存项的回调 */
+  private removeItem: (key: string) => Promise<void>
 
   /**
    * 构造函数
-   * @param cacheInstance 缓存实例
+   * @param removeItem 删除缓存项的回调
    * @param name 缓存名称
    * @param storeName 存储实例名称
+   * @param logger 日志实例
    */
   constructor(
-    cacheInstance: CacheCore<unknown>,
+    removeItem: (key: string) => Promise<void>,
     name: string,
     storeName: string,
+    logger: ILogger = console as unknown as ILogger,
   ) {
-    this.cacheInstance = cacheInstance
-    this.metaStore = new MetaStore(name, storeName)
+    this.removeItem = removeItem
+    this.logger = logger.sub('QuotaManager')
+    this.metaStore = new MetaStore(name, storeName, this.logger)
   }
 
   /**
@@ -47,8 +38,6 @@ export class QuotaManager {
    * @returns 存储空间使用情况
    */
   async getStorageUsage(): Promise<StorageUsage> {
-    // 使用 navigator.storage API 获取存储使用情况
-    // 注意：此 API 可能不被所有浏览器支持
     if (navigator.storage?.estimate) {
       const estimate = await navigator.storage.estimate()
       const usage = estimate.usage || 0
@@ -62,7 +51,6 @@ export class QuotaManager {
       }
     }
 
-    // 如果 API 不可用，返回默认值
     return {
       usage: 0,
       quota: 0,
@@ -85,30 +73,21 @@ export class QuotaManager {
    * @returns 已清理的键数组
    */
   async cleanup(batchSize = CLEANUP_BATCH_SIZE): Promise<string[]> {
-    /** 检查是否需要清理 */
     const needCleanup = await this.shouldCleanup()
-    if (!needCleanup) {
+    if (!needCleanup)
       return []
-    }
 
-    /** 获取按最后访问时间排序的缓存项（最旧的在前） */
     const oldestItems = await this.metaStore.getSortedByLastAccessed(true)
 
-    // 如果没有缓存项，直接返回
-    if (oldestItems.length === 0) {
+    if (oldestItems.length === 0)
       return []
-    }
 
-    /** 取出最旧的 batchSize 个缓存项进行清理 */
     const itemsToCleanup = oldestItems.slice(0, batchSize)
     const cleanedKeys: string[] = []
 
-    // 逐个清理缓存项
     for (const item of itemsToCleanup) {
       try {
-        // 删除实际的缓存数据
-        await this.cacheInstance.remove(item.key)
-        // 删除元数据
+        await this.removeItem(item.key)
         await this.metaStore.removeMeta(item.key)
         cleanedKeys.push(item.key)
       }

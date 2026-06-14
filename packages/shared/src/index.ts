@@ -4,11 +4,15 @@
  * 这个包包含跨应用共享的工具函数、类型定义和常量
  */
 
+// 缓存
+export { CacheCore, MetaStore, QuotaManager } from './cache/index.ts'
+export type { CacheCoreOptions, CacheMetaItem, CacheValue, StorageUsage } from './cache/index.ts'
+
 // 日志
 export { Logger } from './logger/index.ts'
 export type { ILogger, LogEntry, LogLevel, LogMethod } from './logger/index.ts'
-
 // 请求
 export { IRequest } from './request/index.ts'
+
 export { FetchRequest, fetchRequest, GMRequest } from './request/index.ts'
 export type { IRequestCache, RequestOptions, ResponseType } from './request/index.ts'
