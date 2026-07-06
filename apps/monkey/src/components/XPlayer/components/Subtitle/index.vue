@@ -15,11 +15,11 @@
 
 <script setup lang="ts">
 import type { Subtitle } from '@/components/XPlayer/types'
+import { subtitle } from '@115master/utils'
 import { useElementBounding } from '@vueuse/core'
 import { computed, shallowRef, watch } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { clsx } from '@/utils/clsx'
-import { convertSrtToVtt } from '@/utils/subtitle/subtitleTool'
 
 const styles = clsx({
   container: 'absolute inset-0',
@@ -124,7 +124,7 @@ function parseSubtitle(text: string, format: Subtitle['format']) {
   let formatedText: string | undefined
   switch (format) {
     case 'srt':
-      formatedText = convertSrtToVtt(text)
+      formatedText = subtitle.srtToVtt(text)
       break
     case 'vtt':
       formatedText = text
@@ -133,6 +133,8 @@ function parseSubtitle(text: string, format: Subtitle['format']) {
       logger.warn('不支持的字幕格式:', format)
       return
   }
+  if (!formatedText)
+    return
   parseSubtitleVTT(formatedText)
 }
 

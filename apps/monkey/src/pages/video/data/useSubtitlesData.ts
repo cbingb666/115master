@@ -1,12 +1,21 @@
 import type { Subtitle } from '@/components/XPlayer/types'
 import { fetchRequest } from '@115master/shared'
+import { subtitleSource, type ProcessedSubtitle } from '@115master/subtitle-source'
 import { array, string } from '@115master/utils'
 import { useAsyncState } from '@vueuse/core'
 import { shallowRef } from 'vue'
+import { subtitleCache } from '@/utils/cache/subtitleCache'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { drive115 } from '@/utils/drive115Instance'
-import { subtitlecat } from '@/utils/subtitle/subtitlecat'
-import { thunderSubtitle } from '@/utils/subtitle/thunder'
+import { GMRequestInstance } from '@/utils/request/gmRequest'
+
+const subtitlecat = new subtitleSource.SubtitleCat({
+  request: GMRequestInstance,
+})
+
+const thunder = new subtitleSource.Thunder({
+  request: GMRequestInstance,
+})
 
 /** 字幕数据 */
 export function useDataSubtitles() {
@@ -14,28 +23,40 @@ export function useDataSubtitles() {
 
   /** 通过 subtitleCat 获取字幕 */
   const getFromSubtitlecat = async (keyword: string): Promise<Subtitle[]> => {
-    if (!keyword) {
+    if (!keyword)
       return []
+
+    const cached = await subtitleCache.getCache(keyword, 'zh-CN')
+    if (cached) {
+      return cached.map(toSubtitle)
     }
+
     const res = await subtitlecat.fetchSubtitle(keyword, 'zh-CN')
-    const subtitles = res.map(subtitle => ({
-      id: subtitle.id,
-      label: subtitle.title,
-      srclang: subtitle.targetLanguage,
-      source: 'Subtitle Cat',
-      raw: subtitle.raw,
-      format: subtitle.format,
-      kind: 'subtitles' as const,
-    } satisfies Subtitle))
+    const subtitles = res.map(toSubtitle)
+
+    if (subtitles.length > 0) {
+      await subtitleCache.addCache(keyword, 'zh-CN', res.map(i => ({ ...i })))
+    }
+
     return subtitles
   }
+
+  const toSubtitle = (subtitle: ProcessedSubtitle): Subtitle => ({
+    id: subtitle.id,
+    label: subtitle.title,
+    srclang: subtitle.targetLanguage,
+    source: 'Subtitle Cat',
+    raw: subtitle.raw,
+    format: subtitle.format,
+    kind: 'subtitles' as const,
+  })
 
   /** 通过迅雷获取字幕 */
   const getFromThunder = async (filename: string): Promise<Subtitle[]> => {
     if (!filename) {
       return []
     }
-    const res = await thunderSubtitle.fetchSubtitle(filename)
+    const res = await thunder.fetchSubtitle(filename)
     const subtitles = res.map(subtitle => ({
       id: subtitle.id,
       label: string.removeFileExtension(subtitle.title),
