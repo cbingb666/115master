@@ -1,4 +1,4 @@
-import type { ProcessedSubtitle } from '@/utils/subtitle/subtitlecat'
+import type { ProcessedSubtitle } from '@115master/subtitle-source'
 import { appLogger } from '@/utils/logger'
 import { CacheCore } from './core'
 
