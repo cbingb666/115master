@@ -1,5 +1,5 @@
 import type { Subtitle } from '@/components/XPlayer/types'
-import { fetchRequest } from '@115master/shared'
+import { FetchRequest } from '@115master/shared'
 import { subtitleSource, type ProcessedSubtitle } from '@115master/subtitle-source'
 import { array, string } from '@115master/utils'
 import { useAsyncState } from '@vueuse/core'
@@ -8,6 +8,8 @@ import { subtitleCache } from '@/utils/cache/subtitleCache'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { drive115 } from '@/utils/drive115Instance'
 import { GMRequestInstance } from '@/utils/request/gmRequest'
+
+const fetchRequest = new FetchRequest()
 
 const subtitlecat = new subtitleSource.SubtitleCat({
   request: GMRequestInstance,

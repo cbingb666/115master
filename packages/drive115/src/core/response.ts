@@ -1,3 +1,4 @@
+import type { z } from 'zod'
 import { Drive115Error, Drive115ErrorCode } from './error.ts'
 
 /**
@@ -13,8 +14,13 @@ export type Drive115Response<T> = T & {
 
 /**
  * 将后端不一致的响应形状收敛为 Drive115Response
+ *
+ * 同时执行通用错误码检查（SessionExpired 等）和可选的 Zod schema 校验
  */
-export function normalizeResponse<T>(raw: unknown): Drive115Response<T> {
+export function normalizeResponse<T>(
+  raw: unknown,
+  schema?: z.ZodType<T>,
+): Drive115Response<T> {
   if (!raw || typeof raw !== 'object') {
     throw new Drive115Error(
       `Invalid response: ${JSON.stringify(raw)}`,
@@ -31,6 +37,24 @@ export function normalizeResponse<T>(raw: unknown): Drive115Response<T> {
       : typeof data.error_msg === 'string'
         ? data.error_msg
         : ''
+
+  // 通用错误码检查
+  if (code === Drive115ErrorCode.SessionExpired) {
+    throw new Drive115Error('登录已过期，请重新登录', Drive115ErrorCode.SessionExpired)
+  }
+
+  // Schema 校验
+  if (schema) {
+    const parsed = schema.safeParse(data)
+    if (!parsed.success) {
+      throw new Drive115Error(
+        `Response validation failed: ${parsed.error.message}`,
+        Drive115ErrorCode.DecodeError,
+        parsed.error,
+      )
+    }
+    return { ...parsed.data, state, code, message } as Drive115Response<T>
+  }
 
   return { ...data, state, code, message } as Drive115Response<T>
 }

@@ -13,7 +13,7 @@ const DEFAULT_OPTIONS: RequestOptions = {
 /**
  * Fetch 实现的请求类
  */
-export class FetchRequest extends IRequest {
+export class FetchRequest implements IRequest {
   /** 请求选项 */
   options: RequestOptions = {}
 
@@ -22,7 +22,6 @@ export class FetchRequest extends IRequest {
    * @param options 请求选项
    */
   constructor(options: RequestOptions = {}) {
-    super()
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
@@ -154,5 +153,3 @@ export class FetchRequest extends IRequest {
   }
 }
 
-/** fetchRequest 实例 */
-export const fetchRequest = new FetchRequest()

@@ -1,6 +1,7 @@
 import type { IRequest } from '@115master/shared'
 import { describe, expect, it, vi } from 'vitest'
 import { FileApiClient } from '../clients/file/client.ts'
+import { Crypto115 } from '../core/crypto.ts'
 import { Drive115Error } from '../core/error.ts'
 
 function createMockRequest(get = vi.fn(), post = vi.fn()): IRequest {
@@ -30,6 +31,7 @@ describe('fileApiClient.getFilesWithFallback', () => {
     const client = new FileApiClient({
       fetchRequest,
       proApiRequest: fetchRequest,
+      crypto115: new Crypto115(),
     })
 
     const res = await client.getFilesWithFallback({} as never)
@@ -61,6 +63,7 @@ describe('fileApiClient.getFilesWithFallback', () => {
     const client = new FileApiClient({
       fetchRequest,
       proApiRequest: fetchRequest,
+      crypto115: new Crypto115(),
     })
 
     const res = await client.getFilesWithFallback({} as never)
@@ -83,6 +86,7 @@ describe('fileApiClient.getFilesWithFallback', () => {
     const client = new FileApiClient({
       fetchRequest,
       proApiRequest: fetchRequest,
+      crypto115: new Crypto115(),
     })
 
     await expect(client.getFilesWithFallback({} as never)).rejects.toThrow(Drive115Error)

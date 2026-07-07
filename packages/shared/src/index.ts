@@ -14,5 +14,5 @@ export type { ILogger, LogEntry, LogLevel, LogMethod } from './logger/index.ts'
 // 请求
 export { IRequest } from './request/index.ts'
 
-export { FetchRequest, fetchRequest, GMRequest } from './request/index.ts'
+export { FetchRequest } from './request/index.ts'
 export type { IRequestCache, RequestOptions, ResponseType } from './request/index.ts'

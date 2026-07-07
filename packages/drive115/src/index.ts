@@ -4,6 +4,8 @@ export * as Api from './clients/index.ts'
 // core 运行时
 export * as Core from './core/index.ts'
 
+export { Crypto115 } from './core/crypto.ts'
+
 // Facade
 export { Drive115 } from './drive115.ts'
 export type { Drive115Deps } from './drive115.ts'

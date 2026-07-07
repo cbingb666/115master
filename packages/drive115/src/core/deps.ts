@@ -1,4 +1,5 @@
 import type { ILogger, IRequest } from '@115master/shared'
+import type { Crypto115 } from './crypto.ts'
 
 /**
  * Drive115Core 依赖配置
@@ -10,4 +11,6 @@ export interface Drive115CoreDeps {
   proApiRequest: IRequest
   /** 日志实例 */
   logger?: ILogger
+  /** 加密实例 */
+  crypto115: Crypto115
 }

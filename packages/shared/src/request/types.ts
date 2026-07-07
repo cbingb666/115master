@@ -26,10 +26,10 @@ export interface IRequestCache {
 }
 
 /** 请求接口 */
-export abstract class IRequest {
-  abstract get(url: string, options?: RequestOptions): Promise<ResponseType>
-  abstract post(url: string, options?: RequestOptions): Promise<ResponseType>
-  abstract request(
+export interface IRequest {
+  get(url: string, options?: RequestOptions): Promise<ResponseType>
+  post(url: string, options?: RequestOptions): Promise<ResponseType>
+  request(
     url: string,
     options?: RequestOptions,
   ): Promise<ResponseType>

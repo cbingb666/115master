@@ -22,10 +22,10 @@ describe('normalizeResponse', () => {
   })
 
   it('prefers errNo over code', () => {
-    const raw = { state: false, errNo: 990001, code: 500, error: 'login' }
+    const raw = { state: false, errNo: 404, code: 500, error: 'not found' }
     const res = normalizeResponse<typeof raw>(raw)
 
-    expect(res.code).toBe(990001)
+    expect(res.code).toBe(404)
   })
 
   it('prefers error over error_msg', () => {

@@ -21,10 +21,6 @@ export class VideoApiClient extends BaseApiClient {
 
     const res = normalizeResponse<Res.FilesDownload>(await response.json())
 
-    if (res.code === Drive115ErrorCode.SessionExpired) {
-      throw new Drive115Error('登录已过期，请重新登录', Drive115ErrorCode.SessionExpired)
-    }
-
     if (!res.state || !res.file_url) {
       throw new Drive115Error(
         `服务器返回数据格式错误: ${JSON.stringify(res)}`,
