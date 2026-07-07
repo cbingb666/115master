@@ -1,4 +1,4 @@
-/// <reference types="vite-plugin-monkey/global" />
+import { GM_info, GM_xmlhttpRequest } from 'vite-plugin-monkey/dist/client'
 import type { IRequestCache, RequestOptions, ResponseType } from './types.ts'
 import { merge } from 'lodash'
 import { IRequest } from './types.ts'
