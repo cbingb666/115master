@@ -78,6 +78,36 @@ export interface FolderItem extends FileItemBase {
 /** 文件列表项（判别联合：fc 为 1 是文件，0 是目录） */
 export type FilesItem = FileItem | FolderItem
 
+/** 回收站文件/目录项 */
+export interface RbItem {
+  /** 文件/目录 ID */
+  id: string
+  /** 文件名 */
+  file_name: string
+  /** 类型。1 文件，2 文件夹 */
+  type: '1' | '2'
+  /** 文件大小 (字节) */
+  file_size: string
+  /** 删除时间 (Unix 时间戳) */
+  dtime: string
+  /** 状态。0 正常，-1 文件夹还原中 */
+  status: '0' | '-1'
+  /** 原目录 ID，0 为根目录 */
+  cid: number
+  /** 原目录名称 */
+  parent_name: string
+  /** 是否是视频 */
+  iv?: number
+  /** 视频清晰度 */
+  vdi?: number
+  /** 文件后缀名 */
+  ico?: string
+  /** 缩略图 URL */
+  u?: string
+  /** 播放时长 (秒) */
+  play_long?: number
+}
+
 /** 路径项 */
 export interface PathItem {
   /** 目录ID */

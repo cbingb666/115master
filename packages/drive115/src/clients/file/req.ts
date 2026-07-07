@@ -137,13 +137,45 @@ export interface PostFilesAdd {
   cname: string
 }
 
-/** 删除文件请求 */
+/** 获取回收站列表 */
+export interface GetRbList extends PaginationParams, Sorter {
+  /** 空间ID，回收站固定为 7 */
+  aid: number
+  /** 原目录ID */
+  cid?: number
+  source?: string
+}
+
+/** 删除文件 (移入回收站) */
 export interface PostRbDelete {
   [key: `fid[${number}]`]: string
-  /** 父级ID */
+  /** 父级目录ID */
   pid: string
-  /** 文件或目录的 id，多个用逗号 "," 隔开 */
-  fid?: string
+  /** 忽略警告 */
+  ignore_warn?: 1
+}
+
+/** 还原回收站文件 */
+export interface PostRbRevert {
+  [key: `rid[${number}]`]: string
+}
+
+/** 彻底删除回收站文件 */
+export interface PostRbClean extends PostRbRevert {
+  /** 安全密钥 (6 位数字) */
+  password: string
+}
+
+/** 清空回收站 */
+export interface PostRbCleanAll {
+  /** 安全密钥 (6 位数字) */
+  password: string
+}
+
+/** 回收站文件属性 */
+export interface GetRbInfo {
+  /** 文件ID */
+  rid: string
 }
 
 /** 移动文件请求 */

@@ -1,5 +1,5 @@
 import type { ApiResponseBase, Sorter } from '../../share/base.ts'
-import type { FilesItem, MoviesSubtitleItem, PathItem } from '../../share/entity.ts'
+import type { FilesItem, MoviesSubtitleItem, PathItem, RbItem } from '../../share/entity.ts'
 
 /** 获取文件列表 */
 export type Files = ApiResponseBase<{
@@ -82,8 +82,50 @@ export type PostFilesBatchRename = ApiResponseBase<unknown>
 /** 添加文件夹 */
 export type PostFilesAdd = ApiResponseBase<unknown>
 
-/** 删除文件 */
-export type PostRbDelete = ApiResponseBase<unknown>
+/** 删除文件 (移入回收站) */
+export type PostRbDelete = ApiResponseBase<{
+  errno: string
+}>
+
+/** 获取回收站列表 */
+export type GetRbList = {
+  state: boolean
+  error: string
+  /** 总数 */
+  count: string
+  /** 是否已设回收站密码 */
+  rb_pass: number
+  /** 偏移量 */
+  offset: number
+  /** 每页大小 */
+  page_size: number
+  /** 排序方式 */
+  order: string
+  /** 是否升序 */
+  is_asc: number
+  /** 数据 */
+  data: RbItem[]
+}
+
+/** 还原回收站文件 */
+export type PostRbRevert = ApiResponseBase<{
+  errno: string
+}>
+
+/** 彻底删除回收站文件 */
+export type PostRbClean = ApiResponseBase<{
+  errno: string
+}>
+
+/** 清空回收站 */
+export type PostRbCleanAll = ApiResponseBase<{
+  errno: string
+}>
+
+/** 回收站文件属性 */
+export type GetRbInfo = ApiResponseBase<{
+  data: Record<string, string>
+}>
 
 /** 移动文件 */
 export type PostFilesMove = ApiResponseBase<unknown>

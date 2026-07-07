@@ -141,12 +141,62 @@ export class FileApiClient extends BaseApiClient {
     )
   }
 
-  /** 删除文件 */
+  /** 删除文件 (移入回收站) */
   async deleteFiles(params: Req.PostRbDelete): Promise<Drive115Response<Res.PostRbDelete>> {
     return this.handle<Res.PostRbDelete>(
       this.fetchRequest.post(
         new URL('/rb/delete', URL_115.WEB_API).href,
         { data: params },
+      ).then(r => r.json()),
+    )
+  }
+
+  /** 获取回收站列表 */
+  async getRbList(params: Req.GetRbList): Promise<Drive115Response<Res.GetRbList>> {
+    return this.handle<Res.GetRbList>(
+      this.fetchRequest.get(
+        new URL('/rb', URL_115.WEB_API).href,
+        { params },
+      ).then(r => r.json()),
+    )
+  }
+
+  /** 还原回收站文件 */
+  async restoreRbFiles(params: Req.PostRbRevert): Promise<Drive115Response<Res.PostRbRevert>> {
+    return this.handle<Res.PostRbRevert>(
+      this.fetchRequest.post(
+        new URL('/rb/revert', URL_115.WEB_API).href,
+        { data: params },
+      ).then(r => r.json()),
+    )
+  }
+
+  /** 彻底删除回收站文件 (需安全密钥) */
+  async cleanRbFiles(params: Req.PostRbClean): Promise<Drive115Response<Res.PostRbClean>> {
+    return this.handle<Res.PostRbClean>(
+      this.fetchRequest.post(
+        new URL('/rb/clean', URL_115.WEB_API).href,
+        { data: params },
+      ).then(r => r.json()),
+    )
+  }
+
+  /** 清空回收站 (需安全密钥) */
+  async cleanAllRbFiles(params: Req.PostRbCleanAll): Promise<Drive115Response<Res.PostRbCleanAll>> {
+    return this.handle<Res.PostRbCleanAll>(
+      this.fetchRequest.post(
+        new URL('/rb/clean', URL_115.WEB_API).href,
+        { data: params },
+      ).then(r => r.json()),
+    )
+  }
+
+  /** 获取回收站文件属性 */
+  async getRbInfo(params: Req.GetRbInfo): Promise<Drive115Response<Res.GetRbInfo>> {
+    return this.handle<Res.GetRbInfo>(
+      this.fetchRequest.get(
+        new URL('/rb/rb_info', URL_115.WEB_API).href,
+        { params },
       ).then(r => r.json()),
     )
   }
