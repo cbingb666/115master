@@ -8,6 +8,7 @@ export const HOST_115 = {
   APS: 'aps.115.com',
   DL: 'dl.115cdn.net',
   CDN_FILE: 'cdnfhnfile.115cdn.net',
+  UPLB: 'uplb.115.com',
 } as const
 
 export const URL_115 = {
@@ -20,4 +21,5 @@ export const URL_115 = {
   APS: `https://${HOST_115.APS}`,
   DL: `https://${HOST_115.DL}`,
   CDN_FILE: `https://${HOST_115.CDN_FILE}`,
+  UPLB: `https://${HOST_115.UPLB}`,
 } as const
