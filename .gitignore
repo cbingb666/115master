@@ -41,5 +41,6 @@ coverage
 # Local Claude settings
 .claude/settings.local.json
 
-# Playwright MCP
+# Playwright
 .playwright-mcp/
+.playwright-cli/
