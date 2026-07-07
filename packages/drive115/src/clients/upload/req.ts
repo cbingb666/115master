@@ -48,12 +48,14 @@ export function shareTarget(cid: string): string {
 
 /** upload() 方法的入参 */
 export interface UploadFile {
-  /** 文件 Blob */
-  file: Blob
+  /** 文件 Blob 或 ReadableStream（流式上传时需同时提供 filesize） */
+  file: Blob | ReadableStream<Uint8Array>
   /** 文件名 */
   filename: string
   /** 用户ID */
   userid: string
   /** 上传目标标识，通过 uploadTarget() 生成 */
   target: string
+  /** 文件大小（字节），file 为 ReadableStream 时必填 */
+  filesize?: number
 }

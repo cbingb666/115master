@@ -2,6 +2,7 @@ import type { IRequest } from '@115master/shared'
 import { describe, expect, it, vi } from 'vitest'
 import { UploadApiClient } from '../clients/upload/client.ts'
 import type { Req } from '../clients/upload/index.ts'
+import { multipartStream, multipartBodySize } from '../clients/upload/multipart.ts'
 
 function createMockRequest(get = vi.fn(), post = vi.fn()): IRequest {
   return { get, post, request: vi.fn() }
@@ -162,6 +163,44 @@ describe('uploadApiClient', () => {
       expect(result.data.file_id).toBe('1000000000000000002')
       expect(result.data.pick_code).toBe('fake_pick_code_123')
     })
+
+    it('supports ReadableStream file with streaming upload', async () => {
+      const initPost = vi.fn().mockImplementation(() => jsonResponse(mockUploadInfo))
+      const ossPost = vi.fn().mockImplementation(() => jsonResponse(mockResult))
+      const { client } = createClient(
+        vi.fn(),
+        vi.fn().mockImplementation((url: string, opts: unknown) => {
+          if (url.includes('uplb')) return initPost(url, opts)
+          return ossPost(url, opts)
+        }),
+      )
+
+      const fileStream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('hello world'))
+          controller.close()
+        },
+      })
+
+      const result = await client.upload({
+        file: fileStream,
+        filename: 'test.txt',
+        userid: '100000001',
+        target: 'U_1_0',
+        filesize: 11,
+      })
+
+      expect(initPost).toHaveBeenCalledTimes(1)
+      expect(ossPost).toHaveBeenCalledTimes(1)
+
+      const [, opts] = ossPost.mock.calls[0]
+      expect(opts.headers['Content-Type']).toMatch(/^multipart\/form-data; boundary=/)
+      expect(opts.headers['Content-Length']).toBeDefined()
+      expect(opts.body).toBeInstanceOf(ReadableStream)
+
+      expect(result.state).toBe(true)
+      expect(result.data.file_name).toBe('test.txt')
+    })
   })
 
   describe('uploadTarget', () => {
@@ -182,5 +221,77 @@ describe('uploadApiClient', () => {
       const { shareTarget } = await import('../clients/upload/req.ts')
       expect(shareTarget('abc')).toBe('abc')
     })
+  })
+})
+
+function concat(chunks: Uint8Array[]): Uint8Array {
+  const total = chunks.reduce((s, c) => s + c.length, 0)
+  const result = new Uint8Array(total)
+  let offset = 0
+  for (const c of chunks) {
+    result.set(c, offset)
+    offset += c.length
+  }
+  return result
+}
+
+async function readStream(stream: ReadableStream<Uint8Array>): Promise<Uint8Array> {
+  const reader = stream.getReader()
+  const chunks: Uint8Array[] = []
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    chunks.push(value)
+  }
+  return concat(chunks)
+}
+
+describe('multipartStream', () => {
+  it('produces valid multipart body with fields and file content', async () => {
+    const boundary = '----WebKitFormBoundarytest'
+    const fields = [{ name: 'key', value: 'obj' }]
+    const content = new Uint8Array([1, 2, 3])
+    const fileStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(content)
+        controller.close()
+      },
+    })
+
+    const stream = multipartStream(fields, fileStream, 'test.bin', boundary)
+    const body = await readStream(stream)
+    const text = new TextDecoder().decode(body)
+
+    expect(text).toContain(`--${boundary}`)
+    expect(text).toContain('name="key"')
+    expect(text).toContain('obj')
+    expect(text).toContain('name="file"')
+    expect(text).toContain('test.bin')
+    expect(text).toContain(`--${boundary}--`)
+    // file content should be present before closing boundary
+    const tailStart = body.length - (`\r\n--${boundary}--\r\n`.length + content.length)
+    expect(new TextDecoder().decode(body.slice(tailStart, tailStart + content.length)))
+      .toBe(new TextDecoder().decode(content))
+  })
+})
+
+describe('multipartBodySize', () => {
+  it('matches actual stream byte count', async () => {
+    const boundary = '----WebKitFormBoundarytest'
+    const fields = [{ name: 'key', value: 'obj' }]
+    const fileSize = 3
+
+    const computed = multipartBodySize(fields, fileSize, 'test.bin', boundary)
+
+    const fileStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new Uint8Array(fileSize))
+        controller.close()
+      },
+    })
+    const stream = multipartStream(fields, fileStream, 'test.bin', boundary)
+    const body = await readStream(stream)
+
+    expect(computed).toBe(body.length)
   })
 })
