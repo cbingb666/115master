@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { UploadApiClient } from '../clients/upload/client.ts'
 import type { Req } from '../clients/upload/index.ts'
 import { multipartStream, multipartBodySize } from '../clients/upload/multipart.ts'
+import { ossHostname, ossSign } from '../clients/upload/oss-multipart.ts'
 
 function createMockRequest(get = vi.fn(), post = vi.fn()): IRequest {
   return { get, post, request: vi.fn() }
@@ -293,5 +294,149 @@ describe('multipartBodySize', () => {
     const body = await readStream(stream)
 
     expect(computed).toBe(body.length)
+  })
+})
+
+describe('getToken', () => {
+  const mockStsToken = {
+    StatusCode: '200',
+    AccessKeyId: 'STS.FakeAccessKeyId',
+    AccessKeySecret: 'FakeAccessKeySecret',
+    SecurityToken: 'FakeSecurityToken',
+    Expiration: '2026-07-07T21:25:28Z',
+  }
+
+  it('POSTs to gettoken.php with correct params', async () => {
+    const { client, post } = createClient(
+      vi.fn(),
+      vi.fn().mockImplementation(() => jsonResponse(mockStsToken)),
+    )
+
+    const token = await client.getToken({
+      userid: '340263991',
+      filename: 'large.rar',
+      filesize: 2_000_000_000,
+      target: 'U_1_0',
+    })
+
+    expect(post).toHaveBeenCalledTimes(1)
+    const [url, opts] = post.mock.calls[0]
+    expect(url).toContain('gettoken.php')
+    expect(opts.body).toContain('userid=340263991')
+    expect(opts.body).toContain('filename=large.rar')
+    expect(opts.body).toContain('filesize=2000000000')
+    expect(opts.body).toContain('target=U_1_0')
+
+    expect(token.AccessKeyId).toBe('STS.FakeAccessKeyId')
+    expect(token.AccessKeySecret).toBe('FakeAccessKeySecret')
+    expect(token.SecurityToken).toBe('FakeSecurityToken')
+    expect(token.Expiration).toBe('2026-07-07T21:25:28Z')
+  })
+})
+
+describe('getUploadInfo', () => {
+  const mockUploadInfo = {
+    endpoint: 'oss-cn-shenzhen.aliyuncs.com',
+    bucket: 'fhnfile',
+    gettokenurl: 'https://uplb.115.com/3.0/gettoken.php',
+  }
+
+  it('POSTs to getuploadinfo.php and returns config', async () => {
+    const { client, post } = createClient(
+      vi.fn(),
+      vi.fn().mockImplementation(() => jsonResponse(mockUploadInfo)),
+    )
+
+    const info = await client.getUploadInfo({ userid: '340263991' })
+
+    expect(post).toHaveBeenCalledTimes(1)
+    const [url, opts] = post.mock.calls[0]
+    expect(url).toContain('getuploadinfo.php')
+    expect(opts.body).toContain('userid=340263991')
+
+    expect(info.endpoint).toBe('oss-cn-shenzhen.aliyuncs.com')
+    expect(info.bucket).toBe('fhnfile')
+  })
+})
+
+describe('resumeUpload', () => {
+  const mockResult = {
+    state: true,
+    message: '',
+    code: 0,
+    data: {
+      aid: 1, area_id: 1, cid: '1',
+      file_name: 'large.rar', file_ptime: 1783448985,
+      file_status: 1, file_id: '2', file_size: '2000000000',
+      pick_code: 'pick123', sha1: 'SHA1', sp: 0,
+      file_type: 103, object_id: '', user_id: '340263991', is_video: 0,
+    },
+  }
+
+  it('POSTs to resumeupload.php with correct params', async () => {
+    const { client, post } = createClient(
+      vi.fn(),
+      vi.fn().mockImplementation(() => jsonResponse(mockResult)),
+    )
+
+    const result = await client.resumeUpload({
+      userid: '340263991',
+      filename: 'large.rar',
+      filesize: 2_000_000_000,
+      target: 'U_1_0',
+      pickcode: 'pick123',
+      object: 'large.rar.1234567890',
+      uploadId: 'UPLOADID123',
+    })
+
+    expect(post).toHaveBeenCalledTimes(1)
+    const [url, opts] = post.mock.calls[0]
+    expect(url).toContain('resumeupload.php')
+    expect(opts.body).toContain('userid=340263991')
+    expect(opts.body).toContain('filename=large.rar')
+    expect(opts.body).toContain('pickcode=pick123')
+    expect(opts.body).toContain('object=large.rar.1234567890')
+    expect(opts.body).toContain('uploadId=UPLOADID123')
+
+    expect(result.state).toBe(true)
+    expect(result.data.file_name).toBe('large.rar')
+  })
+})
+
+describe('oss-multipart', () => {
+  it('ossSign produces valid base64 signature', async () => {
+    const date = 'Fri, 07 Jul 2026 12:00:00 GMT'
+    const sig = await ossSign(
+      'PUT', 'fhnfile', 'test.bin',
+      'testsecret',
+      date,
+      { partNumber: '1', uploadId: 'UPLOADID' },
+      { 'Content-Type': 'application/octet-stream', 'x-oss-security-token': 'token123' },
+    )
+
+    expect(sig).toBeTruthy()
+    expect(typeof sig).toBe('string')
+    // base64 字符集
+    expect(sig).toMatch(/^[A-Za-z0-9+/=]+$/)
+    // 对于 HMAC-SHA1，base64 输出长度固定为 28
+    expect(sig.length).toBe(28)
+  })
+
+  it('ossSign with different params produces different signatures', async () => {
+    const date = 'Fri, 07 Jul 2026 12:00:00 GMT'
+    const sig1 = await ossSign('PUT', 'fhnfile', 'test.bin', 'secret', date, { partNumber: '1', uploadId: 'A' })
+    const sig2 = await ossSign('PUT', 'fhnfile', 'test.bin', 'secret', date, { partNumber: '1', uploadId: 'B' })
+
+    expect(sig1).not.toBe(sig2)
+  })
+
+  it('ossHostname builds hostname from info', () => {
+    const hostname = ossHostname({
+      endpoint: 'oss-cn-shenzhen.aliyuncs.com',
+      bucket: 'fhnfile',
+      gettokenurl: 'https://uplb.115.com/3.0/gettoken.php',
+    })
+
+    expect(hostname).toBe('fhnfile.oss-cn-shenzhen.aliyuncs.com')
   })
 })

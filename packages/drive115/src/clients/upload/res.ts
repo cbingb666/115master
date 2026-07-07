@@ -65,3 +65,32 @@ export interface OssUploadParams {
   /** OSS 签名 */
   signature: string
 }
+
+/** gettoken.php 返回的 STS 临时凭证 */
+export interface StsToken {
+  StatusCode: string
+  AccessKeyId: string
+  AccessKeySecret: string
+  SecurityToken: string
+  Expiration: string
+}
+
+/** getuploadinfo.php 返回的 OSS 上传配置 */
+export interface UploadInfo {
+  /** OSS endpoint，如 oss-cn-shenzhen.aliyuncs.com */
+  endpoint: string
+  /** OSS bucket 名称 */
+  bucket: string
+  /** 获取 token 的 URL */
+  gettokenurl: string
+}
+
+/** OSS 分片上传状态 */
+export interface PartState {
+  partNumber: number
+  start: number
+  size: number
+  status: 'pending' | 'uploading' | 'done' | 'failed'
+  etag?: string
+  retries: number
+}

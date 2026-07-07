@@ -10,6 +10,14 @@ import { multipartStream, multipartBodySize } from './multipart.ts'
  * 1. 调用 initUpload 获取 OSS 临时凭证
  * 2. 使用凭证将文件以 multipart/form-data 上传到 OSS
  * 3. OSS 在上传完成后自动回调 115 服务端完成登记
+ *
+ * 分片上传流程（大文件，支持断点续传）：
+ * 1. POST gettoken.php         → 获取 STS 临时凭证
+ * 2. POST getuploadinfo.php    → 获取 OSS endpoint
+ * 3. OSS InitiateMultipartUpload → 获取 UploadId
+ * 4. OSS UploadPart × N        → 逐片上传（可暂停/重试）
+ * 5. OSS CompleteMultipartUpload → 合并分片
+ * 6. POST resumeupload.php     → 通知 115 上传完成
  */
 export class UploadApiClient extends BaseApiClient {
   /**
@@ -45,6 +53,99 @@ export class UploadApiClient extends BaseApiClient {
 
     const resp = await this.fetchRequest.post(
       new URL('/3.0/sampleinitupload.php', URL_115.UPLB).href,
+      {
+        body: body.toString(),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      },
+    )
+    return resp.json()
+  }
+
+  /**
+   * 获取 STS 临时凭证（用于 OSS REST API 分片上传）
+   *
+   * @example
+   * ```ts
+   * const token = await drive115.upload.getToken({
+   *   userid: '340263991',
+   *   filename: 'large.rar',
+   *   filesize: 2_000_000_000,
+   *   target: uploadTarget(1, 0),
+   * })
+   * // token.AccessKeyId, token.AccessKeySecret, token.SecurityToken
+   * ```
+   */
+  async getToken(params: Req.GetToken): Promise<Res.StsToken> {
+    const body = new URLSearchParams()
+    body.append('userid', params.userid)
+    body.append('filename', params.filename)
+    body.append('filesize', String(params.filesize))
+    body.append('target', params.target)
+
+    const resp = await this.fetchRequest.post(
+      new URL('/3.0/gettoken.php', URL_115.UPLB).href,
+      {
+        body: body.toString(),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      },
+    )
+    return resp.json()
+  }
+
+  /**
+   * 获取 OSS 上传配置（endpoint + bucket + token URL）
+   *
+   * @example
+   * ```ts
+   * const info = await drive115.upload.getUploadInfo({ userid: '340263991' })
+   * // info.endpoint: 'oss-cn-shenzhen.aliyuncs.com'
+   * // info.bucket: 'fhnfile'
+   * ```
+   */
+  async getUploadInfo(params: Req.GetUploadInfo): Promise<Res.UploadInfo> {
+    const body = new URLSearchParams()
+    body.append('userid', params.userid)
+
+    const resp = await this.fetchRequest.post(
+      new URL('/3.0/getuploadinfo.php', URL_115.UPLB).href,
+      {
+        body: body.toString(),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      },
+    )
+    return resp.json()
+  }
+
+  /**
+   * 通知 115 分片上传完成
+   *
+   * OSS 分片合并后调用此接口通知 115 服务端。
+   *
+   * @example
+   * ```ts
+   * const result = await drive115.upload.resumeUpload({
+   *   userid: '340263991',
+   *   filename: 'large.rar',
+   *   filesize: 2_000_000_000,
+   *   target: uploadTarget(1, 0),
+   *   pickcode: '...',
+   *   object: 'xxx.bin',
+   *   uploadId: '...',
+   * })
+   * ```
+   */
+  async resumeUpload(params: Req.ResumeUpload): Promise<Res.SampleCompleteUpload> {
+    const body = new URLSearchParams()
+    body.append('userid', params.userid)
+    body.append('filename', params.filename)
+    body.append('filesize', String(params.filesize))
+    body.append('target', params.target)
+    body.append('pickcode', params.pickcode)
+    body.append('object', params.object)
+    body.append('uploadId', params.uploadId)
+
+    const resp = await this.fetchRequest.post(
+      new URL('/3.0/resumeupload.php', URL_115.UPLB).href,
       {
         body: body.toString(),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

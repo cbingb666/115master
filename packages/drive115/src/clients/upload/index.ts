@@ -1,3 +1,5 @@
 export { UploadApiClient } from './client.ts'
 export * as Req from './req.ts'
 export type * as Res from './res.ts'
+export * as OssMultipart from './oss-multipart.ts'
+export { multipartStream, multipartBodySize } from './multipart.ts'

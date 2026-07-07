@@ -59,3 +59,30 @@ export interface UploadFile {
   /** 文件大小（字节），file 为 ReadableStream 时必填 */
   filesize?: number
 }
+
+/** gettoken.php 请求参数 */
+export interface GetToken {
+  userid: string
+  filename: string
+  filesize: number
+  target: string
+}
+
+/** getuploadinfo.php 请求参数 */
+export interface GetUploadInfo {
+  userid: string
+}
+
+/** resumeupload.php 请求参数 */
+export interface ResumeUpload {
+  userid: string
+  filename: string
+  filesize: number
+  target: string
+  /** 上传初始化后拿到的 pickcode */
+  pickcode: string
+  /** OSS 对象键 */
+  object: string
+  /** OSS UploadId */
+  uploadId: string
+}
