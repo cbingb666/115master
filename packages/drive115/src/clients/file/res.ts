@@ -112,3 +112,6 @@ export type GetFilesSearch = ApiResponseBase<{
 
 /** 置顶文件 */
 export type PostFilesTop = ApiResponseBase<unknown>
+
+/** 文件评分 */
+export type FilesScore = ApiResponseBase<unknown>

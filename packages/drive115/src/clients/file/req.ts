@@ -170,3 +170,11 @@ export interface PostFilesTop {
   /** 是否置顶 */
   top: 0 | 1
 }
+
+/** 文件评分请求 */
+export interface FilesScore {
+  /** 文件 id，支持批量，多个用逗号 "," 隔开 */
+  file_id: string
+  /** 评分 (0-5，0 表示取消评分) */
+  score: number
+}

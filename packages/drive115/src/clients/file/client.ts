@@ -191,6 +191,16 @@ export class FileApiClient extends BaseApiClient {
     )
   }
 
+  /** 设置文件评分 (支持批量) */
+  async scoreFiles(params: Req.FilesScore): Promise<Drive115Response<Res.FilesScore>> {
+    return this.handle<Res.FilesScore>(
+      this.fetchRequest.post(
+        new URL('/files/score', URL_115.WEB_API).href,
+        { data: params },
+      ).then(r => r.json()),
+    )
+  }
+
   private async apsGetNatsortFilesRaw(
     params: Req.GetFiles,
     order?: string,

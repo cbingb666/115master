@@ -59,6 +59,8 @@ export interface FileItemBase {
   fl?: TagItem[]
   /** 图片缩略图 */
   u: string
+  /** 评分 (0-5，0 表示未评分) */
+  score: number
 }
 
 /** 文件项 */
