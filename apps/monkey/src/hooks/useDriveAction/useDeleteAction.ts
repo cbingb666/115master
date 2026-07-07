@@ -38,7 +38,7 @@ export function useDeleteAction() {
     else {
       await dialog.alert({
         title: '提示',
-        content: res.error,
+        content: res.message,
       })
     }
 

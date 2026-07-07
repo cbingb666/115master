@@ -267,7 +267,7 @@ const Drive = defineComponent({
           containerRef={containerRef}
           viewType={viewType.value}
           loading={store.list.loading}
-          error={store.list.error?.message ?? undefined}
+          error={store.list.error ?? undefined}
           empty={!store.list.loading && store.page.total === 0}
         >
           {store.list.data?.data?.map((item: Share.Entity.FilesItem) => (

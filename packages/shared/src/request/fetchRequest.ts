@@ -1,5 +1,6 @@
 import type { RequestOptions, ResponseType } from './types.ts'
 import { merge } from 'lodash'
+import { InfraError } from '../error/InfraError.ts'
 import { IRequest } from './types.ts'
 
 /** 默认请求选项 */
@@ -43,8 +44,12 @@ export class FetchRequest implements IRequest {
       return response
     }
     catch (error) {
-      throw new Error(
+      throw new InfraError(
         `请求失败: ${error instanceof Error ? error.message : String(error)}`,
+        requestUrl,
+        undefined,
+        true,
+        error instanceof Error ? error : undefined,
       )
     }
   }

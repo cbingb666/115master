@@ -103,21 +103,19 @@ export class VideoApiClient extends BaseApiClient {
         throw new Drive115Error.NotFoundM3u8File()
       }
 
-      const normalized = normalizeResponse<Res.VideoM3u8>(res)
-      if (normalized.state === false) {
-        if (normalized.code === Drive115ErrorCode.CaptchaRequired) {
-          const verifyUrl = new URL(`?pickcode=${pickcode}`, URL_115.VOD).href
+      try {
+        normalizeResponse<Res.VideoM3u8>(res)
+      }
+      catch (e) {
+        if (e instanceof Drive115Error && e.code === Drive115ErrorCode.CaptchaRequired) {
           throw new Drive115Error(
             '你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~',
             Drive115ErrorCode.CaptchaRequired,
             undefined,
-            { verifyUrl },
+            { verifyUrl: new URL(`?pickcode=${pickcode}`, URL_115.VOD).href },
           )
         }
-        throw new Drive115Error(
-          `获取m3u8文件失败: ${normalized.message}`,
-          Drive115ErrorCode.Unknown,
-        )
+        throw e
       }
     }
     const lines = htmlText.split('\n')

@@ -7,7 +7,7 @@ export const useUserAqStore = defineStore('userAq', () => {
   return useAsyncState(async () => {
     const res = await drive115.user.getUserAq()
     if (!res.state) {
-      throw new Error(res.error)
+      throw new Error(res.message)
     }
     return res
   }, null, {

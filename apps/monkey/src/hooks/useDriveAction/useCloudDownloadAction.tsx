@@ -1,4 +1,5 @@
 import type { Share } from '@115master/drive115'
+import { Core } from '@115master/drive115'
 import { ref } from 'vue'
 import {
   CloudDownload,
@@ -66,7 +67,7 @@ export function useCloudDownloadAction() {
     if (!res.state || !res.result || res.result.length === 0) {
       await dialog.alert({
         title: '错误',
-        content: res.error_msg || '添加离线下载任务失败',
+        content: res.message || '添加离线下载任务失败',
       })
       return false
     }
@@ -85,6 +86,7 @@ export function useCloudDownloadAction() {
       if (failed.length > 0) {
         await dialog.alert({
           title: '部分任务添加失败',
+          // r.error_msg: res.result[] 中的项是原始后端数据，未经 normalizeResponse 处理
           content: failed.map(r => r.error_msg || '未知错误').join('\n'),
         })
       }
@@ -93,6 +95,7 @@ export function useCloudDownloadAction() {
 
     await dialog.alert({
       title: '添加任务失败',
+      // r.error_msg: res.result[] 中的项是原始后端数据，未经 normalizeResponse 处理
       content: res.result.map(r => r.error_msg || '未知错误').join('\n'),
     })
     return false
@@ -177,9 +180,10 @@ export function useCloudDownloadAction() {
             resolve(true)
           }
           catch (error) {
+            const result = Core.handleError(error)
             await dialog.alert({
               title: '提示',
-              content: `添加离线下载任务失败: ${error instanceof Error ? error.message : '未知错误'}`,
+              content: `添加离线下载任务失败: ${result.message}`,
             })
             return false
           }

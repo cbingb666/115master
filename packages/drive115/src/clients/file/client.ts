@@ -83,7 +83,7 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 设置文件星标 */
-  async starFiles(params: Req.FilesStar): Promise<Res.FilesStar> {
+  async starFiles(params: Req.FilesStar): Promise<Drive115Response<Res.FilesStar>> {
     const response = await this.fetchRequest.post(
       new URL('/files/star', URL_115.WEB_API).href,
       { data: params },

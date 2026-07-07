@@ -1,6 +1,8 @@
 import type { Api } from '@115master/drive115'
+import { Core } from '@115master/drive115'
 import { shallowRef } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
+import { appLogger } from '@/utils/logger'
 
 export type ListData = Api.FileApi.Res.Files | Api.FileApi.Res.GetFilesSearch
 
@@ -30,6 +32,7 @@ export function useDriveList() {
       if (gen !== generation)
         return false
       error.value = e instanceof Error ? e : new Error(String(e))
+      appLogger.warn('文件列表加载失败', Core.handleError(e))
       return false
     }
     finally {
@@ -56,6 +59,7 @@ export function useDriveList() {
       if (gen !== generation)
         return false
       error.value = e instanceof Error ? e : new Error(String(e))
+      appLogger.warn('文件搜索失败', Core.handleError(e))
       return false
     }
     finally {

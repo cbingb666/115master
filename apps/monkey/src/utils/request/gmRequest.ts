@@ -1,5 +1,6 @@
 import { GM_info, GM_xmlhttpRequest } from 'vite-plugin-monkey/dist/client'
 import type { IRequest, IRequestCache, RequestOptions, ResponseType } from '@115master/shared'
+import { InfraError } from '@115master/shared'
 import { merge } from 'lodash'
 import { GMRequestCache } from '@/utils/cache/gmRequestCache'
 
@@ -96,11 +97,10 @@ export class GMRequest implements IRequest {
           resolve(response)
         },
         onerror: (e) => {
-          // @ts-expect-error 类型错误
-          reject(new Error('请求失败', { cause: e.error }))
+          reject(new InfraError('请求失败', requestUrl, undefined, true, e.error))
         },
         ontimeout: () => {
-          reject(new Error('请求超时'))
+          reject(new InfraError('请求超时', requestUrl, undefined, true))
         },
       })
     })

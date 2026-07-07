@@ -84,39 +84,44 @@ type AsyncQueueOptionsDefault = Required<AsyncQueueOptions>
 /**
  * 调度器错误
  */
-export class SchedulerError {
+export class SchedulerError extends Error {
   /** 任务已存在 */
-  static TaskExist = class extends Error {
+  static TaskExist = class extends SchedulerError {
     constructor() {
       super('Task Exist')
+      this.name = 'SchedulerTaskExist'
     }
   }
 
   /** 任务已取消 */
-  static TaskCancelled = class extends Error {
+  static TaskCancelled = class extends SchedulerError {
     constructor() {
       super('Task Cancelled')
+      this.name = 'SchedulerTaskCancelled'
     }
   }
 
   /** 队列已清空 */
-  static QueueCleared = class extends Error {
+  static QueueCleared = class extends SchedulerError {
     constructor() {
       super('Queue Cleared')
+      this.name = 'SchedulerQueueCleared'
     }
   }
 
   /** 队列已满 */
-  static QueueFull = class extends Error {
+  static QueueFull = class extends SchedulerError {
     constructor() {
       super('Queue Full')
+      this.name = 'SchedulerQueueFull'
     }
   }
 
   /** 任务超时 */
-  static TaskTimeout = class extends Error {
+  static TaskTimeout = class extends SchedulerError {
     constructor() {
       super('Task Timeout')
+      this.name = 'SchedulerTaskTimeout'
     }
   }
 }

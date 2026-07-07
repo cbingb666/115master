@@ -29,3 +29,40 @@ export class Drive115Error extends Error {
     super(message)
   }
 }
+
+/** UI 层所需的错误处理结果 */
+export interface ErrorResult {
+  message: string
+  code: Drive115ErrorCode
+  cause?: unknown
+  details?: { verifyUrl?: string }
+  /** UI 行动提示 */
+  action: 'relogin' | 'verify' | 'retry' | 'none'
+}
+
+/** 统一错误处理：提取结构，判断行动 */
+export function handleError(error: unknown): ErrorResult {
+  if (error instanceof Drive115Error) {
+    return {
+      message: error.message,
+      code: error.code,
+      cause: error.cause,
+      details: error.details,
+      action: errorAction(error.code),
+    }
+  }
+  if (error instanceof Error)
+    return { message: error.message, code: Drive115ErrorCode.Unknown, action: 'none' }
+  return { message: String(error), code: Drive115ErrorCode.Unknown, action: 'none' }
+}
+
+function errorAction(code: Drive115ErrorCode): ErrorResult['action'] {
+  switch (code) {
+    case Drive115ErrorCode.SessionExpired: return 'relogin'
+    case Drive115ErrorCode.CaptchaRequired: return 'verify'
+    case Drive115ErrorCode.DecodeError:
+    case Drive115ErrorCode.NotFoundM3u8File:
+      return 'retry'
+    default: return 'none'
+  }
+}

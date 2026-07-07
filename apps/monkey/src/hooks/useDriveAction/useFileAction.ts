@@ -27,7 +27,7 @@ export function useFileAction() {
     else {
       await dialog.alert({
         title: '提示',
-        content: res.error,
+        content: res.message,
       })
     }
 
@@ -50,7 +50,7 @@ export function useFileAction() {
     else {
       await dialog.alert({
         title: '提示',
-        content: res.error,
+        content: res.message,
       })
     }
 
@@ -87,7 +87,7 @@ export function useFileAction() {
       else {
         await dialog.alert({
           title: '提示',
-          content: res.error,
+          content: res.message,
         })
       }
     }
@@ -118,7 +118,7 @@ export function useFileAction() {
       else {
         await dialog.alert({
           title: '提示',
-          content: res.error,
+          content: res.message,
         })
 
         await newFolder(pid, dialogRes)

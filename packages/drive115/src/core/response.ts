@@ -43,6 +43,13 @@ export function normalizeResponse<T>(
     throw new Drive115Error('登录已过期，请重新登录', Drive115ErrorCode.SessionExpired)
   }
 
+  if (code === Drive115ErrorCode.CaptchaRequired) {
+    throw new Drive115Error(
+      message || '操作过于频繁，请通过人机验证',
+      Drive115ErrorCode.CaptchaRequired,
+    )
+  }
+
   // Schema 校验
   if (schema) {
     const parsed = schema.safeParse(data)

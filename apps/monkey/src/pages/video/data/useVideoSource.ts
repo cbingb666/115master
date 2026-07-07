@@ -14,8 +14,11 @@ const logger = appLogger.sub('useDataVideoSources')
 /** 视频源 */
 export function useDataVideoSources() {
   const list = ref<VideoSource[]>([])
+  const errors = ref<string[]>([])
 
   const fetch = async (pickCode: string) => {
+    errors.value = []
+
     const [download, m3u8List] = await Promise.allSettled([
       drive115.video.getFileDownloadUrl(pickCode),
       drive115.video.getM3u8(pickCode),
@@ -36,7 +39,7 @@ export function useDataVideoSources() {
           })
         }
         catch (error) {
-          alert('设置cookie失败，请升级浏览器和油猴版本')
+          logger.error('设置cookie失败，请升级浏览器和油猴版本', error)
           throw error
         }
       }
@@ -54,6 +57,10 @@ export function useDataVideoSources() {
         displayQuality: 'Ultra',
       })
     }
+    else {
+      logger.error('获取下载地址失败:', download.reason)
+      errors.value.push('获取下载地址失败')
+    }
 
     if (m3u8List.status === 'fulfilled') {
       list.value.push(
@@ -70,6 +77,7 @@ export function useDataVideoSources() {
     }
     else {
       logger.error('m3u8 获取失败:', m3u8List.reason)
+      errors.value.push('获取视频流失败')
     }
   }
 
@@ -79,6 +87,7 @@ export function useDataVideoSources() {
 
   return {
     list,
+    errors,
     fetch,
     clear,
   }
