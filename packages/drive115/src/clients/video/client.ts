@@ -2,7 +2,6 @@ import type { Drive115Response } from '../../core/response.ts'
 import type { Req, Res } from './index.ts'
 import type { DownloadResult, M3u8Item } from './model.ts'
 import { Drive115Error, Drive115ErrorCode } from '../../core/error.ts'
-import { normalizeResponse } from '../../core/response.ts'
 import { URL_115 } from '../../share/constant.ts'
 import { BaseApiClient } from '../base.ts'
 import { QUALITY_CODE_MAP } from './constant.ts'
@@ -15,11 +14,11 @@ import { getXUrl } from './url.ts'
 export class VideoApiClient extends BaseApiClient {
   /** 获取原文件地址 (普通下载，有限制下载大小) */
   async webApiFilesDownload(pickcode: string): Promise<DownloadResult> {
-    const response = await this.fetchRequest.get(
-      new URL(`/files/download?pickcode=${pickcode}`, URL_115.WEB_API).href,
+    const res = await this.handle<Res.FilesDownload>(
+      this.fetchRequest.get(
+        new URL(`/files/download?pickcode=${pickcode}`, URL_115.WEB_API).href,
+      ).then(r => r.json()),
     )
-
-    const res = normalizeResponse<Res.FilesDownload>(await response.json())
 
     if (!res.state || !res.file_url) {
       throw new Drive115Error(
@@ -41,14 +40,14 @@ export class VideoApiClient extends BaseApiClient {
   ): Promise<DownloadResult> {
     const { tm, encoded, encodedData: data } = this.proApiEncodeData({ pickcode })
 
-    const response = await this.proApiRequest.post(
-      new URL(`/app/chrome/downurl?t=${tm}&c=9999`, URL_115.PRO_API).href,
-      {
-        body: data,
-      },
+    const res = await this.handle<Res.FilesAppChromeDownurl>(
+      this.proApiRequest.post(
+        new URL(`/app/chrome/downurl?t=${tm}&c=9999`, URL_115.PRO_API).href,
+        {
+          body: data,
+        },
+      ).then(r => r.json()),
     )
-
-    const res = normalizeResponse<Res.FilesAppChromeDownurl>(await response.json())
 
     if (!res.state) {
       throw new Drive115Error(`获取下载地址失败: ${JSON.stringify(res)}`, Drive115ErrorCode.Unknown)
@@ -72,12 +71,12 @@ export class VideoApiClient extends BaseApiClient {
 
   /** 获取视频文件信息 */
   async getFilesVideo(params: Req.GetFilesVideo): Promise<Drive115Response<Res.FilesVideo>> {
-    const response = await this.fetchRequest.get(
-      new URL('/files/video', URL_115.WEB_API).href,
-      { params },
+    return this.handle<Res.FilesVideo>(
+      this.fetchRequest.get(
+        new URL('/files/video', URL_115.WEB_API).href,
+        { params },
+      ).then(r => r.json()),
     )
-
-    return normalizeResponse<Res.FilesVideo>(await response.json())
   }
 
   /** 获取 m3u8 根 url */
@@ -86,7 +85,7 @@ export class VideoApiClient extends BaseApiClient {
   }
 
   /** 解析 m3u8 列表 */
-  async getM3u8Info(url: string, pickcode: string): Promise<M3u8Item[]> {
+  async getM3u8Info(url: string): Promise<M3u8Item[]> {
     const response = await this.fetchRequest.get(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -103,20 +102,7 @@ export class VideoApiClient extends BaseApiClient {
         throw new Drive115Error.NotFoundM3u8File()
       }
 
-      try {
-        normalizeResponse<Res.VideoM3u8>(res)
-      }
-      catch (e) {
-        if (e instanceof Drive115Error && e.code === Drive115ErrorCode.CaptchaRequired) {
-          throw new Drive115Error(
-            '你已经高频操作了!\n先去通过一下人机验证再回来刷新页面哦~',
-            Drive115ErrorCode.CaptchaRequired,
-            undefined,
-            { verifyUrl: new URL(`?pickcode=${pickcode}`, URL_115.VOD).href },
-          )
-        }
-        throw e
-      }
+      await this.handle<Res.VideoM3u8>(Promise.resolve(res))
     }
     const lines = htmlText.split('\n')
     const m3u8List: M3u8Item[] = []
@@ -145,7 +131,7 @@ export class VideoApiClient extends BaseApiClient {
   /** 获取 m3u8 列表 */
   async getM3u8(pickcode: string): Promise<M3u8Item[]> {
     const url = this.getM3u8Url(pickcode)
-    return this.getM3u8Info(url, pickcode)
+    return this.getM3u8Info(url)
   }
 
   /** 获取下载地址 */

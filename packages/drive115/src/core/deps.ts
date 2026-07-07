@@ -13,4 +13,6 @@ export interface Drive115CoreDeps {
   logger?: ILogger
   /** 加密实例 */
   crypto115: Crypto115
+  /** 统一错误拦截回调，所有 API 方法抛出异常时触发 */
+  onError?: (error: Error) => void | Promise<void>
 }

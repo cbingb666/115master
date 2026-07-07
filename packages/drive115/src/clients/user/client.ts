@@ -1,6 +1,5 @@
 import type { Drive115Response } from '../../core/response.ts'
 import type { Req, Res } from './index.ts'
-import { normalizeResponse } from '../../core/response.ts'
 import { URL_115 } from '../../share/constant.ts'
 import { BaseApiClient } from '../base.ts'
 
@@ -10,17 +9,17 @@ import { BaseApiClient } from '../base.ts'
 export class UserApiClient extends BaseApiClient {
   /** 获取用户信息 */
   async getUserAq(data: Req.UserAq = {}): Promise<Drive115Response<Res.UserAq>> {
-    const response = await this.fetchRequest.get(
-      new URL('/', URL_115.MY).href,
-      {
-        params: {
-          ct: 'ajax',
-          ac: 'get_user_aq',
+    return this.handle<Res.UserAq>(
+      this.fetchRequest.get(
+        new URL('/', URL_115.MY).href,
+        {
+          params: {
+            ct: 'ajax',
+            ac: 'get_user_aq',
+          },
+          data,
         },
-        data,
-      },
+      ).then(r => r.json()),
     )
-
-    return normalizeResponse<Res.UserAq>(await response.json())
   }
 }
