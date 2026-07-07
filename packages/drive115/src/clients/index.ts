@@ -1,4 +1,6 @@
 export { BaseApiClient } from './base.ts'
+export { ExtractApiClient } from './extract/index.ts'
+export * as ExtractApi from './extract/index.ts'
 export { FileApiClient } from './file/index.ts'
 export * as FileApi from './file/index.ts'
 export { ImageApiClient } from './image/index.ts'

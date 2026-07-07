@@ -1,4 +1,5 @@
 import type { Drive115CoreDeps } from './core/deps.ts'
+import { ExtractApiClient } from './clients/extract/index.ts'
 import { FileApiClient } from './clients/file/index.ts'
 import { ImageApiClient } from './clients/image/index.ts'
 import { OfflineApiClient } from './clients/offline/index.ts'
@@ -14,6 +15,8 @@ export interface Drive115Deps extends Drive115CoreDeps {}
  * 115 驱动入口
  */
 export class Drive115 {
+  /** 解压缩 API */
+  extract: ExtractApiClient
   /** 文件 API */
   file: FileApiClient
   /** 视频 API */
@@ -26,6 +29,7 @@ export class Drive115 {
   image: ImageApiClient
 
   constructor(deps: Drive115Deps) {
+    this.extract = new ExtractApiClient(deps)
     this.file = new FileApiClient(deps)
     this.video = new VideoApiClient(deps)
     this.offline = new OfflineApiClient(deps)
