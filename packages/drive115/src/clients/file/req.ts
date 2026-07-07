@@ -138,11 +138,15 @@ export interface PostFilesAdd {
 }
 
 /** 获取回收站列表 */
-export interface GetRbList extends PaginationParams, Sorter {
+export interface GetRbList extends BaseParams, Sorter {
   /** 空间ID，回收站固定为 7 */
   aid: number
   /** 原目录ID */
   cid?: number
+  /** 偏移量 */
+  offset?: number
+  /** 每页数量 */
+  limit?: number
   source?: string
 }
 
