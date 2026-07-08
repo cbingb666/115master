@@ -44,6 +44,23 @@ export interface FileSource {
   read(offset: number, length: number): Promise<Uint8Array>
 }
 
+/** 浏览器端 Blob 数据源（通过 Blob.slice 实现随机读取） */
+export class BlobFileSource implements FileSource {
+  size: number
+  private blob: Blob
+
+  constructor(blob: Blob) {
+    this.blob = blob
+    this.size = blob.size
+  }
+
+  async read(offset: number, length: number): Promise<Uint8Array> {
+    const slice = this.blob.slice(offset, offset + length)
+    const buf = await slice.arrayBuffer()
+    return new Uint8Array(buf)
+  }
+}
+
 /**
  * OSS 分片上传管理器
  *

@@ -76,6 +76,8 @@ async function ossRequest(
     baseHeaders['Content-Length'] = String(opts.body.length)
 
   const date = new Date().toUTCString()
+  // 浏览器禁止设置 Date header，用 x-oss-date 替代
+  baseHeaders['x-oss-date'] = date
   const signature = await ossSign(method, bucket, object, creds.accessKeySecret, date, opts.params || {}, baseHeaders)
 
   const qs = opts.params
@@ -88,7 +90,6 @@ async function ossRequest(
     method,
     headers: {
       ...baseHeaders,
-      'Date': date,
       'Authorization': `OSS ${creds.accessKeyId}:${signature}`,
     },
     body,

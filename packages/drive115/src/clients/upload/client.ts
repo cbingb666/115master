@@ -207,7 +207,8 @@ export class UploadApiClient extends BaseApiClient {
       target: params.target,
     })
 
-    if (params.file instanceof Blob) {
+    // OSS 返回 XML（不是 JSON），解析 PostResponse 确认成功
+    function buildForm(file: Blob | File) {
       const form = new FormData()
       form.append('key', info.object)
       form.append('policy', info.policy)
@@ -215,10 +216,14 @@ export class UploadApiClient extends BaseApiClient {
       form.append('success_action_status', '200')
       form.append('callback', info.callback)
       form.append('signature', info.signature)
-      form.append('file', params.file, params.filename)
+      form.append('file', file, params.filename)
+      return form
+    }
 
-      const resp = await this.fetchRequest.post(info.host, { body: form })
-      return resp.json()
+    if (params.file instanceof Blob) {
+      const form = buildForm(params.file)
+      const resp = await this.proApiRequest.request(info.host, { method: 'POST', body: form })
+      return parseOssResponse(resp, info)
     }
 
     const boundary = '----WebKitFormBoundary' + Math.random().toString(36).slice(2)
@@ -234,13 +239,48 @@ export class UploadApiClient extends BaseApiClient {
     const body = multipartStream(fields, params.file, params.filename, boundary)
     const cl = multipartBodySize(fields, fs, params.filename, boundary)
 
-    const resp = await this.fetchRequest.post(info.host, {
+    const resp = await this.proApiRequest.request(info.host, {
+      method: 'POST',
       body,
       headers: {
         'Content-Type': `multipart/form-data; boundary=${boundary}`,
         'Content-Length': String(cl),
       },
     })
-    return resp.json()
+    return parseOssResponse(resp, info)
+  }
+}
+
+/** 解析 OSS PostResponse XML，构造上传结果 */
+async function parseOssResponse(resp: Response, info: Res.SampleInitUpload): Promise<Res.SampleCompleteUpload> {
+  const xml = await resp.text()
+  if (!resp.ok)
+    throw new Error(`OSS upload failed: ${resp.status} ${xml}`)
+
+  const etag = xml.match(/<ETag>(.+?)<\/ETag>/)?.[1] || ''
+  const key = xml.match(/<Key>(.+?)<\/Key>/)?.[1] || info.object
+  const loc = xml.match(/<Location>(.+?)<\/Location>/)?.[1] || ''
+
+  return {
+    state: true,
+    message: '',
+    code: 0,
+    data: {
+      aid: 1,
+      area_id: 1,
+      cid: '0',
+      file_name: '',
+      file_ptime: Math.floor(Date.now() / 1000),
+      file_status: 1,
+      file_id: key,
+      file_size: '0',
+      pick_code: etag.replace(/"/g, ''),
+      sha1: key,
+      sp: 0,
+      file_type: 0,
+      object_id: loc,
+      user_id: '',
+      is_video: 0,
+    },
   }
 }

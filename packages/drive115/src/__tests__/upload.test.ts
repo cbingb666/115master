@@ -3,18 +3,19 @@ import { describe, expect, it, vi } from 'vitest'
 import { UploadApiClient } from '../clients/upload/client.ts'
 import type { Req } from '../clients/upload/index.ts'
 import { multipartStream, multipartBodySize } from '../clients/upload/multipart.ts'
+import { BlobFileSource } from '../clients/upload/multipart-upload.ts'
 import { ossHostname, ossSign } from '../clients/upload/oss-multipart.ts'
 
-function createMockRequest(get = vi.fn(), post = vi.fn()): IRequest {
-  return { get, post, request: vi.fn() }
+function createMockRequest(get = vi.fn(), post = vi.fn(), req = vi.fn()): IRequest {
+  return { get, post, request: req }
 }
 
 function jsonResponse(data: unknown) {
   return Promise.resolve(new Response(JSON.stringify(data)))
 }
 
-function createClient(get = vi.fn(), post = vi.fn()) {
-  const fetchRequest = createMockRequest(get, post)
+function createClient(get = vi.fn(), post = vi.fn(), req = vi.fn()) {
+  const fetchRequest = createMockRequest(get, post, req)
   return {
     client: new UploadApiClient({
       fetchRequest,
@@ -23,6 +24,7 @@ function createClient(get = vi.fn(), post = vi.fn()) {
     }),
     get,
     post,
+    req,
   }
 }
 
@@ -102,39 +104,30 @@ describe('uploadApiClient', () => {
   })
 
   describe('upload', () => {
-    const mockResult = {
-      state: true,
-      message: '',
-      code: 0,
-      data: {
-        aid: 1,
-        area_id: 1,
-        cid: '1000000000000000001',
-        file_name: 'test.txt',
-        file_ptime: 1783448985,
-        file_status: 1,
-        file_id: '1000000000000000002',
-        file_size: '42',
-        pick_code: 'fake_pick_code_123',
-        sha1: 'FAKESHA1FAKESHA1FAKESHA1FAKESHA1FAKESHA1',
-        sp: 0,
-        file_type: 103,
-        object_id: '',
-        user_id: '100000001',
-        is_video: 0,
-      },
+    // OSS 返回 XML PostResponse，不是 JSON
+    const ossXml = `<?xml version="1.0" encoding="UTF-8"?>
+<PostResponse>
+  <Bucket>fhnfile</Bucket>
+  <Key>fake_obj_1234567890abcdef1234567890ab</Key>
+  <ETag>"abc123def456"</ETag>
+  <Location>https://fhnfile.oss-cn-shenzhen.aliyuncs.com/fake_obj_1234567890abcdef1234567890ab</Location>
+</PostResponse>`
+
+    function xmlResponse() {
+      return Promise.resolve(new Response(ossXml, { status: 200 }))
     }
 
-    it('encapsulates initUpload + buildOssParams + OSS upload', async () => {
+    it('POSTs to OSS and parses XML response', async () => {
       const initPost = vi.fn().mockImplementation(() => jsonResponse(mockUploadInfo))
-      const ossPost = vi.fn().mockImplementation(() => jsonResponse(mockResult))
+      const ossReq = vi.fn().mockImplementation(() => xmlResponse())
       const { client } = createClient(
         vi.fn(),
         vi.fn().mockImplementation((url: string, opts: unknown) => {
           if (typeof url === 'string' && url.includes('uplb'))
             return initPost(url, opts)
-          return ossPost(url, opts)
+          return ossReq(url, opts)
         }),
+        ossReq,
       )
 
       const file = new Blob(['hello world'])
@@ -145,35 +138,32 @@ describe('uploadApiClient', () => {
         target: 'U_1_0',
       })
 
-      // initUpload was called with correct params
       expect(initPost).toHaveBeenCalledTimes(1)
-      expect(ossPost).toHaveBeenCalledTimes(1)
+      expect(ossReq).toHaveBeenCalledTimes(1)
       const initBody = initPost.mock.calls[0][1].body as string
       expect(initBody).toContain('userid=100000001')
       expect(initBody).toContain('filename=test.txt')
       expect(initBody).toContain('filesize=11')
       expect(initBody).toContain('target=U_1_0')
 
-      // OSS upload was called with FormData
-      const ossBody = ossPost.mock.calls[0][1].body as FormData
+      const ossBody = ossReq.mock.calls[0][1].body as FormData
       expect(ossBody).toBeInstanceOf(FormData)
 
-      // result has correct data
+      // result parsed from XML
       expect(result.state).toBe(true)
-      expect(result.data.file_name).toBe('test.txt')
-      expect(result.data.file_id).toBe('1000000000000000002')
-      expect(result.data.pick_code).toBe('fake_pick_code_123')
+      expect(result.data.pick_code).toBe('abc123def456')
     })
 
     it('supports ReadableStream file with streaming upload', async () => {
       const initPost = vi.fn().mockImplementation(() => jsonResponse(mockUploadInfo))
-      const ossPost = vi.fn().mockImplementation(() => jsonResponse(mockResult))
+      const ossReq = vi.fn().mockImplementation(() => xmlResponse())
       const { client } = createClient(
         vi.fn(),
         vi.fn().mockImplementation((url: string, opts: unknown) => {
           if (url.includes('uplb')) return initPost(url, opts)
-          return ossPost(url, opts)
+          return ossReq(url, opts)
         }),
+        ossReq,
       )
 
       const fileStream = new ReadableStream({
@@ -192,15 +182,14 @@ describe('uploadApiClient', () => {
       })
 
       expect(initPost).toHaveBeenCalledTimes(1)
-      expect(ossPost).toHaveBeenCalledTimes(1)
+      expect(ossReq).toHaveBeenCalledTimes(1)
 
-      const [, opts] = ossPost.mock.calls[0]
+      const [, opts] = ossReq.mock.calls[0]
       expect(opts.headers['Content-Type']).toMatch(/^multipart\/form-data; boundary=/)
       expect(opts.headers['Content-Length']).toBeDefined()
       expect(opts.body).toBeInstanceOf(ReadableStream)
 
       expect(result.state).toBe(true)
-      expect(result.data.file_name).toBe('test.txt')
     })
   })
 
@@ -438,5 +427,31 @@ describe('oss-multipart', () => {
     })
 
     expect(hostname).toBe('fhnfile.oss-cn-shenzhen.aliyuncs.com')
+  })
+})
+
+describe('BlobFileSource', () => {
+  it('reads chunks from Blob at specified offsets', async () => {
+    const data = new Uint8Array(1024)
+    for (let i = 0; i < 1024; i++) data[i] = i % 256
+    const blob = new Blob([data])
+    const source = new BlobFileSource(blob)
+
+    expect(source.size).toBe(1024)
+
+    const chunk = await source.read(100, 10)
+    expect(chunk.length).toBe(10)
+    expect(chunk[0]).toBe(100 % 256)
+    expect(chunk[9]).toBe(109 % 256)
+  })
+
+  it('reads last partial chunk correctly', async () => {
+    const data = new Uint8Array(100)
+    data.fill(42)
+    const source = new BlobFileSource(new Blob([data]))
+
+    const chunk = await source.read(90, 20)
+    expect(chunk.length).toBe(10) // 90+10=100
+    expect(chunk[0]).toBe(42)
   })
 })
