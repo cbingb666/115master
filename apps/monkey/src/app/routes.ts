@@ -26,4 +26,9 @@ export const routes: RouteRecordRaw[] = [
     path: '/video/:pickCode',
     component: () => import('../pages/video/index.vue'),
   },
+  {
+    name: 'test',
+    path: '/test',
+    component: () => import('../pages/test/TestPage'),
+  },
 ]
