@@ -14,10 +14,10 @@ import PKG from './package.json'
 // eslint-disable-next-line node/prefer-global/process
 const env = process.env
 
-const logoIco = `data:image/x-icon;base64,${readFileSync(resolve(__dirname, 'src/assets/logo.ico')).toString('base64')}`
+const logoSvg = `data:image/svg+xml;base64,${readFileSync(resolve(__dirname, 'src/assets/logo.svg')).toString('base64')}`
 const icons = {
-  prod: logoIco,
-  dev: logoIco,
+  prod: logoSvg,
+  dev: logoSvg,
 }
 const isProd = env.NODE_ENV === 'production'
 const isAnalyze = env.ANALYZE === 'true'
@@ -108,7 +108,7 @@ export default defineConfig({
           'subtitle.v.geilijiasu.com',
         ],
         'resource': {
-          icon: logoIco,
+          icon: logoSvg,
         },
         'downloadURL':
           'https://github.com/cbingb666/115master/releases/latest/download/115master.user.js',

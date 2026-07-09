@@ -1,7 +1,7 @@
 import { GM_addStyle } from '$'
 import { createApp, defineAsyncComponent } from 'vue'
 import { router } from '@/app/router'
-import logoIcoUrl from '@/assets/logo.ico?url'
+import logoSvgUrl from '@/assets/logo.svg?url'
 import mainStyles from '@/styles/main.css?inline'
 
 /**
@@ -34,8 +34,8 @@ function resetDocument() {
   document.querySelectorAll('link[rel*="icon"]').forEach(el => el.remove())
   const icon = document.createElement('link')
   icon.rel = 'icon'
-  icon.type = 'image/x-icon'
-  icon.href = logoIcoUrl
+  icon.type = 'image/svg+xml'
+  icon.href = logoSvgUrl
   document.head.append(icon)
 
   // 重置 body 样式
