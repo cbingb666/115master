@@ -89,8 +89,8 @@ const styles = clsx({
 
   // ===== 头部区域 =====
   header: [
-    'sticky top-0 flex items-center justify-between',
-    'px-6 pt-4',
+    'sticky top-0 z-1 flex items-center justify-between',
+    'bg-base-100/90 px-6 pt-4',
     'rounded-t-2xl',
   ],
   title: [
@@ -99,14 +99,14 @@ const styles = clsx({
   ],
   close: [
     'btn btn-sm btn-circle btn-ghost',
-    'hover:bg-base-300/50',
+    'hover:bg-base-300/80',
     'transition-colors',
   ],
 
   // ===== 标签栏 =====
   tabWrapper: [
     'flex items-center justify-around',
-    'border-base-content/5 border-b',
+    'border-base-content/10 border-b',
     'px-4',
     'rounded-t-2xl',
   ],

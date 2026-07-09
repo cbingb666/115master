@@ -68,7 +68,7 @@ const styles = clsx({
     'before:inset-x-4',
     'before:inset-y-0',
     'before:border-b-1',
-    'before:border-base-content/5',
+    'before:border-base-content/10',
     'before:pointer-events-none',
     'last:before:border-b-0',
   ],

@@ -182,7 +182,7 @@ const styles = clsx({
     main: [
       'flex flex-col items-center',
       'min-h-screen gap-5',
-      'bg-base-100 text-gray-100',
+      'bg-base-100 text-base-content',
       'sm:[--app-xplayer-ratio:0.3] md:[--app-xplayer-ratio:0.518] lg:[--app-xplayer-ratio:0.618] 2xl:[--app-xplayer-ratio:0.718]',
       '[--app-playlist-ratio:calc(1-var(--app-xplayer-ratio))]',
       '[--app-xplayer-width:calc(100%*var(--app-xplayer-ratio))]',
@@ -190,7 +190,7 @@ const styles = clsx({
       'relative',
     ],
     pageMain: ['relative h-screen w-full overflow-hidden bg-black'],
-    pageFlow: 'flex w-full flex-col gap-8 px-6 py-8 xl:px-36',
+    pageFlow: 'flex w-full flex-col gap-8 bg-base-100 px-6 py-8 xl:px-36',
   },
   // 播放器样式
   player: {
@@ -375,12 +375,12 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
   {
     label: DataMark.isMark.value ? '取消收藏' : '收藏',
     icon: DataMark.isMark.value ? ICON_STAR_FILL : ICON_STAR,
-    iconColor: DataMark.isMark.value ? 'text-pink-600' : undefined,
+    iconColor: DataMark.isMark.value ? 'text-error' : undefined,
     onAction: async (ctx) => {
       await handleMark()
       const title = DataMark.isMark.value ? '已收藏' : '取消收藏'
       const icon = DataMark.isMark.value ? ICON_STAR_FILL : ICON_STAR
-      const iconClass = DataMark.isMark.value ? 'text-pink-600' : ''
+      const iconClass = DataMark.isMark.value ? 'text-error' : ''
       ctx.hud?.show({
         title,
         icon,
@@ -399,7 +399,7 @@ const ACTION_MAP: ActionMap = {
       await handleMark()
       const title = DataMark.isMark.value ? '已收藏' : '取消收藏'
       const icon = DataMark.isMark.value ? ICON_STAR_FILL : ICON_STAR
-      const iconClass = DataMark.isMark.value ? 'text-pink-600' : ''
+      const iconClass = DataMark.isMark.value ? 'text-error' : ''
       ctx.hud?.show({
         title,
         icon,

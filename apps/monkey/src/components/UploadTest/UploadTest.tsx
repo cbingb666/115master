@@ -106,7 +106,7 @@ const UploadTest = defineComponent({
       <div class="flex flex-col gap-6">
         {/* 文件选择 */}
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-medium text-gray-400">选择文件</label>
+          <label class="text-sm font-medium text-base-content/60">选择文件</label>
           <div
             class={[
               'border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors',
@@ -119,13 +119,13 @@ const UploadTest = defineComponent({
                   <div class="flex flex-col gap-2">
                     <Icon icon="mdi:file-upload-outline" class="text-3xl text-primary mx-auto" />
                     <div class="font-medium">{file.value.name}</div>
-                    <div class="text-sm text-gray-400">{format.fileSize(file.value.size)}</div>
+                    <div class="text-sm text-base-content/60">{format.fileSize(file.value.size)}</div>
                   </div>
                 )
               : (
                   <div class="flex flex-col gap-2">
-                    <Icon icon="mdi:cloud-upload-outline" class="text-4xl text-gray-500 mx-auto" />
-                    <div class="text-gray-400">点击选择文件或拖拽到此处</div>
+                    <Icon icon="mdi:cloud-upload-outline" class="text-4xl text-base-content/50 mx-auto" />
+                    <div class="text-base-content/60">点击选择文件或拖拽到此处</div>
                   </div>
                 )}
           </div>
@@ -141,7 +141,7 @@ const UploadTest = defineComponent({
           <div class="flex flex-col gap-2">
             <div class="flex items-center gap-2 text-sm">
               <span class="loading loading-spinner loading-sm" />
-              <span class="text-gray-400">上传中...</span>
+              <span class="text-base-content/60">上传中...</span>
             </div>
           </div>
         )}
@@ -187,10 +187,10 @@ const UploadTest = defineComponent({
         {/* 日志 */}
         {logs.value.length > 0 && (
           <div class="flex flex-col gap-1">
-            <label class="text-sm font-medium text-gray-400">上传日志</label>
+            <label class="text-sm font-medium text-base-content/60">上传日志</label>
             <div class="bg-base-300/50 rounded-xl p-3 text-xs font-mono h-32 overflow-y-auto space-y-0.5">
               {logs.value.map((l, i) => (
-                <div key={i} class="text-gray-400">{l}</div>
+                <div key={i} class="text-base-content/60">{l}</div>
               ))}
             </div>
           </div>

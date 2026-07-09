@@ -29,7 +29,7 @@
         <div :class="styles.item">
           <div :class="styles.label">
             <span :class="styles.labelText">长按倍速</span>
-            <label class="input input-sm bg-base-content/10 border-base-content/11 w-30">
+            <label class="input input-sm bg-base-200 border-base-content/20 w-30">
               <input
                 type="number"
                 min="0.1"
@@ -46,7 +46,7 @@
         <div :class="styles.item">
           <div :class="styles.label">
             <span :class="styles.labelText">快进 / 后退</span>
-            <label class="input input-sm bg-base-content/10 border-base-content/11 w-30">
+            <label class="input input-sm bg-base-200 border-base-content/20 w-30">
               <input
                 type="number"
                 min="1"
@@ -64,7 +64,7 @@
         <div :class="styles.item">
           <div :class="styles.label">
             <span :class="styles.labelText">高速快进 / 后退</span>
-            <label class="input input-sm bg-base-content/10 border-base-content/11 w-30">
+            <label class="input input-sm bg-base-200 border-base-content/20 w-30">
               <input
                 type="number"
                 min="1"
@@ -82,7 +82,7 @@
         <div :class="styles.item">
           <div :class="styles.label">
             <span :class="styles.labelText">百分比快进 / 后退</span>
-            <label class="input input-sm bg-base-content/10 border-base-content/11 w-30">
+            <label class="input input-sm bg-base-200 border-base-content/20 w-30">
               <input
                 type="number"
                 min="0.1"
@@ -123,7 +123,7 @@
             <span :class="styles.labelText">最大采样间隔 (秒)</span>
             <select
               :value="thumbnailSettings.samplingInterval.value"
-              class="select select-sm bg-base-content/10 border-base-content/11 w-30 appearance-none"
+              class="select select-sm bg-base-200 border-base-content/20 w-30 appearance-none"
             >
               <option
                 v-for="interval in samplingIntervals" :key="interval" :value="interval"
@@ -159,7 +159,7 @@ const styles = clsx({
   ],
   groupContent: [
     'mx-4',
-    'bg-base-content/5',
+    'bg-base-200',
     'rounded-2xl',
   ],
 
@@ -172,7 +172,7 @@ const styles = clsx({
     'before:inset-x-4',
     'before:inset-y-0',
     'before:border-b-1',
-    'before:border-base-content/5',
+    'before:border-base-content/10',
     'before:pointer-events-none',
     'last:before:border-b-0',
   ],

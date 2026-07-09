@@ -285,4 +285,8 @@ const onAfterLeave: BaseTransitionProps['onAfterLeave'] = () => {
   position: relative;
   z-index: 1;
 }
+
+[data-theme='light'] .x-popup {
+  box-shadow: 0 8px 32px oklch(0% 0 0 / 0.15);
+}
 </style>

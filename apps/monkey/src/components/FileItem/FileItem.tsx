@@ -154,7 +154,7 @@ const FileItem = defineComponent({
             flex
             min-w-0
             rounded-xs
-            hover:bg-neutral-500/10
+            hover:bg-base-content/5
             data-[checked=true]:bg-linear-to-br
             data-[dragging=true]:opacity-30
             data-[view-type=card]:h-full
@@ -162,8 +162,10 @@ const FileItem = defineComponent({
             data-[view-type=card]:rounded-2xl
             data-[view-type=card]:data-[checked=true]:ring-6
             data-[view-type=list]:items-stretch
-            data-[view-type=list]:even:bg-neutral-500/5
-            data-[view-type=list]:hover:bg-neutral-500/10
+            data-[view-type=list]:even:bg-base-content/[0.03]
+            data-[view-type=list]:hover:bg-base-content/5
+            dark:data-[view-type=list]:even:bg-base-content/5
+            dark:data-[view-type=list]:hover:bg-base-content/10
           `,
           attrs.class,
         ]}
@@ -242,7 +244,7 @@ const FileItem = defineComponent({
             {/* 置顶图标 */}
             <Icon
               class="
-                size-5 text-orange-500
+                size-5 text-warning
                 group-data-[view-type=card]:absolute group-data-[view-type=card]:top-3
                 group-data-[view-type=card]:right-3 group-data-[view-type=card]:size-6
                 group-data-[view-type=card]:rotate-45

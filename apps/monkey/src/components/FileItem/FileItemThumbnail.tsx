@@ -67,7 +67,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[61%]! group-data-[view-type=card]:rounded-full
             group-data-[view-type=card]:border-3
             group-data-[view-type=list]:size-13 group-data-[view-type=list]:border
-            group-data-[view-type=list]:border-neutral-800
+            group-data-[view-type=list]:border-base-content/10
           "
           draggable={props.draggable}
           src={props.actressUrl}
@@ -114,7 +114,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[70%] group-data-[view-type=card]:object-contain
             group-data-[view-type=card]:transition-all
             group-data-[view-type=list]:size-14 group-data-[view-type=list]:ring-1
-            group-data-[view-type=list]:ring-neutral-800
+            group-data-[view-type=list]:ring-base-content/10
           "
           decoding="async"
           draggable={props.draggable}
@@ -152,13 +152,13 @@ const FileItemThumbnail = defineComponent({
           onMousedown={props.onMouseDown}
         >
           <Icon
-            class="h-full w-full text-blue-300/90 drop-shadow-md drop-shadow-blue-950"
+            class="h-full w-full text-info drop-shadow-md"
             icon={icon}
           />
           {props.emoji && (
             <span class="
               absolute inset-0 m-auto flex items-center justify-center
-              drop-shadow-sm drop-shadow-blue-500
+              drop-shadow-sm drop-shadow-black/40
               group-data-[view-type=card]:translate-y-1
               group-data-[view-type=card]:text-xl
               group-data-[view-type=list]:translate-y-0.5

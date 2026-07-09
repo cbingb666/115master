@@ -96,7 +96,7 @@ const Drive = defineComponent({
         activeLabel: '取消置顶',
         icon: ICON_TOP,
         activeIcon: ICON_TOP_SOLID,
-        activeIconColor: 'text-orange-500',
+        activeIconColor: 'text-warning',
         active: computed(() => store.selection.values.some(item => item.is_top)),
         onClick: () => actionHandlers.batchTop(),
       },
@@ -105,9 +105,9 @@ const Drive = defineComponent({
         label: '星标',
         activeLabel: '取消星标',
         icon: 'mdi:heart-outline',
-        iconColor: 'text-pink-400',
+        iconColor: 'text-error',
         activeIcon: 'mdi:heart',
-        activeIconColor: 'text-pink-400',
+        activeIconColor: 'text-error',
         active: computed(() => store.selection.values.some(item => item.m)),
         onClick: () => actionHandlers.batchStar(),
       },
@@ -182,7 +182,7 @@ const Drive = defineComponent({
           </div>
           <div class="bg-base-content/5 mb-4 h-px w-full" />
           <button
-            class="btn btn-primary btn-glass"
+            class="btn btn-primary"
             onClick={() => actionHandlers.cloudDownload()}
           >
             <Icon class="text-2xl" icon="material-symbols:add-link-rounded" />

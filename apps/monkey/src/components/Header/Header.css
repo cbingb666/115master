@@ -1,37 +1,37 @@
 .header-sticky-effect {
-  animation: header-sticky-glass linear both;
-  animation-timeline: scroll(root);
-  animation-range: 0 15vh;
+  background: oklch(5% 0 0 / 0.15);
+  border-color: oklch(100% 0 0 / 0.15);
+  box-shadow: 0 2px 16px oklch(0% 0 0 / 0.5);
+  backdrop-filter: blur(20px);
+  will-change: backdrop-filter, transform;
+  transform: translateZ(0);
+  contain: layout paint;
 
   &::before {
     content: '';
     position: absolute;
-    top: calc(-2 * var(--spacing) * 4);
-    left: calc(-2 * var(--spacing) * 4);
-    right: calc(-2 * var(--spacing) * 4);
+    top: calc(-1 * var(--spacing) * 4);
+    left: calc(-1 * var(--spacing) * 4);
+    right: calc(-1 * var(--spacing) * 4);
     bottom: 0;
     z-index: -1;
     pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(to bottom, oklch(15% 0.01 260 / 0.3), transparent);
     animation: header-sticky-gradient linear both;
     animation-timeline: scroll(root);
     animation-range: 0 15vh;
   }
 }
 
-@keyframes header-sticky-glass {
-  0%,
-  30% {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: none;
-    backdrop-filter: blur(0px);
-  }
-  100% {
-    background: oklch(5% 0 0 / 0.15);
-    border-color: oklch(100% 0 0 / 0.15);
-    box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
-    backdrop-filter: blur(40px);
-  }
+[data-theme='light'] .header-sticky-effect {
+  background: oklch(100% 0 0 / 0.4);
+  border-color: oklch(0% 0 0 / 0.1);
+  box-shadow: 0 2px 16px oklch(0% 0 0 / 0.18);
+}
+
+[data-theme='light'] .header-sticky-effect::before {
+  background: linear-gradient(to bottom, oklch(100% 0 0 / 0.45), transparent);
 }
 
 @keyframes header-sticky-gradient {
@@ -41,6 +41,5 @@
   }
   100% {
     opacity: 1;
-    background: linear-gradient(to bottom, oklch(15% 0.01 260 / 0.3), transparent);
   }
 }

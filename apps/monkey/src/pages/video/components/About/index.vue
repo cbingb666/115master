@@ -53,7 +53,7 @@ const styles = clsx({
   // 文本样式
   text: {
     description: 'text-xs',
-    link: 'text-yellow-400 transition-colors duration-200 hover:text-yellow-300',
+    link: 'text-warning transition-colors duration-200 hover:text-warning/80',
   },
   // 徽章样式
   badges: {

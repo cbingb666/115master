@@ -183,7 +183,7 @@ const styles = clsx({
   },
   // 标题样式
   title: {
-    container: 'text-md ml-2 text-neutral-500',
+    container: 'text-md ml-2 text-base-content/70',
     link: 'hover:text-primary line-clamp-1 transition-colors hover:underline',
   },
   // 内容样式
@@ -194,16 +194,16 @@ const styles = clsx({
   // 项目样式
   item: {
     container: 'flex items-start gap-2 text-xs',
-    label: 'h-5 w-8 shrink-0 text-neutral-500',
-    value: 'line-clamp-1 flex flex-1 flex-wrap gap-2 text-neutral-500',
+    label: 'h-5 w-8 shrink-0 text-base-content/70',
+    value: 'line-clamp-1 flex flex-1 flex-wrap gap-2 text-base-content/70',
     link: 'hover:text-primary transition-colors hover:underline',
-    badge: 'rounded bg-neutral-100 px-1 py-[1px] text-xs hover:bg-neutral-100',
+    badge: 'rounded bg-base-200 px-1 py-[1px] text-xs hover:bg-base-200',
   },
   // 次要信息样式
-  secondary: 'opacity-40',
+  secondary: 'opacity-60',
   // 元信息样式
   meta: {
-    avNumber: 'absolute right-4 bottom-2 text-xs text-neutral-300',
+    avNumber: 'absolute right-4 bottom-2 text-xs text-base-content/40',
   },
 })
 

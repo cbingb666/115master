@@ -17,7 +17,8 @@ const Header = defineComponent({
     return () => (
       <div
         class={[
-          'sticky top-3 z-100 overflow-hidden px-3',
+          'sticky top-3 z-100 px-3 pb-4',
+          'contain-layout-paint',
           props.class,
         ]}
       >

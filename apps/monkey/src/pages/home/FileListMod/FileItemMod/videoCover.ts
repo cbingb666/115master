@@ -45,10 +45,11 @@ export class FileItemModVideoCover extends FileItemModBase {
     styleElement.textContent = mainStyles
     shadowRoot.appendChild(styleElement)
 
-    /** 在 shadow DOM 中创建挂载点 */
+    /** 在 shadow DOM 中创建挂载点，data-theme 跟随应用当前主题 */
     const root = document.createElement('div')
     root.className = 'ext-video-cover-root'
-    root.setAttribute('data-theme', 'light')
+    const appRoot = document.getElementById('my-app')
+    root.setAttribute('data-theme', appRoot?.getAttribute('data-theme') || 'dark')
     shadowRoot.appendChild(root)
 
     /** 创建并挂载 Vue 应用 */

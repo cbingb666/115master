@@ -79,14 +79,14 @@ const styles = clsx({
   ],
   groupContent: [
     'mx-4',
-    'bg-base-content/5',
+    'bg-base-200',
     'rounded-2xl',
   ],
 
   // ===== 底部操作区 =====
   footer: [
     'flex items-center justify-end gap-2.5',
-    'border-base-content/5 border-t',
+    'border-base-content/10 border-t',
     'px-5 py-4',
   ],
   actions: 'flex items-center gap-2.5',

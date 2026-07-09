@@ -1,14 +1,18 @@
+import type { ThemeMode } from './theme'
 import { GM_getValue, GM_setValue } from '$'
 
 /** 用户设置接口 */
 interface Settings {
   /** 启动文件列表预览 */
   enableFilelistPreview: boolean
+  /** 主题模式：跟随系统 / 浅色 / 深色 */
+  theme: ThemeMode
 }
 
 /** 默认设置 */
 const DEFAULT_SETTINGS: Settings = {
   enableFilelistPreview: true,
+  theme: 'system',
 }
 
 /** 监听任务接口 */
@@ -39,11 +43,11 @@ export class UserSettings {
       key,
       callback,
     }
-    this.watchTasks.push(watchTask)
+    this.watchTasks.push(watchTask as unknown as AnyWatchTask)
 
     /** 返回取消监听的函数 */
     return () => {
-      const index = this.watchTasks.indexOf(watchTask)
+      const index = this.watchTasks.indexOf(watchTask as unknown as AnyWatchTask)
       if (index > -1) {
         this.watchTasks.splice(index, 1)
       }
@@ -66,7 +70,7 @@ export class UserSettings {
         // 触发相关的watch回调
         this.watchTasks.forEach((task) => {
           if (task.key === key) {
-            task.callback(oldValue, newValue)
+            (task.callback as (oldValue: unknown, newValue: unknown) => void)(oldValue, newValue)
           }
         })
 

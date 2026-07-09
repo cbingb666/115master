@@ -89,7 +89,7 @@ const Empty = defineComponent({
     return () => (
       <div
         class={`
-          text-base-content/60 animate-in fade-in flex flex-col
+          text-base-content/70 animate-in fade-in flex flex-col
           items-center justify-center duration-300
           ${paddingClasses[props.size]}
         `}
@@ -101,7 +101,7 @@ const Empty = defineComponent({
                   <img
                     src={props.image}
                     class={`
-                      h-auto max-w-full align-middle opacity-60
+                      h-auto max-w-full align-middle opacity-70
                       ${imageSizeClasses[props.size]}
                     `}
                   />
@@ -110,7 +110,7 @@ const Empty = defineComponent({
                   <Icon
                     icon={props.icon}
                     class={`
-                      text-base-content/30
+                      text-base-content/40
                       ${iconSizeClasses[props.size]}
                     `}
                   />

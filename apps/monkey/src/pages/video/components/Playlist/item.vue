@@ -110,7 +110,7 @@ const styles = clsx({
     container: [
       'absolute top-1.5 left-1.5 p-0.5',
     ],
-    icon: 'size-6 text-pink-600 drop-shadow-xs/50',
+    icon: 'size-6 text-error drop-shadow-xs/50',
   },
   progress: {
     container: [

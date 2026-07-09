@@ -21,6 +21,12 @@
   }
 }
 
+[data-theme='light'] {
+  .skeleton {
+    background-image: linear-gradient(105deg, #0000 0% 40%, #0001 50%, #0000 60% 100%);
+  }
+}
+
 .input,
 .textarea {
   &:focus,

@@ -18,8 +18,8 @@ function createDragImage(count: number): HTMLElement {
   ].join(' ')
   el.textContent = count === 1 ? '移动1个文件' : `移动${count}个文件`
 
-  el.style.color = '#fff'
-  el.style.backgroundColor = 'rgba(55,55,55,0.8)'
+  el.style.color = 'var(--color-base-100)'
+  el.style.backgroundColor = 'var(--color-base-content)'
   el.style.position = 'absolute'
   el.style.pointerEvents = 'none'
   el.style.zIndex = '9999'

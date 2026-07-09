@@ -56,3 +56,9 @@ export const ICON_GITHUB = 'mdi:github'
 export const ICON_QA = 'mdi:question-mark-circle'
 // 赞助
 export const ICON_SPONSOR = 'streamline-kameleon-color:coffee-paper-glass-duo'
+// 浅色
+export const ICON_THEME_LIGHT = 'material-symbols:light-mode-outline-rounded'
+// 深色
+export const ICON_THEME_DARK = 'material-symbols:dark-mode-outline-rounded'
+// 跟随系统
+export const ICON_THEME_SYSTEM = 'material-symbols:brightness-auto-outline-rounded'

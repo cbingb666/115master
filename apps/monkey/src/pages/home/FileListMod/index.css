@@ -32,9 +32,9 @@
       border-radius: 50%;
       object-fit: cover;
       margin-right: 12px;
-      border: 3px solid #f1f1f1;
+      border: 3px solid var(--color-base-200);
       box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
-      background-color: #f1f1f1;
+      background-color: var(--color-base-200);
     }
   }
 }

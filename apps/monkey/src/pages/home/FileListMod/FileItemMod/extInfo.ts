@@ -49,10 +49,11 @@ export class FileItemModExtInfo extends FileItemModBase {
     styleElement.textContent = mainStyles
     shadowRoot.appendChild(styleElement)
 
-    /** 在 shadow DOM 中创建挂载点 */
+    /** 在 shadow DOM 中创建挂载点，data-theme 跟随应用当前主题 */
     const extInfoDom = document.createElement('div')
     extInfoDom.className = 'ext-info-root'
-    extInfoDom.setAttribute('data-theme', 'light')
+    const appRoot = document.getElementById('my-app')
+    extInfoDom.setAttribute('data-theme', appRoot?.getAttribute('data-theme') || 'dark')
     shadowRoot.appendChild(extInfoDom)
 
     /** 创建并挂载 Vue 应用 */

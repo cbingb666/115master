@@ -19,7 +19,7 @@ export default defineComponent({
           <Icon icon="mdi:flask-outline" class="text-3xl text-primary" />
           <div>
             <h1 class="text-2xl font-bold">测试实验室</h1>
-            <p class="text-sm text-gray-400">开发调试 & 功能验证</p>
+            <p class="text-sm text-base-content/60">开发调试 & 功能验证</p>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ export default defineComponent({
                   >
                     <Icon icon={t.icon} class="text-3xl text-primary mb-3" />
                     <div class="font-medium">{t.label}</div>
-                    <div class="text-sm text-gray-400 mt-1">{t.desc}</div>
+                    <div class="text-sm text-base-content/60 mt-1">{t.desc}</div>
                   </div>
                 ))}
               </div>

@@ -56,9 +56,9 @@ const FileActionBar = defineComponent({
         <div
           class="
             rounded-box pointer-events-auto flex items-center
-            justify-center bg-neutral-800/80
-            shadow-md ring-1 shadow-neutral-950/50 ring-neutral-700/80
-            backdrop-blur-xl backdrop-brightness-70 backdrop-saturate-180
+            justify-center bg-base-300/80
+            shadow-md ring-1 shadow-base-content/10 ring-base-300/80
+            backdrop-blur-xl backdrop-saturate-180
           "
         >
           {

@@ -17,6 +17,15 @@
     0 14px 14px rgba(0, 0, 0, 0.03);
 }
 
+[data-theme='light'] .app-shadow {
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.03),
+    0 2px 2px rgba(0, 0, 0, 0.04),
+    0 4px 4px rgba(0, 0, 0, 0.05),
+    0 8px 8px rgba(0, 0, 0, 0.06),
+    0 14px 14px rgba(0, 0, 0, 0.07);
+}
+
 @utility app-text-shadow {
   text-shadow:
     0 0 1px rgba(0, 0, 0, 0.01),
@@ -43,8 +52,18 @@
   border-width: 1px;
 }
 
+[data-theme='light'] .app-box-glass {
+  background: oklch(100% 0 0 / 0.25);
+  border-color: oklch(0% 0 0 / 0.12);
+  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.18);
+}
+
 @utility app-glass-border {
   border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+[data-theme='light'] .app-glass-border {
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 @utility app-bg-gradient-glass {
@@ -58,6 +77,10 @@
   }
 }
 
+[data-theme='light'] .app-bg-gradient-glass::before {
+  backdrop-filter: blur(48px) saturate(180%);
+}
+
 @utility app-bg-mesh {
   background-image:
     radial-gradient(140% 110% at 50% 22%, color-mix(in oklab, #6f90cf 10%, transparent) 0%, transparent 70%),
@@ -66,6 +89,15 @@
     radial-gradient(96% 80% at 50% 100%, color-mix(in oklab, #3f5a92 10%, transparent) 0%, transparent 46%);
   background-size: cover;
   background-attachment: fixed;
+}
+
+[data-theme='light'] .app-bg-mesh {
+  background-color: oklch(99.5% 0.001 250);
+  background-image:
+    radial-gradient(140% 110% at 50% 22%, color-mix(in oklab, #b9cdf0 8%, transparent) 0%, transparent 70%),
+    radial-gradient(120% 84% at 4% 20%, color-mix(in oklab, #d6c4ec 6%, transparent) 0%, transparent 42%),
+    radial-gradient(140% 110% at 96% 12%, color-mix(in oklab, #a8d4d0 6%, transparent) 0%, transparent 40%),
+    radial-gradient(96% 80% at 50% 100%, color-mix(in oklab, #c2d3ec 8%, transparent) 0%, transparent 46%);
 }
 
 @keyframes app-slide-in-right {

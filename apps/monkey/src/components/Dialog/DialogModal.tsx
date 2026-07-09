@@ -73,7 +73,7 @@ const DialogModal = defineComponent({
         ? `modal modal-bottom sm:modal-middle [scrollbar-gutter:unset] p-0! modal-open ${props.classNameRoot || ''}`
         : `modal modal-bottom sm:modal-middle [scrollbar-gutter:unset] p-0! ${props.classNameRoot || ''}`
 
-      const modalBoxClass = `modal-box flex flex-col p-0! bg-base-100/50 backdrop-blur-3xl border-1 border-base-content/15 ${props.className || ''}`
+      const modalBoxClass = `modal-box flex flex-col p-0! bg-base-100/85 backdrop-blur-3xl border-1 border-base-content/20 shadow-2xl ${props.className || ''}`
       const contentClass = `text-base-content/80 px-4 flex-1 ${props.classNameContent || ''}`
       const actionsClass = `modal-action sticky bottom-0 px-4 pb-4 mt-4 ${props.classNameActions || ''}`
 

@@ -159,8 +159,8 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     box.className = selectionBoxClass
     box.style.cssText = `
       position: absolute;
-      border: 2px solid #007bff;
-      background-color: rgba(0, 123, 255, 0.1);
+      border: 2px solid oklch(62% 0.214 259.815);
+      background-color: color-mix(in oklab, oklch(62% 0.214 259.815) 10%, transparent);
       pointer-events: none;
       z-index: 1;
       display: none;

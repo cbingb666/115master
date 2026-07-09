@@ -1,5 +1,6 @@
 import type { SlotsType } from 'vue'
 import { defineComponent } from 'vue'
+import ThemeToggle from '@/components/ThemeToggle'
 import Links from './Links'
 
 const DesktopSider = defineComponent({
@@ -28,9 +29,12 @@ const DesktopSider = defineComponent({
         "
       >
         {slots.default?.()}
-        <Links>
-          {slots.left?.()}
-        </Links>
+        <div class="mt-auto flex flex-col gap-4">
+          <ThemeToggle />
+          <Links>
+            {slots.left?.()}
+          </Links>
+        </div>
       </div>
     )
   },

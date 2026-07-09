@@ -6,13 +6,13 @@
   font-size: 12px;
   border-radius: 4px;
   margin: auto 9px auto -6px;
-  background-color: #f2f4f8;
-  color: #666;
+  background-color: var(--color-base-200);
+  color: var(--color-base-content);
   vertical-align: middle;
   flex-shrink: 0;
   &:hover {
     background-color: color-mix(in srgb, var(--official-theme) 10%, transparent 0%);
-    color: var(--office-theme);
+    color: var(--official-theme);
   }
   &:active {
     background-color: color-mix(in srgb, var(--official-theme) 15%, transparent 0%);

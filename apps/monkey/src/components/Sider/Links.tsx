@@ -51,24 +51,24 @@ const Links = defineComponent({
           ? (
               <button
                 key={item.title}
-                class="flex cursor-pointer items-center justify-between text-xs"
+                class="text-base-content/50 flex cursor-pointer items-center justify-between text-xs"
                 title={item.title}
                 onClick={item.onClick}
               >
                 {item.icon && <Icon class="text-lg" icon={item.icon} />}
-                {item.text && <span class="text-base-content/50">{item.text}</span>}
+                {item.text && <span>{item.text}</span>}
               </button>
             )
           : (
               <a
                 key={item.href}
-                class="flex items-baseline-last justify-between text-xs"
+                class="text-base-content/50 flex items-baseline-last justify-between text-xs"
                 href={item.href}
                 target="_blank"
                 title={item.title}
               >
                 {item.icon && <Icon class="text-lg" icon={item.icon} />}
-                {item.text && <span class="text-base-content/50">{item.text}</span>}
+                {item.text && <span>{item.text}</span>}
               </a>
             ),
         )}

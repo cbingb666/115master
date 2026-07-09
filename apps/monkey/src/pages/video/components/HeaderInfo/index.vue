@@ -62,7 +62,7 @@ const styles = clsx({
   /** 容器样式 */
   container: {
     main: 'mx-2 flex w-full items-start gap-4',
-    error: 'text-red-400',
+    error: 'text-error',
     loading: 'flex items-center',
   },
   /** 文件信息样式 */
