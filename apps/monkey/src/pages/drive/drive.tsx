@@ -6,6 +6,7 @@ import { useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { router } from '@/app/router'
+import LogoWordmark from '@/assets/logo-wordmark.svg'
 import {
   FileContextMenu,
   FileItem,
@@ -176,8 +177,8 @@ const Drive = defineComponent({
 
       return (
         <>
-          <div class="flex items-center justify-center pt-7 pb-4 text-xl font-bold tracking-tight font-stretch-expanded">
-            115Master
+          <div class="flex items-center justify-center pt-7 pb-4">
+            <LogoWordmark role="img" aria-label="115Master" class="h-10 w-auto text-base-content" />
           </div>
           <div class="bg-base-content/5 mb-4 h-px w-full" />
           <button

@@ -1,5 +1,6 @@
 <div align="center">
-<h1>115Master</h1>
+
+<p align="center"><img src="./apps/monkey/src/assets/logo-wordmark.svg" alt="115Master" /></p>
 
 <br/>
 
