@@ -1,6 +1,7 @@
 import { GM_addStyle } from '$'
 import { createApp, defineAsyncComponent } from 'vue'
 import { router } from '@/app/router'
+import logoIcoUrl from '@/assets/logo.ico?url'
 import mainStyles from '@/styles/main.css?inline'
 
 /**
@@ -29,6 +30,14 @@ export async function createMasterApp() {
  * 重置文档
  */
 function resetDocument() {
+  // 替换页面 favicon 为 master logo
+  document.querySelectorAll('link[rel*="icon"]').forEach(el => el.remove())
+  const icon = document.createElement('link')
+  icon.rel = 'icon'
+  icon.type = 'image/x-icon'
+  icon.href = logoIcoUrl
+  document.head.append(icon)
+
   // 重置 body 样式
   document.body.style.backgroundColor = '#000'
   document.body.style.margin = '0'

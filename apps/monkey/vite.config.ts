@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import * as transformer from '@libmedia/cheap/build/transformer'
 import typescript from '@rollup/plugin-typescript'
@@ -13,9 +14,10 @@ import PKG from './package.json'
 // eslint-disable-next-line node/prefer-global/process
 const env = process.env
 
+const logoIco = `data:image/x-icon;base64,${readFileSync(resolve(__dirname, 'src/assets/logo.ico')).toString('base64')}`
 const icons = {
-  prod: 'https://115.com/favicon.ico',
-  dev: 'https://vitejs.dev/logo.svg',
+  prod: logoIco,
+  dev: logoIco,
 }
 const isProd = env.NODE_ENV === 'production'
 const isAnalyze = env.ANALYZE === 'true'
@@ -106,7 +108,7 @@ export default defineConfig({
           'subtitle.v.geilijiasu.com',
         ],
         'resource': {
-          icon: 'https://115.com/favicon.ico',
+          icon: logoIco,
         },
         'downloadURL':
           'https://github.com/cbingb666/115master/releases/latest/download/115master.user.js',

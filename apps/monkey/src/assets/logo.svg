@@ -1,0 +1,30 @@
+<svg viewBox="0 0 132 102" xmlns="http://www.w3.org/2000/svg" color="#1a1a1a">
+    <title>logo</title>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            svg { color: #ffffff !important; }
+        }
+    </style>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(22.906983, 0)">
+            <g fill="currentColor" fill-rule="nonzero">
+                <polygon points="41.34 50.73 0 23.86 41.34 0"></polygon>
+                <polygon opacity="0.9" points="41.34 50.73 41.34 0 82.68 23.86"></polygon>
+                <polygon opacity="0.7" points="41.34 50.73 82.68 23.86 82.68 77.6"></polygon>
+                <polygon opacity="0.5" points="41.34 50.73 82.68 77.6 41.34 101.46"></polygon>
+                <polygon opacity="0.32" points="41.34 50.73 41.34 101.46 0 77.6"></polygon>
+                <polygon opacity="0.18" points="41.34 50.73 0 77.6 0 23.86"></polygon>
+            </g>
+        </g>
+        <polygon stroke-opacity="0.22" stroke="currentColor" stroke-width="0.6" points="64.2469829 0 105.586983 23.86 105.586983 77.6 64.2469829 101.46 22.9069829 77.6 22.9069829 23.86"></polygon>
+        <g transform="translate(64.246983, 50.73) rotate(-22) translate(-64.246983, -50.73) translate(4.246983, 27.73)">
+            <ellipse cx="60" cy="23" rx="65" ry="25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.35"></ellipse>
+            <ellipse cx="60" cy="23" rx="60" ry="23" fill="none" stroke="currentColor" stroke-width="2" stroke-opacity="0.55"></ellipse>
+            <circle cx="120" cy="18" r="11" fill="currentColor" fill-opacity="0.08"></circle>
+            <circle cx="120" cy="18" r="8" fill="currentColor" fill-opacity="0.2"></circle>
+            <circle cx="120" cy="18" r="5.5" fill="currentColor" fill-opacity="0.5"></circle>
+            <circle cx="120" cy="18" r="3.5" fill="currentColor" fill-opacity="0.85"></circle>
+            <circle cx="120" cy="18" r="2" fill="currentColor"></circle>
+        </g>
+    </g>
+</svg>
