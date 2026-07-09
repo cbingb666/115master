@@ -1,25 +1,40 @@
-<svg viewBox="0 0 473 103" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg viewBox="0 0 473 103" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" color="#1a1a1a">
     <title>logo-wordmark</title>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            svg { color: #ffffff !important; }
+        }
+    </style>
+    <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="currentColor" stop-opacity="1" />
+            <stop offset="0.5" stop-color="currentColor" stop-opacity="0.92" />
+            <stop offset="1" stop-color="currentColor" stop-opacity="0.75" />
+        </linearGradient>
+    </defs>
     <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="logo-wordmark" transform="translate(1.000000, 1.000000)">
             <g id="编组">
                 <g transform="translate(22.906983, 0.000000)" fill="currentColor" fill-rule="nonzero" id="路径">
                     <polygon points="41.34 50.73 3.55271368e-15 23.86 41.34 -3.55271368e-15"></polygon>
-                    <polygon opacity="0.85" points="41.34 50.73 41.34 -3.55271368e-15 82.68 23.86"></polygon>
-                    <polygon opacity="0.72" points="41.34 50.73 82.68 23.86 82.68 77.6"></polygon>
-                    <polygon opacity="0.62" points="41.34 50.73 82.68 77.6 41.34 101.46"></polygon>
-                    <polygon opacity="0.45" points="41.34 50.73 41.34 101.46 3.55271368e-15 77.6"></polygon>
-                    <polygon opacity="0.32" points="41.34 50.73 3.55271368e-15 77.6 3.55271368e-15 23.86"></polygon>
+                    <polygon opacity="0.9" points="41.34 50.73 41.34 -3.55271368e-15 82.68 23.86"></polygon>
+                    <polygon opacity="0.7" points="41.34 50.73 82.68 23.86 82.68 77.6"></polygon>
+                    <polygon opacity="0.5" points="41.34 50.73 82.68 77.6 41.34 101.46"></polygon>
+                    <polygon opacity="0.32" points="41.34 50.73 41.34 101.46 3.55271368e-15 77.6"></polygon>
+                    <polygon opacity="0.18" points="41.34 50.73 3.55271368e-15 77.6 3.55271368e-15 23.86"></polygon>
                 </g>
                 <polygon id="路径" stroke-opacity="0.22" stroke="currentColor" stroke-width="0.6" points="64.2469829 3.55271368e-15 105.586983 23.86 105.586983 77.6 64.2469829 101.46 22.9069829 77.6 22.9069829 23.86"></polygon>
                 <g transform="translate(64.246983, 50.730000) rotate(-22.000000) translate(-64.246983, -50.730000) translate(4.246983, 27.730000)" id="椭圆形">
-                    <path d="M60,46 C93.137085,46 120,35.7025492 120,23 C120,10.2974508 93.137085,0 60,0 C26.862915,0 0,10.2974508 0,23 C0,35.7025492 26.862915,46 60,46 Z" stroke-opacity="0.45" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1.6"></path>
-                    <path d="M60,44 C90.927946,44 116,34.5979797 116,23 C116,11.4020203 90.927946,2 60,2 C29.072054,2 4,11.4020203 4,23 C4,34.5979797 29.072054,44 60,44 Z" stroke-opacity="0.75" stroke="currentColor" stroke-width="0.9" stroke-dasharray="2.4"></path>
-                    <circle fill="currentColor" fill-rule="nonzero" cx="88" cy="4.81" r="3.6"></circle>
-                    <circle fill="currentColor" fill-rule="nonzero" cx="88" cy="4.81" r="1.5"></circle>
+                    <ellipse cx="60" cy="23" rx="65" ry="25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.35"></ellipse>
+                    <ellipse cx="60" cy="23" rx="60" ry="23" fill="none" stroke="currentColor" stroke-width="2" stroke-opacity="0.55"></ellipse>
+                    <circle cx="120" cy="18" r="11" fill="currentColor" fill-opacity="0.08"></circle>
+                    <circle cx="120" cy="18" r="8" fill="currentColor" fill-opacity="0.2"></circle>
+                    <circle cx="120" cy="18" r="5.5" fill="currentColor" fill-opacity="0.5"></circle>
+                    <circle cx="120" cy="18" r="3.5" fill="currentColor" fill-opacity="0.85"></circle>
+                    <circle cx="120" cy="18" r="2" fill="currentColor"></circle>
                 </g>
             </g>
-            <text id="115Master" fill="currentColor" fill-rule="nonzero" font-family="Sarasa-Gothic-SC-Bold, Sarasa Gothic SC" font-size="59" font-weight="bold" line-spacing="79">
+            <text id="115Master" fill="url(#g)" fill-rule="nonzero" font-family="Sarasa-Gothic-SC-Bold, Sarasa Gothic SC" font-size="59" font-weight="bold" line-spacing="79">
                 <tspan x="150" y="68">115Master</tspan>
             </text>
         </g>
