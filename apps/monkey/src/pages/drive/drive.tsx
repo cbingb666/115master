@@ -182,13 +182,15 @@ const Drive = defineComponent({
           <div class="bg-base-content/5 my-3 h-px w-full" />
           <Menu class="flex-1" />
           <div class="bg-base-content/5 my-3 h-px w-full" />
-          <div class="mt-2 flex flex-none flex-col gap-2" v-show={spaceInfo.state?.state === true}>
-            <div class="text-base-content/70 text-sm">
-              {format.fileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0)}
-              {' / '}
-              {format.fileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0)}
+          <div class="mt-2 flex flex-none flex-col gap-1.5" v-show={spaceInfo.state?.state === true}>
+            <div class="text-base-content/60 flex items-baseline gap-1.5 text-xs">
+              <span class="text-base-content/85 font-medium">
+                {format.fileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0)}
+              </span>
+              <span>/</span>
+              <span>{format.fileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0)}</span>
             </div>
-            <progress class="progress progress-md progress-primary w-38" max={100} value={value.value} />
+            <progress class="progress progress-sm progress-primary w-38" max={100} value={value.value} />
           </div>
           <div class="bg-base-content/5 my-3 h-px w-full" />
         </>
