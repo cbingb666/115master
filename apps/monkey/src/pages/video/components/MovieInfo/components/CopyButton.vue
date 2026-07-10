@@ -6,13 +6,12 @@
     ]"
     @click="handleCopy"
   >
-    <Icon :icon="ICON_COPY" class="size-4" />
+    <Icon :name="I.COPY" class="size-4" />
   </button>
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
-import { ICON_COPY } from '@/icons'
+import { I, Icon } from '@/icons'
 import { useCopy } from '@/pages/video/components/MovieInfo/hooks/useCopy'
 import { clsx } from '@/utils/clsx'
 
@@ -33,7 +32,7 @@ async function handleCopy() {
 /** 样式常量定义 */
 const styles = clsx({
   button: {
-    base: 'btn btn-xs btn-ghost btn-circle transition-all duration-200 ease-in-out',
+    base: 'btn btn-xs btn-ghost transition-all duration-200 ease-in-out',
     normal: 'btn-neutral',
     success: 'btn-primary',
   },

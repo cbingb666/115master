@@ -10,12 +10,12 @@
     <Icon
       v-if="subtitles.loading.value || !subtitles.ready.value"
       :class="[styles.btn.icon]"
-      :icon="ICONS.ICON_LOADING"
+      :name="I.LOADING"
     />
     <!-- found 字幕 -->
     <Icon
       v-else
-      :icon="subtitles.current.value ? ICONS.ICON_SUBTITLES : ICONS.ICON_SUBTITLES_OFF"
+      :name="subtitles.current.value ? I.SUBTITLES : I.SUBTITLES_OFF"
       :class="[styles.btn.icon]"
       :disabled="subtitles.list.value?.length === 0"
     />
@@ -41,7 +41,7 @@
           :title="item.label"
           @click="handleSubtitleSelect(item.value)"
         >
-          <Icon v-if="item.icon" :class="[styles.menu.icon]" :icon="item.icon" />
+          <Icon v-if="item.icon" :class="[styles.menu.icon]" :name="item.icon" />
           <template v-if="item.id !== -1">
             <SubtitleDisplay
               :label="item.label"
@@ -65,13 +65,12 @@
 
 <script setup lang="ts">
 import type { Subtitle } from '@/components/XPlayer/types'
-import { Icon } from '@iconify/vue'
 import { computed, shallowRef } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import SubtitleDisplay from '@/components/XPlayer/components/SubtitleDisplay.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
 import { controlStyles } from '@/components/XPlayer/styles/common'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
@@ -116,7 +115,7 @@ const menuItems = computed(() => {
       id: -1,
       label: '关闭字幕',
       value: null,
-      icon: ICONS.ICON_SUBTITLES_OFF,
+      icon: I.SUBTITLES_OFF,
       raw: undefined,
       index: null,
     },

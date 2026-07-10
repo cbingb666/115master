@@ -8,13 +8,13 @@
       <!-- 头部 -->
       <div :class="styles.container.header">
         <div :class="styles.titleContainer">
-          <Icon :icon="ICONS.ICON_STATISTICS_INFO" :class="styles.titleIcon" />
+          <Icon :name="I.STATISTICS_INFO" :class="styles.titleIcon" />
           <h3 :class="styles.container.headerTitle">
             Statistics
           </h3>
         </div>
         <button :class="styles.closeButton" @click="statistics.toggleVisible">
-          <Icon :icon="ICONS.ICON_CLOSE" class="size-4" />
+          <Icon :name="I.CLOSE" class="size-4" />
         </button>
       </div>
 
@@ -148,12 +148,11 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({

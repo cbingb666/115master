@@ -6,7 +6,7 @@
     title="音频轨道"
     @click="toggleVisible"
   >
-    <Icon :class="[styles.btn.icon]" :icon="ICONS.ICON_AUDIO_TRACK" />
+    <Icon :class="[styles.btn.icon]" :name="I.AUDIO_TRACK" />
   </button>
 
   <Popup
@@ -40,13 +40,12 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { shallowRef } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
 import { controlStyles } from '@/components/XPlayer/styles/common'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({

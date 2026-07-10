@@ -6,13 +6,8 @@
     @click="toggleMenu"
   >
     <Icon
-      class="transition-transform" :class="[
-        styles.btn.icon,
-        {
-          'rotate-45': menuVisible,
-        },
-      ]"
-      :icon="ICONS.ICON_COLOR_ADJUST"
+      :class="[ styles.btn.icon ]"
+      :name="I.COLOR_ADJUST"
     />
   </button>
   <Popup
@@ -32,7 +27,7 @@
             title="重置"
             @click="resetAll"
           >
-            <Icon :icon="ICONS.ICON_RESTART" class="size-6" />
+            <Icon :name="I.RESTART" class="size-6" />
           </button>
         </div>
         <div class="grid grid-flow-col grid-rows-5 gap-x-5 gap-y-2">
@@ -73,12 +68,11 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { shallowRef } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
 import { controlStyles } from '@/components/XPlayer/styles/common'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({

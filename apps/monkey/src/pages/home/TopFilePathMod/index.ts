@@ -1,4 +1,5 @@
 import { defer } from 'lodash'
+import { I } from '@/icons'
 import { BaseMod } from '@/pages/home/BaseMod'
 import './index.css'
 import 'iconify-icon'
@@ -119,7 +120,7 @@ export class TopFilePathMod extends BaseMod {
     this.backButton.classList.add('master-back-button')
     this.backButton.href = 'javascript:void(0)'
     this.backButton.innerHTML
-      = '<iconify-icon icon="material-symbols:line-start-arrow-notch" noobserver></iconify-icon>返回目录'
+      = `<iconify-icon icon="${I.BACK_DIR_ARROW}" noobserver></iconify-icon>返回目录`
     this.topFilePathContainerNode?.before(this.backButton)
     /** 修复路径Tooltip位置 */
     if (this.commonLittlePopNode) {

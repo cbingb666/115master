@@ -31,7 +31,7 @@
 
       <!-- 收藏 -->
       <div v-if="item.m" :class="styles.mark.container">
-        <Icon :icon="ICON_STAR_FILL" :class="styles.mark.icon" />
+        <Icon :name="I.STAR_FILL" :class="styles.mark.icon" />
       </div>
 
       <!-- 进度条 -->
@@ -55,12 +55,11 @@
 <script setup lang="ts">
 import type { Share } from '@115master/drive115'
 import { format } from '@115master/utils'
-import { Icon } from '@iconify/vue'
 import { computed, shallowRef } from 'vue'
 import { LoadingError } from '@/components'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
-import { ICON_STAR_FILL } from '@/icons'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const props = defineProps<{

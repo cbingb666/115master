@@ -1,7 +1,5 @@
 import type { ValueOf } from 'type-fest'
 
-export { ICONS } from './icons/icons.index'
-
 export const MEDIA_ERROR_NAME = {
   [MediaError.MEDIA_ERR_ABORTED]: 'Aborted',
   [MediaError.MEDIA_ERR_NETWORK]: 'Network Error',

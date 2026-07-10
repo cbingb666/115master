@@ -1,8 +1,8 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { format } from '@115master/utils'
-import { Icon } from '@iconify/vue'
 import { computed, defineComponent } from 'vue'
+import { I, Icon } from '@/icons'
 
 const FileItemContent = defineComponent({
   name: 'FileItemContent',
@@ -68,7 +68,7 @@ const FileItemContent = defineComponent({
                   group-data-[view-type=card]:size-4
                   group-data-[view-type=card]:align-[-0.125em]
                 "
-                icon="material-icon-theme:github-sponsors"
+                name={I.STAR}
               />
             )}
           </span>
@@ -80,7 +80,7 @@ const FileItemContent = defineComponent({
                 group-data-[view-type=list]:inline-flex
                 group-data-[view-type=list]:size-5
               "
-              icon="material-icon-theme:github-sponsors"
+              name={I.STAR}
             />
           )}
         </span>

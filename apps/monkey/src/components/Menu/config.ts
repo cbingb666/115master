@@ -1,9 +1,9 @@
+import { I } from '@/icons'
 import type { MenuItem } from './Menu.types'
-import { ICON_ALL_FILE, ICON_STAR_FILL } from '@/icons'
 
 export const MENU_CONFIG: MenuItem[] = [
   {
-    icon: ICON_ALL_FILE,
+    icon: I.ALL_FILE,
     name: '全部',
     to: {
       name: 'drive',
@@ -23,7 +23,7 @@ export const MENU_CONFIG: MenuItem[] = [
   //   to: '/drive/recent',
   // },
   {
-    icon: ICON_STAR_FILL,
+    icon: I.STAR,
     name: '星标',
     to: '/drive/star',
     activeMatch: {

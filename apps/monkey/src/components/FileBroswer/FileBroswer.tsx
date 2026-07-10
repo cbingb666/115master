@@ -2,7 +2,6 @@ import type { Share } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
-import { Icon } from '@iconify/vue'
 import { useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
 import {
@@ -23,7 +22,7 @@ import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useDriveExplorer } from '@/hooks/useDriveExplorer'
 import { useStackNav } from '@/hooks/useDriveNav'
-import { ICON_CLOSE, ICON_DELETE, ICON_RENAME } from '@/icons'
+import { I, Icon } from '@/icons'
 
 /** 文件浏览器内容组件 */
 const FileBroswer = defineComponent({
@@ -111,8 +110,8 @@ const FileBroswer = defineComponent({
 
     const contextmenuActions = computed<Action[][]>(() => [
       [
-        { name: 'rename', label: '重命名', icon: ICON_RENAME, onClick: handleRename },
-        { name: 'delete', label: '删除', icon: ICON_DELETE, onClick: handleDelete },
+        { name: 'rename', label: '重命名', icon: I.RENAME, onClick: handleRename },
+        { name: 'delete', label: '删除', icon: I.DELETE, onClick: handleDelete },
       ],
     ])
 
@@ -185,7 +184,7 @@ const FileBroswer = defineComponent({
                     h-9 w-sm max-w-[60vw] rounded-full
                   "
                 >
-                  <Icon class="text-base-content/55 shrink-0 text-2xl" icon="mdi:search" />
+                  <Icon class="text-base-content/55 shrink-0 text-2xl" name={I.SEARCH} />
                   <input
                     class="grow bg-transparent text-sm"
                     value={keywordInput.value}
@@ -207,7 +206,7 @@ const FileBroswer = defineComponent({
                       title="清空搜索"
                       onClick={clearKeyword}
                     >
-                      <Icon class="text-base-content/65 text-base" icon={ICON_CLOSE} />
+                      <Icon class="text-base-content/65 text-base" name={I.CLOSE} />
                     </button>
                   )}
                 </label>

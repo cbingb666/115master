@@ -1,10 +1,9 @@
-import { Icon } from '@iconify/vue'
-import { ICON_SPONSOR } from '@/icons'
+import { I, Icon } from '@/icons'
 
 export default function SponsorContent() {
   return (
     <div class="flex flex-col items-center gap-4 pt-6">
-      <Icon icon={ICON_SPONSOR} class="pt-2 pb-4 text-7xl"></Icon>
+      <Icon name={I.SPONSOR} class="pt-2 pb-4 text-7xl"></Icon>
       <div class="text-base-content/80 text-md space-y-4 px-4 leading-relaxed">
         <p class="font-bold">"115Master 始于作者的痛点、好奇心和对完美的执着。"</p>
         <p>去年持续不断在打磨播放器，如今已趋近成熟，缩略图丝般顺滑指哪打哪，绝大部分视频播放告别了黑屏和卡顿。</p>

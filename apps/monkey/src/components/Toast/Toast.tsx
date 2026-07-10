@@ -1,14 +1,7 @@
 import type { PropType } from 'vue'
 import type { ToastProps, ToastSlots } from './types'
-import { Icon } from '@iconify/vue'
 import { computed, defineComponent, isVNode, onMounted, onUnmounted, ref } from 'vue'
-import {
-  ICON_TOAST_CLOSE,
-  ICON_TOAST_ERROR,
-  ICON_TOAST_INFO,
-  ICON_TOAST_SUCCESS,
-  ICON_TOAST_WARNING,
-} from '@/icons'
+import { I, Icon } from '@/icons'
 
 export const Toast = defineComponent({
   name: 'Toast',
@@ -141,11 +134,11 @@ export const Toast = defineComponent({
       return baseClass.replace(/\s+/g, ' ').trim()
     })
 
-    const typeIconMap: Record<NonNullable<ToastProps['type']>, string> = {
-      success: ICON_TOAST_SUCCESS,
-      error: ICON_TOAST_ERROR,
-      warning: ICON_TOAST_WARNING,
-      info: ICON_TOAST_INFO,
+    const typeIconMap: Record<NonNullable<ToastProps['type']>, typeof I[keyof typeof I]> = {
+      success: I.TOAST_SUCCESS,
+      error: I.TOAST_ERROR,
+      warning: I.TOAST_WARNING,
+      info: I.TOAST_INFO,
     }
 
     const currentIcon = computed(() => typeIconMap[props.type ?? 'info'])
@@ -155,7 +148,7 @@ export const Toast = defineComponent({
         <div class="mr-3 size-7 flex-none shrink-0">
           {slots.icon
             ? slots.icon()
-            : <Icon icon={currentIcon.value} class="size-7" />}
+            : <Icon name={currentIcon.value} class="size-7" />}
         </div>
 
         <div class="min-w-0 flex-1">
@@ -195,7 +188,7 @@ export const Toast = defineComponent({
               handleClose()
             }}
           >
-            <Icon icon={ICON_TOAST_CLOSE} class="size-8" />
+            <Icon name={I.TOAST_CLOSE} class="size-8" />
           </div>
         )}
       </div>

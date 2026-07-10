@@ -16,7 +16,7 @@
         >
           <Icon
             v-if="item.icon"
-            :icon="item.icon"
+            :name="item.icon"
             :class="styles.icon"
           />
           <span :class="styles.label">{{ item.label }}</span>
@@ -47,10 +47,10 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import PlayerSettingsPopup from '@/components/XPlayer/components/Settings/PlayerSettingsPopup.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 import AboutPopup from './AboutPopup.vue'
 

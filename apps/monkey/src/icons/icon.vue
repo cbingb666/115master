@@ -4,14 +4,14 @@
 </template>
 
 <script setup lang="ts">
-import type { IconName, IconSize } from './types'
+import type { IconSize } from './types'
 import { Icon as IconifyIcon } from '@iconify/vue'
 import { computed, defineAsyncComponent } from 'vue'
 import { clsx } from '@/utils/clsx'
 import { I } from './registry'
 
 const props = withDefaults(defineProps<{
-  name: IconName
+  name: string
   size?: IconSize
 }>(), { size: 'md' })
 
@@ -26,9 +26,9 @@ const SIZE_MAP: Record<IconSize, string> = {
 
 const cls = computed(() => clsx(SIZE_MAP[props.size]))
 
-const resolved = computed(() => I[props.name])
+const resolved = computed(() => I[props.name as keyof typeof I] ?? props.name)
 
-const isIon = computed(() => resolved.value.startsWith('ion:'))
+const isIon = computed(() => resolved.value?.startsWith('ion:'))
 
 const customComp = computed(() => {
   if (isIon.value)

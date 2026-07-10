@@ -82,7 +82,7 @@
                   @click="togglePlaylist"
                 >
                   <Icon
-                    :icon="ICON_PLAYLIST"
+                    :name="I.PLAYLIST"
                     :class="[styles.controls.btn.icon]"
                   />
                 </button>
@@ -138,7 +138,6 @@ import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import type XPlayerInstance from '@/components/XPlayer/index.vue'
 import type { Subtitle, ThumbnailRequest } from '@/components/XPlayer/types'
 import { format } from '@115master/utils'
-import { Icon } from '@iconify/vue'
 import { useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
 import { computed, h, nextTick, onMounted, ref, shallowRef, toValue, watch } from 'vue'
@@ -150,7 +149,7 @@ import { controlRightStyles } from '@/components/XPlayer/styles/common'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { PLUS_VERSION } from '@/constants'
 import { useLockFn } from '@/hooks/useLockFn'
-import { ICON_MOVE, ICON_PLAYLIST, ICON_STAR, ICON_STAR_FILL } from '@/icons'
+import { I, Icon } from '@/icons'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { clsx } from '@/utils/clsx'
 import { core115 } from '@/utils/core115'
@@ -307,7 +306,7 @@ const hasNext = computed(() => {
 const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
   {
     label: '移动',
-    icon: ICON_MOVE,
+    icon: I.MOVE,
     onAction: async (ctx) => {
       // 检查文件信息是否可用
       if (!DataFileInfo.state?.file_id) {
@@ -366,7 +365,7 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
           /** 显示成功提示 */
           ctx.hud?.show({
             title: '移动成功',
-            icon: ICON_MOVE,
+            icon: I.MOVE,
           })
         },
       })
@@ -374,13 +373,13 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
   },
   {
     label: DataMark.isMark.value ? '取消收藏' : '收藏',
-    icon: DataMark.isMark.value ? ICON_STAR_FILL : ICON_STAR,
-    iconColor: DataMark.isMark.value ? 'text-error' : undefined,
+    icon: DataMark.isMark.value ? I.STAR_FILL : I.STAR,
+    iconColor: DataMark.isMark.value ? 'text-primary' : undefined,
     onAction: async (ctx) => {
       await handleMark()
       const title = DataMark.isMark.value ? '已收藏' : '取消收藏'
-      const icon = DataMark.isMark.value ? ICON_STAR_FILL : ICON_STAR
-      const iconClass = DataMark.isMark.value ? 'text-error' : ''
+      const icon = DataMark.isMark.value ? I.STAR_FILL : I.STAR
+      const iconClass = DataMark.isMark.value ? 'text-primary' : ''
       ctx.hud?.show({
         title,
         icon,
@@ -398,8 +397,8 @@ const ACTION_MAP: ActionMap = {
     keydown: async (ctx) => {
       await handleMark()
       const title = DataMark.isMark.value ? '已收藏' : '取消收藏'
-      const icon = DataMark.isMark.value ? ICON_STAR_FILL : ICON_STAR
-      const iconClass = DataMark.isMark.value ? 'text-error' : ''
+      const icon = DataMark.isMark.value ? I.STAR_FILL : I.STAR
+      const iconClass = DataMark.isMark.value ? 'text-primary' : ''
       ctx.hud?.show({
         title,
         icon,
@@ -643,13 +642,13 @@ async function playPreviousOrNext(ctx: PlayerContext, dir: number) {
       ),
 
     ])
-    const icon = ICON_PLAYLIST
+    const icon = I.PLAYLIST
     ctx.hud?.show({ title, icon, value })
   }
   else {
     ctx.hud?.show({
       title: '没有更多了',
-      icon: ICON_PLAYLIST,
+      icon: I.PLAYLIST,
     })
   }
 }

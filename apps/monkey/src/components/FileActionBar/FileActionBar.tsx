@@ -1,7 +1,8 @@
 import type { PropType } from 'vue'
 import type { ActionBarItem, ActionBarItemState } from './FileActionBar.types'
-import { Icon } from '@iconify/vue'
+import type { IconName } from '@/icons'
 import { defineComponent, ref, toValue, triggerRef } from 'vue'
+import { Icon } from '@/icons'
 
 /**
  * 文件操作栏
@@ -116,7 +117,7 @@ const FileActionBar = defineComponent({
                                 isLoading ? 'opacity-20' : '',
                                 iconColor,
                               ]}
-                              icon={icon}
+                              name={icon as IconName}
                             />
                           </button>
                         )

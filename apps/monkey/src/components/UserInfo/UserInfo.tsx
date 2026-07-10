@@ -1,5 +1,5 @@
-import { Icon } from '@iconify/vue'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { I, Icon } from '@/icons'
 import { useUserAqStore } from '@/store/userAq'
 
 /**
@@ -83,7 +83,7 @@ export const UserInfo = defineComponent({
             </div>
             {data.vip?.is_vip && (
               <div class="text-base-content/70 flex items-center gap-1 text-xs">
-                <Icon icon="material-symbols:stars-rounded" class="text-warning" />
+                <Icon name={I.STAR_RATING} class="text-warning" />
                 {data.vip.desc || 'VIP用户'}
               </div>
             )}
@@ -103,7 +103,7 @@ export const UserInfo = defineComponent({
                   </div>
                   {data.vip?.is_vip && (
                     <div class="text-base-content/70 flex items-center gap-1 text-sm">
-                      <Icon icon="material-symbols:stars-rounded" class="text-warning" />
+                      <Icon name={I.STAR_RATING} class="text-warning" />
                       {data.vip.desc || 'VIP用户'}
                     </div>
                   )}

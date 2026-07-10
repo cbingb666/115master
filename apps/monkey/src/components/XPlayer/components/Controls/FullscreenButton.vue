@@ -5,22 +5,21 @@
     :title="fullscreenTip"
     @click="fullscreen.toggleFullscreen"
   >
-    <Icon class="size-7" :icon="icon" />
+    <Icon class="size-7" :name="icon" />
   </button>
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 
 const { fullscreen, shortcuts } = usePlayerContext()
 
 const icon = computed(() => {
   return fullscreen.isFullscreen.value
-    ? ICONS.ICON_FULLSCREEN_EXIT
-    : ICONS.ICON_FULLSCREEN
+    ? I.FULLSCREEN_EXIT
+    : I.FULLSCREEN
 })
 
 const NAME = '全屏'

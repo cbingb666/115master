@@ -9,11 +9,11 @@
       <!-- 头部 -->
       <div :class="styles.header">
         <h3 :class="styles.title">
-          <Icon :icon="ICONS.ICON_SETTINGS" class="size-6" />
+          <Icon :name="I.SETTINGS" class="size-6" />
           偏好设置
         </h3>
         <button :class="styles.close" @click="$emit('update:visible', false)">
-          <Icon :icon="ICONS.ICON_CLOSE" class="size-6" />
+          <Icon :name="I.CLOSE" class="size-6" />
         </button>
       </div>
 
@@ -30,7 +30,7 @@
             ]"
             @click="activeTab = tab.key"
           >
-            <Icon :icon="tab.icon" class="size-6" />
+            <Icon :name="tab.icon" class="size-6" />
             <span>{{ tab.name }}</span>
           </button>
         </div>
@@ -47,10 +47,9 @@
 
 <script setup lang="ts">
 import type { SettingsTab } from '@/components/XPlayer/hooks/useContextMenu'
-import { Icon } from '@iconify/vue'
 import { ref, watch } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 import PlayerSettingsPlay from './PlayerSettingsPlay.vue'
 import PlayerSettingsShortcuts from './PlayerSettingsShortcuts.vue'
@@ -129,8 +128,8 @@ const styles = clsx({
 
 /** 标签页列表 */
 const tabs: Tab[] = [
-  { key: 'play', name: '播放', icon: ICONS.ICON_PLAY },
-  { key: 'shortcuts', name: '快捷键', icon: ICONS.ICON_SHORTCUTS },
+  { key: 'play', name: '播放', icon: I.PLAY },
+  { key: 'shortcuts', name: '快捷键', icon: I.SHORTCUTS },
 ]
 
 /** 当前激活的标签页 */

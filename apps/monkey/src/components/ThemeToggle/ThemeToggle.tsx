@@ -1,8 +1,7 @@
 import type { SlotsType } from 'vue'
 import type { ThemeMode } from '@/utils/theme'
-import { Icon } from '@iconify/vue'
 import { defineComponent, ref } from 'vue'
-import { ICON_THEME_DARK, ICON_THEME_LIGHT, ICON_THEME_SYSTEM } from '@/icons'
+import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 import { userSettings } from '@/utils/userSettings'
 
@@ -14,9 +13,9 @@ interface ThemeOption {
 }
 
 const OPTIONS: ThemeOption[] = [
-  { value: 'system', label: '自动', icon: ICON_THEME_SYSTEM, title: '跟随系统' },
-  { value: 'light', label: '浅色', icon: ICON_THEME_LIGHT, title: '浅色' },
-  { value: 'dark', label: '深色', icon: ICON_THEME_DARK, title: '深色' },
+  { value: 'system', label: '自动', icon: 'THEME_SYSTEM', title: '跟随系统' },
+  { value: 'light', label: '浅色', icon: 'THEME_LIGHT', title: '浅色' },
+  { value: 'dark', label: '深色', icon: 'THEME_DARK', title: '深色' },
 ]
 
 /** 共享单例 ref：DesktopSider 与 MobileSider 都会挂载 ThemeToggle，需保持高亮同步 */
@@ -64,7 +63,7 @@ const ThemeToggle = defineComponent({
               }).btn}
               onClick={() => pickMode(opt.value)}
             >
-              <Icon icon={opt.icon} class="text-base" />
+              <Icon name={opt.icon} class="text-base" />
               <span>{opt.label}</span>
             </button>
           )

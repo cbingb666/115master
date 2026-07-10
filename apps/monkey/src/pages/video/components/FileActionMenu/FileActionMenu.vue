@@ -8,7 +8,7 @@
         @click="() => action.onAction(ctx)"
       >
         <button :class="styles.button">
-          <Icon :icon="action.icon" :class="[styles.icon, action.iconColor]" />
+          <Icon :name="action.icon" :class="[styles.icon, action.iconColor]" />
         </button>
       </li>
     </ul>
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import type { FileActionMenuProps } from './FileActionMenu.types'
-import { Icon } from '@iconify/vue'
+import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const props = defineProps<FileActionMenuProps>()

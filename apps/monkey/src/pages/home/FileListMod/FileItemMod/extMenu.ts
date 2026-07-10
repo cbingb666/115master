@@ -37,7 +37,7 @@ export class FileItemModExtMenu extends FileItemModBase {
       {
         class: '115-player',
         title: '使用【115官方播放器】',
-        text: '5️⃣ 官方播放',
+        text: '官方播放',
         visible: this.itemInfo.attributes.iv === IvType.Yes,
         click: () => {
           GM_openInTab(
@@ -74,7 +74,7 @@ export class FileItemModExtMenu extends FileItemModBase {
       {
         class: 'master-player',
         title: '使用【Master播放器】',
-        text: '▶️ Master 播放',
+        text: 'Master 播放',
         visible: this.itemInfo.attributes.iv === IvType.Yes,
         click: () => {
           goToPlayer(
@@ -145,7 +145,8 @@ export class FileItemModExtMenu extends FileItemModBase {
     if (button.icon) {
       const icon = document.createElement('img')
       icon.src = button.icon
-      icon.style.cssText = 'width: 16px; height: 16px;'
+      icon.style.width = '16px'
+      icon.style.height = '16px'
       link.prepend(icon)
     }
 

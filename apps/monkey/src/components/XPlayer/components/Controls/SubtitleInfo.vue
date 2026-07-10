@@ -11,7 +11,7 @@
       v-if="currentSubtitle"
       :class="[styles.root]"
     >
-      <Icon :icon="ICONS.ICON_SUBTITLES" :class="[styles.icon]" />
+      <Icon :name="I.SUBTITLES" :class="[styles.icon]" />
       <SubtitleDisplay
         :label="currentSubtitle.label"
         :format="currentSubtitle.format"
@@ -24,11 +24,10 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
 import SubtitleDisplay from '@/components/XPlayer/components/SubtitleDisplay.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const { subtitles, controls, progressBar } = usePlayerContext()

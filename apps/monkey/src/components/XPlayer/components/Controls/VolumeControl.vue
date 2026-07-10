@@ -27,12 +27,12 @@
           <Icon
             class="swap-off"
             :class="[styles.btn.icon]"
-            :icon="VolumeIcon"
+            :name="VolumeIcon"
           />
           <Icon
             class="swap-on"
             :class="[styles.btn.icon]"
-            :icon="VolumeIcon"
+            :name="VolumeIcon"
           />
         </button>
       </template>
@@ -53,6 +53,11 @@
 </template>
 
 <script setup lang="ts">
+import { useThrottleFn } from '@vueuse/core'
+import { computed } from 'vue'
+import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { controlStyles } from '@/components/XPlayer/styles/common'
+import { getVolumeIcon } from '@/components/XPlayer/utils/icon'
 /**
  * VolumeControl 音量控制组件
  *
@@ -64,12 +69,7 @@
  *
  * 复用 ControlButtonGroup 实现展开/折叠逻辑
  */
-import { Icon } from '@iconify/vue'
-import { useThrottleFn } from '@vueuse/core'
-import { computed } from 'vue'
-import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { controlStyles } from '@/components/XPlayer/styles/common'
-import { getVolumeIcon } from '@/components/XPlayer/utils/icon'
+import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 import ControlButtonGroup from './ControlButtonGroup.vue'
 

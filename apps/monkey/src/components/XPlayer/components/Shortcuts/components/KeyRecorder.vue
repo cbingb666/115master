@@ -12,13 +12,13 @@
   >
     <kbd v-if="displayValue" :class="styles.kbd">{{ displayValue }}</kbd>
     <span v-else-if="isRecording" :class="styles.recordingText">录制中...</span>
-    <Icon v-else :class="styles.placeholder" :icon="ICONS.ICON_PLUS" />
+    <Icon v-else :class="styles.placeholder" :name="I.PLUS" />
     <button
       v-if="modelValue && !isRecording"
       :class="styles.remove" type="button"
       @click.stop="handleRemove"
     >
-      <Icon :icon="ICONS.ICON_CLOSE" class="size-5" />
+      <Icon :name="I.CLOSE" class="size-5" />
     </button>
   </div>
 </template>
@@ -30,7 +30,6 @@
  */
 
 import type { KeyBindingStr } from '@/components/XPlayer/components/Shortcuts/shortcuts.types'
-import { Icon } from '@iconify/vue'
 import { computed, shallowRef } from 'vue'
 import {
   formatKeyDisplay,
@@ -38,7 +37,7 @@ import {
   isOnlyModifier,
 } from '@/components/XPlayer/components/Shortcuts/shortcuts.utils'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const props = withDefaults(defineProps<{

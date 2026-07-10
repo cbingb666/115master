@@ -1,5 +1,6 @@
 import type { TopRootSearchParams } from '@/pages/home/global'
 import { unsafeWindow } from '$'
+import { I } from '@/icons'
 import { BaseMod } from '@/pages/home/BaseMod'
 import { getUrlParams } from '@/utils/url'
 import { userSettings } from '@/utils/userSettings'
@@ -98,8 +99,8 @@ export class TopHeaderMod extends BaseMod {
     button.setAttribute('title', '开启文件预览')
     button.href = 'javascript:void(0)'
     button.innerHTML = `
-      <iconify-icon class="preview-off" icon="material-symbols:preview-off" noobserver></iconify-icon>
-      <iconify-icon class="preview-on" icon="material-symbols:preview" noobserver></iconify-icon>
+      <iconify-icon class="preview-off" icon="${I.PREVIEW_OFF}" noobserver></iconify-icon>
+      <iconify-icon class="preview-on" icon="${I.PREVIEW_ON}" noobserver></iconify-icon>
     `
     button.onclick = () => {
       userSettings.value.enableFilelistPreview

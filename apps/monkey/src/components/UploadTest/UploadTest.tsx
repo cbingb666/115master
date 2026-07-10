@@ -1,8 +1,8 @@
 import type { PropType } from 'vue'
 import { format } from '@115master/utils'
-import { Icon } from '@iconify/vue'
 import { GM_xmlhttpRequest } from 'vite-plugin-monkey/dist/client'
 import { computed, defineComponent, ref } from 'vue'
+import { I, Icon } from '@/icons'
 import { useUserAqStore } from '@/store/userAq'
 import { drive115 } from '@/utils/drive115Instance'
 
@@ -119,14 +119,14 @@ const UploadTest = defineComponent({
             {file.value
               ? (
                   <div class="flex flex-col gap-2">
-                    <Icon icon="mdi:file-upload-outline" class="text-primary mx-auto text-3xl" />
+                    <Icon name={I.UPLOAD} class="text-primary mx-auto text-3xl" />
                     <div class="font-medium">{file.value.name}</div>
                     <div class="text-base-content/60 text-sm">{format.fileSize(file.value.size)}</div>
                   </div>
                 )
               : (
                   <div class="flex flex-col gap-2">
-                    <Icon icon="mdi:cloud-upload-outline" class="text-base-content/50 mx-auto text-4xl" />
+                    <Icon name={I.UPLOAD} class="text-base-content/50 mx-auto text-4xl" />
                     <div class="text-base-content/60">点击选择文件或拖拽到此处</div>
                   </div>
                 )}
@@ -175,7 +175,7 @@ const UploadTest = defineComponent({
         <div class="flex gap-2">
           {(status.value === 'idle' || status.value === 'error') && file.value && (
             <button class="btn btn-primary flex-1" onClick={startUpload} disabled={!uid.value}>
-              <Icon icon="mdi:upload" class="text-lg" />
+              <Icon name={I.UPLOAD} class="text-lg" />
               开始上传
             </button>
           )}

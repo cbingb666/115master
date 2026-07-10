@@ -1,7 +1,6 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { format } from '@115master/utils'
-import { Icon } from '@iconify/vue'
 import { useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -28,14 +27,7 @@ import {
 } from '@/components'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
-import {
-  ICON_DELETE,
-  ICON_FILE_IMPROVE,
-  ICON_MOVE,
-  ICON_RENAME,
-  ICON_TOP,
-  ICON_TOP_SOLID,
-} from '@/icons'
+import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
 import { useDriveSpaceInfoStore } from '@/store/driveSpaceInfo'
 
@@ -94,9 +86,9 @@ const Drive = defineComponent({
         name: 'top',
         label: '置顶',
         activeLabel: '取消置顶',
-        icon: ICON_TOP,
-        activeIcon: ICON_TOP_SOLID,
-        activeIconColor: 'text-warning',
+        icon: I.TOP,
+        activeIcon: I.TOP_SOLID,
+        activeIconColor: 'text-primary',
         active: computed(() => store.selection.values.some(item => item.is_top)),
         onClick: () => actionHandlers.batchTop(),
       },
@@ -104,36 +96,35 @@ const Drive = defineComponent({
         name: 'star',
         label: '星标',
         activeLabel: '取消星标',
-        icon: 'mdi:heart-outline',
-        iconColor: 'text-error',
-        activeIcon: 'mdi:heart',
-        activeIconColor: 'text-error',
+        icon: I.STAR,
+        activeIcon: I.STAR_FILL,
+        activeIconColor: 'text-primary',
         active: computed(() => store.selection.values.some(item => item.m)),
         onClick: () => actionHandlers.batchStar(),
       },
       move: {
         name: 'move',
         label: '移动',
-        icon: ICON_MOVE,
+        icon: I.MOVE,
         onClick: () => actionHandlers.batchMove(),
       },
       improve: {
         name: 'improve',
         label: '提到上级',
-        icon: ICON_FILE_IMPROVE,
+        icon: I.FILE_IMPROVE,
         show: computed(() => store.prevLevel !== undefined),
         onClick: () => actionHandlers.improve(),
       },
       rename: {
         name: 'rename',
         label: '重命名',
-        icon: ICON_RENAME,
+        icon: I.RENAME,
         show: computed(() => store.selection.count === 1),
         onClick: () => actionHandlers.rename(),
       },
       delete: {
         name: 'delete',
-        icon: ICON_DELETE,
+        icon: I.DELETE,
         label: '删除',
         onClick: () => actionHandlers.batchDelete(),
       },
@@ -185,7 +176,7 @@ const Drive = defineComponent({
             class="btn btn-primary"
             onClick={() => actionHandlers.cloudDownload()}
           >
-            <Icon class="text-2xl" icon="material-symbols:add-link-rounded" />
+            <Icon class="text-2xl" name={I.ADD_LINK} />
             离线下载
           </button>
           <div class="bg-base-content/5 my-4 h-px w-full" />
@@ -231,7 +222,7 @@ const Drive = defineComponent({
           <div class="flex flex-none items-center">
             <FileMenu>
               <button class="btn btn-sm btn-glass rounded-full" onClick={() => search.open()}>
-                <Icon class="text-xl" icon="mdi:search" />
+                <Icon class="text-xl" name={I.SEARCH} />
                 <span class="hidden sm:inline">搜索</span>
               </button>
               {!isSearch.value && <FileNewFolderButton onClick={actionHandlers.newFolder} />}

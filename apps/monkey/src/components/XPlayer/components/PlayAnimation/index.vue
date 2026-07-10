@@ -3,15 +3,14 @@
     v-if="visible"
     :class="[styles.container, animationClass]"
   >
-    <Icon :icon="isShowPause ? ICONS.ICON_PASUE : ICONS.ICON_PLAY" :class="styles.icon" />
+    <Icon :name="isShowPause ? I.PAUSE : I.PLAY" :class="styles.icon" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed, shallowRef, watch } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 /** 样式抽象 */

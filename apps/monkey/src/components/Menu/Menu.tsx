@@ -1,8 +1,8 @@
 import type { SlotsType } from 'vue'
 import type { MenuItem } from './Menu.types'
-import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { Icon } from '@/icons'
 import { MENU_CONFIG } from './config'
 
 const Menu = defineComponent({
@@ -58,7 +58,7 @@ const Menu = defineComponent({
                     'text-2xl',
                     menu.iconColor,
                   ]}
-                  icon={menu.icon}
+                  name={menu.icon}
                 />
                 {menu.name}
               </RouterLink>

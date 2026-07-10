@@ -1,6 +1,6 @@
 import type { PropType } from 'vue'
-import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
+import { I, Icon } from '@/icons'
 
 const FileNewFolderButton = defineComponent({
   name: 'FileNewFolderButton',
@@ -17,7 +17,7 @@ const FileNewFolderButton = defineComponent({
 
     return () => (
       <button class="btn btn-sm btn-glass rounded-full" onClick={handleClick}>
-        <Icon class="text-xl" icon="material-symbols:create-new-folder-outline-rounded" />
+        <Icon class="text-xl" name={I.NEW_FOLDER} />
         <span class="hidden sm:inline">新建</span>
       </button>
     )

@@ -2,7 +2,7 @@ import type { Api } from '@115master/drive115'
 import { GM_xmlhttpRequest } from '$'
 import { Share } from '@115master/drive115'
 
-import { ICON_FILE_FOLDER, ICON_FILE_IMAGE } from '@/icons'
+import { I } from '@/icons'
 
 export class Utils115 {
   static getFileExtensionIcon(ico: string) {
@@ -38,7 +38,7 @@ export class Utils115 {
 
   static getFolderIcon(data: Api.FileApi.Res.Files['data'][number]) {
     if (Utils115.isFolder(data.fc)) {
-      return ICON_FILE_FOLDER
+      return I.FILE_FOLDER
     }
   }
 
@@ -53,7 +53,7 @@ export class Utils115 {
     }
 
     if (Utils115.isImage(data.ico)) {
-      return ICON_FILE_IMAGE
+      return I.FILE_IMAGE
     }
 
     return Utils115.getFileExtensionIcon(data.ico)

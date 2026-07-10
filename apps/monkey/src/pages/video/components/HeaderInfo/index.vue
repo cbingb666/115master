@@ -1,6 +1,8 @@
 <template>
   <div v-if="fileInfo.error" :class="styles.container.error">
-    <div>❌ 获取文件信息失败</div>
+    <div class="flex items-center gap-2">
+      <Icon :name="I.ERROR" class="text-error" />获取文件信息失败
+    </div>
     <div>{{ fileInfo.error }}</div>
   </div>
   <div v-else-if="fileInfo.isLoading || (!fileInfo.isLoading && !fileInfo.isReady)" :class="styles.container.loading">
@@ -43,6 +45,7 @@ import type { useDataFileInfo } from '@/pages/video/data/useDataFileInfo'
 import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
 import { format } from '@115master/utils'
 import { computed } from 'vue'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const props = defineProps<{

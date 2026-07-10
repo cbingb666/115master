@@ -15,7 +15,7 @@
       <Icon
         v-if="displayMessage.icon"
         :class="[styles.icon, displayMessage.iconClass]"
-        :icon="displayMessage.icon"
+        :name="displayMessage.icon"
       />
 
       <!-- 内容区域 -->
@@ -57,10 +57,10 @@
 
 <script setup lang="ts">
 import type { HudMessage } from './types'
-import { Icon } from '@iconify/vue'
 import { computed, isVNode, ref, watch } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
+import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({

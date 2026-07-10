@@ -23,7 +23,7 @@
             :title="`查看 ${label}`"
             @click="emit('view')"
           >
-            <Icon :class="styles.actionIcon" :icon="ICON_VIEW" />
+            <Icon :class="styles.actionIcon" :name="I.VIEW" />
           </button>
           <button
             type="button"
@@ -31,7 +31,7 @@
             :title="`下载 ${label}`"
             @click="emit('download')"
           >
-            <Icon :class="styles.actionIcon" :icon="ICON_DOWNLOAD" />
+            <Icon :class="styles.actionIcon" :name="I.DOWNLOAD" />
           </button>
         </div>
       </div>
@@ -40,8 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
-import { ICON_DOWNLOAD, ICON_VIEW } from '@/components/XPlayer/icons/icons.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 interface Props {

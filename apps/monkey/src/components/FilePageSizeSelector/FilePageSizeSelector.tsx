@@ -1,8 +1,8 @@
 import type { PropType } from 'vue'
-import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS } from '@/constants'
+import { I, Icon } from '@/icons'
 
 const FilePageSizeSelector = defineComponent({
   name: 'FilePageSizeSelector',
@@ -31,7 +31,7 @@ const FilePageSizeSelector = defineComponent({
               tabindex="0"
               {..._props}
             >
-              <Icon class="text-2xl" icon="fluent:document-one-page-multiple-16-regular" />
+              <Icon class="text-2xl" name={I.DOCUMENT} />
               <span class="hidden sm:inline">{props.currentPageSize}</span>
             </button>
           ),

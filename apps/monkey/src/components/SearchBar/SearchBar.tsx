@@ -1,7 +1,7 @@
 import type { PropType } from 'vue'
-import { Icon } from '@iconify/vue'
 import { useMagicKeys } from '@vueuse/core'
 import { computed, defineComponent, shallowRef, useModel, watch } from 'vue'
+import { I, Icon } from '@/icons'
 
 const SearchBar = defineComponent({
   name: 'SearchBar',
@@ -74,7 +74,7 @@ const SearchBar = defineComponent({
         <div class="dropdown">
           <label class="relative z-1 flex w-full items-center gap-2 px-4 py-1.5">
             <div class="text-base-content text-2xl">
-              <Icon icon="mdi:search" />
+              <Icon name={I.SEARCH} />
             </div>
             <input
               ref={inputRef}
@@ -95,7 +95,7 @@ const SearchBar = defineComponent({
             >
               <Icon
                 class="text-base-content text-2xl"
-                icon="mdi:close"
+                name={I.CLOSE}
               />
             </button>
           </label>

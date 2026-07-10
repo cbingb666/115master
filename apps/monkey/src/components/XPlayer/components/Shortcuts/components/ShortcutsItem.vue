@@ -22,7 +22,7 @@
       <span>{{ action.tip }}</span>
     </div>
     <button v-if="isModified" :class="styles.reset" type="button" title="重置" @click="handleReset">
-      <Icon :icon="ICONS.ICON_RESET" class="size-4" />
+      <Icon :name="I.RESET" class="size-4" />
     </button>
   </div>
 </template>
@@ -34,7 +34,6 @@
  */
 
 import type { Action, ActionKey, KeyBindings, KeyBindingStr } from '@/components/XPlayer/components/Shortcuts/shortcuts.types'
-import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
 import {
   hasEmptyKeybindings,
@@ -42,7 +41,7 @@ import {
   isSameKeyBindings,
 } from '@/components/XPlayer/components/Shortcuts/shortcuts.utils'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 import KeyRecorder from './KeyRecorder.vue'
 

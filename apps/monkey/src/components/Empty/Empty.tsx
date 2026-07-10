@@ -1,7 +1,7 @@
 import type { PropType } from 'vue'
-import { Icon } from '@iconify/vue'
+import type { IconName } from '@/icons'
 import { defineComponent } from 'vue'
-import { ICON_EMPTY } from '@/icons'
+import { Icon } from '@/icons'
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
@@ -81,7 +81,7 @@ const Empty = defineComponent({
     },
     icon: {
       type: String,
-      default: ICON_EMPTY,
+      default: 'EMPTY' as IconName,
     },
   },
 
@@ -108,7 +108,7 @@ const Empty = defineComponent({
                 )
               : (
                   <Icon
-                    icon={props.icon}
+                    name={props.icon as IconName}
                     class={`
                       text-base-content/40
                       ${iconSizeClasses[props.size]}

@@ -1,9 +1,8 @@
 import type { SlotsType } from 'vue'
-import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
 import PKG from '@/../package.json'
 import { useSponsorDialog } from '@/components/Sponsor/useSponsorDialog'
-import { ICON_GITHUB, ICON_QA, ICON_SPONSOR } from '@/icons'
+import { Icon } from '@/icons'
 
 interface ExternalLinkItem {
   icon?: string
@@ -23,17 +22,17 @@ const Links = defineComponent({
 
     const links: ExternalLinkItem[] = [
       {
-        icon: ICON_GITHUB,
+        icon: 'GITHUB',
         href: PKG.homepage,
         title: 'GitHub',
       },
       {
-        icon: ICON_SPONSOR,
+        icon: 'SPONSOR',
         title: '赞助',
         onClick: openSponsor,
       },
       {
-        icon: ICON_QA,
+        icon: 'QA',
         href: `${PKG.homepage}/discussions/categories/q-a`,
         title: 'Q&A',
       },
@@ -55,7 +54,7 @@ const Links = defineComponent({
                 title={item.title}
                 onClick={item.onClick}
               >
-                {item.icon && <Icon class="text-lg" icon={item.icon} />}
+                {item.icon && <Icon class="text-lg" name={item.icon} />}
                 {item.text && <span>{item.text}</span>}
               </button>
             )
@@ -67,7 +66,7 @@ const Links = defineComponent({
                 target="_blank"
                 title={item.title}
               >
-                {item.icon && <Icon class="text-lg" icon={item.icon} />}
+                {item.icon && <Icon class="text-lg" name={item.icon} />}
                 {item.text && <span>{item.text}</span>}
               </a>
             ),

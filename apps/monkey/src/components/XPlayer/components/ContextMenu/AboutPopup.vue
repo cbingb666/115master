@@ -9,13 +9,13 @@
       <!-- 头部 -->
       <div :class="styles.container.header">
         <div :class="styles.titleContainer">
-          <Icon :icon="ICONS.ICON_ABOUT" :class="styles.titleIcon" />
+          <Icon :name="I.ABOUT" :class="styles.titleIcon" />
           <h3 :class="styles.container.headerTitle">
             关于
           </h3>
         </div>
         <button :class="styles.closeButton" @click="$emit('update:visible', false)">
-          <Icon :icon="ICONS.ICON_CLOSE" class="size-6" />
+          <Icon :name="I.CLOSE" class="size-6" />
         </button>
       </div>
 
@@ -39,9 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 interface Props {

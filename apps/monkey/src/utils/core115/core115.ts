@@ -81,7 +81,7 @@ export async function load() {
   // 初始化 UDataAPI
   initUDataAPI()
 
-  console.log('[115Master] ✅ Core SDK loaded successfully')
+  console.log('[115Master] Core SDK loaded successfully')
   isLoaded = true
 }
 

@@ -1,9 +1,7 @@
 import type { PlayerContext } from './usePlayerProvide'
 import type { ActionKey } from '@/components/XPlayer/components/Shortcuts/shortcuts.types'
 import { ref, shallowRef } from 'vue'
-import {
-  ICONS,
-} from '@/components/XPlayer/index.const'
+import { I } from '@/icons'
 
 /** 设置标签页类型 */
 export type SettingsTab = 'play' | 'shortcuts'
@@ -53,7 +51,7 @@ export function useContextMenu(ctx: PlayerContext) {
     {
       id: 'settings',
       label: '偏好设置',
-      icon: ICONS.ICON_SETTINGS,
+      icon: I.SETTINGS,
       actionKey: 'shortcuts',
       action: () => {
         defaultSettingsTab.value = 'play'
@@ -64,7 +62,7 @@ export function useContextMenu(ctx: PlayerContext) {
     {
       id: 'statistics',
       label: 'Statistics',
-      icon: ICONS.ICON_STATISTICS_INFO,
+      icon: I.STATISTICS_INFO,
       actionKey: 'statistics',
       action: () => {
         ctx.statistics.toggleVisible()
@@ -74,7 +72,7 @@ export function useContextMenu(ctx: PlayerContext) {
     {
       id: 'about',
       label: '关于',
-      icon: ICONS.ICON_ABOUT,
+      icon: I.ABOUT,
       action: () => {
         showAbout.value = true
         visible.value = false

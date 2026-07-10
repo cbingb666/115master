@@ -1,7 +1,7 @@
 import type { PropType } from 'vue'
-import { Icon } from '@iconify/vue'
 import { useCycleList } from '@vueuse/core'
 import { computed, defineComponent, watch } from 'vue'
+import { Icon } from '@/icons'
 
 export type ViewType = 'list' | 'card'
 
@@ -9,12 +9,12 @@ const VIEW_TYPE_OPTIONS = [
   {
     name: '列表',
     value: 'list' as ViewType,
-    icon: 'material-symbols:view-list',
+    icon: 'LIST_VIEW',
   },
   {
     name: '卡片',
     value: 'card' as ViewType,
-    icon: 'material-symbols:grid-view',
+    icon: 'GRID',
   },
 ]
 const VIEW_TYPE_VALUES = VIEW_TYPE_OPTIONS.map(option => option.value)
@@ -57,7 +57,7 @@ const FileViewType = defineComponent({
 
     return () => (
       <button class="btn btn-sm btn-glass rounded-full" onClick={handleCycle}>
-        <Icon class="text-2xl" icon={currentOption.value.icon} />
+        <Icon class="text-2xl" name={currentOption.value.icon} />
         <span class="hidden sm:inline">{currentOption.value.name}</span>
       </button>
     )

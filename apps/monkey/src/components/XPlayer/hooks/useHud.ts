@@ -2,11 +2,9 @@ import type { PlayerContext } from './usePlayerProvide'
 import type { HudMessage } from '@/components/XPlayer/components/HUD/index'
 import { computed, h, onUnmounted, shallowRef, watch } from 'vue'
 import SubtitleDisplay from '@/components/XPlayer/components/SubtitleDisplay.vue'
-import {
-  ICONS,
-} from '@/components/XPlayer/index.const'
 import { getVolumeIcon } from '@/components/XPlayer/utils/icon'
 import { formatTime } from '@/components/XPlayer/utils/time'
+import { I } from '@/icons'
 
 /** 消息持续时间选项 */
 const DurationOptions = {
@@ -89,7 +87,7 @@ export function useHud(ctx: PlayerContext) {
     // 显示HUD
     show({
       title: digit === 0 ? '跳转到开头' : `跳转到 ${digit}0%`,
-      icon: ICONS.ICON_LOCATION_ON,
+      icon: I.LOCATION_ON,
       value: timeString,
       progress: {
         max: 100,
@@ -152,7 +150,7 @@ export function useHud(ctx: PlayerContext) {
       return
     show({
       title: '倍速',
-      icon: ICONS.ICON_TIMER,
+      icon: I.TIMER,
       value: playbackRate,
     })
   }
@@ -161,7 +159,7 @@ export function useHud(ctx: PlayerContext) {
   if (ctx.subtitles) {
     const { current, currentIndex, total } = ctx.subtitles
     watch(current, (newSubtitle) => {
-      const icon = newSubtitle ? ICONS.ICON_SUBTITLES : ICONS.ICON_SUBTITLES_OFF
+      const icon = newSubtitle ? I.SUBTITLES : I.SUBTITLES_OFF
 
       if (!newSubtitle) {
         show({
@@ -199,7 +197,7 @@ export function useHud(ctx: PlayerContext) {
         return
       show({
         title: '旋转',
-        icon: ICONS.ICON_ROTATE,
+        icon: I.ROTATE,
         value: `${newRotate}°`,
       })
     })
@@ -208,7 +206,7 @@ export function useHud(ctx: PlayerContext) {
     watch(flipX, (newFlipX: boolean) => {
       show({
         title: '水平翻转',
-        icon: ICONS.ICON_FLIP_X,
+        icon: I.FLIP_X,
         value: newFlipX ? '开启' : '关闭',
         iconClass: newFlipX ? 'text-base-content' : 'text-base-content/70',
       })
@@ -218,7 +216,7 @@ export function useHud(ctx: PlayerContext) {
     watch(flipY, (newFlipY: boolean) => {
       show({
         title: '垂直翻转',
-        icon: ICONS.ICON_FLIP_Y,
+        icon: I.FLIP_Y,
         value: newFlipY ? '开启' : '关闭',
         iconClass: newFlipY ? 'text-base-content' : 'text-base-content/70',
       })
@@ -234,7 +232,7 @@ export function useHud(ctx: PlayerContext) {
     const absValue = Math.abs(value)
     /** 如果是百分比模式，value 已经是百分比值（例如 1），直接使用 */
     const title = isPercent ? `${dirText}${absValue}%` : `${dirText}${(absValue)}s`
-    const icon = isForward ? ICONS.ICON_FAST_FORWARD : ICONS.ICON_FAST_REWIND
+    const icon = isForward ? I.FAST_FORWARD : I.FAST_REWIND
 
     // 创建消息并添加进度信息
     show({
@@ -257,7 +255,7 @@ export function useHud(ctx: PlayerContext) {
     const currentProgress = getCurrentProgressPercentage()
     show({
       title: `快速播放 ${rate.value}x`,
-      icon: ICONS.ICON_ROCKET_LAUNCH,
+      icon: I.ROCKET_LAUNCH,
       value: `${formatTime(ctx.playerCore.value?.currentTime || 0)}`,
       progress: {
         max: 100,

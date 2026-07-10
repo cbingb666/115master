@@ -1,8 +1,9 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
+import type { IconName } from '@/icons'
 import { image as imageUtil } from '@115master/utils'
-import { Icon } from '@iconify/vue'
 import { defineComponent } from 'vue'
+import { Icon } from '@/icons'
 import { Utils115 } from '@/utils/utils115'
 
 const FileItemThumbnail = defineComponent({
@@ -152,8 +153,8 @@ const FileItemThumbnail = defineComponent({
           onMousedown={props.onMouseDown}
         >
           <Icon
-            class="text-info h-full w-full drop-shadow-md"
-            icon={icon}
+            class="h-full w-full drop-shadow-md text-primary/80"
+            name={icon as IconName}
           />
           {props.emoji && (
             <span class="
@@ -189,7 +190,7 @@ const FileItemThumbnail = defineComponent({
         >
           <Icon
             class="h-full w-full"
-            icon={icon}
+            name={icon as IconName}
           />
         </div>
       )

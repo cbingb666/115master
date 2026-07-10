@@ -1,9 +1,9 @@
 import type { PropType, VNode } from 'vue'
-import { Icon } from '@iconify/vue'
+import type { IconName } from '@/icons'
 import { useClipboard } from '@vueuse/core'
 import { computed, defineComponent } from 'vue'
 import { MEDIA_ERROR_NAME } from '@/components/XPlayer/index.const'
-import { ICON_ERROR } from '@/icons'
+import { Icon } from '@/icons'
 
 type ErrorType = 'error' | 'warning' | 'info' | 'success'
 type Size = 'mini' | 'small' | 'medium' | 'large'
@@ -66,7 +66,7 @@ export const LoadingError = defineComponent({
     },
     icon: {
       type: String,
-      default: ICON_ERROR,
+      default: 'ERROR' as IconName,
     },
     showDetailButton: {
       type: Boolean,
@@ -77,7 +77,7 @@ export const LoadingError = defineComponent({
   emits: ['retry', 'close'] as const,
 
   setup(props, { emit, slots }: { emit: (event: 'retry' | 'close') => void, slots: { default?: () => VNode } }) {
-    const iconName = computed(() => props.icon)
+    const iconName = computed<IconName>(() => props.icon as IconName)
 
     function isError(value: unknown): value is Error {
       return value instanceof Error
@@ -129,7 +129,7 @@ export const LoadingError = defineComponent({
 
     return () => (
       <div class={containerClass.value}>
-        <Icon icon={iconName.value} class={iconClass.value} />
+        <Icon name={iconName.value} class={iconClass.value} />
 
         <p class={textClass.value}>
           {slots.default ? slots.default() : formatErrorMessage(props.message)}

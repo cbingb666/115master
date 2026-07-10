@@ -11,12 +11,12 @@
     @click="playerCore?.togglePlay"
   >
     <Icon
-      :icon="ICONS.ICON_PASUE" class="swap-off" :class="[
+      :name="I.PAUSE" class="swap-off" :class="[
         styles.btn.icon,
       ]"
     />
     <Icon
-      :icon="ICONS.ICON_PLAY" class="swap-on" :class="[
+      :name="I.PLAY" class="swap-on" :class="[
         styles.btn.icon,
       ]"
     />
@@ -24,11 +24,10 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
 import { controlStyles } from '@/components/XPlayer/styles/common'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({

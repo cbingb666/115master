@@ -28,11 +28,11 @@
     <div :class="styles.footer">
       <div :class="styles.actions">
         <button :class="styles.actionBtn" type="button" @click="handleImport">
-          <Icon :icon="ICONS.ICON_IMPORT" class="size-3.5" />
+          <Icon :name="I.IMPORT" class="size-3.5" />
           <span>导入</span>
         </button>
         <button :class="styles.actionBtn" type="button" @click="handleExport">
-          <Icon :icon="ICONS.ICON_EXPORT" class="size-3.5" />
+          <Icon :name="I.EXPORT" class="size-3.5" />
           <span>导出</span>
         </button>
         <button
@@ -41,7 +41,7 @@
           :class="[styles.actionBtn]"
           @click="handleResetAll"
         >
-          <Icon :icon="ICONS.ICON_RESET_ALL" class="size-3.5" />
+          <Icon :name="I.RESET_ALL" class="size-3.5" />
           重置全部
         </button>
       </div>
@@ -50,12 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed, shallowRef } from 'vue'
 import ShortcutsItem from '@/components/XPlayer/components/Shortcuts/components/ShortcutsItem.vue'
 import { ACTION_GROUPS, EXPORT_FILE_PREFIX } from '@/components/XPlayer/components/Shortcuts/shortcuts.const'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({

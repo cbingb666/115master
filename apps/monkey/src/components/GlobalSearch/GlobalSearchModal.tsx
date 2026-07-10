@@ -1,7 +1,7 @@
-import { Icon } from '@iconify/vue'
 import { useEventListener } from '@vueuse/core'
 import { defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
+import { I, Icon } from '@/icons'
 
 function isEditable(target: EventTarget | null) {
   if (!(target instanceof HTMLElement))
@@ -98,7 +98,7 @@ const GlobalSearchModal = defineComponent({
             onClick={e => e.stopPropagation()}
           >
             <div class="border-base-content/10 flex items-center gap-3 border-b px-4 py-3">
-              <Icon class="text-base-content/70 shrink-0 text-2xl" icon="mdi:search" />
+              <Icon class="text-base-content/70 shrink-0 text-2xl" name={I.SEARCH} />
               <input
                 ref={inputRef}
                 class="h-10 w-full bg-transparent outline-none"
@@ -115,7 +115,7 @@ const GlobalSearchModal = defineComponent({
                 type="button"
                 onClick={() => search.close()}
               >
-                <Icon class="text-xl" icon="material-symbols:close-rounded" />
+                <Icon class="text-xl" name={I.CLOSE} />
               </button>
             </div>
             <div class="max-h-[48vh] overflow-y-auto p-2">
@@ -151,7 +151,7 @@ const GlobalSearchModal = defineComponent({
                         onMouseenter={() => search.setIndex(i)}
                         onClick={() => search.submit(item)}
                       >
-                        <Icon class="text-base-content/70 shrink-0 text-lg" icon="material-symbols:history-rounded" />
+                        <Icon class="text-base-content/70 shrink-0 text-lg" name={I.HISTORY} />
                         <span class="line-clamp-1">{item}</span>
                       </button>
                       <button
@@ -163,7 +163,7 @@ const GlobalSearchModal = defineComponent({
                           search.removeHistory(item)
                         }}
                       >
-                        <Icon class="text-base-content/70 text-base" icon="material-symbols:delete-outline-rounded" />
+                        <Icon class="text-base-content/70 text-base" name={I.DELETE} />
                       </button>
                     </div>
                   ))}

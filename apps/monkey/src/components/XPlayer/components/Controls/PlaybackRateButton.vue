@@ -6,7 +6,7 @@
     :title="playbackRateTip"
     @click="toggleSpeedMenu"
   >
-    <Icon v-if="playbackRate.current.value === 1" :class="styles.btn.icon" :icon="ICONS.ICON_PLAYBACK_RATE" />
+    <Icon v-if="playbackRate.current.value === 1" :class="styles.btn.icon" :name="I.PLAYBACK_RATE" />
     <span v-else>{{ buttonText }}</span>
   </button>
   <Popup
@@ -31,12 +31,11 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed, ref, shallowRef } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
-import { ICONS } from '@/components/XPlayer/index.const'
 import { controlStyles } from '@/components/XPlayer/styles/common'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({

@@ -13,7 +13,7 @@ export class DebugInfo {
   bootstrapInfo() {
     this.logger.info(
       `
-${GM_info.script.name} 启动成功，喜欢这个脚本的话，帮我在主页点个⭐吧！
+${GM_info.script.name} 启动成功，喜欢这个脚本的话，帮我在主页点个Star吧！
 版本: ${GM_info.script.version}
 作者: ${GM_info.script.author}
 描述: ${GM_info.script.description}

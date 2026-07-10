@@ -1,8 +1,9 @@
 import type { MaybeElement } from '@vueuse/core'
 import type { PropType } from 'vue'
+import type { IconName } from '@/icons'
 import type { Action } from '@/types/action'
-import { Icon } from '@iconify/vue'
 import { defineComponent, shallowRef, toValue } from 'vue'
+import { Icon } from '@/icons'
 import { ContextMenu } from '../ContextMenu'
 
 /**
@@ -78,9 +79,9 @@ const FileContextMenu = defineComponent({
                                 : [item.iconColor || '']),
 
                             ]}
-                            icon={toValue(item.active) && item.activeIcon
+                            name={(toValue(item.active) && item.activeIcon
                               ? item.activeIcon
-                              : item.icon}
+                              : item.icon) as IconName}
                           >
                           </Icon>
                           {toValue(item.active) && item.activeLabel

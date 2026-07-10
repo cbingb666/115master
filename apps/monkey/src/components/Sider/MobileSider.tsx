@@ -1,7 +1,7 @@
 import type { SlotsType } from 'vue'
-import { Icon } from '@iconify/vue'
 import { defineComponent, ref } from 'vue'
 import ThemeToggle from '@/components/ThemeToggle'
+import { I, Icon } from '@/icons'
 import Links from './Links'
 
 const MobileSider = defineComponent({
@@ -36,7 +36,7 @@ const MobileSider = defineComponent({
           "
           onClick={open}
         >
-          <Icon icon="lucide:menu" class="text-xl" />
+          <Icon name={I.MENU} class="text-xl" />
         </button>
 
         {/* 遮罩层 */}

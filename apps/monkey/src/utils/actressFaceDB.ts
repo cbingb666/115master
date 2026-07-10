@@ -72,10 +72,10 @@ export class ActressFaceDB {
       }
       const data: ActressImageInfo = await response.json()
       await this.processAndSaveData(data)
-      GM_notification('✅ 头像数据库更新完成')
+      GM_notification('头像数据库更新完成')
     }
     catch (error) {
-      GM_notification(`❌ 更新头像数据库失败 ${error instanceof Error ? error.message : '未知错误'}`)
+      GM_notification(`更新头像数据库失败 ${error instanceof Error ? error.message : '未知错误'}`)
       this.logger.error('更新头像数据库失败:', error)
       throw error
     }

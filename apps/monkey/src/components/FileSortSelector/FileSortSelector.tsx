@@ -1,13 +1,13 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import type { Sort } from './FileSortSelector.types'
-import { Icon } from '@iconify/vue'
 import { computed, defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
+import { I, Icon } from '@/icons'
 import { SORT_OPTIONS } from './config'
 
 function dirIcon(asc: Share.Base.Sorter['asc']) {
-  return asc === 1 ? 'material-symbols:arrow-upward-rounded' : 'material-symbols:arrow-downward-rounded'
+  return asc === 1 ? I.ARROW_UP : I.ARROW_DOWN
 }
 
 /**
@@ -55,7 +55,7 @@ const FileSortSelector = defineComponent({
     })
 
     const sortField = computed(() => {
-      return current.value?.icon ?? 'mdi:sort'
+      return current.value?.icon ?? I.SORT
     })
 
     const sortDir = computed(() => {
@@ -96,8 +96,8 @@ const FileSortSelector = defineComponent({
                   props.fc_mix === 0
                   && <div class="bg-primary absolute top-1 -left-1 size-1.5 -translate-y-1/2 rounded-full" />
                 }
-                <Icon class="text-xl sm:text-2xl" icon={sortField.value} />
-                <Icon class={`absolute ${props.asc === 1 ? 'top-0' : 'bottom-0'} -right-3 size-3`} icon={sortDir.value} />
+                <Icon class="text-xl sm:text-2xl" name={sortField.value} />
+                <Icon class={`absolute ${props.asc === 1 ? 'top-0' : 'bottom-0'} -right-3 size-3`} name={sortDir.value} />
               </span>
               <span class="relative max-w-24 truncate text-xs sm:max-w-none sm:text-sm">
                 {sortLabel.value}
@@ -134,7 +134,7 @@ const FileSortSelector = defineComponent({
                         'active:bg-primary/10': !on,
                       }}
                     >
-                      <Icon class="text-lg" icon={option.icon} />
+                      <Icon class="text-lg" name={option.icon} />
                       <span class="mr-auto ml-2">{option.name}</span>
                       {items.map((item) => {
                         const active = isSortOptionActive(item)
@@ -148,7 +148,7 @@ const FileSortSelector = defineComponent({
                             type="button"
                             onClick={() => handleSort(item)}
                           >
-                            <Icon class="text-sm" icon={dirIcon(item.asc)} />
+                            <Icon class="text-sm" name={dirIcon(item.asc)} />
                           </button>
                         )
                       })}

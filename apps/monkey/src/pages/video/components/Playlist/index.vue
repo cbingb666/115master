@@ -3,7 +3,7 @@
     <div :class="styles.box">
       <div :class="styles.playlist.header.root">
         <div :class="styles.playlist.header.title">
-          <Icon :icon="ICON_PLAYLIST" class="size-10" />
+          <Icon :name="I.PLAYLIST" class="size-10" />
           播放列表
           <span
             v-if="playlist.state?.data?.length && playlist.state?.data?.length > 0"
@@ -11,7 +11,7 @@
           >({{ playlist.state?.data.length }})</span>
         </div>
         <button :class="styles.playlist.header.close" @click="emit('close')">
-          <Icon :icon="ICON_CLOSE" :class="styles.playlist.header.closeIcon" />
+          <Icon :name="I.CLOSE" :class="styles.playlist.header.closeIcon" />
         </button>
       </div>
 
@@ -43,10 +43,9 @@
 import type { Share } from '@115master/drive115'
 import type PlaylistItemVue from './item.vue'
 import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
-import { Icon } from '@iconify/vue'
 import { nextTick, useTemplateRef, watch } from 'vue'
 import { LoadingError } from '@/components'
-import { ICON_CLOSE, ICON_PLAYLIST } from '@/icons'
+import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 import PlaylistItem from './item.vue'
 
