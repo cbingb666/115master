@@ -59,15 +59,15 @@ const FileItemThumbnail = defineComponent({
         <img
           class="
             group-data-[view-type=card]:border-base-content/5
+            group-data-[view-type=list]:border-base-content/10
             aspect-square
             cursor-grab
-            rounded-full
-            object-cover object-top
-            group-data-[view-type=card]:absolute
-            group-data-[view-type=card]:h-[61%]! group-data-[view-type=card]:rounded-full
-            group-data-[view-type=card]:border-3
-            group-data-[view-type=list]:size-13 group-data-[view-type=list]:border
-            group-data-[view-type=list]:border-base-content/10
+            rounded-full object-cover
+            object-top
+            group-data-[view-type=card]:absolute group-data-[view-type=card]:h-[61%]!
+            group-data-[view-type=card]:rounded-full
+            group-data-[view-type=card]:border-3 group-data-[view-type=list]:size-13
+            group-data-[view-type=list]:border
           "
           draggable={props.draggable}
           src={props.actressUrl}
@@ -109,12 +109,12 @@ const FileItemThumbnail = defineComponent({
       return (
         <img
           class="
-            cursor-grab rounded-md object-cover
-            group-data-[view-type=card]:relative group-data-[view-type=card]:aspect-square
-            group-data-[view-type=card]:h-[70%] group-data-[view-type=card]:object-contain
-            group-data-[view-type=card]:transition-all
-            group-data-[view-type=list]:size-14 group-data-[view-type=list]:ring-1
-            group-data-[view-type=list]:ring-base-content/10
+            group-data-[view-type=list]:ring-base-content/10 cursor-grab rounded-md
+            object-cover group-data-[view-type=card]:relative
+            group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[70%]
+            group-data-[view-type=card]:object-contain
+            group-data-[view-type=card]:transition-all group-data-[view-type=list]:size-14
+            group-data-[view-type=list]:ring-1
           "
           decoding="async"
           draggable={props.draggable}
@@ -152,7 +152,7 @@ const FileItemThumbnail = defineComponent({
           onMousedown={props.onMouseDown}
         >
           <Icon
-            class="h-full w-full text-info drop-shadow-md"
+            class="text-info h-full w-full drop-shadow-md"
             icon={icon}
           />
           {props.emoji && (

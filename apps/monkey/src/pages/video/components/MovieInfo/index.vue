@@ -286,7 +286,7 @@ const styles = clsx({
     avatarImage: 'rounded-full',
     name: 'text-base-content pr-2 text-base',
     sexBadge: {
-      base: 'absolute -top-0.5 -right-0.5 flex h-4 w-4 rotate-45 items-center justify-center rounded-full text-xs text-secondary-content',
+      base: 'text-secondary-content absolute -top-0.5 -right-0.5 flex h-4 w-4 rotate-45 items-center justify-center rounded-full text-xs',
       female: 'bg-secondary/80',
       male: 'bg-primary/80',
     },

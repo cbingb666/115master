@@ -190,7 +190,7 @@ const styles = clsx({
       'relative',
     ],
     pageMain: ['relative h-screen w-full overflow-hidden bg-black'],
-    pageFlow: 'flex w-full flex-col gap-8 bg-base-100 px-6 py-8 xl:px-36',
+    pageFlow: 'bg-base-100 flex w-full flex-col gap-8 px-6 py-8 xl:px-36',
   },
   // 播放器样式
   player: {

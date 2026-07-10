@@ -16,10 +16,10 @@ export default defineComponent({
     return () => (
       <div class="flex h-full flex-col">
         <div class="flex items-center gap-3 px-8 py-6">
-          <Icon icon="mdi:flask-outline" class="text-3xl text-primary" />
+          <Icon icon="mdi:flask-outline" class="text-primary text-3xl" />
           <div>
             <h1 class="text-2xl font-bold">测试实验室</h1>
-            <p class="text-sm text-base-content/60">开发调试 & 功能验证</p>
+            <p class="text-base-content/60 text-sm">开发调试 & 功能验证</p>
           </div>
         </div>
 
@@ -43,9 +43,9 @@ export default defineComponent({
                     class="bg-base-200/50 hover:bg-base-200 cursor-pointer rounded-xl p-6 transition-colors"
                     onClick={() => active.value = t.key}
                   >
-                    <Icon icon={t.icon} class="text-3xl text-primary mb-3" />
+                    <Icon icon={t.icon} class="text-primary mb-3 text-3xl" />
                     <div class="font-medium">{t.label}</div>
-                    <div class="text-sm text-base-content/60 mt-1">{t.desc}</div>
+                    <div class="text-base-content/60 mt-1 text-sm">{t.desc}</div>
                   </div>
                 ))}
               </div>

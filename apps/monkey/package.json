@@ -85,7 +85,7 @@
     "@vitejs/plugin-vue-jsx": "^5.0.1",
     "@vitest/coverage-v8": "^4.1.8",
     "@vitest/ui": "^4.1.8",
-    "daisyui": "^5.5.14",
+    "daisyui": "^5.6.16",
     "rollup-plugin-visualizer": "^5.14.0",
     "tslib": "^2.8.1",
     "type-fest": "^5.3.1",

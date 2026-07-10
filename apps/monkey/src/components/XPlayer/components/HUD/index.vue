@@ -64,7 +64,7 @@ import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
-  popup: 'bg-base-100/50! top-6!  left-6! backdrop-blur-sm! backdrop-brightness-100! backdrop-saturate-120! app-shadow!',
+  popup: 'bg-base-100/50! app-shadow!  top-6! left-6! backdrop-blur-sm! backdrop-brightness-100! backdrop-saturate-120!',
   wrap: 'flex items-center gap-2 px-4 py-2',
   content: 'flex flex-1 flex-col gap-1 px-1',
   icon: 'size-6',

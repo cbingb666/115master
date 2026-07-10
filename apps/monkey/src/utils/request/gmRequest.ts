@@ -1,7 +1,7 @@
-import { GM_info, GM_xmlhttpRequest } from 'vite-plugin-monkey/dist/client'
 import type { IRequest, IRequestCache, RequestOptions, ResponseType } from '@115master/shared'
 import { InfraError } from '@115master/shared'
 import { merge } from 'lodash'
+import { GM_info, GM_xmlhttpRequest } from 'vite-plugin-monkey/dist/client'
 import { GMRequestCache } from '@/utils/cache/gmRequestCache'
 
 /** 默认请求选项 */

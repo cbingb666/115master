@@ -19,7 +19,7 @@ const OPTIONS: ThemeOption[] = [
   { value: 'dark', label: '深色', icon: ICON_THEME_DARK, title: '深色' },
 ]
 
-// 共享单例 ref：DesktopSider 与 MobileSider 都会挂载 ThemeToggle，需保持高亮同步
+/** 共享单例 ref：DesktopSider 与 MobileSider 都会挂载 ThemeToggle，需保持高亮同步 */
 const currentMode = ref<ThemeMode>(userSettings.value.theme)
 function pickMode(mode: ThemeMode) {
   currentMode.value = mode
@@ -43,7 +43,7 @@ const ThemeToggle = defineComponent({
         role="radiogroup"
         aria-label="主题"
       >
-        {OPTIONS.map(opt => {
+        {OPTIONS.map((opt) => {
           const active = currentMode.value === opt.value
           return (
             <button

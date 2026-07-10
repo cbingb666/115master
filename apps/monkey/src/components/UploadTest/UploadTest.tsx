@@ -48,7 +48,8 @@ const UploadTest = defineComponent({
     }
 
     async function startUpload() {
-      if (!file.value || !uid.value) return
+      if (!file.value || !uid.value)
+        return
 
       status.value = 'uploading'
       appError.value = ''
@@ -83,10 +84,11 @@ const UploadTest = defineComponent({
             data: form,
             timeout: 5 * 60 * 1000,
             onload: (r) => {
-              if (r.status === 200) resolve(r.responseText)
+              if (r.status === 200)
+                resolve(r.responseText)
               else reject(new Error(`OSS ${r.status}: ${r.responseText.substring(0, 300)}`))
             },
-            onerror: (e) => reject(new Error(`请求失败: ${e.error}`)),
+            onerror: e => reject(new Error(`请求失败: ${e.error}`)),
             ontimeout: () => reject(new Error('上传超时')),
           })
         })
@@ -106,7 +108,7 @@ const UploadTest = defineComponent({
       <div class="flex flex-col gap-6">
         {/* 文件选择 */}
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-medium text-base-content/60">选择文件</label>
+          <label class="text-base-content/60 text-sm font-medium">选择文件</label>
           <div
             class={[
               'border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors',
@@ -117,14 +119,14 @@ const UploadTest = defineComponent({
             {file.value
               ? (
                   <div class="flex flex-col gap-2">
-                    <Icon icon="mdi:file-upload-outline" class="text-3xl text-primary mx-auto" />
+                    <Icon icon="mdi:file-upload-outline" class="text-primary mx-auto text-3xl" />
                     <div class="font-medium">{file.value.name}</div>
-                    <div class="text-sm text-base-content/60">{format.fileSize(file.value.size)}</div>
+                    <div class="text-base-content/60 text-sm">{format.fileSize(file.value.size)}</div>
                   </div>
                 )
               : (
                   <div class="flex flex-col gap-2">
-                    <Icon icon="mdi:cloud-upload-outline" class="text-4xl text-base-content/50 mx-auto" />
+                    <Icon icon="mdi:cloud-upload-outline" class="text-base-content/50 mx-auto text-4xl" />
                     <div class="text-base-content/60">点击选择文件或拖拽到此处</div>
                   </div>
                 )}
@@ -149,15 +151,24 @@ const UploadTest = defineComponent({
         {/* 结果 */}
         {status.value === 'completed' && result.value && (
           <div class="bg-success/10 rounded-xl p-3 text-sm">
-            <div class="font-medium text-success mb-1">上传成功</div>
-            <div>pick_code: <code class="text-xs">{result.value.data.pick_code}</code></div>
-            <div>sha1: <code class="text-xs">{result.value.data.sha1}</code></div>
-            <div>file_id: <code class="text-xs">{result.value.data.file_id}</code></div>
+            <div class="text-success mb-1 font-medium">上传成功</div>
+            <div>
+              pick_code:
+              <code class="text-xs">{result.value.data.pick_code}</code>
+            </div>
+            <div>
+              sha1:
+              <code class="text-xs">{result.value.data.sha1}</code>
+            </div>
+            <div>
+              file_id:
+              <code class="text-xs">{result.value.data.file_id}</code>
+            </div>
           </div>
         )}
 
         {status.value === 'error' && appError.value && (
-          <div class="bg-error/10 rounded-xl p-3 text-sm text-error">{appError.value}</div>
+          <div class="bg-error/10 text-error rounded-xl p-3 text-sm">{appError.value}</div>
         )}
 
         {/* 操作按钮 */}
@@ -169,12 +180,15 @@ const UploadTest = defineComponent({
             </button>
           )}
           {status.value === 'completed' && (
-            <button class="btn btn-ghost flex-1" onClick={() => {
-              file.value = null
-              status.value = 'idle'
-              logs.value = []
-              result.value = null
-            }}>
+            <button
+              class="btn btn-ghost flex-1"
+              onClick={() => {
+                file.value = null
+                status.value = 'idle'
+                logs.value = []
+                result.value = null
+              }}
+            >
               重新上传
             </button>
           )}
@@ -187,8 +201,8 @@ const UploadTest = defineComponent({
         {/* 日志 */}
         {logs.value.length > 0 && (
           <div class="flex flex-col gap-1">
-            <label class="text-sm font-medium text-base-content/60">上传日志</label>
-            <div class="bg-base-300/50 rounded-xl p-3 text-xs font-mono h-32 overflow-y-auto space-y-0.5">
+            <label class="text-base-content/60 text-sm font-medium">上传日志</label>
+            <div class="bg-base-300/50 h-32 space-y-0.5 overflow-y-auto rounded-xl p-3 font-mono text-xs">
               {logs.value.map((l, i) => (
                 <div key={i} class="text-base-content/60">{l}</div>
               ))}

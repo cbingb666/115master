@@ -1,6 +1,7 @@
+import type { ProcessedSubtitle } from '@115master/subtitle-source'
 import type { Subtitle } from '@/components/XPlayer/types'
 import { FetchRequest } from '@115master/shared'
-import { subtitleSource, type ProcessedSubtitle } from '@115master/subtitle-source'
+import { subtitleSource } from '@115master/subtitle-source'
 import { array, string } from '@115master/utils'
 import { useAsyncState } from '@vueuse/core'
 import { shallowRef } from 'vue'
@@ -23,6 +24,16 @@ const thunder = new subtitleSource.Thunder({
 export function useDataSubtitles() {
   const currentId = shallowRef<string>()
 
+  const toSubtitle = (subtitle: ProcessedSubtitle): Subtitle => ({
+    id: subtitle.id,
+    label: subtitle.title,
+    srclang: subtitle.targetLanguage,
+    source: 'Subtitle Cat',
+    raw: subtitle.raw,
+    format: subtitle.format,
+    kind: 'subtitles' as const,
+  })
+
   /** 通过 subtitleCat 获取字幕 */
   const getFromSubtitlecat = async (keyword: string): Promise<Subtitle[]> => {
     if (!keyword)
@@ -42,16 +53,6 @@ export function useDataSubtitles() {
 
     return subtitles
   }
-
-  const toSubtitle = (subtitle: ProcessedSubtitle): Subtitle => ({
-    id: subtitle.id,
-    label: subtitle.title,
-    srclang: subtitle.targetLanguage,
-    source: 'Subtitle Cat',
-    raw: subtitle.raw,
-    format: subtitle.format,
-    kind: 'subtitles' as const,
-  })
 
   /** 通过迅雷获取字幕 */
   const getFromThunder = async (filename: string): Promise<Subtitle[]> => {

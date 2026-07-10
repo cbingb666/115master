@@ -74,7 +74,7 @@ const styles = clsx({
   ],
   playlist: {
     container: [
-      'relative box-border flex h-full flex-col text-base-content',
+      'text-base-content relative box-border flex h-full flex-col',
       '[--app-playlist-space:calc(var(--spacing)*4)]',
       '[--app-playlist-header-height:calc(var(--spacing)*16)]',
     ],

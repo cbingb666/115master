@@ -117,7 +117,7 @@ const CloudDownload = defineComponent({
           </div>
 
           {/* 配额信息 */}
-          <div class="mt-2 flex items-center gap-2 text-sm text-base-content/60">
+          <div class="text-base-content/60 mt-2 flex items-center gap-2 text-sm">
             本月配额：剩
             {quotaStore.state?.surplus}
             /总

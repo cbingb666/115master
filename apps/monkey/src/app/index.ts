@@ -62,7 +62,7 @@ function resetDocument() {
   document.title = ''
 
   // fix scrollbar 在主页下丢失，因为 vite-plugin-monkey 的 css 处理会造成全局污染
-  // 滚动条颜色按主题区分：dark 用白色滑块，light 用黑色滑块，确保两边都可见
+  /** 滚动条颜色按主题区分：dark 用白色滑块，light 用黑色滑块，确保两边都可见 */
   const isDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? true
   const thumbColor = isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.25)'
   const thumbHoverColor = isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.4)'

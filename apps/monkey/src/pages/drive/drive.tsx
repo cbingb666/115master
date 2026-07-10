@@ -178,7 +178,7 @@ const Drive = defineComponent({
       return (
         <>
           <div class="flex items-center justify-center pt-7 pb-4">
-            <LogoWordmark role="img" aria-label="115Master" class="h-10 w-auto text-base-content" />
+            <LogoWordmark role="img" aria-label="115Master" class="text-base-content h-10 w-auto" />
           </div>
           <div class="bg-base-content/5 mb-4 h-px w-full" />
           <button
