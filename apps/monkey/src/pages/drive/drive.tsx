@@ -173,7 +173,7 @@ const Drive = defineComponent({
           </div>
           <div class="bg-base-content/5 mb-3 h-px w-full" />
           <button
-            class="btn btn-primary btn-sm h-10"
+            class="btn btn-primary h-10"
             onClick={() => actionHandlers.cloudDownload()}
           >
             <Icon class="text-xl" name={I.ADD_LINK} />

@@ -73,7 +73,6 @@ const FileContextMenu = defineComponent({
                         >
                           <Icon
                             class={[
-                              'size-5',
                               ...(toValue(item.active)
                                 ? [item.activeIconColor || 'text-primary']
                                 : [item.iconColor || '']),
