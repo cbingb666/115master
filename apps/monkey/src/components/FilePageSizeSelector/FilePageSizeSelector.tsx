@@ -40,7 +40,7 @@ const FilePageSizeSelector = defineComponent({
               {PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS.map(option => (
                 <li key={option} class="sm:w-36">
                   <a
-                    class={{ 'bg-primary': props.currentPageSize === option }}
+                    class={{ 'bg-primary text-primary-content': props.currentPageSize === option }}
                     tabindex="0"
                     onClick={() => handlePageSize(option)}
                   >

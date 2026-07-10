@@ -129,8 +129,9 @@ const FileSortSelector = defineComponent({
                   <li key={option.order} class="sm:w-42">
                     <div
                       class={{
-                        'flex items-center gap-1 px-3 py-2': true,
-                        'bg-base-content/30': on,
+                        'flex items-center gap-1 px-3 py-2 transition-colors': true,
+                        'bg-primary/15 active:bg-primary/25': on,
+                        'active:bg-primary/10': !on,
                       }}
                     >
                       <Icon class="text-lg" icon={option.icon} />
@@ -141,7 +142,7 @@ const FileSortSelector = defineComponent({
                         return (
                           <button
                             key={`${item.order}-${item.asc}`}
-                            class={`btn btn-xs ${active ? 'btn-primary' : 'btn-glass'}`}
+                            class={`btn btn-xs ${active ? 'btn-primary' : `${on ? 'hover:bg-primary/25' : 'hover:bg-primary/15'} btn-ghost`}`}
                             aria-label={`${option.name}${item.asc === 1 ? '升序' : '降序'}`}
                             tabindex="0"
                             type="button"
