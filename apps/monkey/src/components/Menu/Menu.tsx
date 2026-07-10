@@ -42,20 +42,20 @@ const Menu = defineComponent({
     }
 
     return () => (
-      <ul class="flex w-full flex-col gap-1">
+      <ul class="flex w-full flex-col gap-0.5">
         {
           MENU_CONFIG.map(menu => (
             <li key={menu.name}>
               <RouterLink
                 class={[
-                  'btn btn-ghost hover:bg-base-content/5 hover:border-base-content/5 w-full justify-start gap-3 px-6',
+                  'btn btn-ghost btn-sm hover:bg-base-content/5 hover:border-base-content/5 h-10 w-full justify-start gap-3 px-4 font-normal',
                   isActive(menu) && 'bg-base-content/5 border-base-content/5',
                 ]}
                 to={menu.to}
               >
                 <Icon
                   class={[
-                    'text-2xl',
+                    'text-xl',
                     menu.iconColor,
                   ]}
                   name={menu.icon}

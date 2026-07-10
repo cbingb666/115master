@@ -171,26 +171,26 @@ const Drive = defineComponent({
           <div class="flex items-center justify-center pt-7 pb-4">
             <LogoWordmark role="img" aria-label="115Master" class="text-base-content h-10 w-auto" />
           </div>
-          <div class="bg-base-content/5 mb-4 h-px w-full" />
+          <div class="bg-base-content/5 mb-3 h-px w-full" />
           <button
-            class="btn btn-primary"
+            class="btn btn-primary btn-sm h-10"
             onClick={() => actionHandlers.cloudDownload()}
           >
-            <Icon class="text-2xl" name={I.ADD_LINK} />
+            <Icon class="text-xl" name={I.ADD_LINK} />
             离线下载
           </button>
-          <div class="bg-base-content/5 my-4 h-px w-full" />
+          <div class="bg-base-content/5 my-3 h-px w-full" />
           <Menu class="flex-1" />
-          <div class="bg-base-content/5 my-4 h-px w-full" />
+          <div class="bg-base-content/5 my-3 h-px w-full" />
           <div class="mt-2 flex flex-none flex-col gap-2" v-show={spaceInfo.state?.state === true}>
             <div class="text-base-content/70 text-sm">
               {format.fileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0)}
               {' / '}
               {format.fileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0)}
             </div>
-            <progress class="progress progress-lg progress-primary w-38" max={100} value={value.value} />
+            <progress class="progress progress-md progress-primary w-38" max={100} value={value.value} />
           </div>
-          <div class="bg-base-content/5 my-4 h-px w-full" />
+          <div class="bg-base-content/5 my-3 h-px w-full" />
         </>
       )
     }
