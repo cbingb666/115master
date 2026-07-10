@@ -62,7 +62,7 @@ import { Icon, I } from '@/icons'
 
 ## 3. 使用示例
 
-### 3.1 基础
+### 3.1 基础（Vue / TSX 都必须用 `I.*`）
 
 ```vue
 <script setup lang="ts">
@@ -71,12 +71,22 @@ import { Icon, I } from '@/icons'
 
 <template>
   <Icon :name="I.PLAY" />
-  <Icon name="CLOSE" size="xs" class="text-base-content/70" />
-  <Icon name="STAR_FILL" size="lg" class="text-error" />
+  <Icon :name="I.CLOSE" size="xs" class="text-base-content/70" />
+  <Icon :name="I.STAR_FILL" size="lg" class="text-error" />
 </template>
 ```
 
-> 两种调用方式等价：`:name="I.PLAY"` 与 `name="PLAY"` 都通过 `IconName` 类型校验。
+```tsx
+import { Icon, I } from '@/icons'
+
+return (
+  <Icon name={I.PLAY} />
+  <Icon name={I.CLOSE} size="xs" class="text-base-content/70" />
+  <Icon name={I.STAR_FILL} size="lg" class="text-error" />
+)
+```
+
+> **禁止**写 `<Icon name="PLAY" />` / `<Icon name={"PLAY"} />` 字面量。虽然 TS 不会报错（`name: IconName` 接受字面量），但绕过了 `I.*` 集中引用，改名 / 重构时无法被 lint 拦截。**必须**用 `:name="I.PLAY"` / `name={I.PLAY}`。
 
 ### 3.2 在 TS 中使用（h 函数 / 字符串模板）
 
@@ -91,7 +101,7 @@ const icon = I.PREVIEW_ON
 
 ```vue
 <button class="btn btn-circle btn-link text-base-content hover:text-base-content/80">
-  <Icon name="PLAY" size="xl" />
+  <Icon :name="I.PLAY" size="xl" />
 </button>
 ```
 
@@ -100,10 +110,10 @@ const icon = I.PREVIEW_ON
 ```vue
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Icon } from '@/icons'
+import { Icon, I } from '@/icons'
 
 const playing = ref(false)
-const name = computed(() => (playing.value ? 'PAUSE' : 'PLAY'))
+const name = computed(() => (playing.value ? I.PAUSE : I.PLAY))
 </script>
 
 <template>
@@ -157,6 +167,7 @@ container.append(el)
 | `style="color: red"`                                            | 紧急修一个视觉问题，没用语义类                     |
 | `export * from './icons'`                                       | 跨包转发时图省事                                   |
 | 用 emoji 替代图标                                               | 注释或 toast 文案里偶尔用 ⭐ ✅                     |
+| **`<Icon name="PLAY" />` 字面量字符串**                          | vue/tsx 里偷懒写字符串，绕过 `I.*` 集中引用        |
 
 ---
 
