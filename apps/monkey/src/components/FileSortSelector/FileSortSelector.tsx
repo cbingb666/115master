@@ -6,10 +6,6 @@ import { ResponsiveMenu } from '@/components'
 import { I, Icon } from '@/icons'
 import { SORT_OPTIONS } from './config'
 
-function dirIcon(asc: Share.Base.Sorter['asc']) {
-  return asc === 1 ? I.ARROW_UP : I.ARROW_DOWN
-}
-
 /**
  * 文件排序选择器
  */
@@ -58,10 +54,6 @@ const FileSortSelector = defineComponent({
       return current.value?.icon ?? I.SORT
     })
 
-    const sortDir = computed(() => {
-      return dirIcon(props.asc)
-    })
-
     const isSortOptionActive = (option: Sort) => {
       return props.order === option.order && props.asc === option.asc
     }
@@ -91,13 +83,17 @@ const FileSortSelector = defineComponent({
               tabindex="0"
               {..._props}
             >
-              <span class="relative mr-3">
+              <span class="relative inline-flex items-center gap-0.5">
                 {
                   props.fc_mix === 0
-                  && <div class="bg-primary absolute top-1 -left-1 size-1.5 -translate-y-1/2 rounded-full" />
+                  && <div class="bg-primary absolute top-0 -left-1 size-1.5 -translate-y-1/2 rounded-full" />
                 }
-                <Icon class="text-xl sm:text-2xl" name={sortField.value} />
-                <Icon class={`absolute ${props.asc === 1 ? 'top-0' : 'bottom-0'} -right-3 size-3`} name={sortDir.value} />
+                <Icon class="text-xl" name={sortField.value} />
+                <Icon
+                  size="xs"
+                  class={`text-base-content/60 ${props.asc === 1 ? '' : 'rotate-180'}`}
+                  name={I.ARROW_UP}
+                />
               </span>
               <span class="relative max-w-24 truncate text-xs sm:max-w-none sm:text-sm">
                 {sortLabel.value}
@@ -148,7 +144,10 @@ const FileSortSelector = defineComponent({
                             type="button"
                             onClick={() => handleSort(item)}
                           >
-                            <Icon class="text-sm" name={dirIcon(item.asc)} />
+                            <Icon
+                              class={`text-sm ${item.asc === 1 ? '' : 'rotate-180'}`}
+                              name={I.ARROW_UP}
+                            />
                           </button>
                         )
                       })}
