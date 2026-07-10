@@ -52,7 +52,8 @@ const FileItemCheckbox = defineComponent({
         <input
           class="
             checkbox checkbox-sm
-            checked:bg-primary opacity-0
+            checked:bg-primary checked:text-primary-content
+            checked:border-primary opacity-0
             transition-all group-hover:opacity-100
             checked:opacity-100
           "
