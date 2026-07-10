@@ -1,64 +1,89 @@
-/** 收藏 */
-export const ICON_STAR_FILL = 'fluent-emoji-flat:pink-heart'
-/** 未收藏 */
-export const ICON_STAR = 'fluent-emoji-flat:white-heart'
-/** 复制 */
-export const ICON_COPY = 'solar:copy-bold-duotone'
-/** error */
-export const ICON_ERROR = 'line-md:alert-circle-twotone-loop'
-/** 空状态 */
-export const ICON_EMPTY = 'heroicons:inbox'
-/** 播放列表 */
-export const ICON_PLAYLIST = 'material-symbols:playlist-play-rounded'
-/** 关闭/收起 */
-export const ICON_CLOSE = 'material-symbols:close-rounded'
-/** right */
-export const ICON_RIGHT = 'bytesize:chevron-right'
-/** left */
-export const ICON_LEFT = 'bytesize:chevron-left'
-/** menu */
-export const ICON_MENU = 'mdi:menu'
-/** 移动 */
-export const ICON_MOVE = 'material-symbols:drive-file-move-outline-rounded'
-/** 重命名 */
-export const ICON_RENAME = 'mdi:rename-outline'
-/** 下载 */
-export const ICON_DOWNLOAD = 'material-symbols:download-rounded'
-/** 删除 */
-export const ICON_DELETE = 'material-symbols:delete-outline-rounded'
-/** 全部文件 */
-export const ICON_ALL_FILE = 'material-icon-theme:folder-aws'
-/** 取消选择 */
-export const ICON_CANCEL = 'material-symbols:cancel-outline-rounded'
-/** 文件图片 */
-export const ICON_FILE_IMAGE = 'material-icon-theme:image'
-/** 文件夹 */
-export const ICON_FILE_FOLDER = 'material-symbols:folder-rounded'
-/** 置顶 */
-export const ICON_TOP = 'material-symbols:push-pin-outline'
-/** 取消置顶 */
-export const ICON_TOP_SOLID = 'material-symbols:push-pin'
-/** 文件提升 */
-export const ICON_FILE_IMPROVE = 'mdi:transfer-up'
-/** Toast 成功 */
-export const ICON_TOAST_SUCCESS = 'material-symbols:check-circle-rounded'
-/** Toast 错误 */
-export const ICON_TOAST_ERROR = 'material-symbols:error-rounded'
-/** Toast 警告 */
-export const ICON_TOAST_WARNING = 'material-symbols:warning-rounded'
-/** Toast 信息 */
-export const ICON_TOAST_INFO = 'material-symbols:info-rounded'
-/** Toast 关闭 */
-export const ICON_TOAST_CLOSE = 'material-symbols:close-small-rounded'
-// GitHub
-export const ICON_GITHUB = 'mdi:github'
-// Q&A
-export const ICON_QA = 'mdi:question-mark-circle'
-// 赞助
-export const ICON_SPONSOR = 'streamline-kameleon-color:coffee-paper-glass-duo'
-// 浅色
-export const ICON_THEME_LIGHT = 'material-symbols:light-mode-outline-rounded'
-// 深色
-export const ICON_THEME_DARK = 'material-symbols:dark-mode-outline-rounded'
-// 跟随系统
-export const ICON_THEME_SYSTEM = 'material-symbols:brightness-auto-outline-rounded'
+import Icon from './icon.vue'
+import { ICONS_LEGACY } from './legacy'
+import { I } from './registry'
+
+export { I, Icon, ICONS_LEGACY }
+export type { IconName, IconSize } from './types'
+
+// 兼容旧名：保留所有 ICON_* 直接导出，避免破坏现有 import
+export const {
+  ICON_STAR_FILL,
+  ICON_STAR,
+  ICON_COPY,
+  ICON_ERROR,
+  ICON_EMPTY,
+  ICON_PLAYLIST,
+  ICON_CLOSE,
+  ICON_RIGHT,
+  ICON_LEFT,
+  ICON_MENU,
+  ICON_MOVE,
+  ICON_RENAME,
+  ICON_DOWNLOAD,
+  ICON_DELETE,
+  ICON_ALL_FILE,
+  ICON_CANCEL,
+  ICON_FILE_IMAGE,
+  ICON_FILE_FOLDER,
+  ICON_TOP,
+  ICON_TOP_SOLID,
+  ICON_FILE_IMPROVE,
+  ICON_TOAST_SUCCESS,
+  ICON_TOAST_ERROR,
+  ICON_TOAST_WARNING,
+  ICON_TOAST_INFO,
+  ICON_TOAST_CLOSE,
+  ICON_GITHUB,
+  ICON_QA,
+  ICON_SPONSOR,
+  ICON_THEME_LIGHT,
+  ICON_THEME_DARK,
+  ICON_THEME_SYSTEM,
+  ICON_RESTART,
+  ICON_AUTO_LOAD,
+  ICON_PIP,
+  ICON_PIP_EXIT,
+  ICON_SETTINGS,
+  ICON_PASUE,
+  ICON_PLAY,
+  ICON_PLAYER_CORE,
+  ICON_AUDIO_TRACK,
+  ICON_LOADING,
+  ICON_FAST_FORWARD,
+  ICON_FAST_REWIND,
+  ICON_TRANSFORM,
+  ICON_ROTATE_LEFT,
+  ICON_ROTATE_RIGHT,
+  ICON_ROTATE_NORMAL,
+  ICON_FLIP_X,
+  ICON_FLIP_Y,
+  ICON_LOCATION_ON,
+  ICON_ROCKET_LAUNCH,
+  ICON_ROTATE,
+  ICON_SUBTITLES,
+  ICON_SUBTITLES_OFF,
+  ICON_TIMER,
+  ICON_VOLUME_OFF,
+  ICON_VOLUME_MUTE,
+  ICON_VOLUME_DOWN,
+  ICON_VOLUME_UP,
+  ICON_STATISTICS_INFO,
+  ICON_SHORTCUTS,
+  ICON_ABOUT,
+  ICON_COLOR_ADJUST,
+  ICON_VIEW,
+  ICON_OTHER,
+  ICON_EXTENSION_FEATURE,
+  ICON_WINDOW,
+  ICON_PREV,
+  ICON_NEXT,
+  ICON_FULLSCREEN,
+  ICON_FULLSCREEN_EXIT,
+  ICON_RESET,
+  ICON_EXPORT,
+  ICON_IMPORT,
+  ICON_RESET_ALL,
+  ICON_PLAYBACK_RATE,
+  ICON_QUALITY,
+  ICON_PLUS,
+} = ICONS_LEGACY
