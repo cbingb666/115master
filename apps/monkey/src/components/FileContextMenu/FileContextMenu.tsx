@@ -73,7 +73,7 @@ const FileContextMenu = defineComponent({
                         >
                           <Icon
                             class={[
-                              'size-6',
+                              'size-5',
                               ...(toValue(item.active)
                                 ? [item.activeIconColor || 'text-primary']
                                 : [item.iconColor || '']),
@@ -93,7 +93,7 @@ const FileContextMenu = defineComponent({
                   }
                 </ul>
                 {index < props.actionConfig.length - 1 && (
-                  <hr class="border-base-content/10 my-1" />
+                  <hr class="border-base-content/10 mx-2 my-1" />
                 )}
               </>
             )
