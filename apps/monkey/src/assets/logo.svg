@@ -1,8 +1,8 @@
-<svg viewBox="0 0 132 102" xmlns="http://www.w3.org/2000/svg" color="#1a1a1a">
+<svg id="lg-8f2n4v7p" viewBox="0 0 132 102" xmlns="http://www.w3.org/2000/svg" color="#1a1a1a">
     <title>logo</title>
     <style>
         @media (prefers-color-scheme: dark) {
-            svg { color: #ffffff !important; }
+            #lg-8f2n4v7p { color: #ffffff !important; }
         }
     </style>
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

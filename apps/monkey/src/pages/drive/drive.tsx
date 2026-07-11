@@ -5,7 +5,7 @@ import { useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { router } from '@/app/router'
-import LogoWordmark from '@/assets/logo-wordmark.svg?component'
+import LogoWordmark from '@/assets/logo-wordmark-inline.svg?component'
 import {
   FileContextMenu,
   FileItem,
