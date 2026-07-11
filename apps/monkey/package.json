@@ -91,6 +91,7 @@
     "type-fest": "^5.3.1",
     "typescript": "^5.7.3",
     "vite": "^6.0.11",
+    "vite-plugin-mkcert": "^2.1.0",
     "vite-plugin-monkey": "^5.0.5",
     "vite-plugin-static-copy": "^2.3.0",
     "vite-svg-loader": "^5.1.0",

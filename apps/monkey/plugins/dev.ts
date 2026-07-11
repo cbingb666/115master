@@ -55,7 +55,7 @@ function logBanner(branch: string, port: number) {
   console.log(`[monkey-dev] branch : ${branch || '(empty)'}`)
   console.log(`[monkey-dev] name   : ${devName(branch)}`)
   console.log(`[monkey-dev] port   : ${port}`)
-  console.log(`[monkey-dev] install: http://127.0.0.1:${port}/115master.user.js`)
+  console.log(`[monkey-dev] install: https://127.0.0.1:${port}/115master.user.js`)
   console.log(`[monkey-dev] open   : https://115.com/?bn=${branch}`)
 }
 
