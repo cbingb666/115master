@@ -1,6 +1,5 @@
 import { defineComponent, ref } from 'vue'
 import PKG from '@/../package.json'
-import { useSponsorDialog } from '@/components/Sponsor/useSponsorDialog'
 import ThemeToggle from '@/components/ThemeToggle'
 import { I, Icon } from '@/icons'
 
@@ -21,7 +20,6 @@ const PreferencesContent = defineComponent({
   name: 'PreferencesContent',
   setup() {
     const active = ref<SectionId>('appearance')
-    const openSponsor = useSponsorDialog()
 
     return () => (
       <div class="flex gap-4 pt-4 pb-4">
@@ -77,18 +75,18 @@ const PreferencesContent = defineComponent({
                   </span>
                   <Icon name={I.RIGHT} class="text-base-content/40 text-base" />
                 </a>
-                <button
-                  type="button"
-                  class="border-base-content/10 hover:bg-base-content/5 flex cursor-pointer items-center justify-between rounded-lg border px-3 py-2"
+                <a
+                  class="border-base-content/10 hover:bg-base-content/5 flex items-center justify-between rounded-lg border px-3 py-2"
+                  href={PKG.funding}
+                  target="_blank"
                   title="赞助"
-                  onClick={openSponsor}
                 >
                   <span class="flex items-center gap-2">
                     <Icon name={I.SPONSOR} class="text-base" />
                     <span>赞助</span>
                   </span>
                   <Icon name={I.RIGHT} class="text-base-content/40 text-base" />
-                </button>
+                </a>
               </div>
             </div>
           )}
