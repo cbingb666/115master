@@ -23,8 +23,8 @@ const PreferencesContent = defineComponent({
     const active = ref<SectionId>('appearance')
 
     return () => (
-      <div class="flex gap-4 pt-4 pb-4">
-        <nav class="border-base-content/10 flex w-40 shrink-0 flex-col gap-1 self-start border-r pr-3">
+      <div class="flex flex-col gap-4 pt-4 pb-4 sm:flex-row">
+        <nav class="border-base-content/10 flex w-full shrink-0 flex-row gap-1 self-start border-b pb-2 sm:w-40 sm:flex-col sm:border-b-0 sm:border-r sm:pr-3 sm:pb-0">
           {SECTIONS.map(section => (
             <button
               key={section.id}
@@ -43,7 +43,7 @@ const PreferencesContent = defineComponent({
           ))}
         </nav>
 
-        <div class="flex-1 overflow-y-auto pl-3 pr-1">
+        <div class="flex-1 overflow-y-auto sm:pl-3 sm:pr-1">
           {active.value === 'appearance' && (
             <div class="flex flex-col gap-4">
               <div>
