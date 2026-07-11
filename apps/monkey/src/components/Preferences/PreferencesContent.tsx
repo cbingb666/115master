@@ -1,4 +1,5 @@
 import { defineComponent, ref } from 'vue'
+import { GM_info } from '$'
 import PKG from '@/../package.json'
 import ThemeToggle from '@/components/ThemeToggle'
 import { I, Icon } from '@/icons'
@@ -23,7 +24,7 @@ const PreferencesContent = defineComponent({
 
     return () => (
       <div class="flex gap-4 pt-4 pb-4">
-        <nav class="border-base-content/10 flex w-40 shrink-0 flex-col gap-1 border-r pr-3">
+        <nav class="border-base-content/10 flex w-40 shrink-0 flex-col gap-1 self-start border-r pr-3">
           {SECTIONS.map(section => (
             <button
               key={section.id}
@@ -56,7 +57,7 @@ const PreferencesContent = defineComponent({
           {active.value === 'about' && (
             <div class="flex flex-col gap-4 text-sm">
               <div>
-                <h3 class="text-base-content font-medium">{PKG.description}</h3>
+                <h3 class="text-base-content font-medium">{GM_info.script.name}</h3>
                 <p class="text-base-content/60 mt-1 text-xs">
                   v
                   {PKG.version}
