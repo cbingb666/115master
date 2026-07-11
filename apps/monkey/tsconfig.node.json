@@ -4,6 +4,7 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
   },
   "include": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "plugins/**/*.ts"
   ]
 }
