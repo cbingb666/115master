@@ -29,6 +29,7 @@ export const I = {
   RESET: 'ion:refresh',
   RESET_ALL: 'ion:refresh-circle',
   BACK_DIR: 'ion:arrow-back',
+  CHEVRON_DOWN: 'ion:caret-down-circle-outline',
   EMPTY: 'ion:cube',
 
   // === 媒体控制 ===
@@ -79,7 +80,6 @@ export const I = {
   ARROW_DOWN: 'ion:arrow-down',
   SORT: 'ion:options',
   BACK_DIR_ARROW: 'ion:arrow-back-circle',
-
 
   // === 通知 / Toast ===
   TOAST_SUCCESS: 'ion:checkmark-circle',
