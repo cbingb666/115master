@@ -3,6 +3,7 @@ import { ExtractApiClient } from './clients/extract/index.ts'
 import { FileApiClient } from './clients/file/index.ts'
 import { ImageApiClient } from './clients/image/index.ts'
 import { OfflineApiClient } from './clients/offline/index.ts'
+import { TagApiClient } from './clients/tag/index.ts'
 import { UploadApiClient } from './clients/upload/index.ts'
 import { UserApiClient } from './clients/user/index.ts'
 import { VideoApiClient } from './clients/video/index.ts'
@@ -30,6 +31,8 @@ export class Drive115 {
   image: ImageApiClient
   /** 上传 API */
   upload: UploadApiClient
+  /** 标签 API */
+  tag: TagApiClient
 
   constructor(deps: Drive115Deps) {
     this.extract = new ExtractApiClient(deps)
@@ -39,5 +42,6 @@ export class Drive115 {
     this.user = new UserApiClient(deps)
     this.image = new ImageApiClient(deps)
     this.upload = new UploadApiClient(deps)
+    this.tag = new TagApiClient(deps)
   }
 }
