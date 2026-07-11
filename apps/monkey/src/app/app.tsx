@@ -33,22 +33,13 @@ const App = defineComponent({
             <GlobalSearchModal />
             <RouterView>
               {{
-                default: ({ Component, route }: any) => (
-                  <>
-                    <KeepAlive>
-                      {
-                        route.meta?.keepAlive && (
-                          <Component key={route.name as string} />
-                        )
-                      }
-                    </KeepAlive>
-                    {
-                      !route.meta?.keepAlive && (
-                        <Component />
-                      )
-                    }
-                  </>
-                ),
+                default: ({ Component, route }: any) => {
+                  if (!Component)
+                    return null
+                  if (route.meta?.keepAlive)
+                    return <KeepAlive><Component key={route.name as string} /></KeepAlive>
+                  return <Component />
+                },
               }}
             </RouterView>
           </ToastContainer>
