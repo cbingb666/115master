@@ -334,22 +334,22 @@ describe('extractApiClient', () => {
           })),
       )
 
-      // Step 1: query status
+      /** Step 1: query status */
       const s1 = await client.getExtractStatus(pickCode)
       expect(s1.data.extract_status.unzip_status).toBe(0)
 
-      // Step 2: start extraction (POST)
+      /** Step 2: start extraction (POST) */
       const s2 = await client.startExtract({ pick_code: pickCode })
       expect(s2.state).toBe(true)
       expect(s2.data.unzip_status).toBe(1)
       expect(post).toHaveBeenCalledTimes(1)
 
-      // Step 3: poll progress
+      /** Step 3: poll progress */
       const s3 = await client.getExtractStatus(pickCode)
       expect(s3.data.extract_status.unzip_status).toBe(1)
       expect(s3.data.extract_status.progress).toBe(100)
 
-      // Step 4: extraction complete
+      /** Step 4: extraction complete */
       const s4 = await client.getExtractStatus(pickCode)
       expect(s4.data.extract_status.unzip_status).toBe(4)
     })

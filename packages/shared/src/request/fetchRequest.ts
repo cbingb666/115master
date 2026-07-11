@@ -1,7 +1,6 @@
-import type { RequestOptions, ResponseType } from './types.ts'
+import type { IRequest, RequestOptions, ResponseType } from './types.ts'
 import { merge } from 'lodash'
 import { InfraError } from '../error/InfraError.ts'
-import { IRequest } from './types.ts'
 
 /** 默认请求选项 */
 const DEFAULT_OPTIONS: RequestOptions = {
@@ -157,4 +156,3 @@ export class FetchRequest implements IRequest {
     return urlObj.href
   }
 }
-

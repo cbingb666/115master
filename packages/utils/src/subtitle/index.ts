@@ -14,7 +14,7 @@ export function srtToVtt(srt: string): string {
     if (lines.length < 2)
       return
 
-    // 部分 SRT 不带序号，需遍历查找时间码行
+    /** 部分 SRT 不带序号，需遍历查找时间码行 */
     let timeCodeIndex = 0
     for (let i = 0; i < lines.length; i++) {
       if (

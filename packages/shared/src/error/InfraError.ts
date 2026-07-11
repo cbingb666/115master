@@ -8,9 +8,9 @@ export class InfraError extends Error {
 
   constructor(
     message: string,
-    public readonly url: string,
-    public readonly statusCode?: number,
-    public readonly retryable: boolean = false,
+    readonly url: string,
+    readonly statusCode?: number,
+    readonly retryable: boolean = false,
     cause?: unknown,
   ) {
     super(message)

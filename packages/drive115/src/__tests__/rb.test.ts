@@ -96,7 +96,7 @@ describe('deleteFiles', () => {
     )
 
     const res = await client.deleteFiles({
-      pid: '3013116589290552633',
+      'pid': '3013116589290552633',
       'fid[0]': '3460275804229863111',
       'fid[1]': '3460273038497417148',
     })
@@ -106,7 +106,7 @@ describe('deleteFiles', () => {
     expect(post.mock.calls[0][0]).toContain('/rb/delete')
     expect(post.mock.calls[0][1]).toEqual({
       data: {
-        pid: '3013116589290552633',
+        'pid': '3013116589290552633',
         'fid[0]': '3460275804229863111',
         'fid[1]': '3460273038497417148',
       },
@@ -124,9 +124,9 @@ describe('deleteFiles', () => {
     )
 
     const res = await client.deleteFiles({
-      pid: '3013116589290552633',
+      'pid': '3013116589290552633',
       'fid[0]': '3460275804229863111',
-      ignore_warn: 1,
+      'ignore_warn': 1,
     })
 
     expect(res.state).toBe(true)
@@ -211,7 +211,7 @@ describe('cleanRbFiles', () => {
 
     const res = await client.cleanRbFiles({
       'rid[0]': '3460275804229863111',
-      password: '947694',
+      'password': '947694',
     })
 
     expect(res.state).toBe(true)
@@ -220,7 +220,7 @@ describe('cleanRbFiles', () => {
     expect(post.mock.calls[0][1]).toEqual({
       data: {
         'rid[0]': '3460275804229863111',
-        password: '947694',
+        'password': '947694',
       },
     })
   })
@@ -236,7 +236,7 @@ describe('cleanRbFiles', () => {
 
     const res = await client.cleanRbFiles({
       'rid[0]': '3460275804229863111',
-      password: '000000',
+      'password': '000000',
     })
 
     expect(res.state).toBe(false)

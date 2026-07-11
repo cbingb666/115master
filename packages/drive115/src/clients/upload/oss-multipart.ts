@@ -41,8 +41,11 @@ export async function ossSign(
 
   const encoder = new TextEncoder()
   const key = await crypto.subtle.importKey(
-    'raw', encoder.encode(secret),
-    { name: 'HMAC', hash: 'SHA-1' }, false, ['sign'],
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-1' },
+    false,
+    ['sign'],
   )
   const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(stringToSign))
   return btoa(String.fromCharCode(...new Uint8Array(sig)))
@@ -53,7 +56,7 @@ function paramsStr(bucket: string, object: string, params: Record<string, string
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([k, v]) => v ? `${k}=${v}` : k)
     .join('&')
-  return `/${bucket}/${object}${qs ? '?' + qs : ''}`
+  return `/${bucket}/${object}${qs ? `?${qs}` : ''}`
 }
 
 async function ossRequest(
@@ -81,7 +84,7 @@ async function ossRequest(
   const signature = await ossSign(method, bucket, object, creds.accessKeySecret, date, opts.params || {}, baseHeaders)
 
   const qs = opts.params
-    ? '?' + new URLSearchParams(opts.params).toString()
+    ? `?${new URLSearchParams(opts.params).toString()}`
     : ''
 
   const url = `https://${hostname}/${encodeURI(object)}${qs}`
@@ -90,7 +93,7 @@ async function ossRequest(
     method,
     headers: {
       ...baseHeaders,
-      'Authorization': `OSS ${creds.accessKeyId}:${signature}`,
+      Authorization: `OSS ${creds.accessKeyId}:${signature}`,
     },
     body,
   })
@@ -156,9 +159,9 @@ export async function completeMultipart(
   creds: OssCredentials,
 ): Promise<void> {
   const sorted = [...parts].sort((a, b) => a.partNumber - b.partNumber)
-  const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<CompleteMultipartUpload>\n'
-    + sorted.map(p => `<Part><PartNumber>${p.partNumber}</PartNumber><ETag>${p.etag}</ETag></Part>`).join('\n')
-    + '\n</CompleteMultipartUpload>'
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<CompleteMultipartUpload>\n${
+    sorted.map(p => `<Part><PartNumber>${p.partNumber}</PartNumber><ETag>${p.etag}</ETag></Part>`).join('\n')
+  }\n</CompleteMultipartUpload>`
 
   const resp = await ossRequest('POST', hostname, object, creds, {
     params: { uploadId },

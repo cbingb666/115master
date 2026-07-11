@@ -1,5 +1,5 @@
-import type { Res } from './index.ts'
 import type { UploadApiClient } from './client.ts'
+import type { Res } from './index.ts'
 import type { OssCredentials, UploadedPart } from './oss-multipart.ts'
 import * as Oss from './oss-multipart.ts'
 
@@ -41,7 +41,7 @@ export interface UploadSession {
 /** 文件数据源 */
 export interface FileSource {
   size: number
-  read(offset: number, length: number): Promise<Uint8Array>
+  read: (offset: number, length: number) => Promise<Uint8Array>
 }
 
 /** 浏览器端 Blob 数据源（通过 Blob.slice 实现随机读取） */
@@ -80,6 +80,10 @@ export class BlobFileSource implements FileSource {
  * ```
  */
 export class MultipartUpload {
+  onProgress?: (progress: Progress) => void
+  onPartComplete?: (part: PartState) => void
+  onPartFailed?: (part: PartState, error: Error) => void
+
   private source: FileSource
   private client: UploadApiClient
   private params: { filename: string, filesize: number, userid: string, target: string }
@@ -95,10 +99,6 @@ export class MultipartUpload {
   private _pickcode?: string
   private _parts: PartState[] = []
   private _abort?: AbortController
-
-  onProgress?: (progress: Progress) => void
-  onPartComplete?: (part: PartState) => void
-  onPartFailed?: (part: PartState, error: Error) => void
 
   constructor(opts: {
     source: FileSource
@@ -212,11 +212,11 @@ export class MultipartUpload {
     if (this._parts.length === 0)
       this._parts = this.buildParts()
 
-    // Step 4: 上传分片
+    /** Step 4: 上传分片 */
     const pending = this._parts.filter(p => p.status === 'pending' || p.status === 'failed')
     await this.uploadParts(pending, creds)
 
-    // 检查是否全部完成
+    /** 检查是否全部完成 */
     const allDone = this._parts.every(p => p.status === 'done')
     if (!allDone) {
       this._state = 'paused'
@@ -236,7 +236,7 @@ export class MultipartUpload {
     }))
     await Oss.completeMultipart(hostname, objectKey, uploadId, uploaded, creds)
 
-    // Step 6: 通知 115
+    /** Step 6: 通知 115 */
     const result = await this.client.resumeUpload({
       ...this.params,
       pickcode: this._pickcode || objectKey,
@@ -319,8 +319,12 @@ export class MultipartUpload {
 
         const data = await this.source.read(part.start, part.size)
         const etag = await Oss.uploadPart(
-          hostname, objectKey, uploadId,
-          part.partNumber, data, creds,
+          hostname,
+          objectKey,
+          uploadId,
+          part.partNumber,
+          data,
+          creds,
         )
 
         part.status = 'done'

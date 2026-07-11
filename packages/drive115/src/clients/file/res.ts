@@ -88,7 +88,7 @@ export type PostRbDelete = ApiResponseBase<{
 }>
 
 /** 获取回收站列表 */
-export type GetRbList = {
+export interface GetRbList {
   state: boolean
   error: string
   /** 总数 */

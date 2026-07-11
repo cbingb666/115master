@@ -6,7 +6,7 @@
     @click="toggleMenu"
   >
     <Icon
-      :class="[ styles.btn.icon ]"
+      :class="[styles.btn.icon]"
       :name="I.COLOR_ADJUST"
     />
   </button>

@@ -1,5 +1,5 @@
-import { I } from '@/icons'
 import type { MenuItem } from './Menu.types'
+import { I } from '@/icons'
 
 export const MENU_CONFIG: MenuItem[] = [
   {

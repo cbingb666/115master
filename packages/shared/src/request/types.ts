@@ -27,10 +27,10 @@ export interface IRequestCache {
 
 /** 请求接口 */
 export interface IRequest {
-  get(url: string, options?: RequestOptions): Promise<ResponseType>
-  post(url: string, options?: RequestOptions): Promise<ResponseType>
-  request(
+  get: (url: string, options?: RequestOptions) => Promise<ResponseType>
+  post: (url: string, options?: RequestOptions) => Promise<ResponseType>
+  request: (
     url: string,
     options?: RequestOptions,
-  ): Promise<ResponseType>
+  ) => Promise<ResponseType>
 }

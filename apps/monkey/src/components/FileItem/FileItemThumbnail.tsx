@@ -153,7 +153,7 @@ const FileItemThumbnail = defineComponent({
           onMousedown={props.onMouseDown}
         >
           <Icon
-            class="h-full w-full drop-shadow-md text-primary/80"
+            class="text-primary/80 h-full w-full drop-shadow-md"
             name={icon as IconName}
           />
           {props.emoji && (

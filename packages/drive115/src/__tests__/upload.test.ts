@@ -1,9 +1,9 @@
 import type { IRequest } from '@115master/shared'
+import type { Req } from '../clients/upload/index.ts'
 import { describe, expect, it, vi } from 'vitest'
 import { UploadApiClient } from '../clients/upload/client.ts'
-import type { Req } from '../clients/upload/index.ts'
-import { multipartStream, multipartBodySize } from '../clients/upload/multipart.ts'
 import { BlobFileSource } from '../clients/upload/multipart-upload.ts'
+import { multipartBodySize, multipartStream } from '../clients/upload/multipart.ts'
 import { ossHostname, ossSign } from '../clients/upload/oss-multipart.ts'
 
 function createMockRequest(get = vi.fn(), post = vi.fn(), req = vi.fn()): IRequest {
@@ -47,7 +47,7 @@ describe('uploadApiClient', () => {
       target: 'U_1_0',
     }
 
-    it('POSTs to uplb.115.com with form-urlencoded body', async () => {
+    it('pOSTs to uplb.115.com with form-urlencoded body', async () => {
       const { client, post } = createClient(
         vi.fn(),
         vi.fn().mockImplementation(() => jsonResponse(mockUploadInfo)),
@@ -104,7 +104,7 @@ describe('uploadApiClient', () => {
   })
 
   describe('upload', () => {
-    // OSS 返回 XML PostResponse，不是 JSON
+    /** OSS 返回 XML PostResponse，不是 JSON */
     const ossXml = `<?xml version="1.0" encoding="UTF-8"?>
 <PostResponse>
   <Bucket>fhnfile</Bucket>
@@ -117,7 +117,7 @@ describe('uploadApiClient', () => {
       return Promise.resolve(new Response(ossXml, { status: 200 }))
     }
 
-    it('POSTs to OSS and parses XML response', async () => {
+    it('pOSTs to OSS and parses XML response', async () => {
       const initPost = vi.fn().mockImplementation(() => jsonResponse(mockUploadInfo))
       const ossReq = vi.fn().mockImplementation(() => xmlResponse())
       const { client } = createClient(
@@ -160,7 +160,8 @@ describe('uploadApiClient', () => {
       const { client } = createClient(
         vi.fn(),
         vi.fn().mockImplementation((url: string, opts: unknown) => {
-          if (url.includes('uplb')) return initPost(url, opts)
+          if (url.includes('uplb'))
+            return initPost(url, opts)
           return ossReq(url, opts)
         }),
         ossReq,
@@ -230,7 +231,8 @@ async function readStream(stream: ReadableStream<Uint8Array>): Promise<Uint8Arra
   const chunks: Uint8Array[] = []
   while (true) {
     const { done, value } = await reader.read()
-    if (done) break
+    if (done)
+      break
     chunks.push(value)
   }
   return concat(chunks)
@@ -258,7 +260,7 @@ describe('multipartStream', () => {
     expect(text).toContain('name="file"')
     expect(text).toContain('test.bin')
     expect(text).toContain(`--${boundary}--`)
-    // file content should be present before closing boundary
+    /** file content should be present before closing boundary */
     const tailStart = body.length - (`\r\n--${boundary}--\r\n`.length + content.length)
     expect(new TextDecoder().decode(body.slice(tailStart, tailStart + content.length)))
       .toBe(new TextDecoder().decode(content))
@@ -295,7 +297,7 @@ describe('getToken', () => {
     Expiration: '2026-07-07T21:25:28Z',
   }
 
-  it('POSTs to gettoken.php with correct params', async () => {
+  it('pOSTs to gettoken.php with correct params', async () => {
     const { client, post } = createClient(
       vi.fn(),
       vi.fn().mockImplementation(() => jsonResponse(mockStsToken)),
@@ -330,7 +332,7 @@ describe('getUploadInfo', () => {
     gettokenurl: 'https://uplb.115.com/3.0/gettoken.php',
   }
 
-  it('POSTs to getuploadinfo.php and returns config', async () => {
+  it('pOSTs to getuploadinfo.php and returns config', async () => {
     const { client, post } = createClient(
       vi.fn(),
       vi.fn().mockImplementation(() => jsonResponse(mockUploadInfo)),
@@ -354,15 +356,25 @@ describe('resumeUpload', () => {
     message: '',
     code: 0,
     data: {
-      aid: 1, area_id: 1, cid: '1',
-      file_name: 'large.rar', file_ptime: 1783448985,
-      file_status: 1, file_id: '2', file_size: '2000000000',
-      pick_code: 'pick123', sha1: 'SHA1', sp: 0,
-      file_type: 103, object_id: '', user_id: '340263991', is_video: 0,
+      aid: 1,
+      area_id: 1,
+      cid: '1',
+      file_name: 'large.rar',
+      file_ptime: 1783448985,
+      file_status: 1,
+      file_id: '2',
+      file_size: '2000000000',
+      pick_code: 'pick123',
+      sha1: 'SHA1',
+      sp: 0,
+      file_type: 103,
+      object_id: '',
+      user_id: '340263991',
+      is_video: 0,
     },
   }
 
-  it('POSTs to resumeupload.php with correct params', async () => {
+  it('pOSTs to resumeupload.php with correct params', async () => {
     const { client, post } = createClient(
       vi.fn(),
       vi.fn().mockImplementation(() => jsonResponse(mockResult)),
@@ -396,7 +408,9 @@ describe('oss-multipart', () => {
   it('ossSign produces valid base64 signature', async () => {
     const date = 'Fri, 07 Jul 2026 12:00:00 GMT'
     const sig = await ossSign(
-      'PUT', 'fhnfile', 'test.bin',
+      'PUT',
+      'fhnfile',
+      'test.bin',
       'testsecret',
       date,
       { partNumber: '1', uploadId: 'UPLOADID' },
@@ -406,7 +420,7 @@ describe('oss-multipart', () => {
     expect(sig).toBeTruthy()
     expect(typeof sig).toBe('string')
     // base64 字符集
-    expect(sig).toMatch(/^[A-Za-z0-9+/=]+$/)
+    expect(sig).toMatch(/^[A-Z0-9+/=]+$/i)
     // 对于 HMAC-SHA1，base64 输出长度固定为 28
     expect(sig.length).toBe(28)
   })
@@ -430,7 +444,7 @@ describe('oss-multipart', () => {
   })
 })
 
-describe('BlobFileSource', () => {
+describe('blobFileSource', () => {
   it('reads chunks from Blob at specified offsets', async () => {
     const data = new Uint8Array(1024)
     for (let i = 0; i < 1024; i++) data[i] = i % 256

@@ -92,7 +92,7 @@ describe('subtitleSource.SubtitleCat', () => {
       }
       return Promise.reject(new Error(`unexpected url: ${url}`))
     }))
-    const cat = new SubtitleCat({ request})
+    const cat = new SubtitleCat({ request })
 
     const result = await cat.fetchSubtitle(keyword, language)
 
@@ -120,7 +120,7 @@ describe('subtitleSource.SubtitleCat', () => {
       }
       return Promise.reject(new Error(`unexpected url: ${url}`))
     }))
-    const cat = new SubtitleCat({ request})
+    const cat = new SubtitleCat({ request })
 
     const result = await cat.fetchSubtitle(keyword, language)
 
@@ -146,7 +146,7 @@ describe('subtitleSource.SubtitleCat', () => {
     `
 
     const request = createMockRequest(vi.fn().mockResolvedValue(createMockResponse(() => searchHtml)))
-    const cat = new SubtitleCat({ request})
+    const cat = new SubtitleCat({ request })
 
     const result = await cat.fetchSubtitle(keyword, language)
 
@@ -181,7 +181,7 @@ describe('subtitleSource.SubtitleCat', () => {
       }
       return Promise.reject(new Error(`unexpected url: ${url}`))
     }))
-    const cat = new SubtitleCat({ request})
+    const cat = new SubtitleCat({ request })
 
     const result = await cat.fetchSubtitle(keyword, language)
 
@@ -210,7 +210,7 @@ describe('subtitleSource.SubtitleCat', () => {
       }
       return Promise.reject(new Error(`unexpected url: ${url}`))
     }))
-    const cat = new SubtitleCat({ request})
+    const cat = new SubtitleCat({ request })
 
     const result = await cat.fetchSubtitle(keyword, language)
 
@@ -241,7 +241,7 @@ describe('subtitleSource.SubtitleCat', () => {
       }
       return Promise.reject(new Error(`unexpected url: ${url}`))
     }))
-    const cat = new SubtitleCat({ request})
+    const cat = new SubtitleCat({ request })
 
     const result = await cat.fetchSubtitle(keyword, language)
 
@@ -265,7 +265,7 @@ describe('subtitleSource.SubtitleCat', () => {
       }
       return Promise.reject(new Error(`unexpected url: ${url}`))
     }))
-    const cat = new SubtitleCat({ request})
+    const cat = new SubtitleCat({ request })
 
     const result = await cat.fetchSubtitle(keyword, language)
 

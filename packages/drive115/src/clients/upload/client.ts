@@ -1,7 +1,7 @@
 import type { Req, Res } from './index.ts'
-import { BaseApiClient } from '../base.ts'
 import { URL_115 } from '../../share/constant.ts'
-import { multipartStream, multipartBodySize } from './multipart.ts'
+import { BaseApiClient } from '../base.ts'
+import { multipartBodySize, multipartStream } from './multipart.ts'
 
 /**
  * 文件上传 API
@@ -207,7 +207,7 @@ export class UploadApiClient extends BaseApiClient {
       target: params.target,
     })
 
-    // OSS 返回 XML（不是 JSON），解析 PostResponse 确认成功
+    /** OSS 返回 XML（不是 JSON），解析 PostResponse 确认成功 */
     function buildForm(file: Blob | File) {
       const form = new FormData()
       form.append('key', info.object)
@@ -226,7 +226,7 @@ export class UploadApiClient extends BaseApiClient {
       return parseOssResponse(resp, info)
     }
 
-    const boundary = '----WebKitFormBoundary' + Math.random().toString(36).slice(2)
+    const boundary = `----WebKitFormBoundary${Math.random().toString(36).slice(2)}`
     const fields = [
       { name: 'key', value: info.object },
       { name: 'policy', value: info.policy },

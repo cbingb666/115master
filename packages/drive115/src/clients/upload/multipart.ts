@@ -43,7 +43,8 @@ export function multipartStream(
         return
       }
       if (!fileDone) {
-        if (!reader) reader = fileStream.getReader()
+        if (!reader)
+          reader = fileStream.getReader()
         const { done, value } = await reader.read()
         if (done) {
           fileDone = true

@@ -4,12 +4,12 @@
  * 这个包包含跨应用共享的工具函数、类型定义和常量
  */
 
-// 错误
-export { InfraError } from './error/index.ts'
-
 // 缓存
 export { CacheCore, MetaStore, QuotaManager } from './cache/index.ts'
+
 export type { CacheCoreOptions, CacheMetaItem, CacheValue, StorageUsage } from './cache/index.ts'
+// 错误
+export { InfraError } from './error/index.ts'
 
 // 日志
 export { Logger } from './logger/index.ts'

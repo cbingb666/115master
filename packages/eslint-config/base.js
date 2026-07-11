@@ -5,6 +5,7 @@ export const baseConfig = antfu({
   vue: true,
   ignores: [
     'docs/**',
+    '**/AGENTS.md',
   ],
   rules: {
     /** 禁用 alert */

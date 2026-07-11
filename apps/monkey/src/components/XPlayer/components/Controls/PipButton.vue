@@ -4,7 +4,7 @@
     :title="pipTip" :disabled="playerCore?.type === PlayerCoreType.AvPlayer" @click="pictureInPicture.toggle"
   >
     <Icon v-if="pictureInPicture.isPip.value" :name="I.PIP_EXIT" :class="[styles.btn.icon]" />
-    <Icon v-else :name="I.PIP"  :class="[styles.btn.icon]" />
+    <Icon v-else :name="I.PIP" :class="[styles.btn.icon]" />
   </button>
 </template>
 
