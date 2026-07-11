@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { GM_info } from '$'
 import PKG from '@/../package.json'
 import ThemeToggle from '@/components/ThemeToggle'
@@ -17,10 +17,35 @@ const SECTIONS: SectionItem[] = [
   { id: 'about', label: '关于', icon: I.ABOUT },
 ]
 
+const DESKTOP_MQ = '(min-width: 640px)'
+
 const PreferencesContent = defineComponent({
   name: 'PreferencesContent',
   setup() {
     const active = ref<SectionId | null>(null)
+    const isDesktop = ref(false)
+    let mql: MediaQueryList | undefined
+
+    onMounted(() => {
+      mql = window.matchMedia(DESKTOP_MQ)
+      isDesktop.value = mql.matches
+      mql.addEventListener('change', onChange)
+    })
+
+    onBeforeUnmount(() => {
+      mql?.removeEventListener('change', onChange)
+    })
+
+    function onChange(e: MediaQueryListEvent) {
+      isDesktop.value = e.matches
+    }
+
+    /** 桌面端无选中时回退到第一项,移动端保持 null 表示一级菜单 */
+    const displayActive = computed<SectionId | null>(() => {
+      if (active.value)
+        return active.value
+      return isDesktop.value ? SECTIONS[0].id : null
+    })
 
     function pick(id: SectionId) {
       active.value = id
@@ -54,7 +79,7 @@ const PreferencesContent = defineComponent({
                 type="button"
                 class={[
                   'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
-                  active.value === section.id
+                  displayActive.value === section.id
                     ? 'bg-base-content/10 text-base-content font-medium'
                     : 'text-base-content/60 hover:bg-base-content/5 hover:text-base-content',
                 ]}
@@ -89,7 +114,7 @@ const PreferencesContent = defineComponent({
               </span>
             </div>
 
-            {active.value === 'appearance' && (
+            {displayActive.value === 'appearance' && (
               <div class="flex flex-col gap-4">
                 <div class="hidden sm:block">
                   <h3 class="text-base-content text-sm font-medium">主题</h3>
@@ -99,7 +124,7 @@ const PreferencesContent = defineComponent({
               </div>
             )}
 
-            {active.value === 'about' && (
+            {displayActive.value === 'about' && (
               <div class="flex flex-col gap-4 text-sm">
                 <div class="hidden sm:block">
                   <h3 class="text-base-content font-medium">{GM_info.script.name}</h3>
