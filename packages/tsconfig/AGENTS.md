@@ -28,3 +28,20 @@ monorepo 共享 TypeScript 配置，通过 `extends` 引用。
 // Vue 应用
 { "extends": "@115master/tsconfig/vue-app.json" }
 ```
+
+## 局部覆盖
+
+`extends` 之后写入 `compilerOptions` 即可覆盖单项：
+
+```jsonc
+{
+  "extends": "@115master/tsconfig/node.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "noUnusedLocals": false
+  },
+  "include": ["src/**/*", "scripts/**/*"]
+}
+```

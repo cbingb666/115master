@@ -35,3 +35,7 @@ export default [
   ...tailwindConfig,
 ]
 ```
+
+## 调试规则
+
+仓库根目录的 `pnpm lint:inspector` 启动 `@eslint/config-inspector`，可在浏览器里逐条查看规则命中情况。规则冲突或"为什么这行报红"先来这里查。

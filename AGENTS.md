@@ -1,5 +1,48 @@
 # AGENTS.md
 
+## Quick Start
+
+```bash
+pnpm install              # Node >= 20.12, pnpm 9.x
+pnpm dev                  # turbo 并行启动所有 packages 的 dev
+pnpm dev:plus             # VITE_PLUS_VERSION=true — monkey plus 版
+pnpm build                # turbo 并行 build
+pnpm build:plus           # plus 版 build
+pnpm type-check           # vue-tsc / tsc --noEmit (全包)
+pnpm test                 # vitest run (全包)
+pnpm lint                 # eslint
+pnpm lint:fix             # eslint --fix
+pnpm lint:inspector       # @eslint/config-inspector (调试规则冲突)
+pnpm analyze              # bundle 分析 (rollup-plugin-visualizer)
+pnpm changeset            # 新建 changeset (改动后必须)
+pnpm clean                # 清理所有 dist + node_modules
+```
+
+> **Plus 版**：`dev:plus` / `build:plus` 设置 `VITE_PLUS_VERSION=true`，用于 monkey 的实验性 plus 分支（功能差异由 `@apps/monkey` 内 `import.meta.env.VITE_PLUS_VERSION` 决定）。
+>
+> **Pre-commit hook**：`simple-git-hooks` 在每次 `git commit` 前自动跑 `pnpm type-check && pnpm lint-staged`。lint-staged 仅对暂存文件跑 `eslint --fix`。
+>
+> **Changeset 流程**：所有面向用户的改动必须 `pnpm changeset` 写一条记录（type: feat/fix/update/refactor），CI 拒绝无 changeset 的 PR。
+
+## Monorepo 拓扑
+
+```sh
+apps/
+└── monkey                # Vue 3 + Vite + vite-plugin-monkey
+
+packages/
+├── shared                # 基础设施（被 drive115 / subtitle-source / monkey 消费）
+├── drive115              # 115 API 门面（依赖 shared, utils）
+├── subtitle-source       # 字幕来源（依赖 shared, utils）
+├── utils                 # 通用工具函数
+├── tsconfig              # 共享 tsconfig
+└── eslint-config         # 共享 eslint 配置
+
+依赖方向（仅向下游）：
+monkey → drive115, subtitle-source, shared, utils
+drive115 / subtitle-source → shared, utils
+```
+
 ## Code Style Guide
 
 **编码时必须查看**
@@ -53,4 +96,10 @@
 
 ### @apps/monkey
 
-简介：115网盘用户脚本（Tampermonkey），基于Vue 3 + Vite + vite-plugin-monkey构建，集成视频播放、字幕、文件管理等增强功能。
+简介：115网盘用户脚本（Tampermonkey），基于 Vue 3 + Vite + vite-plugin-monkey 构建。
+
+技术栈：Vue 3.5 + Vite 6 + Tailwind CSS v4 + daisyUI v5 + Pinia 3 + vue-router 4；视频播放 `@libmedia/avplayer` + `hls.js` + `m3u8-parser`；图标 `@iconify/vue`（见 Icons 章节）。
+
+入口：`https://115.com/web/lixian/master/#/drive`
+本地开发：`pnpm --filter @115master/monkey dev`
+打包产物：`apps/monkey/dist/115master.user.js`

@@ -6,16 +6,32 @@
 
 ```sh
 src/
-├── array/      # 数组/集合工具
+├── array/      # 数组/集合工具（unique / groupBy / chunk ...）
 ├── object/     # 对象/字典工具
-├── string/     # 字符串工具
+├── string/     # 字符串工具（slugify / truncate ...）
 ├── number/     # 数字/数学工具
-├── function/   # 函数式工具
-├── promise/    # 异步工具
-├── type/       # 类型守卫与辅助
+├── function/   # 函数式工具（debounce / memoize / pipe ...）
+├── promise/    # 异步工具（withTimeout / retry ...）
+├── type/       # 类型守卫与辅助（isString / assertNever ...）
 ├── url/        # URL/查询参数工具
-├── result/     # Result/Either 错误处理
+├── result/     # Result<T,E> 错误处理（替代 try/catch 的可链式类型）
 └── index.ts    # 根入口
+```
+
+## Result 模块
+
+替代 try/catch 的显式错误处理：
+
+```ts
+import { result } from '@115master/utils'
+
+const r = await result.tryAsync(() => fetch('/api'))
+if (r.ok) r.value    // T
+else r.error         // Error
+
+// 链式
+const text = await result.tryAsync(() => fetch('/api'))
+  .then(r => r.map(res => res.json()))
 ```
 
 ## 模块导出
