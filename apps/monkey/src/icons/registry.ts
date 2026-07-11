@@ -104,9 +104,10 @@ export const I = {
   SPONSOR: 'ion:cafe',
 
   // === 通用 ===
-  SEARCH: 'ion:search',
-  HISTORY: 'ion:time',
-  GRID: 'ion:grid',
+  SEARCH: 'ion:search-outline',
+  HISTORY: 'ion:time-outline',
+  GRID: 'ion:grid-outline',
+  LIST: 'ion:list-outline',
   NEW_FOLDER: 'ion:folder-open-outline',
   DOCUMENT: 'ion:document-text-outline',
   STAR_RATING: 'ion:star',

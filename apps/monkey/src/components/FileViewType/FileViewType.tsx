@@ -9,7 +9,7 @@ const VIEW_TYPE_OPTIONS = [
   {
     name: '列表',
     value: 'list' as ViewType,
-    icon: I.PLAYLIST,
+    icon: I.LIST,
   },
   {
     name: '卡片',
