@@ -271,10 +271,7 @@ const FileBroswer = defineComponent({
               >
                 {{
                   thumbnail: (thumbnailProps: any) => (
-                    <FileItemThumbnail
-                      {...thumbnailProps}
-                      class="[&_span]:group-data-[view-type=card]:text-xl"
-                    />
+                    <FileItemThumbnail {...thumbnailProps} />
                   ),
                 }}
               </FileItem>

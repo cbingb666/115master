@@ -1,5 +1,4 @@
 import type { Share } from '@115master/drive115'
-import { string } from '@115master/utils'
 import { useAsyncState } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
 import { router } from '@/app/router'
@@ -51,7 +50,6 @@ export function useFileItem(options: UseFileItemOptions) {
 
   const isVideo = computed(() => data.iv === 1)
   const isFolder = computed(() => data.fc === 0)
-  const emoji = computed(() => string.extractEmojis(data.n ?? '')[0])
 
   const actressAsyncState = useAsyncState(async () => {
     if (!isFolder.value) {
@@ -194,7 +192,6 @@ export function useFileItem(options: UseFileItemOptions) {
     isDragging,
     isVideo,
     isFolder,
-    emoji,
     link,
     hasActressCover,
     hasVideoCover,

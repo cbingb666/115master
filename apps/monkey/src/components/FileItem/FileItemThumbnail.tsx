@@ -21,10 +21,6 @@ const FileItemThumbnail = defineComponent({
       type: Boolean,
       required: true,
     },
-    emoji: {
-      type: String,
-      default: undefined,
-    },
     actressUrl: {
       type: String,
       default: undefined,
@@ -156,23 +152,6 @@ const FileItemThumbnail = defineComponent({
             class="text-primary/80 h-full w-full drop-shadow-md"
             name={icon as IconName}
           />
-          {props.emoji && (
-            <span class="
-              absolute inset-0 m-auto flex items-center justify-center
-              drop-shadow-sm drop-shadow-black/40
-              group-data-[view-type=card]:translate-y-1
-              group-data-[view-type=card]:text-xl
-              group-data-[view-type=list]:translate-y-0.5
-              group-data-[view-type=list]:text-lg
-              sm:group-data-[view-type=card]:text-xl
-              sm:group-data-[view-type=list]:text-xl
-              lg:group-data-[view-type=card]:text-4xl
-              lg:group-data-[view-type=list]:text-2xl
-            "
-            >
-              {props.emoji}
-            </span>
-          )}
         </div>
       )
     }

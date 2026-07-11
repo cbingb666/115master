@@ -88,7 +88,6 @@ const FileItem = defineComponent({
       isDragging: itemDragging,
       isVideo,
       isFolder,
-      emoji,
       link,
       hasActressCover,
       hasVideoCover,
@@ -222,7 +221,6 @@ const FileItem = defineComponent({
               data: props.data,
               isFolder: isFolder.value,
               isVideo: isVideo.value,
-              emoji: emoji.value,
               actressUrl: hasActressCover.value ? actressAsyncState.state.value?.url : undefined,
               videoCover: hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined,
               hasImagePreview: hasImagePreview.value,
@@ -232,7 +230,6 @@ const FileItem = defineComponent({
                 data={props.data}
                 isFolder={isFolder.value}
                 isVideo={isVideo.value}
-                emoji={emoji.value}
                 actressUrl={hasActressCover.value ? actressAsyncState.state.value?.url : undefined}
                 videoCover={hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined}
                 hasImagePreview={hasImagePreview.value}

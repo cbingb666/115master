@@ -1,6 +1,5 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
-import { string } from '@115master/utils'
 import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, useTemplateRef, watch } from 'vue'
 import FileItemThumbnail from '@/components/FileItem/FileItemThumbnail'
@@ -61,14 +60,6 @@ const CloudDownload = defineComponent({
       actressAsyncState.execute()
     })
 
-    const emoji = computed(() => {
-      const last = pathParts.value.lastPath
-      if (last?.name) {
-        return string.extractEmojis(last.name)[0]
-      }
-      return undefined
-    })
-
     const thumbnailData = computed(() => {
       const last = pathParts.value.lastPath
       if (!last)
@@ -86,7 +77,6 @@ const CloudDownload = defineComponent({
         data,
         isFolder: true,
         isVideo: false,
-        emoji: emoji.value,
         actressUrl: actressAsyncState.isReady.value && actressAsyncState.state.value?.url ? actressAsyncState.state.value.url : undefined,
         hasImagePreview: false,
       }
