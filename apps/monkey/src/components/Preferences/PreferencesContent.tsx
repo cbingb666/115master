@@ -60,7 +60,7 @@ const PreferencesContent = defineComponent({
               >
                 <Icon name={section.icon} class="text-base" />
                 <span>{section.label}</span>
-                <Icon name={I.RIGHT} class="text-base-content/40 ml-auto text-base" />
+                <Icon name={I.RIGHT} class="text-base-content/40 ml-auto text-base sm:hidden" />
               </button>
             ))}
           </nav>
