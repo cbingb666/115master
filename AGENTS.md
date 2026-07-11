@@ -1,6 +1,6 @@
 # AGENTS.md
 
-## Style Guide
+## Code Style Guide
 
 **编码时必须查看**
 @.agents/STYLE_GUIDE.md

@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "daisyui": {
+      "source": "saadeghi/daisyui",
+      "sourceType": "github",
+      "skillPath": "skills/daisyui/SKILL.md",
+      "computedHash": "92b9228e8f5325c1d44a3aa820f2af310743307ea978bb86faff118c6864e9ea"
+    },
     "skill-creator": {
       "source": "anthropics/skills",
       "sourceType": "github",
