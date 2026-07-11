@@ -39,6 +39,8 @@ export interface ModalProps {
   openedCallback?: () => void
   /** 启用浏览器历史管理，后退可关闭对话框（alert/confirm/prompt 不适用） */
   history?: boolean
+  /** 标题栏右侧操作（如关闭按钮），渲染在 actions 之前 */
+  titleActions?: () => VNode
 }
 
 /** 内部使用的完整 Modal 属性，包含运行时注入字段 */

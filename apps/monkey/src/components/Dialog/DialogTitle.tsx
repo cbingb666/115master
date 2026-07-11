@@ -19,7 +19,7 @@ const DialogTitle = defineComponent({
     }
 
     return () => {
-      if (!props.title && !slots.default && !slots.actions)
+      if (!props.title && !slots.default && !slots.actions && !slots.titleActions)
         return null
 
       const root = `sticky top-0 z-10 flex items-center justify-between gap-2 px-6 pt-4 pb-3 ${props.className || ''}`
@@ -30,7 +30,10 @@ const DialogTitle = defineComponent({
           <h3 class={title}>
             {slots.default ? slots.default() : render(props.title)}
           </h3>
-          {slots.actions?.()}
+          <div class="flex items-center gap-1">
+            {slots.titleActions?.()}
+            {slots.actions?.()}
+          </div>
         </div>
       )
     }

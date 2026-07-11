@@ -22,6 +22,7 @@ const DialogModal = defineComponent({
     confirmCallback: { type: Function, default: undefined },
     cancelCallback: { type: Function, default: undefined },
     openedCallback: { type: Function, default: undefined },
+    titleActions: { type: Function, default: undefined },
   },
   emits: ['confirm', 'cancel', 'close', 'opened'],
   setup(props, { emit, slots }) {
@@ -109,12 +110,20 @@ const DialogModal = defineComponent({
           <div class={modalBoxClass} onClick={(e: Event) => e.stopPropagation()}>
             {slots.title
               ? (
-                  <DialogTitle title={props.title} className={props.classNameTitle}>
+                  <DialogTitle
+                    title={props.title}
+                    className={props.classNameTitle}
+                    v-slots={{ titleActions: () => props.titleActions?.() }}
+                  >
                     {slots.title()}
                   </DialogTitle>
                 )
               : (
-                  <DialogTitle title={props.title} className={props.classNameTitle} />
+                  <DialogTitle
+                    title={props.title}
+                    className={props.classNameTitle}
+                    v-slots={{ titleActions: () => props.titleActions?.() }}
+                  />
                 )}
 
             {hasContent.value && (
