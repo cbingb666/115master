@@ -6,7 +6,7 @@ const Header = defineComponent({
   name: 'Header',
   props: {
     class: {
-      type: Object as any,
+      type: String,
       default: '',
     },
   },
