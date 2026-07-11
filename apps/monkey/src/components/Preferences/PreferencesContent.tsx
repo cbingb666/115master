@@ -116,7 +116,7 @@ const PreferencesContent = defineComponent({
 
             {displayActive.value === 'appearance' && (
               <div class="flex flex-col gap-4">
-                <div class="hidden sm:block">
+                <div>
                   <h3 class="text-base-content text-sm font-medium">主题</h3>
                   <p class="text-base-content/60 mt-1 text-xs">切换浅色、深色或跟随系统。</p>
                 </div>
@@ -126,7 +126,7 @@ const PreferencesContent = defineComponent({
 
             {displayActive.value === 'about' && (
               <div class="flex flex-col gap-4 text-sm">
-                <div class="hidden sm:block">
+                <div>
                   <h3 class="text-base-content font-medium">{GM_info.script.name}</h3>
                   <p class="text-base-content/60 mt-1 text-xs">
                     v
