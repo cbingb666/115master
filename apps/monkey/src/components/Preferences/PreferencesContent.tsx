@@ -54,7 +54,9 @@ const PreferencesContent = defineComponent({
                 type="button"
                 class={[
                   'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
-                  'text-base-content/60 hover:bg-base-content/5 hover:text-base-content',
+                  active.value === section.id
+                    ? 'bg-base-content/10 text-base-content font-medium'
+                    : 'text-base-content/60 hover:bg-base-content/5 hover:text-base-content',
                 ]}
                 onClick={() => pick(section.id)}
               >
