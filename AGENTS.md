@@ -14,15 +14,13 @@ pnpm lint                 # eslint
 pnpm lint:fix             # eslint --fix
 pnpm lint:inspector       # @eslint/config-inspector (调试规则冲突)
 pnpm analyze              # bundle 分析 (rollup-plugin-visualizer)
-pnpm changeset            # 新建 changeset (改动后必须)
+pnpm changeset            # 新建 changeset (仅用户执行)
 pnpm clean                # 清理所有 dist + node_modules
 ```
 
 > **Plus 版**：`dev:plus` / `build:plus` 设置 `VITE_PLUS_VERSION=true`，用于 monkey 的实验性 plus 分支（功能差异由 `@apps/monkey` 内 `import.meta.env.VITE_PLUS_VERSION` 决定）。
 >
 > **Pre-commit hook**：`simple-git-hooks` 在每次 `git commit` 前自动跑 `pnpm type-check && pnpm lint-staged`。lint-staged 仅对暂存文件跑 `eslint --fix`。
->
-> **Changeset 流程**：所有面向用户的改动必须 `pnpm changeset` 写一条记录（type: feat/fix/update/refactor），CI 拒绝无 changeset 的 PR。
 
 ## Monorepo 拓扑
 
