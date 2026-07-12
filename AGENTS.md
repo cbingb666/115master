@@ -103,3 +103,13 @@ drive115 / subtitle-source → shared, utils
 入口：`https://115.com/web/lixian/master/#/drive`
 本地开发：`pnpm --filter @115master/monkey dev`
 打包产物：`apps/monkey/dist/115master.user.js`
+
+## Agent skills
+
+### Issue tracker
+
+Issues 以 markdown 文件形式存放在 `.scratch/<feature>/` 下。详见 `docs/agents/issue-tracker.md`。
+
+### Domain docs
+
+Multi-context —— 根目录 `CONTEXT-MAP.md` 指向各 package/app 的 `CONTEXT.md`。详见 `docs/agents/domain.md`。
