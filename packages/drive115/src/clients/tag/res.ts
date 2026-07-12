@@ -1,4 +1,5 @@
 import type { ApiResponseBase } from '../../share/base.ts'
+import type { TagItem } from '../../share/entity.ts'
 
 /** 标签信息 */
 export interface LabelInfo {
@@ -18,14 +19,16 @@ export interface LabelInfo {
 
 /** 标签列表响应 */
 export type Labels = ApiResponseBase<{
-  /** 总数 */
-  total?: number
-  /** 标签列表 */
-  list?: LabelInfo[]
-  /** 排序字段 */
-  sort?: string
-  /** 排序方向 */
-  order?: 'asc' | 'desc'
+  data?: {
+    /** 总数 */
+    total?: number
+    /** 标签列表 */
+    list?: LabelInfo[]
+    /** 排序字段 */
+    sort?: string
+    /** 排序方向 */
+    order?: 'asc' | 'desc'
+  }
 }>
 
 /** 创建标签响应 */
@@ -69,6 +72,6 @@ export interface FilesByLabelItem {
   fid?: string
   /** 文件名 */
   n?: string
-  /** 文件标签 id 列表（逗号分隔字符串） */
-  fl?: string
+  /** 文件标签 */
+  fl?: TagItem[]
 }

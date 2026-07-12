@@ -31,21 +31,23 @@ describe('tagApiClient', () => {
       const { client, get } = createClient(
         vi.fn().mockImplementation(() => jsonResponse({
           state: true,
-          total: 2,
-          sort: 'update_time',
-          order: 'desc',
-          list: [
-            { id: '1', name: '标签A', color: '#FF4B30', sort: '0', update_time: 1700000000, create_time: 1690000000 },
-            { id: '2', name: '标签B', color: '#2670FC', sort: '1', update_time: 1700000001, create_time: 1690000001 },
-          ],
+          data: {
+            total: 2,
+            sort: 'update_time',
+            order: 'desc',
+            list: [
+              { id: '1', name: '标签A', color: '#FF4B30', sort: '0', update_time: 1700000000, create_time: 1690000000 },
+              { id: '2', name: '标签B', color: '#2670FC', sort: '1', update_time: 1700000001, create_time: 1690000001 },
+            ],
+          },
         })),
       )
 
       const res = await client.getLabels({ offset: 0, limit: 11500 })
 
       expect(res.state).toBe(true)
-      expect(res.list).toHaveLength(2)
-      expect(res.list?.[0]?.name).toBe('标签A')
+      expect(res.data?.list).toHaveLength(2)
+      expect(res.data?.list?.[0]?.name).toBe('标签A')
       expect(get).toHaveBeenCalledTimes(1)
       const url = get.mock.calls[0][0] as string
       expect(url).toContain('/label/list')
@@ -56,21 +58,20 @@ describe('tagApiClient', () => {
       const { client } = createClient(
         vi.fn().mockImplementation(() => jsonResponse({
           state: true,
-          total: 0,
-          list: [],
+          data: { total: 0, list: [] },
         })),
       )
 
       const res = await client.getLabels({ offset: 0, limit: 50 })
 
       expect(res.state).toBe(true)
-      expect(res.list).toEqual([])
-      expect(res.total).toBe(0)
+      expect(res.data?.list).toEqual([])
+      expect(res.data?.total).toBe(0)
     })
 
     it('passes sort/order params', async () => {
       const { client, get } = createClient(
-        vi.fn().mockImplementation(() => jsonResponse({ state: true, list: [] })),
+        vi.fn().mockImplementation(() => jsonResponse({ state: true, data: { list: [] } })),
       )
 
       await client.getLabels({ offset: 0, limit: 100, sort: 'create_time', order: 'asc' })
@@ -84,7 +85,7 @@ describe('tagApiClient', () => {
   describe('searchLabels', () => {
     it('appends keyword param to /label/list', async () => {
       const { client, get } = createClient(
-        vi.fn().mockImplementation(() => jsonResponse({ state: true, list: [] })),
+        vi.fn().mockImplementation(() => jsonResponse({ state: true, data: { list: [] } })),
       )
 
       await client.searchLabels({ offset: 0, limit: 50, keyword: '电影' })

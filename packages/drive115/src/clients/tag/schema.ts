@@ -10,17 +10,19 @@ export const LabelInfoSchema = z.object({
   create_time: z.number().optional().default(0),
 }).passthrough()
 
-/** 标签列表 schema */
+/** 标签列表 schema（115 把 total/list 放在 data 下） */
 export const LabelsSchema = z.object({
   state: z.boolean(),
   errNo: z.number().optional(),
   code: z.number().optional(),
   error: z.string().optional(),
   error_msg: z.string().optional(),
-  total: z.number().optional(),
-  list: z.array(LabelInfoSchema).optional().default([]),
-  sort: z.string().optional(),
-  order: z.string().optional(),
+  data: z.object({
+    total: z.number().optional(),
+    list: z.array(LabelInfoSchema).optional().default([]),
+    sort: z.string().optional(),
+    order: z.string().optional(),
+  }).optional(),
 }).passthrough()
 
 /** 创建标签响应 schema（数组） */
