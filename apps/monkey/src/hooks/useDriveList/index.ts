@@ -22,7 +22,7 @@ export function useDriveList() {
     try {
       const res = await drive115.file.getFilesWithFallback(params)
       if (!res.state)
-        throw new Error(res.message)
+        throw new Core.Drive115Error(res.message, Core.Drive115ErrorCode.Unknown)
       if (gen !== generation)
         return false
       data.value = res
@@ -31,8 +31,9 @@ export function useDriveList() {
     catch (e) {
       if (gen !== generation)
         return false
-      error.value = e instanceof Error ? e : new Error(String(e))
-      appLogger.warn('文件列表加载失败', Core.handleError(e))
+      const err = Core.toDrive115Error(e)
+      error.value = err
+      appLogger.warn('文件列表加载失败', Core.toResult(err))
       return false
     }
     finally {
@@ -49,7 +50,7 @@ export function useDriveList() {
     try {
       const res = await drive115.file.searchFiles(params)
       if (!res.state)
-        throw new Error(res.message)
+        throw new Core.Drive115Error(res.message, Core.Drive115ErrorCode.Unknown)
       if (gen !== generation)
         return false
       data.value = res
@@ -58,8 +59,9 @@ export function useDriveList() {
     catch (e) {
       if (gen !== generation)
         return false
-      error.value = e instanceof Error ? e : new Error(String(e))
-      appLogger.warn('文件搜索失败', Core.handleError(e))
+      const err = Core.toDrive115Error(e)
+      error.value = err
+      appLogger.warn('文件搜索失败', Core.toResult(err))
       return false
     }
     finally {

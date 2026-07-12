@@ -62,7 +62,7 @@ export class VideoApiClient extends BaseApiClient {
       throw new Drive115Error(
         'Invalid download response',
         Drive115ErrorCode.DecodeError,
-        parsed.error,
+        { cause: parsed.error },
       )
     }
 
@@ -99,7 +99,7 @@ export class VideoApiClient extends BaseApiClient {
         res = JSON.parse(htmlText) as Res.VideoM3u8
       }
       catch {
-        throw new Drive115Error.NotFoundM3u8File()
+        throw new Drive115Error('Not found m3u8 file', Drive115ErrorCode.NotFoundM3u8File)
       }
 
       await this.handle<Res.VideoM3u8>(Promise.resolve(res))

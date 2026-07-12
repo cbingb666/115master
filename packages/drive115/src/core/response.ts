@@ -57,7 +57,7 @@ export function normalizeResponse<T>(
       throw new Drive115Error(
         `Response validation failed: ${parsed.error.message}`,
         Drive115ErrorCode.DecodeError,
-        parsed.error,
+        { cause: parsed.error },
       )
     }
     return { ...parsed.data, state, code, message } as Drive115Response<T>

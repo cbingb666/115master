@@ -1,5 +1,6 @@
 import type { ILogger, IRequest } from '@115master/shared'
 import type { Crypto115 } from './crypto.ts'
+import type { ErrorResult } from './error.ts'
 
 /**
  * Drive115Core 依赖配置
@@ -13,6 +14,6 @@ export interface Drive115CoreDeps {
   logger?: ILogger
   /** 加密实例 */
   crypto115: Crypto115
-  /** 统一错误拦截回调，所有 API 方法抛出异常时触发 */
-  onError?: (error: Error) => void | Promise<void>
+  /** 统一错误拦截回调，收到结构化 ErrorResult 投影 */
+  onError?: (result: ErrorResult) => void | Promise<void>
 }

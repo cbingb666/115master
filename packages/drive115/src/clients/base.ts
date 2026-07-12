@@ -3,6 +3,7 @@ import type { z } from 'zod'
 import type { M115EncodeResult } from '../core/crypto.ts'
 import type { Drive115CoreDeps } from '../core/deps.ts'
 import type { Drive115Response } from '../core/response.ts'
+import { toDrive115Error, toResult } from '../core/error.ts'
 import { normalizeResponse } from '../core/response.ts'
 
 /**
@@ -27,7 +28,7 @@ export class BaseApiClient {
     return this.deps.proApiRequest
   }
 
-  /** 统一响应处理：normalizeResponse + onError 拦截 */
+  /** 统一响应处理：normalizeResponse + 边界归一化 + onError 拦截 */
   protected async handle<T>(
     payload: Promise<unknown>,
     schema?: z.ZodType<T>,
@@ -36,9 +37,9 @@ export class BaseApiClient {
       return normalizeResponse<T>(await payload, schema)
     }
     catch (e) {
-      if (e instanceof Error)
-        await this.deps.onError?.(e)
-      throw e
+      const err = toDrive115Error(e)
+      await this.deps.onError?.(toResult(err))
+      throw err
     }
   }
 

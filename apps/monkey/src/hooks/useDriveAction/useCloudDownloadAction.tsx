@@ -180,7 +180,7 @@ export function useCloudDownloadAction() {
             resolve(true)
           }
           catch (error) {
-            const result = Core.handleError(error)
+            const result = Core.toResult(Core.toDrive115Error(error))
             await dialog.alert({
               title: '提示',
               content: `添加离线下载任务失败: ${result.message}`,
