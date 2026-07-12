@@ -97,10 +97,7 @@ drive115 / subtitle-source → shared, utils
 简介：115网盘用户脚本（Tampermonkey），基于 Vue 3 + Vite + vite-plugin-monkey 构建。
 
 技术栈：Vue 3.5 + Vite 6 + Tailwind CSS v4 + daisyUI v5 + Pinia 3 + vue-router 4；视频播放 `@libmedia/avplayer` + `hls.js` + `m3u8-parser`；图标 `@iconify/vue`（见 Icons 章节）。
-
-入口：`https://115.com/web/lixian/master/#/drive`
-本地开发：`pnpm --filter @115master/monkey dev`
-打包产物：`apps/monkey/dist/115master.user.js`
+指令：@apps/monkey/AGENTS.md
 
 ## Agent skills
 
