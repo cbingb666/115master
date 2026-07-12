@@ -110,6 +110,10 @@ drive115 / subtitle-source → shared, utils
 
 Issues 以 markdown 文件形式存放在 `.scratch/<feature>/` 下。详见 `docs/agents/issue-tracker.md`。
 
+### Triage labels
+
+默认五标签（needs-triage / needs-info / ready-for-agent / ready-for-human / wontfix），以 `Status:` 行记录在 issue 文件中。详见 `docs/agents/triage-labels.md`。
+
 ### Domain docs
 
 Multi-context —— 根目录 `CONTEXT-MAP.md` 指向各 package/app 的 `CONTEXT.md`。详见 `docs/agents/domain.md`。

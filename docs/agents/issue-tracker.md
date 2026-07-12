@@ -7,7 +7,7 @@ Issues 与 specs（即 PRD）以 markdown 文件形式存放在 `.scratch/`。
 - 一个 feature 一个目录：`.scratch/<feature-slug>/`
 - spec 文件：`.scratch/<feature-slug>/spec.md`
 - 实现类 issue 一票一文件：`.scratch/<feature-slug>/issues/<NN>-<slug>.md`，从 `01` 起编号——绝不合并成单个 tickets 文件
-- Triage 状态记录在 issue 文件顶部附近的 `Status:` 行
+- Triage 状态记录在 issue 文件顶部附近的 `Status:` 行（角色字符串见 `triage-labels.md`）
 - 评论与对话历史追加到文件底部 `## Comments` 标题下
 
 ## When a skill says "publish to the issue tracker"
