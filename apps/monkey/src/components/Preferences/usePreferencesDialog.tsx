@@ -18,11 +18,11 @@ export function usePreferencesDialog() {
       titleActions: () => h(
         'button',
         {
-          type: 'button',
-          class: 'text-base-content/50 hover:text-base-content flex cursor-pointer items-center justify-center rounded-lg p-1 transition-colors',
-          title: '关闭',
+          'type': 'button',
+          'class': 'text-base-content/50 hover:text-base-content flex cursor-pointer items-center justify-center rounded-lg p-1 transition-colors',
+          'title': '关闭',
           'aria-label': '关闭',
-          onClick: () => instance.hide(),
+          'onClick': () => instance.hide(),
         },
         h(Icon, { name: I.CLOSE, class: 'text-lg' }),
       ),
