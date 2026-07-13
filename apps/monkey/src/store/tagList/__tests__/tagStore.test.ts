@@ -323,6 +323,15 @@ describe('useTagStore.checkName', () => {
     expect(store.checkName('   ')).toBe('标签名不能为空')
   })
 
+  it('accepts 50 characters and rejects 51', async () => {
+    vi.mocked(tag.getLabels).mockResolvedValue(listResponse([]) as never)
+    const store = useTagStore()
+    await store.load()
+
+    expect(store.checkName('a'.repeat(50))).toBeNull()
+    expect(store.checkName('a'.repeat(51))).toBe('标签名不能超过 50 个字符')
+  })
+
   it('rejects duplicates, excluding the edited tag itself', async () => {
     vi.mocked(tag.getLabels).mockResolvedValue(listResponse([{ id: '1', name: '电影' }]) as never)
     const store = useTagStore()

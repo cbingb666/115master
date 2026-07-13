@@ -192,3 +192,10 @@ Status: ready-for-agent
 - 联调期若某接口实际不通，是当场修 `@packages/drive115` 封装，还是暂时屏蔽该功能——按现场判断，记录到本 spec 的 `## Comments`。
 
 ## Comments
+
+- `getLabels` 返回字段 / 类型已确认：`{ state, code, message, data: { total, list, sort, order } }`；`list` 项为 `id/name/sort/color/update_time/create_time`，其中 `sort` 在列表响应为字符串。
+- `addLabels` 确认使用 `name[index]=name\x07color`；后端无色值是空串，客户端的 `LabelColor.Blank` sentinel 必须在请求边界序列化为空串。
+- `editLabel` 省略 `color` 会保持原色；显式传空串才会清空颜色。
+- `addLabels` / `editLabel` / `deleteLabel` 均以 `state + code + message` 表示成功或失败。
+- 标签名实际最大长度为 50；51 字符返回 `code=21002`。
+- 联调测试标签已全部删除，并重新拉取列表确认无残留。

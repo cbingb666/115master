@@ -5,8 +5,8 @@ import { drive115 } from '@/utils/drive115Instance'
 
 const { LabelColor } = Api.TagApi.Req
 
-/** 标签名上限（联调后按 115 实际约束调整） */
-export const TAG_NAME_MAX_LENGTH = 20
+/** 115 标签名上限 */
+export const TAG_NAME_MAX_LENGTH = 50
 
 /** 一次全量加载的最大条数（标签量级小，前端过滤） */
 const LOAD_LIMIT = 200

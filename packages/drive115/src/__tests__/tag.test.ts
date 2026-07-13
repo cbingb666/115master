@@ -124,16 +124,39 @@ describe('tagApiClient', () => {
       expect(data['name[1]']).toBe('另一个\x07#2670FC')
     })
 
-    it('defaults missing color to empty string', async () => {
+    it('serializes the blank sentinel as the API empty color', async () => {
       const { client, post } = createClient(
         vi.fn(),
-        vi.fn().mockImplementation(() => jsonResponse({ state: true, data: [] })),
+        vi.fn().mockImplementation(() => jsonResponse({
+          state: true,
+          code: 0,
+          message: '',
+          data: [{ id: '99', name: 'NoColor', color: '' }],
+        })),
       )
 
-      await client.addLabels([{ name: 'NoColor' }])
+      const res = await client.addLabels([{ name: 'NoColor', color: LabelColor.Blank }])
 
       const data = (post.mock.calls[0][1] as { data: Record<string, string> }).data
       expect(data['name[0]']).toBe('NoColor\x07')
+      expect(res.data?.[0]?.color).toBe('')
+    })
+
+    it('maps the API message field on failure', async () => {
+      const { client } = createClient(
+        vi.fn(),
+        vi.fn().mockImplementation(() => jsonResponse({
+          state: false,
+          code: 21003,
+          message: '该标签已存在。',
+        })),
+      )
+
+      const res = await client.addLabels([{ name: '重复标签' }])
+
+      expect(res.state).toBe(false)
+      expect(res.code).toBe(21003)
+      expect(res.message).toBe('该标签已存在。')
     })
   })
 
@@ -155,6 +178,22 @@ describe('tagApiClient', () => {
       const data = (post.mock.calls[0][1] as { data: Record<string, string> }).data
       expect(url).toContain('/label/edit')
       expect(data).toEqual({ id: '42', name: '已编辑', color: '#43BA80' })
+    })
+
+    it('serializes the blank sentinel as an empty color', async () => {
+      const { client, post } = createClient(
+        vi.fn(),
+        vi.fn().mockImplementation(() => jsonResponse({ state: true })),
+      )
+
+      await client.editLabel({
+        id: '42',
+        name: '已清除颜色',
+        color: LabelColor.Blank,
+      })
+
+      const data = (post.mock.calls[0][1] as { data: Record<string, string> }).data
+      expect(data).toEqual({ id: '42', name: '已清除颜色', color: '' })
     })
 
     it('omits color when not provided', async () => {
