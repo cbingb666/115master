@@ -79,6 +79,9 @@ const Drive = defineComponent({
         if (await action.cloudDownload(store.nav.cid, store.path, defaultUrls))
           store.afterAction()
       },
+      batchTag: async () => {
+        await action.tagBatch(store.selection.values)
+      },
     }
 
     const actionAtom = {
@@ -122,6 +125,12 @@ const Drive = defineComponent({
         show: computed(() => store.selection.count === 1),
         onClick: () => actionHandlers.rename(),
       },
+      tag: {
+        name: 'tag',
+        label: '打标签',
+        icon: I.TAG,
+        onClick: () => actionHandlers.batchTag(),
+      },
       delete: {
         name: 'delete',
         icon: I.DELETE,
@@ -132,7 +141,7 @@ const Drive = defineComponent({
 
     const actionConfig = computed<Action[][]>(() => [
       [actionAtom.top, actionAtom.star],
-      [actionAtom.move, actionAtom.improve, actionAtom.rename],
+      [actionAtom.move, actionAtom.improve, actionAtom.rename, actionAtom.tag],
       [actionAtom.delete],
     ])
 
