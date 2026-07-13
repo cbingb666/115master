@@ -99,6 +99,11 @@ export const I = {
   FILE_IMAGE: 'custom:image-file',
   FILE_IMPROVE: 'ion:arrow-up',
 
+  // === 标签 ===
+  TAG: 'ion:pricetags-outline',
+  SELECT_ALL: 'ion:checkmark-done-outline',
+  INVERT: 'ion:swap-vertical-outline',
+
   // === 品牌 ===
   GITHUB: 'ion:logo-github',
   SPONSOR: 'ion:cafe',

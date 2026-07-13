@@ -31,6 +31,14 @@ export const MENU_CONFIG: MenuItem[] = [
       params: { area: 'star' },
     },
   },
+  {
+    icon: I.TAG,
+    name: '标签管理',
+    to: '/tags',
+    activeMatch: {
+      name: 'tags',
+    },
+  },
   // {
   //   icon: 'material-icon-theme:folder-shared',
   //   name: '分享',

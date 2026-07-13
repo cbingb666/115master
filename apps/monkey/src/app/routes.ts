@@ -21,6 +21,12 @@ export const routes: RouteRecordRaw[] = [
       keepAlive: true,
     },
   },
+
+  {
+    name: 'tags',
+    path: '/tags',
+    component: () => import('../pages/tags/tags'),
+  },
   {
     name: 'video',
     path: '/video/:pickCode',
