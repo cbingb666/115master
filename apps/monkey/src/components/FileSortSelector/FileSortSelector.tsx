@@ -1,13 +1,14 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
-import type { Sort } from './FileSortSelector.types'
 import { computed, defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { I, Icon } from '@/icons'
 import { SORT_OPTIONS } from './config'
+import SortOptions from './SortOptions'
 
 /**
- * 文件排序选择器
+ * 文件排序选择器（触发钮 + 下拉）。
+ * 选项列表抽成 SortOptions，供 Header“更多”菜单扁平复用。
  */
 const FileSortSelector = defineComponent({
   name: 'FileSortSelector',
@@ -54,24 +55,6 @@ const FileSortSelector = defineComponent({
       return current.value?.icon ?? I.SORT
     })
 
-    const isSortOptionActive = (option: Sort) => {
-      return props.order === option.order && props.asc === option.asc
-    }
-
-    const closeDropdown = () => {
-      (document.activeElement as HTMLElement)?.blur()
-    }
-
-    const handleSort = (option: Sort) => {
-      closeDropdown()
-      props.onSort(option.order, option.asc, props.fc_mix)
-    }
-
-    const handleFcMix = () => {
-      closeDropdown()
-      props.onSort(props.order, props.asc, props.fc_mix === 1 ? 0 : 1)
-    }
-
     return () => (
       <ResponsiveMenu title="请选择排序方式">
         {{
@@ -101,63 +84,12 @@ const FileSortSelector = defineComponent({
             </button>
           ),
           default: () => (
-            <>
-              <li class="">
-                <a>
-                  <input
-                    class="toggle toggle-sm toggle-primary"
-                    checked={props.fc_mix === 0}
-                    tabindex="0"
-                    type="checkbox"
-                    onChange={handleFcMix}
-                  />
-                  目录置顶
-                </a>
-              </li>
-              <li class="border-base-content mx-2 my-1 border-t" />
-              {SORT_OPTIONS.map((option, i, list) => {
-                if (i > 0 && list[i - 1].order === option.order)
-                  return []
-
-                const items = list.filter(item => item.order === option.order)
-                const on = props.order === option.order
-                const item = (
-                  <li key={option.order} class="sm:w-42">
-                    <div
-                      class={{
-                        'flex items-center gap-1 px-3 py-2 transition-colors': true,
-                        'bg-primary/15 active:bg-primary/25': on,
-                        'active:bg-primary/10': !on,
-                      }}
-                    >
-                      <Icon class="text-lg" name={option.icon} />
-                      <span class="mr-auto ml-2">{option.name}</span>
-                      {items.map((item) => {
-                        const active = isSortOptionActive(item)
-
-                        return (
-                          <button
-                            key={`${item.order}-${item.asc}`}
-                            class={`btn btn-xs ${active ? 'btn-primary' : `${on ? 'hover:bg-primary/25' : 'hover:bg-primary/15'} btn-ghost`}`}
-                            aria-label={`${option.name}${item.asc === 1 ? '升序' : '降序'}`}
-                            tabindex="0"
-                            type="button"
-                            onClick={() => handleSort(item)}
-                          >
-                            <Icon
-                              class={`text-sm ${item.asc === 1 ? '' : 'rotate-180'}`}
-                              name={I.ARROW_UP}
-                            />
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </li>
-                )
-
-                return item
-              })}
-            </>
+            <SortOptions
+              order={props.order}
+              asc={props.asc}
+              fc_mix={props.fc_mix}
+              onSort={props.onSort}
+            />
           ),
         }}
       </ResponsiveMenu>

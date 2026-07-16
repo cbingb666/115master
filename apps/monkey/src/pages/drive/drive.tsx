@@ -10,7 +10,6 @@ import {
   FileContextMenu,
   FileItem,
   FileList,
-  FileMenu,
   FileNewFolderButton,
   FilePageSizeSelector,
   FilePath,
@@ -20,8 +19,11 @@ import {
   Layout,
   Main,
   Menu,
+  PageSizeOptions,
   Pagination,
+  ResponsiveMenu,
   Sider,
+  SortOptions,
   useFileList,
   useFilePreview,
 } from '@/components'
@@ -221,6 +223,15 @@ const Drive = defineComponent({
     })
 
     function ListHeader() {
+      const sorter: { asc: Share.Base.Sorter['asc'], fc_mix: Share.Base.Sorter['fc_mix'], order: Share.Base.Sorter['o'] } = {
+        asc: store.page.asc || 0,
+        fc_mix: store.page.fc_mix || 0,
+        order: store.page.order || 'user_ptime',
+      }
+      const page = {
+        currentPageSize: store.page.size,
+        onChangePageSize: store.page.changeSize,
+      }
       return (
         <Header>
           <div class="relative flex min-w-0 flex-1 items-center gap-4 overflow-hidden">
@@ -230,30 +241,75 @@ const Drive = defineComponent({
               onPathClick={handleClickPath}
             />
           </div>
-          <div class="flex flex-none items-center">
-            <FileMenu>
-              <button class="btn btn-sm btn-glass rounded-full" onClick={() => search.open()}>
-                <Icon class="text-xl" name={I.SEARCH} />
-                <span class="hidden sm:inline">搜索</span>
-              </button>
-              {!isSearch.value && <FileNewFolderButton onClick={actionHandlers.newFolder} />}
-              <FilePageSizeSelector
-                currentPageSize={store.page.size}
-                onChangePageSize={store.page.changeSize}
-              />
-              {!isSearch.value && (
-                <FileSortSelector
-                  asc={store.page.asc || 0}
-                  fc_mix={store.page.fc_mix || 0}
-                  order={store.page.order || 'user_ptime'}
-                  onSort={handleSort}
-                />
-              )}
-              <FileViewType
-                value={viewType.value}
-                onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
-              />
-            </FileMenu>
+          <div class="flex flex-none items-center gap-2">
+            <button class="btn btn-sm btn-glass rounded-full" onClick={() => search.open()}>
+              <Icon class="text-xl" name={I.SEARCH} />
+              <span class="hidden sm:inline">搜索</span>
+            </button>
+            {isSearch.value
+              ? <FilePageSizeSelector {...page} />
+              : (
+                  <>
+                    <div class="hidden @[480px]:inline-flex">
+                      <FileNewFolderButton onClick={actionHandlers.newFolder} />
+                    </div>
+                    <div class="hidden @[480px]:inline-flex">
+                      <FilePageSizeSelector {...page} />
+                    </div>
+                    <div class="hidden @[480px]:inline-flex">
+                      <FileSortSelector {...sorter} onSort={handleSort} />
+                    </div>
+                  </>
+                )}
+            <FileViewType
+              value={viewType.value}
+              onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
+            />
+            {!isSearch.value && (
+              <div class="@[480px]:hidden">
+                <ResponsiveMenu title="更多操作">
+                  {{
+                    target: (_props: object) => (
+                      <button class="btn btn-sm btn-glass rounded-full" {..._props}>
+                        <Icon class="text-xl" name={I.MORE} />
+                      </button>
+                    ),
+                    default: () => (
+                      <>
+                        <li>
+                          <a tabindex="0" onClick={actionHandlers.newFolder}>
+                            <Icon class="text-lg" name={I.NEW_FOLDER} />
+                            <span class="ml-2">新建文件夹</span>
+                          </a>
+                        </li>
+                        <li>
+                          <details>
+                            <summary>
+                              <Icon class="text-lg" name={I.SORT} />
+                              <span class="ml-2">排序</span>
+                            </summary>
+                            <ul>
+                              <SortOptions {...sorter} onSort={handleSort} />
+                            </ul>
+                          </details>
+                        </li>
+                        <li>
+                          <details>
+                            <summary>
+                              <Icon class="text-lg" name={I.DOCUMENT} />
+                              <span class="ml-2">每页</span>
+                            </summary>
+                            <ul>
+                              <PageSizeOptions {...page} />
+                            </ul>
+                          </details>
+                        </li>
+                      </>
+                    ),
+                  }}
+                </ResponsiveMenu>
+              </div>
+            )}
           </div>
         </Header>
       )

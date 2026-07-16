@@ -160,13 +160,19 @@ const PullupModal = defineComponent({
 
     const handleClick = () => {
       (document.activeElement as HTMLElement)?.blur()
-      dialog.create({
+      const instance = dialog.create({
         title: props.title,
         showConfirm: false,
 
         content: () => (
           <ul
             class="menu w-full text-right"
+            onClick={(event) => {
+              const target = event.target as HTMLElement | null
+              if (!target?.closest('a,button,input,label,[role="menuitem"]'))
+                return
+              requestAnimationFrame(() => instance.hide())
+            }}
           >
             <DefaultSlot />
           </ul>

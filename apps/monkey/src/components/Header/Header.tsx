@@ -24,6 +24,7 @@ const Header = defineComponent({
       >
         <div class="
             header-sticky-effect
+            @container
             flex
             min-w-0
             items-center

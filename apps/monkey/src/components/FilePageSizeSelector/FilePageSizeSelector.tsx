@@ -1,8 +1,8 @@
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
-import { PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS } from '@/constants'
 import { I, Icon } from '@/icons'
+import PageSizeOptions from './PageSizeOptions'
 
 const FilePageSizeSelector = defineComponent({
   name: 'FilePageSizeSelector',
@@ -17,11 +17,6 @@ const FilePageSizeSelector = defineComponent({
     },
   },
   setup(props) {
-    const handlePageSize = (size: number) => {
-      (document.activeElement as HTMLElement)?.blur()
-      props.onChangePageSize(size)
-    }
-
     return () => (
       <ResponsiveMenu title="请选择页大小">
         {{
@@ -35,21 +30,11 @@ const FilePageSizeSelector = defineComponent({
               <span class="hidden sm:inline">{props.currentPageSize}</span>
             </button>
           ),
-          default: (_props: object) => (
-            <ul {..._props}>
-              {PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS.map(option => (
-                <li key={option} class="sm:w-36">
-                  <a
-                    class={{ 'bg-primary text-primary-content': props.currentPageSize === option }}
-                    tabindex="0"
-                    onClick={() => handlePageSize(option)}
-                  >
-                    {option}
-                  </a>
-                </li>
-              ))}
-            </ul>
-
+          default: () => (
+            <PageSizeOptions
+              currentPageSize={props.currentPageSize}
+              onChangePageSize={props.onChangePageSize}
+            />
           ),
         }}
       </ResponsiveMenu>
