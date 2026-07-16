@@ -34,6 +34,6 @@ const customComp = computed(() => {
   if (isIon.value)
     return null
   const file = resolved.value.replace('custom:', '')
-  return defineAsyncComponent(() => import(`./custom/${file}.vue`))
+  return defineAsyncComponent(() => import(`./custom/${file}.svg`))
 })
 </script>

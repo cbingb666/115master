@@ -173,22 +173,7 @@ container.append(el)
 
 ## 7. 迁移：从旧 `ICON_*` 到 `I.*`
 
-### 7.1 命名映射示例
-
-| 旧名                     | 新名                    | 备注                       |
-| ------------------------ | ----------------------- | -------------------------- |
-| `ICONS.ICON_PLAY`        | `I.PLAY`                | 重复语义已合并             |
-| `ICONS.ICON_VOLUME_UP`   | `I.VOLUME_UP`           | 命名一致                   |
-| `ICONS.ICON_SUBTITLES_OFF` | `I.SUBTITLES_OFF`      | 命名一致                   |
-| `ICONS.ICON_FILE_FOLDER` | `I.FILE_FOLDER`         | 跨包引用                   |
-| `ICONS.ICON_THEME_LIGHT` | `I.THEME_LIGHT`         | 主题相关                   |
-
-### 7.2 迁移步骤
-
-1. 在新代码中直接 `import { I } from '@/icons'`，不再使用 `ICONS.ICON_*`。
-2. 把 `<Icon :icon="ICONS.ICON_xxx" />` 改为 `<Icon :name="I.XXX" />`。
-3. 文件级 ESLint 自动提示未使用的 import —— 当一个文件中所有 `ICONS.ICON_*` 全部迁移后，删除 `import { ICONS }`。
-4. 所有迁移完成后，删除 `apps/monkey/src/icons/legacy.ts` 与 `index.ts` 中的兼容导出。
+> ✅ 迁移已完成。代码库无 `ICONS.` 引用，`legacy.ts` 已删除。新代码统一用 `import { Icon, I } from '@/icons'`。
 
 ---
 
@@ -206,6 +191,5 @@ container.append(el)
 - `apps/monkey/src/icons/registry.ts` —— 图标常量注册表
 - `apps/monkey/src/icons/icon.vue` —— 集中式 Icon 组件
 - `apps/monkey/src/icons/types.ts` —— 自动推导的 `IconName` 类型
-- `apps/monkey/src/icons/legacy.ts` —— 旧 `ICON_*` 兼容层（迁移完成后删除）
-- `apps/monkey/src/icons/custom/` —— 自定义 SVG 变体目录
+- `apps/monkey/src/icons/custom/` —— 自定义 SVG 变体目录（`.svg` 文件，由 `icon.vue` 动态导入）
 - `.agents/skills/icons-design/SKILL.md` —— 自定义图标设计方法

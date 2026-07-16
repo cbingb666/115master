@@ -99,27 +99,24 @@ ionicons Filled 的视觉特征由以下规则定义，逐一对照：
 
 ### 6.1 文件位置
 
-`apps/monkey/src/icons/custom/<kebab-case>.vue`，与 `registry.ts` 中的 `custom:<name>` 一一对应。
+`apps/monkey/src/icons/custom/<kebab-case>.svg`，与 `registry.ts` 中的 `custom:<name>` 一一对应。
 
 ### 6.2 文件结构
 
-```vue
-<template>
-  <svg viewBox="0 0 24 24" fill="currentColor" :class="$props.class">
-    <path d="..." />
-  </svg>
-</template>
+直接保存纯 SVG 文件，由 `icon.vue` 通过 `defineAsyncComponent` 动态导入并透传 `class`：
 
-<script setup lang="ts">
-defineProps<{ class?: string }>()
-</script>
+```svg
+<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="..." />
+</svg>
 ```
 
 要点：
 
 - 顶层 `<svg>` 设 `fill="currentColor"`，子 `<path>` 不重复设置。
-- 接收 `class` prop，由外部 `size-*` 类控制尺寸。
+- 不写 `:class` 绑定 —— `class` 由 `icon.vue` 通过 `<component :is="customComp" :class="cls" />` 透传到 `<svg>` 根元素。
 - 仅当图标是 Outline 风格时，才在 path 上覆盖 `fill="none"` + `stroke` 属性。
+- 文件以换行符结尾。
 
 ### 6.3 注册
 
@@ -127,7 +124,7 @@ defineProps<{ class?: string }>()
 
 ```ts
 // === 自定义图标 ===
-FLIP_X: 'custom:flip-x',
+FILE_IMAGE: 'custom:image-file',
 ```
 
 - 命名遵循 `SCREAMING_SNAKE_CASE`，文件命名 `kebab-case`。

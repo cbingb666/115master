@@ -1,7 +1,7 @@
 /**
  * 图标注册表
  * - ion:<name>     委托给 @iconify/vue 渲染
- * - custom:<name>  动态加载 ./custom/<name>.vue
+ * - custom:<name>  动态加载 ./custom/<name>.svg
  */
 
 export const I = {
