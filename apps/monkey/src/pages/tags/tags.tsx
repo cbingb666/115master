@@ -266,7 +266,7 @@ const Tags = defineComponent({
           <Sider>
             <SiderContent />
           </Sider>
-          <Main class="relative flex min-h-[calc(100vh-var(--navbar-height))] flex-col">
+          <Main class="relative flex min-h-screen flex-col">
             <ListHeader />
             <ListArea />
           </Main>

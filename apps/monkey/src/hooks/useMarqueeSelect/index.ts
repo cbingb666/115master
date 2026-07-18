@@ -226,7 +226,10 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     if (event.button !== 0)
       return
 
-    // 阻止默认行为，防止触发浏览器文本选择
+    /** 落在交互控件上不启动框选（按钮/输入/链接/可拖拽项等） */
+    const target = event.target as HTMLElement | null
+    if (target?.closest('input, textarea, select, button, a, label, [contenteditable], [draggable="true"]'))
+      return
 
     const x = event.clientX
     const y = event.clientY

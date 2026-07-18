@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { format } from '@115master/utils'
 import { useStorage, useTitle } from '@vueuse/core'
-import { computed, defineComponent, onBeforeMount, watch } from 'vue'
+import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { router } from '@/app/router'
 import LogoWordmark from '@/assets/logo-wordmark-inline.svg?component'
@@ -215,6 +215,8 @@ const Drive = defineComponent({
       )
     }
 
+    const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
+
     const { containerRef, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
       get pathSelect() { return false },
       get listData() { return store.data?.data ?? [] },
@@ -223,6 +225,7 @@ const Drive = defineComponent({
       onCheckedClear: store.selection.clear,
       onRadio: store.selection.radio,
       onDragMove: handleDragMove,
+      marqueeContainer: () => mainRef.value?.el,
     })
 
     const { preview } = useFilePreview({
@@ -396,7 +399,7 @@ const Drive = defineComponent({
           <Sider>
             <SiderContent />
           </Sider>
-          <Main class="relative flex min-h-[calc(100vh-var(--navbar-height))] flex-col">
+          <Main ref={mainRef} class="relative flex min-h-screen flex-col">
             <ListHeader />
             <List />
             <FixedBottom />

@@ -36,6 +36,8 @@ export interface FileListInteractionProps {
   onRadio: (item: Share.Entity.FilesItem) => void
   onDragStart?: (items: Share.Entity.FilesItem[], event: DragEvent) => void
   onDragMove?: (cid: string, items: Share.Entity.FilesItem[]) => void
+  /** 框选容器，缺省取列表网格容器 */
+  marqueeContainer?: () => HTMLElement | undefined
 }
 
 export function useFileList(props: FileListInteractionProps) {
@@ -61,7 +63,7 @@ export function useFileList(props: FileListInteractionProps) {
   const currentFocusIndex = ref<number>(-1)
 
   useMarqueeSelect({
-    container: () => containerRef.value,
+    container: props.marqueeContainer ?? (() => containerRef.value),
     disabled: props.pathSelect,
   })
 
