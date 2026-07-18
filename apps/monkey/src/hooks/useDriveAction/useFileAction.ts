@@ -57,8 +57,8 @@ export function useFileAction() {
     return Promise.resolve(false)
   }
 
-  /** 重命名 */
-  async function renameItem(item: Share.Entity.FilesItem): Promise<boolean> {
+  /** 重命名；成功返回新文件名，失败/取消返回 false */
+  async function renameItem(item: Share.Entity.FilesItem): Promise<string | false> {
     const dialogRes = await dialog.prompt({
       title: '重命名',
       placeholder: '请输入文件名',
@@ -82,7 +82,7 @@ export function useFileAction() {
       })
       if (res.state) {
         toast.success('重命名成功')
-        return Promise.resolve(true)
+        return Promise.resolve(dialogRes)
       }
       else {
         await dialog.alert({

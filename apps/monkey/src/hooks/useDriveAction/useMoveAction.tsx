@@ -19,16 +19,17 @@ export function useMoveAction() {
     return result ? result.cid : false
   }
 
-  /** 获取移动进度 */
-  async function moveGetProgress(move_proid: string) {
+  /** 获取移动进度（最大 100 次 ≈ 5 分钟，超限判定失败） */
+  async function moveGetProgress(move_proid: string, retries = 100): Promise<number> {
+    if (retries <= 0)
+      throw new Error('移动进度查询超时')
     const res = await drive115.file.getFilesMoveProgress({
       move_proid,
     })
-    if (res.progress === 100) {
-      return Promise.resolve(res.progress)
-    }
+    if (res.progress === 100)
+      return res.progress
     await promise.promiseDelay(3000)
-    return moveGetProgress(move_proid)
+    return moveGetProgress(move_proid, retries - 1)
   }
 
   /** 移动核心 */
@@ -44,10 +45,16 @@ export function useMoveAction() {
       move_proid,
     })
     if (res.state) {
-      const progress = await moveGetProgress(move_proid)
-      if (progress === 100) {
-        toast.success('移动成功')
-        return Promise.resolve(true)
+      try {
+        const progress = await moveGetProgress(move_proid)
+        if (progress === 100) {
+          toast.success('移动成功')
+          return Promise.resolve(true)
+        }
+      }
+      catch {
+        toast.error('移动超时，请稍后刷新确认')
+        return Promise.resolve(false)
       }
     }
     else {

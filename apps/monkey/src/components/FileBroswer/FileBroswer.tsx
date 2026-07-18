@@ -20,9 +20,9 @@ import {
 } from '@/components'
 import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
-import { useDriveExplorer } from '@/hooks/useDriveExplorer'
 import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
+import { useDrivePageList } from './useDrivePageList'
 
 /** 文件浏览器内容组件 */
 const FileBroswer = defineComponent({
@@ -58,24 +58,26 @@ const FileBroswer = defineComponent({
     const keywordInput = ref(props.keyword?.value ?? '')
     const keyword = ref(props.keyword?.value ?? '')
     const scrollRef = ref<HTMLDivElement>()
-    const hasExternalNav = !!props.nav
     const viewType = useStorage<'list' | 'card'>('115Master_file_browser_view_type', 'list')
     const source = {
       cid: computed(() => keyword.value.trim() ? '0' : nav.cid.value),
       area: computed(() => keyword.value.trim() ? 'search' : nav.area.value),
       direction: nav.direction,
     }
-    const explorer = useDriveExplorer({
-      nav: source,
-      page: ref(1),
-      size: ref(20),
+    const explorer = useDrivePageList({
+      cid: source.cid,
+      area: source.area,
+      keyword,
       fc: 1,
       nf: ref('1'),
-      keyword,
-      scroll: hasExternalNav,
-      getScroll: () => scrollRef.value?.scrollTop ?? 0,
-      setScroll: (top: number) => scrollRef.value?.scrollTo({ top, behavior: 'instant' }),
+      size: 20,
     })
+
+    // cid/area/keyword 变化 → 刷新
+    watch([source.cid, source.area, keyword], () => {
+      explorer.changePage(1)
+      explorer.refresh()
+    }, { immediate: true })
     const { newFolder, renameItem } = useFileAction()
     const { deleteBatch } = useDeleteAction()
     const contextmenuShow = shallowRef(false)
@@ -91,21 +93,23 @@ const FileBroswer = defineComponent({
 
     async function handleNewFolder() {
       if (await newFolder(nav.cid.value || '0'))
-        explorer.refresh()
+        explorer.applyCreate()
     }
 
     async function handleRename() {
       if (!contextmenuItem.value)
         return
-      if (await renameItem(contextmenuItem.value))
-        explorer.refresh()
+      const item = contextmenuItem.value
+      const newName = await renameItem(item)
+      if (newName)
+        explorer.applyUpdate({ ...item, n: newName } as Share.Entity.FilesItem)
     }
 
     async function handleDelete() {
       if (!contextmenuItem.value)
         return
       if (await deleteBatch(nav.cid.value || '0', [contextmenuItem.value]))
-        explorer.refresh()
+        explorer.applyRemove([contextmenuItem.value])
     }
 
     const contextmenuActions = computed<Action[][]>(() => [
@@ -167,8 +171,6 @@ const FileBroswer = defineComponent({
       fc_mix: Share.Base.Sorter['fc_mix'],
     ) {
       await explorer.changeSort(order, asc, fc_mix)
-      explorer.page.changePage(1)
-      explorer.refresh()
     }
 
     return () => (
@@ -213,13 +215,13 @@ const FileBroswer = defineComponent({
                 <FileMenu class="relative z-10 shrink-0">
                   <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
                   <FilePageSizeSelector
-                    currentPageSize={explorer.page.size.value}
-                    onChangePageSize={explorer.page.changeSize}
+                    currentPageSize={explorer.size.value}
+                    onChangePageSize={explorer.changeSize}
                   />
                   <FileSortSelector
-                    asc={explorer.page.asc.value || 0}
-                    fc_mix={explorer.page.fc_mix.value || 0}
-                    order={explorer.page.order.value || 'user_ptime'}
+                    asc={explorer.asc.value || 0}
+                    fc_mix={explorer.fc_mix.value || 0}
+                    order={explorer.order.value || 'user_ptime'}
                     onSort={handleSort}
                   />
                   <FileViewType
@@ -252,11 +254,11 @@ const FileBroswer = defineComponent({
               data-[view-type=card]:gap-3!
               data-[view-type=card]:px-7
             "
-            loading={explorer.list.loading.value}
-            error={explorer.list.error.value ?? null}
-            empty={!explorer.list.loading.value && (explorer.list.data.value?.data?.length ?? 0) === 0}
+            loading={explorer.loading.value}
+            error={explorer.error.value ?? null}
+            empty={!explorer.loading.value && (explorer.data.value?.data?.length ?? 0) === 0}
           >
-            {(explorer.list.data.value?.data ?? []).map(item => (
+            {(explorer.data.value?.data ?? []).map(item => (
               <FileItem
                 class="data-[view-type=list]:px-6"
                 key={item.pc}
@@ -264,8 +266,8 @@ const FileBroswer = defineComponent({
                 pathSelect={true}
                 viewType={viewType.value}
                 cid={source.cid.value}
-                order={explorer.page.order.value}
-                asc={explorer.page.asc.value}
+                order={explorer.order.value}
+                asc={explorer.asc.value}
                 onClick={() => handleClickItem(item)}
                 onContextmenu={(e: MouseEvent) => handleContextmenu(item, e)}
               >
@@ -284,15 +286,15 @@ const FileBroswer = defineComponent({
             />
           </FileList>
 
-          {explorer.page.pageCount.value > 1 && (
+          {explorer.pageCount.value > 1 && (
             <div class="fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 justify-center">
               <Pagination
-                currentPage={explorer.page.page.value}
-                currentPageSize={explorer.page.size.value}
+                currentPage={explorer.page.value}
+                currentPageSize={explorer.size.value}
                 showSizeChanger={false}
-                total={explorer.page.total.value}
-                onCurrentPageChange={explorer.page.changePage}
-                onPageSizeChange={explorer.page.changeSize}
+                total={explorer.total.value}
+                onCurrentPageChange={explorer.changePage}
+                onPageSizeChange={explorer.changeSize}
               />
             </div>
           )}

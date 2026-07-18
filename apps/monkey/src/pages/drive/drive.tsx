@@ -52,30 +52,39 @@ const Drive = defineComponent({
           store.afterAction()
       },
       batchTop: async () => {
-        if (await action.topBatch(store.selection.values))
+        if (await action.topBatch(store.selection.values)) {
+          // 置顶影响服务端排序（is_top），本地不预测位置 → 整目录失效 + 刷新当前页
+          store.invalidate('all', store.nav.cid || '0')
           store.afterAction()
+        }
       },
       batchStar: async () => {
-        if (await action.starBatch(store.selection.values))
-          store.afterAction()
+        const items = store.selection.values
+        if (await action.starBatch(items))
+          store.applyStarMutation(items)
       },
       batchMove: async () => {
-        const res = await action.moveBatch(store.nav.cid, store.selection.values)
+        const items = store.selection.values
+        const res = await action.moveBatch(store.nav.cid, items)
         if (res.success)
-          store.afterAction([res.pid])
+          store.applyRemoveMutation(items, res.pid)
       },
       improve: async () => {
         const pid = store.prevLevel?.cid ?? '0'
-        if (await action.improve(store.selection.values, pid))
-          store.afterAction([pid])
+        const items = store.selection.values
+        if (await action.improve(items, pid))
+          store.applyRemoveMutation(items, pid)
       },
       rename: async () => {
-        if (await action.renameItem(store.selection.values[0]))
-          store.afterAction()
+        const item = store.selection.values[0]
+        const newName = await action.renameItem(item)
+        if (newName)
+          store.applyUpdateMutation({ ...item, n: newName } as Share.Entity.FilesItem)
       },
       batchDelete: async () => {
-        if (await action.deleteBatch(store.nav.cid, store.selection.values))
-          store.afterAction()
+        const items = store.selection.values
+        if (await action.deleteBatch(store.nav.cid, items))
+          store.applyRemoveMutation(items)
       },
       cloudDownload: async (defaultUrls: string = '') => {
         if (await action.cloudDownload(store.nav.cid, store.path, defaultUrls))
@@ -155,8 +164,6 @@ const Drive = defineComponent({
 
     async function handleSort(order: Share.Base.Sorter['o'], asc: Share.Base.Sorter['asc'], fc_mix: Share.Base.Sorter['fc_mix']) {
       await store.changeSort(order, asc, fc_mix)
-      store.page.changePage(1)
-      store.refresh()
     }
 
     // function handleSearch(value: string) {
@@ -166,7 +173,7 @@ const Drive = defineComponent({
     async function handleDragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
       const success = await action.dragMove(cid, originItems)
       if (success)
-        store.afterAction([cid])
+        store.applyRemoveMutation(originItems, cid)
       return success
     }
 
@@ -210,7 +217,7 @@ const Drive = defineComponent({
 
     const { containerRef, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
       get pathSelect() { return false },
-      get listData() { return store.list.data?.data ?? [] },
+      get listData() { return store.data?.data ?? [] },
       get checkeds() { return store.selection.checked },
       onChecked: store.selection.toggle,
       onCheckedClear: store.selection.clear,
@@ -219,18 +226,18 @@ const Drive = defineComponent({
     })
 
     const { preview } = useFilePreview({
-      get listData() { return store.list.data?.data ?? [] },
+      get listData() { return store.data?.data ?? [] },
     })
 
     function ListHeader() {
       const sorter: { asc: Share.Base.Sorter['asc'], fc_mix: Share.Base.Sorter['fc_mix'], order: Share.Base.Sorter['o'] } = {
-        asc: store.page.asc || 0,
-        fc_mix: store.page.fc_mix || 0,
-        order: store.page.order || 'user_ptime',
+        asc: store.asc || 0,
+        fc_mix: store.fc_mix || 0,
+        order: store.order || 'user_ptime',
       }
       const page = {
-        currentPageSize: store.page.size,
-        onChangePageSize: store.page.changeSize,
+        currentPageSize: store.query.size,
+        onChangePageSize: store.changeSize,
       }
       return (
         <Header>
@@ -325,18 +332,18 @@ const Drive = defineComponent({
           "
           containerRef={containerRef}
           viewType={viewType.value}
-          loading={store.list.loading}
-          error={store.list.error ?? undefined}
-          empty={!store.list.loading && store.page.total === 0}
+          loading={store.loading}
+          error={store.error ?? undefined}
+          empty={!store.loading && store.total === 0}
         >
-          {store.list.data?.data?.map((item: Share.Entity.FilesItem) => (
+          {store.data?.data?.map((item: Share.Entity.FilesItem) => (
             <FileItem
               class="data-[view-type=list]:px-3"
               key={item.pc}
               viewType={viewType.value}
               cid={store.nav.cid}
-              order={store.page.order}
-              asc={store.page.asc}
+              order={store.order}
+              asc={store.asc}
               {...itemProps(item)}
               onPreview={() => preview(item)}
             />
@@ -352,19 +359,19 @@ const Drive = defineComponent({
     }
 
     function FixedBottom() {
-      if (!store.list.loading && store.page.pageCount > 1) {
+      if (!store.loading && store.pageCount > 1) {
         return (
           <div class="fixed right-0 bottom-0 left-(--sider-width) flex justify-center">
             <div class="from-base-100/50 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent"></div>
             <div class="app-box-glass relative mb-4 rounded-full">
               <Pagination
                 key="pagination"
-                currentPage={store.page.page}
-                currentPageSize={store.page.size}
+                currentPage={store.query.page}
+                currentPageSize={store.query.size}
                 showSizeChanger={false}
-                total={store.page.total}
-                onCurrentPageChange={store.page.changePage}
-                onPageSizeChange={store.page.changeSize}
+                total={store.total}
+                onCurrentPageChange={store.changePage}
+                onPageSizeChange={store.changeSize}
               />
             </div>
           </div>
