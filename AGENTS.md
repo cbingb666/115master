@@ -46,6 +46,10 @@ drive115 / subtitle-source → shared, utils
 **编码时必须查看**
 @.agents/STYLE_GUIDE.md
 
+## Git
+
+- 默认保持线性历史：合并走 fast-forward / rebase，不产生 merge commit，除非用户明确要求。
+
 ## Icons
 
 - 使用规范（强制）: @.agents/rules/icons-usage.md
