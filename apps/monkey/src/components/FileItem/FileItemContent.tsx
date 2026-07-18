@@ -62,13 +62,13 @@ const FileItemContent = defineComponent({
             {isStarred.value && (
               <Icon
                 class="
-                  hidden
+                  hidden text-primary
                   group-data-[view-type=card]:ml-1
                   group-data-[view-type=card]:inline-block
                   group-data-[view-type=card]:size-4
                   group-data-[view-type=card]:align-[-0.125em]
                 "
-                name={I.STAR}
+                name={I.STAR_FILL}
               />
             )}
           </span>
@@ -76,11 +76,11 @@ const FileItemContent = defineComponent({
           {isStarred.value && (
             <Icon
               class="
-                hidden shrink-0
+                hidden shrink-0 text-primary
                 group-data-[view-type=list]:inline-flex
                 group-data-[view-type=list]:size-5
               "
-              name={I.STAR}
+              name={I.STAR_FILL}
             />
           )}
         </span>
