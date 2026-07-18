@@ -1,7 +1,7 @@
 ---
 name: reverse-api
 description: 通过 Playwright 浏览器自动化逆向 Web 应用的 API 接口，生成类型化的客户端代码。
-allowed-tools: Bash(playwright-cli:*)
+allowed-tools: Skill(playwright-115) Bash(playwright-cli:*)
 ---
 
 # API Reverse Engineering
@@ -10,10 +10,7 @@ allowed-tools: Bash(playwright-cli:*)
 
 ## 前置条件
 
-遵循 `.agents/PLAYWRIGHT_GUIDE.md` 连接浏览器。简要步骤：
-
-1. 检查 `.env.playwright.local` 是否存在，若不存在提示用户创建
-2. `export PLAYWRIGHT_MCP_EXTENSION_TOKEN` + `playwright-cli attach --extension=chrome`
+调用 `playwright-115` skill 完成浏览器连接与环境准备（`.env.playwright.local` 检查、token 导出、`playwright-cli attach`、dev server 就绪、页面导航均由其负责）。
 
 ## 工作流
 
