@@ -1,5 +1,6 @@
 import { useEventListener } from '@vueuse/core'
 import { defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
+import DialogModal from '@/components/Dialog/DialogModal'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import { I, Icon } from '@/icons'
 
@@ -52,10 +53,6 @@ const GlobalSearchModal = defineComponent({
       search.close()
     })
 
-    function onEnter() {
-      search.submit()
-    }
-
     function onKeydown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         if (composing.value || e.isComposing)
@@ -78,30 +75,31 @@ const GlobalSearchModal = defineComponent({
         e.preventDefault()
         if (e.isComposing)
           return
-        onEnter()
+        search.submit()
       }
     }
 
     return () => {
-      if (!search.show.value)
-        return null
-
       const isEmpty = !search.word.value.trim()
 
       return (
-        <div
-          class="fixed inset-0 z-10000 flex items-start justify-center bg-black/30 p-4 pt-[12vh] backdrop-blur-xs"
-          onClick={() => search.close()}
-        >
-          <div
-            class="bg-base-100/92 border-base-content/10 w-full max-w-2xl overflow-hidden rounded-2xl border shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          >
-            <div class="border-base-content/10 flex items-center gap-3 border-b px-4 py-3">
+        <DialogModal
+          id="global-search"
+          visible={search.show.value}
+          showConfirm={false}
+          showCancel={false}
+          maskClosable
+          className="!max-w-2xl"
+          classNameRoot="z-9999"
+          classNameContent="!px-0"
+          classNameActions="hidden"
+          onCancel={() => search.close()}
+          title={() => (
+            <div class="flex w-full items-center gap-3">
               <Icon class="text-base-content/70 shrink-0 text-2xl" name={I.SEARCH} />
               <input
                 ref={inputRef}
-                class="h-10 w-full bg-transparent outline-none"
+                class="h-10 flex-1 bg-transparent !text-base !font-normal outline-none"
                 placeholder="搜索文件，按 Enter 查看结果"
                 type="text"
                 value={search.word.value}
@@ -110,6 +108,30 @@ const GlobalSearchModal = defineComponent({
                 onCompositionend={() => composing.value = false}
                 onKeydown={onKeydown}
               />
+              {!isEmpty && (
+                <button
+                  class="text-base-content/70 hover:text-base-content flex-none text-xl"
+                  type="button"
+                  title="清除"
+                  onClick={() => search.change('')}
+                >
+                  <Icon name={I.CLOSE} />
+                </button>
+              )}
+            </div>
+          )}
+          titleActions={() => (
+            <>
+              {!isEmpty && (
+                <button
+                  class="btn btn-primary btn-sm gap-1"
+                  type="button"
+                  onClick={() => search.submit()}
+                >
+                  <Icon name={I.SEARCH} size="sm" />
+                  搜索
+                </button>
+              )}
               <button
                 class="btn btn-ghost btn-sm btn-circle"
                 type="button"
@@ -117,7 +139,9 @@ const GlobalSearchModal = defineComponent({
               >
                 <Icon class="text-xl" name={I.CLOSE} />
               </button>
-            </div>
+            </>
+          )}
+          content={() => (
             <div class="max-h-[48vh] overflow-y-auto p-2">
               {isEmpty && (
                 <>
@@ -142,7 +166,7 @@ const GlobalSearchModal = defineComponent({
                       key={`history-${item}-${i}`}
                       class={[
                         'flex items-center gap-2 rounded-xl px-2 py-1 transition-colors',
-                        search.idx.value === i ? 'bg-primary/15' : 'hover:bg-base-content/8',
+                        search.idx.value === i ? 'bg-primary/15' : 'hover:bg-base-content/5',
                       ]}
                     >
                       <button
@@ -175,8 +199,8 @@ const GlobalSearchModal = defineComponent({
                 </div>
               )}
             </div>
-          </div>
-        </div>
+          )}
+        />
       )
     }
   },
