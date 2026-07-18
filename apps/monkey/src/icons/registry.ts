@@ -95,7 +95,7 @@ export const I = {
 
   // === 文件 ===
   ALL_FILE: 'ion:file-tray-full-outline',
-  FILE_FOLDER: 'ion:folder',
+  FILE_FOLDER: 'custom:folder',
   FILE_IMAGE: 'custom:image-file',
   FILE_IMPROVE: 'ion:arrow-up',
 
