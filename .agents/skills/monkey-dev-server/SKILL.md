@@ -15,7 +15,7 @@ monkey 脚本由 vite dev server 提供，页面调试前必须先让它就绪�
 1. 探活（端口以 dev 日志或控制台报错中的为准）：
 
 ```bash
-curl -sf -o /dev/null -k https://127.0.0.1:<port>/__vite-plugin-monkey.entry.js
+curl -sf -o /dev/null -k https://127.0.0.1:<port>
 ```
 
 通过（exit 0）→ 直接跳到第 4 步。
@@ -31,7 +31,7 @@ pnpm dev
 ```
 [monkey-dev] branch : v2
 [monkey-dev] port   : 5293
-[monkey-dev] install: https://127.0.0.1:5293/115master.user.js
+[monkey-dev] install: https://127.0.0.1:5293
 ```
 
 3. 轮询等待就绪，URL 同第 1 步，端口用 banner 值。
