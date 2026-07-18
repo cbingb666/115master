@@ -1,7 +1,7 @@
 ---
 name: playwright-115
 description: 用 Playwright 调试 115/115Master 页面
-allowed-tools: Skill(playwright-cli) Skill(monkey-dev-server) Bash(cat:*) Bash(playwright-cli:*)
+allowed-tools: Skill(playwright-cli) Skill(monkey-dev-server) Bash(playwright-cli:*) Bash(grep:*)
 ---
 
 # Playwright 调试 115 页面
@@ -10,21 +10,18 @@ allowed-tools: Skill(playwright-cli) Skill(monkey-dev-server) Bash(cat:*) Bash(p
 
 ## 步骤
 
-1. **连接浏览器**：检查 `.env.playwright.local` 存在且含 `PLAYWRIGHT_MCP_EXTENSION_TOKEN`；缺失则提示用户按下方格式创建。导出后 attach：
+1. **连接浏览器**：会话已存在则跳过 attach——`playwright-cli list` 显示 `chrome` 且 status open → 直接用 `--s=chrome`。否则 attach：
 
 ```bash
-export PLAYWRIGHT_MCP_EXTENSION_TOKEN=$(cat .env.playwright.local | grep PLAYWRIGHT_MCP_EXTENSION_TOKEN | cut -d'=' -f2)
+export PLAYWRIGHT_MCP_EXTENSION_TOKEN=$(grep PLAYWRIGHT_MCP_EXTENSION_TOKEN .env.playwright.local | cut -d'=' -f2)
 playwright-cli attach --extension=chrome
 ```
 
-```bash
-# .env.playwright.local 缺失时的模板
-PLAYWRIGHT_MCP_EXTENSION_TOKEN=your_token_here
-```
+`.env.playwright.local` 缺失时提示用户创建（内容为 `PLAYWRIGHT_MCP_EXTENSION_TOKEN=<token>`）。
 
-完成判定：会话 `chrome` 创建成功，后续命令带 `--s=chrome`。
+完成判定：`--s=chrome` 命令可用（如 `eval "document.title"` 正常返回）。
 
-2. **dev server 就绪**：调用 `monkey-dev-server` skill（动态端口、就绪轮询、页面 reload 由其负责）。完成判定：控制台无 `ERR_CONNECTION_REFUSED`。
+2. **dev server 就绪**：调用 `monkey-dev-server` skill。完成判定：控制台无 `ERR_CONNECTION_REFUSED`。
 
 3. **导航到目标页面**：
 

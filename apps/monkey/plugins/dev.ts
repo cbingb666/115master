@@ -25,11 +25,11 @@ function fnv1a32(input: string): number {
   return hash >>> 0
 }
 
-function derivePort(branch: string, base = 5180, range = 200): number {
+export function derivePort(branch: string, base = 5180, range = 200): number {
   return base + (fnv1a32(branch) % range)
 }
 
-function detectBranch(): string {
+export function detectBranch(): string {
   try {
     return sanitizeBranch(readGitBranch())
   }
