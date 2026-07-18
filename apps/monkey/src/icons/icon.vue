@@ -16,12 +16,12 @@ const props = withDefaults(defineProps<{
 }>(), { size: 'md' })
 
 const SIZE_MAP: Record<IconSize, string> = {
-  xs: 'size-3.5',
-  sm: 'size-4',
-  md: 'size-5',
-  lg: 'size-6',
-  xl: 'size-7',
-  custom: '',
+  'xs': 'size-3.5',
+  'sm': 'size-4',
+  'md': 'size-5',
+  'lg': 'size-6',
+  'xl': 'size-16',
+  '2xl': 'size-24',
 }
 
 const cls = computed(() => clsx(SIZE_MAP[props.size]))

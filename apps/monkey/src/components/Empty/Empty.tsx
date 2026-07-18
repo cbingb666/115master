@@ -1,9 +1,9 @@
 import type { PropType } from 'vue'
-import type { IconName } from '@/icons'
+import type { IconName, IconSize } from '@/icons'
 import { defineComponent } from 'vue'
 import { Icon } from '@/icons'
 
-type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+type Size = IconSize
 
 const paddingClasses: Record<Size, string> = {
   'xs': 'p-2',
@@ -30,15 +30,6 @@ const imageSizeClasses: Record<Size, string> = {
   'lg': 'w-20 h-20',
   'xl': 'w-24 h-24',
   '2xl': 'w-32 h-32',
-}
-
-const iconSizeClasses: Record<Size, string> = {
-  'xs': 'text-2xl',
-  'sm': 'text-3xl',
-  'md': 'text-4xl',
-  'lg': 'text-5xl',
-  'xl': 'text-6xl',
-  '2xl': 'text-8xl',
 }
 
 const textSizeClasses: Record<Size, string> = {
@@ -109,10 +100,8 @@ const Empty = defineComponent({
               : (
                   <Icon
                     name={props.icon as IconName}
-                    class={`
-                      text-base-content/40
-                      ${iconSizeClasses[props.size]}
-                    `}
+                    size={props.size}
+                    class="text-base-content/60"
                   />
                 )}
           </div>
