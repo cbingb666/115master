@@ -149,7 +149,7 @@ const FileItemThumbnail = defineComponent({
           onMousedown={props.onMouseDown}
         >
           <Icon
-            class="text-primary/80 h-full w-full drop-shadow-md"
+            class="text-primary/80 h-full w-auto drop-shadow-md"
             name={icon as IconName}
           />
         </div>
