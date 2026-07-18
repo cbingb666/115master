@@ -2,7 +2,6 @@ import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { defineComponent, withModifiers } from 'vue'
 import { useContextmenu } from '@/hooks/useContextmenu'
-import { I, Icon } from '@/icons'
 import { Link } from '../Link'
 import FileItemCheckbox from './FileItemCheckbox'
 import FileItemContent from './FileItemContent'
@@ -236,20 +235,6 @@ const FileItem = defineComponent({
                 onMouseDown={handleMouseDown}
               />
             )}
-
-            {/* 置顶图标 */}
-            <Icon
-              class="
-                text-primary size-5
-                group-data-[view-type=card]:absolute group-data-[view-type=card]:top-3
-                group-data-[view-type=card]:right-3 group-data-[view-type=card]:size-6
-                group-data-[view-type=card]:rotate-45
-                group-data-[view-type=list]:absolute group-data-[view-type=list]:-top-0
-                group-data-[view-type=list]:-left-2 group-data-[view-type=list]:-rotate-45
-              "
-              v-show={props.data.is_top}
-              name={I.TOP_SOLID}
-            />
           </span>
 
           {/* 内容区域 */}

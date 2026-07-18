@@ -20,6 +20,7 @@ const FileItemContent = defineComponent({
     const isStarred = computed(() =>
       props.data.m === 1 || props.data.m === '1',
     )
+    const isTop = computed(() => props.data.is_top === 1)
 
     return () => (
       <div
@@ -44,6 +45,18 @@ const FileItemContent = defineComponent({
             group-data-[view-type=list]:items-center group-data-[view-type=list]:gap-2
           "
         >
+          {/* 置顶（list 视图内联在文件名前） */}
+          {isTop.value && (
+            <Icon
+              class="
+                text-primary hidden shrink-0
+                group-data-[view-type=list]:-mr-1
+                group-data-[view-type=list]:inline-flex
+                group-data-[view-type=list]:size-4
+              "
+              name={I.TOP_SOLID}
+            />
+          )}
           {/* 文件名 */}
           <span
             class="
@@ -54,6 +67,19 @@ const FileItemContent = defineComponent({
               group-data-[view-type=list]:truncate
             "
           >
+            {/* 置顶（card 视图内联在文件名前） */}
+            {isTop.value && (
+              <Icon
+                class="
+                  text-primary hidden
+                  group-data-[view-type=card]:mr-0.5
+                  group-data-[view-type=card]:inline-block
+                  group-data-[view-type=card]:size-4
+                  group-data-[view-type=card]:align-[-0.125em]
+                "
+                name={I.TOP_SOLID}
+              />
+            )}
             <span
               title={props.data.ns ?? props.data.n}
               v-html={props.data.ns ?? props.data.n}

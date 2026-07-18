@@ -17,7 +17,7 @@ export const I = {
   DELETE: 'ion:trash-outline',
   CANCEL: 'ion:close-circle',
   TOP: 'ion:pin-outline',
-  TOP_SOLID: 'ion:pin-sharp',
+  TOP_SOLID: 'ion:pin',
   MOVE: 'ion:arrow-forward',
   RENAME: 'ion:create-outline',
   EXPORT: 'ion:exit',
