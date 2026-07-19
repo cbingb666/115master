@@ -102,7 +102,7 @@ const FileBroswer = defineComponent({
       const item = contextmenuItem.value
       const newName = await renameItem(item)
       if (newName)
-        explorer.applyUpdate({ ...item, n: newName } as Share.Entity.FilesItem)
+        explorer.applyUpdate({ ...item, n: newName, ns: newName } as Share.Entity.FilesItem)
     }
 
     async function handleDelete() {

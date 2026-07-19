@@ -86,7 +86,7 @@ const Drive = defineComponent({
         const item = store.selection.values[0]
         const newName = await action.renameItem(item)
         if (newName)
-          store.applyUpdateMutation({ ...item, n: newName } as Share.Entity.FilesItem)
+          store.applyUpdateMutation({ ...item, n: newName, ns: newName } as Share.Entity.FilesItem)
       },
       batchDelete: async () => {
         const items = store.selection.values

@@ -4,7 +4,7 @@ import { string } from '@115master/utils'
 import { useDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'
-import { getFileIds } from './helpers'
+import { composeRenamedName, getFileIds } from './helpers'
 
 /** 文件基础操作（置顶、星标、重命名、新建文件夹） */
 export function useFileAction() {
@@ -82,7 +82,7 @@ export function useFileAction() {
       })
       if (res.state) {
         toast.success('重命名成功')
-        return Promise.resolve(dialogRes)
+        return Promise.resolve(composeRenamedName(item.n, dialogRes))
       }
       else {
         await dialog.alert({
