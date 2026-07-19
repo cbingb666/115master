@@ -92,7 +92,7 @@ const GlobalSearchModal = defineComponent({
           className="!max-w-2xl"
           classNameRoot="z-9999"
           classNameContent="!px-0"
-          classNameActions="hidden"
+          classNameActions={isEmpty ? 'hidden' : 'sm:hidden'}
           onCancel={() => search.close()}
           title={() => (
             <div class="flex w-full items-center gap-3">
@@ -119,16 +119,6 @@ const GlobalSearchModal = defineComponent({
                 </button>
               )}
             </div>
-          )}
-          titleActions={() => !isEmpty && (
-            <button
-              class="btn btn-primary btn-sm gap-1"
-              type="button"
-              onClick={() => search.submit()}
-            >
-              <Icon name={I.SEARCH} size="sm" />
-              搜索
-            </button>
           )}
           content={() => (
             <div class="max-h-[48vh] overflow-y-auto p-2">
@@ -183,12 +173,24 @@ const GlobalSearchModal = defineComponent({
                 </>
               )}
               {!isEmpty && (
-                <div class="text-base-content/60 px-3 py-6 text-sm">
+                <div class="text-base-content/60 hidden px-3 py-6 text-sm sm:block">
                   按 Enter 直接搜索
                 </div>
               )}
             </div>
           )}
+          v-slots={{
+            actions: () => !isEmpty && (
+              <button
+                class="btn btn-primary btn-block gap-1"
+                type="button"
+                onClick={() => search.submit()}
+              >
+                <Icon name={I.SEARCH} size="sm" />
+                搜索
+              </button>
+            ),
+          }}
         />
       )
     }
