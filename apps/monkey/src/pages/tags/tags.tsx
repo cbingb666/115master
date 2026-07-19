@@ -4,15 +4,14 @@ import { Api, Core } from '@115master/drive115'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
-import LogoWordmark from '@/assets/logo-wordmark-inline.svg?component'
 import {
   Header,
   Layout,
   LoadingError,
   Main,
-  Menu,
   Progress,
   Sider,
+  SiderContent,
   useDialog,
   useToast,
 } from '@/components'
@@ -137,18 +136,6 @@ const Tags = defineComponent({
         .map(f => store.tags.find(t => t.id === f.id)?.name ?? f.id)
         .join('、')
       toast.error(`${failed.length} 个删除失败：${names}`)
-    }
-
-    function SiderContent() {
-      return (
-        <>
-          <div class="flex items-center justify-center pt-7 pb-4">
-            <LogoWordmark role="img" aria-label="115Master" class="text-base-content h-10 w-auto" />
-          </div>
-          <div class="bg-base-content/5 mb-3 h-px w-full" />
-          <Menu class="flex-1" />
-        </>
-      )
     }
 
     function SearchInput() {

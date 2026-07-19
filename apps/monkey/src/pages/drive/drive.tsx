@@ -1,11 +1,9 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
-import { format } from '@115master/utils'
 import { useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { router } from '@/app/router'
-import LogoWordmark from '@/assets/logo-wordmark-inline.svg?component'
 import {
   FileContextMenu,
   FileItem,
@@ -18,11 +16,11 @@ import {
   Header,
   Layout,
   Main,
-  Menu,
   PageSizeOptions,
   Pagination,
   ResponsiveMenu,
   Sider,
+  SiderContent,
   SortOptions,
   useFileList,
   useFilePreview,
@@ -31,7 +29,6 @@ import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
-import { useDriveSpaceInfoStore } from '@/store/driveSpaceInfo'
 
 const Drive = defineComponent({
   name: 'Drive',
@@ -48,7 +45,6 @@ const Drive = defineComponent({
 
     const action = useDriveAction()
     const search = useGlobalSearch()
-    const spaceInfo = useDriveSpaceInfoStore()
     const route = useRoute()
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
     const isSearch = computed(() => store.nav.area === 'search')
@@ -182,44 +178,6 @@ const Drive = defineComponent({
       if (success)
         store.applyRemoveMutation(originItems, cid)
       return success
-    }
-
-    function SiderContent() {
-      const value = computed(() => {
-        const allUse = spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0
-        const allTotal = spaceInfo?.state?.data?.space_info?.all_total?.size ?? 1
-        return (allUse / allTotal * 100).toFixed(2)
-      })
-
-      return (
-        <>
-          <div class="flex items-center justify-center pt-7 pb-4">
-            <LogoWordmark role="img" aria-label="115Master" class="text-base-content h-10 w-auto" />
-          </div>
-          <div class="bg-base-content/5 mb-3 h-px w-full" />
-          <button
-            class="btn btn-primary h-10"
-            onClick={() => actionHandlers.cloudDownload()}
-          >
-            <Icon class="text-xl" name={I.ADD_LINK} />
-            离线下载
-          </button>
-          <div class="bg-base-content/5 my-3 h-px w-full" />
-          <Menu class="flex-1" />
-          <div class="bg-base-content/5 my-3 h-px w-full" />
-          <div class="mt-2 flex flex-none flex-col gap-1.5" v-show={spaceInfo.state?.state === true}>
-            <div class="text-base-content/60 flex items-baseline gap-1.5 text-xs">
-              <span class="text-base-content/85 font-medium">
-                {format.fileSize(spaceInfo?.state?.data?.space_info?.all_use?.size ?? 0)}
-              </span>
-              <span>/</span>
-              <span>{format.fileSize(spaceInfo?.state?.data?.space_info?.all_total?.size ?? 0)}</span>
-            </div>
-            <progress class="progress progress-sm progress-primary w-38" max={100} value={value.value} />
-          </div>
-          <div class="bg-base-content/5 my-3 h-px w-full" />
-        </>
-      )
     }
 
     const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
