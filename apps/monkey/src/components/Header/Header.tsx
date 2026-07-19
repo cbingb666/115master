@@ -34,7 +34,7 @@ const Header = defineComponent({
             rounded-full
             border-2
             border-transparent
-            py-1 pr-2
+            py-2 pr-2
             pl-4
           "
         >

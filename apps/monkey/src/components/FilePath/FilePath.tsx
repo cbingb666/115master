@@ -68,11 +68,11 @@ const FilePath = defineComponent({
       const { path } = props
 
       if (path.length === 0)
-        return <div class="breadcrumbs rounded-full"><ul></ul></div>
+        return <div class="breadcrumbs rounded-full py-0"><ul></ul></div>
 
       if (breakpoints.greater('sm').value || props.pathSelect || path.length <= 1) {
         return (
-          <div class="breadcrumbs rounded-full">
+          <div class="breadcrumbs rounded-full py-0">
             <ul>
               {path.map(p => (
                 <li key={p.cid}>

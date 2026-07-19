@@ -140,7 +140,7 @@ const Tags = defineComponent({
 
     function SearchInput() {
       return (
-        <div class="bg-base-content/10 flex h-9 items-center gap-2 rounded-full px-3 sm:w-64">
+        <div class="bg-base-content/10 flex h-8 items-center gap-2 rounded-full px-3 sm:w-64">
           <Icon name={I.SEARCH} size="sm" class="text-base-content/50 flex-none" />
           <input
             class="h-full w-full bg-transparent text-sm outline-none"
