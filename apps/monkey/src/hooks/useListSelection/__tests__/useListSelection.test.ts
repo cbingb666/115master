@@ -26,13 +26,19 @@ interface Item {
   id: string
 }
 
-function setup(selection: SelectionAdapter<Item>, list: Item[]) {
+function setup(
+  selection: SelectionAdapter<Item>,
+  list: Item[],
+  opts: { onOpen?: (i: Item) => void, selectMode?: () => boolean } = {},
+) {
   const scope = effectScope()
   const bind = scope.run(() => useListSelection({
     container: () => undefined,
     list: () => list,
     key: i => i.id,
     selection,
+    onOpen: opts.onOpen,
+    selectMode: opts.selectMode,
   }))!
   return { scope, bind }
 }
@@ -56,6 +62,58 @@ describe('useListSelection', () => {
     bind.handleClick({ id: 'a' })
 
     expect(clear).toHaveBeenCalledOnce()
+    expect(toggle).toHaveBeenCalledWith({ id: 'a' }, true)
+    scope.stop()
+  })
+
+  it('默认态 plain click + onOpen → 调 onOpen，不改变选中', () => {
+    const onOpen = vi.fn()
+    const toggle = vi.fn()
+    const clear = vi.fn()
+    const list = [{ id: 'a' }, { id: 'b' }]
+    const { scope, bind } = setup({ has: () => false, toggle, clear }, list, { onOpen })
+
+    bind.handleClick({ id: 'a' })
+
+    expect(onOpen).toHaveBeenCalledWith({ id: 'a' })
+    expect(toggle).not.toHaveBeenCalled()
+    expect(clear).not.toHaveBeenCalled()
+    scope.stop()
+  })
+
+  it('选择模式 plain click → toggle 该项不清空其他', () => {
+    const toggle = vi.fn()
+    const clear = vi.fn()
+    const list = [{ id: 'a' }, { id: 'b' }]
+    const { scope, bind } = setup(
+      { has: i => i.id === 'a', toggle, clear },
+      list,
+      { selectMode: () => true },
+    )
+
+    bind.handleClick({ id: 'a' }) // 已选中 → 取消
+    bind.handleClick({ id: 'b' }) // 未选中 → 选中
+
+    expect(clear).not.toHaveBeenCalled()
+    expect(toggle).toHaveBeenNthCalledWith(1, { id: 'a' }, false)
+    expect(toggle).toHaveBeenNthCalledWith(2, { id: 'b' }, true)
+    scope.stop()
+  })
+
+  it('选择模式优先于 onOpen（选择模式中单击不打开）', () => {
+    const onOpen = vi.fn()
+    const toggle = vi.fn()
+    const clear = vi.fn()
+    const list = [{ id: 'a' }]
+    const { scope, bind } = setup(
+      { has: () => false, toggle, clear },
+      list,
+      { onOpen, selectMode: () => true },
+    )
+
+    bind.handleClick({ id: 'a' })
+
+    expect(onOpen).not.toHaveBeenCalled()
     expect(toggle).toHaveBeenCalledWith({ id: 'a' }, true)
     scope.stop()
   })

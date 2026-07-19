@@ -1,10 +1,11 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
-import { useStorage, useTitle } from '@vueuse/core'
+import { breakpointsTailwind, useBreakpoints, useEventListener, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { router } from '@/app/router'
 import {
+  FileActionBar,
   FileContextMenu,
   FileItem,
   FileList,
@@ -22,6 +23,7 @@ import {
   Sider,
   SiderContent,
   SortOptions,
+  useDialog,
   useFileList,
   useFilePreview,
 } from '@/components'
@@ -29,6 +31,7 @@ import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
+import { openFilesItem } from '@/utils/openFilesItem'
 
 const Drive = defineComponent({
   name: 'Drive',
@@ -44,10 +47,13 @@ const Drive = defineComponent({
     onActivated(() => store.restoreScroll())
 
     const action = useDriveAction()
+    const dialog = useDialog()
     const search = useGlobalSearch()
     const route = useRoute()
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
     const isSearch = computed(() => store.nav.area === 'search')
+    const breakpoints = useBreakpoints(breakpointsTailwind)
+    const isMobile = breakpoints.smaller('sm')
 
     const actionHandlers = {
       newFolder: async () => {
@@ -182,18 +188,27 @@ const Drive = defineComponent({
 
     const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
 
-    const { containerRef, contextmenuShow, contextmenuPosition, itemProps, resetAnchor } = useFileList({
+    const { preview } = useFilePreview({
+      get listData() { return store.data?.data ?? [] },
+    })
+
+    function openItem(item: Share.Entity.FilesItem) {
+      return openFilesItem(item, {
+        router,
+        alert: opts => dialog.alert(opts),
+        onPreview: preview,
+      })
+    }
+
+    const { containerRef, selectMode, exitSelectMode, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
       get pathSelect() { return false },
       get listData() { return store.data?.data ?? [] },
       get checkeds() { return store.selection.checked },
       onChecked: store.selection.toggle,
       onCheckedClear: store.selection.clear,
+      onOpen: openItem,
       onDragMove: handleDragMove,
       marqueeContainer: () => mainRef.value?.el,
-    })
-
-    const { preview } = useFilePreview({
-      get listData() { return store.data?.data ?? [] },
     })
 
     function ListHeader() {
@@ -308,6 +323,7 @@ const Drive = defineComponent({
               class="data-[view-type=list]:px-3"
               key={item.pc}
               viewType={viewType.value}
+              selectMode={selectMode.value}
               cid={store.nav.cid}
               order={store.order}
               asc={store.asc}
@@ -347,10 +363,37 @@ const Drive = defineComponent({
       return <></>
     }
 
-    // cid 变化时清空选中并重置 Shift 锚点
+    /** 移动端选择模式顶部「完成 · 已选 N 项」栏 */
+    function SelectTopBar() {
+      if (!selectMode.value || !isMobile.value)
+        return null
+      return (
+        <div class="bg-base-100/90 border-base-content/10 sticky top-0 z-20 flex items-center justify-between border-b px-4 py-2 backdrop-blur">
+          <button class="btn btn-ghost btn-sm" type="button" onClick={exitSelectMode}>
+            完成
+          </button>
+          <span class="text-base-content/70 text-sm">
+            已选
+            {store.selection.count}
+            {' '}
+            项
+          </span>
+        </div>
+      )
+    }
+
+    // cid 变化时退出选择模式（清空选中 + 复位 Shift 锚点）
     watch(() => store.nav.cid, () => {
-      store.selection.clear()
-      resetAnchor()
+      exitSelectMode()
+    })
+
+    // 点列表外空白退出选择模式
+    useEventListener(() => mainRef.value?.el, 'click', (e: MouseEvent) => {
+      if (!selectMode.value)
+        return
+      if ((e.target as HTMLElement).closest('[data-selection-key]'))
+        return
+      exitSelectMode()
     })
 
     onBeforeMount(() => {
@@ -366,8 +409,12 @@ const Drive = defineComponent({
           </Sider>
           <Main ref={mainRef} class="relative flex min-h-screen flex-col">
             <ListHeader />
+            <SelectTopBar />
             <List />
             <FixedBottom />
+            {selectMode.value && (
+              <FileActionBar data={actionConfig.value} />
+            )}
           </Main>
         </Layout>
       </div>

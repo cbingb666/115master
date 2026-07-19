@@ -55,6 +55,7 @@ const FileItemCheckbox = defineComponent({
             checked:bg-primary checked:text-primary-content
             checked:border-primary opacity-0
             transition-all group-hover:opacity-100
+            group-data-[select-mode=true]:opacity-100
             checked:opacity-100
           "
           v-show={!props.pathSelect}

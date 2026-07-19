@@ -7,13 +7,7 @@ import { useFolderImagePreview } from '@/hooks/useFolderImagePreview'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { actressFaceDB } from '@/utils/actressFaceDB'
 import { getFilesItemId } from '@/utils/filesItem'
-import { Utils115 } from '@/utils/utils115'
-
-interface LinkValue {
-  to?: string
-  href?: string
-  target?: string
-}
+import { openFilesItem, resolveFileLink } from '@/utils/openFilesItem'
 
 interface ActressFaceDBActress {
   url: string
@@ -73,36 +67,7 @@ export function useFileItem(options: UseFileItemOptions) {
     ? useSmartVideoCover(coverOptions, { elementRef: itemRef })
     : null
 
-  const link = computed<LinkValue | undefined>(() => {
-    if (Utils115.isVideo(data.iv)) {
-      return {
-        to: `/video/${data.pc}`,
-        target: '_self',
-      }
-    }
-
-    if (Utils115.isSupportOpenDoc(data.ico)) {
-      return {
-        href: Utils115.GetOpenDocUrl({
-          pickCode: data.pc,
-          ico: data.ico,
-          sha1: data.sha,
-          shareId: '',
-          from: '',
-        }).href,
-        target: '_blank',
-      }
-    }
-
-    if (data.fc === 0) {
-      return {
-        to: `/drive/${data.cid}`,
-        target: '_self',
-      }
-    }
-
-    return undefined
-  })
+  const link = computed(() => resolveFileLink(data))
 
   const hasActressCover = computed(() =>
     actressAsyncState.isReady.value && !!actressAsyncState.state.value,
@@ -120,33 +85,12 @@ export function useFileItem(options: UseFileItemOptions) {
     return icon.startsWith('https://')
   }
 
-  async function open(): Promise<void> {
-    if (link.value) {
-      if ('to' in link.value) {
-        router.push(link.value.to!)
-        return
-      }
-      if ('href' in link.value) {
-        window.open(link.value.href, link.value.target)
-        return
-      }
-    }
-
-    // 图片预览：优先使用 folder preview
-    if (data.u) {
-      if (folderPreview) {
-        await folderPreview.open(data)
-      }
-      else {
-        onPreview?.(data)
-      }
-      return
-    }
-
-    dialog.alert({
-      title: '提示',
-      content: '暂不支持打开该文件类型',
-      confirmText: '知道了',
+  function open(): Promise<void> {
+    return openFilesItem(data, {
+      router,
+      alert: opts => dialog.alert(opts),
+      folderPreview,
+      onPreview,
     })
   }
 

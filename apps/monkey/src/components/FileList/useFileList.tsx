@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
-import { computed, ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { useListSelection } from '@/hooks/useListSelection'
 import { Utils115 } from '@/utils/utils115'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
@@ -32,6 +32,8 @@ export interface FileListInteractionProps {
   checkeds: Set<Share.Entity.FilesItem>
   onChecked: (item: Share.Entity.FilesItem, checked: boolean) => void
   onCheckedClear: () => void
+  /** 默认态（非选择模式）plain click 打开该项 */
+  onOpen?: (item: Share.Entity.FilesItem) => void
   onDragStart?: (items: Share.Entity.FilesItem[], event: DragEvent) => void
   onDragMove?: (cid: string, items: Share.Entity.FilesItem[]) => void
   /** 框选容器，缺省取列表网格容器 */
@@ -41,6 +43,7 @@ export interface FileListInteractionProps {
 export function useFileList(props: FileListInteractionProps) {
   const containerRef = ref<HTMLElement>()
   const dragging = shallowRef(false)
+  const selectMode = shallowRef(false)
   const contextmenuShow = shallowRef(false)
   const contextmenuPosition = shallowRef({ x: 0, y: 0 })
 
@@ -55,7 +58,22 @@ export function useFileList(props: FileListInteractionProps) {
       clear: () => props.onCheckedClear(),
     },
     disabled: props.pathSelect,
+    onOpen: props.onOpen,
+    selectMode: () => selectMode.value,
+    onExitSelectMode: exitSelectMode,
   })
+
+  /** 首个选中产生 → 进入选择模式（选中归零不自动退出，退出靠 exitSelectMode） */
+  watch(() => props.checkeds.size, (size, prev) => {
+    if (prev === 0 && size > 0)
+      selectMode.value = true
+  })
+
+  function exitSelectMode() {
+    selectMode.value = false
+    props.onCheckedClear()
+    selection.resetAnchor()
+  }
 
   const handleDragStart = (item: Share.Entity.FilesItem, event: DragEvent) => {
     if (!event.dataTransfer)
@@ -129,6 +147,8 @@ export function useFileList(props: FileListInteractionProps) {
 
   return {
     containerRef,
+    selectMode,
+    exitSelectMode,
     contextmenuShow,
     contextmenuPosition,
     itemProps,

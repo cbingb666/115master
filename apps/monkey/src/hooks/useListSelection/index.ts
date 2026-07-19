@@ -21,6 +21,12 @@ export interface UseListSelectionOptions<T> {
   selection: SelectionAdapter<T>
   /** 仅禁框选（drive pathSelect）；点击与快捷键不受影响 */
   disabled?: boolean
+  /** 默认态（非选择模式）下 plain click 打开该项；缺省则维持 radio 选中（向后兼容） */
+  onOpen?: (item: T) => void
+  /** 是否处于选择模式：模式内 plain click 切换选中而非打开。getter 形式以读取外部 ref 最新值 */
+  selectMode?: () => boolean
+  /** ESC 时退出选择模式（清选中 + 复位锚点由调用方决定）；缺省则 ESC 仅 clear */
+  onExitSelectMode?: () => void
 }
 
 export interface ListSelectionBind<T> {
@@ -40,7 +46,7 @@ export interface ListSelectionBind<T> {
  * 与业务无关——item 类型与 selection 持有方由调用方决定。
  */
 export function useListSelection<T>(options: UseListSelectionOptions<T>): ListSelectionBind<T> {
-  const { container, list, key, selection, disabled = false } = options
+  const { container, list, key, selection, disabled = false, onOpen, selectMode, onExitSelectMode } = options
 
   useMarqueeSelect({ container, disabled })
 
@@ -79,7 +85,16 @@ export function useListSelection<T>(options: UseListSelectionOptions<T>): ListSe
       if (!was)
         lastCheckedIndex.value = currentIndex
     }
+    else if (selectMode?.()) {
+      // 选择模式：toggle 该项，不清空其他
+      selection.toggle(item, !selection.has(item))
+    }
+    else if (onOpen) {
+      // 默认态：打开该项
+      onOpen(item)
+    }
     else {
+      // 向后兼容：未注入 onOpen 时维持 radio
       selection.clear()
       selection.toggle(item, true)
       lastCheckedIndex.value = currentIndex
@@ -91,7 +106,12 @@ export function useListSelection<T>(options: UseListSelectionOptions<T>): ListSe
   }
 
   watch(keys.Escape, (v) => {
-    if (v) {
+    if (!v)
+      return
+    if (onExitSelectMode) {
+      onExitSelectMode()
+    }
+    else {
       selection.clear()
       resetAnchor()
     }

@@ -2,6 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { defineComponent, withModifiers } from 'vue'
 import { useContextmenu } from '@/hooks/useContextmenu'
+import { useLongPress } from '@/hooks/useLongPress'
 import { Link } from '../Link'
 import FileItemCheckbox from './FileItemCheckbox'
 import FileItemContent from './FileItemContent'
@@ -21,6 +22,10 @@ const FileItem = defineComponent({
       required: true,
     },
     pathSelect: {
+      type: Boolean,
+      default: false,
+    },
+    selectMode: {
       type: Boolean,
       default: false,
     },
@@ -106,7 +111,20 @@ const FileItem = defineComponent({
       onPreview: props.onPreview,
     })
 
+    /** 移动端长按：选中该项（watch count 自动进入选择模式）；鼠标不触发 */
+    const longPressFired = useLongPress(itemRef, {
+      onTrigger: () => {
+        if (!props.checked)
+          props.onChecked(true)
+      },
+    })
+
     function handleClick(e: Event) {
+      // 长按刚触发（进入选择模式），吞掉随后合成的 click，避免又触发单击打开
+      if (longPressFired.value) {
+        longPressFired.value = false
+        return
+      }
       // 路径选择模式
       if (props.pathSelect) {
         props.onClick?.(props.data)
@@ -122,13 +140,6 @@ const FileItem = defineComponent({
       props.onClick?.(props.data)
     }
 
-    function handleDblClick() {
-      if (props.pathSelect)
-        // 路径选择模式禁止双击打开
-        return
-      open()
-    }
-
     function handleMouseDown(e: MouseEvent) {
       e.stopPropagation()
     }
@@ -142,10 +153,8 @@ const FileItem = defineComponent({
         ref={itemRef}
         class={[
           `
-            group
-            data-[checked=true]:bg-primary/10! data-[checked=true]:ring-primary/10
-            data-[checked=true]:hover:bg-primary/15!
-            data-[checked=true]:hover:ring-primary/15!
+            group data-[checked=true]:bg-primary/10! data-[checked=true]:ring-primary/10
+            data-[checked=true]:hover:bg-primary/15! data-[checked=true]:hover:ring-primary/15!
             data-[dropzone=true]:bg-primary/5
             hover:bg-base-content/5
             data-[view-type=list]:even:bg-base-content/[0.03]
@@ -163,12 +172,15 @@ const FileItem = defineComponent({
             data-[view-type=card]:rounded-2xl
             data-[view-type=card]:data-[checked=true]:ring-6
             data-[view-type=list]:items-stretch
+            max-sm:select-none
+            max-sm:[-webkit-touch-callout:none]
           `,
           attrs.class,
         ]}
         data-checked={props.checked}
         data-dragging={props.dragging}
         data-dropzone={isDrogzone.value}
+        data-select-mode={props.selectMode}
         data-view-type={props.viewType}
         onDragleave={handleDragLeave}
         onDragover={handleDragOver}
@@ -195,7 +207,6 @@ const FileItem = defineComponent({
           {...link.value}
           draggable={false}
           onClickCapture={withModifiers(handleClick, ['prevent'])}
-          onDblclick={handleDblClick}
         >
           {/* 缩略图容器 */}
           <span
