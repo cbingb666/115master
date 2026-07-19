@@ -143,12 +143,12 @@ const DialogModal = defineComponent({
                 : (
                     <>
                       {props.showCancel && (
-                        <button class="btn btn-ghost" onClick={handleCancel}>
+                        <button class="btn btn-neutral max-sm:flex-1" onClick={handleCancel}>
                           {renderNode(props.cancelText, '取消')}
                         </button>
                       )}
                       {props.showConfirm && (
-                        <button class="btn btn-primary" onClick={handleConfirm}>
+                        <button class="btn btn-primary max-sm:flex-1" onClick={handleConfirm}>
                           {renderNode(props.confirmText, '确认')}
                         </button>
                       )}

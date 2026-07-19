@@ -66,6 +66,7 @@ const FilePath = defineComponent({
 
     return () => {
       const { path } = props
+      const last = (i: number) => i === path.length - 1
 
       if (path.length === 0)
         return <div class="breadcrumbs rounded-full py-0"><ul></ul></div>
@@ -74,30 +75,51 @@ const FilePath = defineComponent({
         return (
           <div class="breadcrumbs rounded-full py-0">
             <ul>
-              {path.map(p => (
+              {path.map((p, i) => (
                 <li key={p.cid}>
-                  <Link
-                    class="
-                      data-[drop-zone=true]:bg-primary
-                      bg-base-content/15
-                      hover:bg-base-content/25
-                      rounded-full
-                      px-3
-                      py-0.5
-                      text-sm
-                      font-semibold
-                      no-underline!
-                      text-shadow-2xs
-                    "
-                    data-drop-zone={dropZone.value === p.cid}
-                    href={p.cid === '0' ? '#/drive' : `#/drive/${p.cid}`}
-                    onClick={withModifiers(() => props.onPathClick?.(p), ['prevent'])}
-                    onDragleave={handleDragleave}
-                    onDragover={e => handleDragover(e, p.cid)}
-                    onDrop={e => handleDrop(e, p)}
-                  >
-                    {p.name}
-                  </Link>
+                  {last(i)
+                    ? (
+                        <span
+                          aria-current="page"
+                          class="
+                            bg-base-content/15
+                            text-base-content/70
+                            cursor-default
+                            rounded-full
+                            px-3
+                            py-0.5
+                            text-sm
+                            font-semibold
+                            text-shadow-2xs
+                          "
+                        >
+                          {p.name}
+                        </span>
+                      )
+                    : (
+                        <Link
+                          class="
+                            data-[drop-zone=true]:bg-primary
+                            bg-base-content/15
+                            hover:bg-base-content/25
+                            rounded-full
+                            px-3
+                            py-0.5
+                            text-sm
+                            font-semibold
+                            no-underline!
+                            text-shadow-2xs
+                          "
+                          data-drop-zone={dropZone.value === p.cid}
+                          href={p.cid === '0' ? '#/drive' : `#/drive/${p.cid}`}
+                          onClick={withModifiers(() => props.onPathClick?.(p), ['prevent'])}
+                          onDragleave={handleDragleave}
+                          onDragover={e => handleDragover(e, p.cid)}
+                          onDrop={e => handleDrop(e, p)}
+                        >
+                          {p.name}
+                        </Link>
+                      )}
                 </li>
               ))}
             </ul>
@@ -129,25 +151,30 @@ const FilePath = defineComponent({
                 <Icon name={I.CHEVRON_DOWN} size="sm" />
               </button>
             ),
-            default: () => path.map(p => (
+            default: () => path.map((p, i) => (
               <li key={p.cid}>
-                <Link
-                  class="
-                    bg-base-content/15
-                    hover:bg-base-content/25
-                    rounded-full
-                    px-3
-                    py-0.5
-                    text-sm
-                    font-semibold
-                    no-underline!
-                    text-shadow-2xs
-                  "
-                  href={p.cid === '0' ? '#/drive' : `#/drive/${p.cid}`}
-                  onClick={withModifiers(() => props.onPathClick?.(p), ['prevent'])}
-                >
-                  {p.name}
-                </Link>
+                {last(i)
+                  ? (
+                      <span
+                        aria-current="page"
+                        class="flex items-center gap-2 px-3 py-2 text-left font-semibold"
+                      >
+                        <Icon name={I.FILE_FOLDER} size="sm" />
+                        <span class="flex-1 truncate">{p.name}</span>
+                        <span class="text-base-content/50 text-xs font-normal">当前</span>
+                      </span>
+                    )
+                  : (
+                      <Link
+                        class="flex items-center gap-2 text-left no-underline!"
+                        href={p.cid === '0' ? '#/drive' : `#/drive/${p.cid}`}
+                        onClick={withModifiers(() => props.onPathClick?.(p), ['prevent'])}
+                      >
+                        <Icon name={I.FILE_FOLDER} size="sm" />
+                        <span class="flex-1 truncate">{p.name}</span>
+                        <Icon class="text-base-content/40" name={I.RIGHT} size="sm" />
+                      </Link>
+                    )}
               </li>
             )),
           }}
