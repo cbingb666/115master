@@ -2,8 +2,8 @@ import type { Share } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
-import { useStorage, watchDebounced } from '@vueuse/core'
-import { computed, defineComponent, ref, shallowRef, watch } from 'vue'
+import { breakpointsTailwind, useBreakpoints, useStorage, watchDebounced } from '@vueuse/core'
+import { computed, defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import {
   DialogTitle,
   FileContextMenu,
@@ -59,6 +59,12 @@ const FileBroswer = defineComponent({
     const keyword = ref(props.keyword?.value ?? '')
     const scrollRef = ref<HTMLDivElement>()
     const viewType = useStorage<'list' | 'card'>('115Master_file_browser_view_type', 'list')
+
+    /** 移动端搜索展开交互：默认仅搜索图标，点击后展开搜索框并 focus，同时隐藏操作按钮 */
+    const breakpoints = useBreakpoints(breakpointsTailwind)
+    const isMobile = breakpoints.smaller('sm')
+    const searchExpanded = ref(false)
+    const searchInputRef = ref<HTMLInputElement>()
     const source = {
       cid: computed(() => keyword.value.trim() ? '0' : nav.cid.value),
       area: computed(() => keyword.value.trim() ? 'search' : nav.area.value),
@@ -146,6 +152,19 @@ const FileBroswer = defineComponent({
         props.keyword.value = ''
     }
 
+    /** 桌面端搜索框常驻；移动端仅展开时显示搜索框、隐藏操作按钮 */
+    const showSearchBox = computed(() => !isMobile.value || searchExpanded.value)
+    const showActions = computed(() => !isMobile.value || !searchExpanded.value)
+
+    function expandSearch() {
+      searchExpanded.value = true
+      nextTick(() => searchInputRef.value?.focus())
+    }
+    function collapseSearch() {
+      searchExpanded.value = false
+      clearKeyword()
+    }
+
     // 同步路径到外部
     watch(explorer.path, (p) => {
       if (props.currentPathRef)
@@ -178,57 +197,83 @@ const FileBroswer = defineComponent({
         <DialogTitle title={props.title} class="pb-0!">
           {{
             actions: () => (
-              <div class="flex items-center gap-2">
-                <label
-                  class="
-                    input input-ghost bg-base-content/10
-                    focus-within:bg-base-content/15
-                    h-9 w-sm max-w-[60vw] rounded-full
-                  "
-                >
-                  <Icon class="text-base-content/55 shrink-0 text-2xl" name={I.SEARCH} />
-                  <input
-                    class="grow bg-transparent text-sm"
-                    value={keywordInput.value}
-                    type="text"
-                    placeholder="搜索目录"
-                    onInput={e => keywordInput.value = (e.target as HTMLInputElement).value}
-                    onKeyup={(e: KeyboardEvent) => {
-                      if (e.key !== 'Enter')
-                        return
-                      keyword.value = keywordInput.value
-                      if (props.keyword)
-                        props.keyword.value = keywordInput.value
-                    }}
-                  />
-                  {keywordInput.value && (
-                    <button
-                      class="btn btn-ghost btn-xs btn-circle h-6 min-h-6 w-6"
-                      type="button"
-                      title="清空搜索"
-                      onClick={clearKeyword}
-                    >
-                      <Icon class="text-base-content/65 text-base" name={I.CLOSE} />
-                    </button>
-                  )}
-                </label>
-                <FileMenu class="relative z-10 shrink-0">
-                  <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
-                  <FilePageSizeSelector
-                    currentPageSize={explorer.size.value}
-                    onChangePageSize={explorer.changeSize}
-                  />
-                  <FileSortSelector
-                    asc={explorer.asc.value || 0}
-                    fc_mix={explorer.fc_mix.value || 0}
-                    order={explorer.order.value || 'user_ptime'}
-                    onSort={handleSort}
-                  />
-                  <FileViewType
-                    value={viewType.value}
-                    onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
-                  />
-                </FileMenu>
+              <div class="flex w-full items-center gap-2 sm:w-auto">
+                {showSearchBox.value && (
+                  <label
+                    class={[
+                      'input input-ghost bg-base-content/10 focus-within:bg-base-content/15 h-9 rounded-full',
+                      isMobile.value ? 'flex-1' : 'w-sm max-w-[60vw]',
+                    ]}
+                  >
+                    <Icon class="text-base-content/55 shrink-0 text-2xl" name={I.SEARCH} />
+                    <input
+                      ref={searchInputRef}
+                      class="grow bg-transparent text-sm"
+                      value={keywordInput.value}
+                      type="text"
+                      placeholder="搜索目录"
+                      onInput={e => keywordInput.value = (e.target as HTMLInputElement).value}
+                      onKeyup={(e: KeyboardEvent) => {
+                        if (e.key !== 'Enter')
+                          return
+                        keyword.value = keywordInput.value
+                        if (props.keyword)
+                          props.keyword.value = keywordInput.value
+                      }}
+                    />
+                    {keywordInput.value && (
+                      <button
+                        class="btn btn-ghost btn-xs btn-circle h-6 min-h-6 w-6"
+                        type="button"
+                        title="清空搜索"
+                        onClick={clearKeyword}
+                      >
+                        <Icon class="text-base-content/65 text-base" name={I.CLOSE} />
+                      </button>
+                    )}
+                  </label>
+                )}
+
+                {isMobile.value && searchExpanded.value && (
+                  <button
+                    class="btn btn-ghost btn-sm shrink-0"
+                    type="button"
+                    onClick={collapseSearch}
+                  >
+                    取消
+                  </button>
+                )}
+
+                {isMobile.value && !searchExpanded.value && (
+                  <button
+                    class="btn btn-sm btn-glass shrink-0 rounded-full"
+                    type="button"
+                    title="搜索目录"
+                    onClick={expandSearch}
+                  >
+                    <Icon class="text-xl" name={I.SEARCH} />
+                  </button>
+                )}
+
+                {showActions.value && (
+                  <FileMenu class="relative z-10 shrink-0">
+                    <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
+                    <FilePageSizeSelector
+                      currentPageSize={explorer.size.value}
+                      onChangePageSize={explorer.changeSize}
+                    />
+                    <FileSortSelector
+                      asc={explorer.asc.value || 0}
+                      fc_mix={explorer.fc_mix.value || 0}
+                      order={explorer.order.value || 'user_ptime'}
+                      onSort={handleSort}
+                    />
+                    <FileViewType
+                      value={viewType.value}
+                      onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
+                    />
+                  </FileMenu>
+                )}
               </div>
             ),
           }}

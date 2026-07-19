@@ -48,6 +48,9 @@ const DialogModal = defineComponent({
       return props.content !== undefined || !!slots.default || isRenderFunction.value
     })
 
+    /** 无 title 时不再渲染空 DialogTitle，避免内容区自带头部时叠出一条空白 */
+    const hasTitle = computed(() => !!props.title || !!props.titleActions || !!slots.title)
+
     function handleTransitionEnd(event: TransitionEvent) {
       if (event.target === modalRef.value && props.visible) {
         emit('opened')
@@ -108,7 +111,7 @@ const DialogModal = defineComponent({
           onTransitionend={handleTransitionEnd}
         >
           <div class={modalBoxClass} onClick={(e: Event) => e.stopPropagation()}>
-            {slots.title
+            {hasTitle.value && (slots.title
               ? (
                   <DialogTitle
                     title={props.title}
@@ -124,7 +127,7 @@ const DialogModal = defineComponent({
                     className={props.classNameTitle}
                     v-slots={{ titleActions: () => props.titleActions?.() }}
                   />
-                )}
+                ))}
 
             {hasContent.value && (
               <div class={contentClass}>
