@@ -60,7 +60,7 @@ const FileSortSelector = defineComponent({
         {{
           target: (_props: object) => (
             <button
-              class="btn btn-sm btn-glass w-full gap-1.5 rounded-full px-2 sm:px-3"
+              class="btn btn-sm btn-glass gap-1.5 rounded-full px-2 sm:px-3"
               aria-label={`当前排序：${sortLabel.value}`}
               title={`当前排序：${sortLabel.value}${props.fc_mix === 0 ? '，目录置顶已开启' : ''}`}
               tabindex="0"
@@ -78,7 +78,7 @@ const FileSortSelector = defineComponent({
                   name={I.ARROW_UP}
                 />
               </span>
-              <span class="relative max-w-24 truncate text-xs sm:max-w-none sm:text-sm">
+              <span class="relative hidden max-w-24 truncate text-xs sm:inline sm:max-w-none sm:text-sm">
                 {sortLabel.value}
               </span>
             </button>
