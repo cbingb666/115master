@@ -226,9 +226,15 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     if (event.button !== 0)
       return
 
-    /** 落在交互控件上不启动框选（按钮/输入/链接/可拖拽项等） */
+    /**
+     * 落在交互控件上不启动框选（按钮/输入框/checkbox 等）。
+     * 注意：不要把 `a` / `[draggable="true"]` 加进来——
+     * FileItem 用 <Link>（渲染为 <a>）包裹文件名/缩略图/内容，会覆盖卡片大部分面积；
+     * 缩略图的 mousedown 已在 FileItem 内 stopPropagation（专用于 HTML5 拖拽），
+     * Link 的 <a> 又被显式设为 draggable=false，不会触发原生 drag 与框选冲突。
+     */
     const target = event.target as HTMLElement | null
-    if (target?.closest('input, textarea, select, button, a, label, [contenteditable], [draggable="true"]'))
+    if (target?.closest('input, textarea, select, button, label, [contenteditable]'))
       return
 
     const x = event.clientX
