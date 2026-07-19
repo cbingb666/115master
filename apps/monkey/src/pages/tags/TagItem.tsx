@@ -21,6 +21,10 @@ const TagItem = defineComponent({
       type: Function as PropType<(on: boolean) => void>,
       required: true,
     },
+    onClick: {
+      type: Function as PropType<() => void>,
+      default: undefined,
+    },
     onEdit: {
       type: Function as PropType<() => void>,
       required: true,
@@ -37,12 +41,18 @@ const TagItem = defineComponent({
       return (
         <li
           class={[
-            'group flex items-center gap-3 transition-colors',
-            // <sm：卡片
-            'bg-base-content/5 rounded-lg px-3 py-3',
-            // sm+：列表行
-            'sm:hover:bg-base-content/5 sm:rounded-md sm:bg-transparent sm:px-3 sm:py-2',
+            'group flex cursor-pointer items-center gap-3 rounded-lg px-3 py-3 transition-colors sm:rounded-md sm:px-3 sm:py-2',
+            // 选中：primary 高亮（含 hover）；未选中：卡片灰底 / 行 hover 灰底
+            props.selected
+              ? 'bg-primary/10 sm:bg-primary/10'
+              : 'bg-base-content/5 sm:hover:bg-base-content/5 sm:bg-transparent',
           ]}
+          onClick={(e) => {
+            // 点击落在交互控件上交由其自身处理（checkbox 走 onToggle，按钮走各自回调）
+            if ((e.target as HTMLElement).closest('input, button, label'))
+              return
+            props.onClick?.()
+          }}
         >
           <input
             type="checkbox"

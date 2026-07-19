@@ -3,7 +3,7 @@ import type { Tag } from '@/store/tagList'
 import { Api, Core } from '@115master/drive115'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
-import { computed, defineComponent, h, onBeforeMount, reactive, watch } from 'vue'
+import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
 import LogoWordmark from '@/assets/logo-wordmark-inline.svg?component'
 import {
   Header,
@@ -20,6 +20,7 @@ import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
 import TagFormContent from './TagFormContent'
 import TagItem from './TagItem'
+import { useTagListInteraction } from './useTagListInteraction'
 
 const { LabelColor } = Api.TagApi.Req
 
@@ -37,6 +38,17 @@ const Tags = defineComponent({
     watch(keyword, v => store.setKeyword(v), { immediate: true })
 
     onBeforeMount(() => store.load())
+
+    /** 框选容器：<Main> 根 div（已 relative，expose 了 el） */
+    const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
+    const { handleClick } = useTagListInteraction({
+      container: () => mainRef.value?.el,
+      list: () => store.filtered,
+      isSelected: store.isSelected,
+      toggle: store.toggle,
+      selectAll: store.selectAll,
+      clearSelection: store.clearSelection,
+    })
 
     const isBatch = computed(() => store.selectedCount > 0)
     const emptyText = computed(() =>
@@ -249,6 +261,8 @@ const Tags = defineComponent({
                   key={tag.id}
                   tag={tag}
                   selected={store.isSelected(tag.id)}
+                  data-selection-key={tag.id}
+                  onClick={() => handleClick(tag)}
                   onToggle={on => store.toggle(tag.id, on)}
                   onEdit={() => openTagForm(tag)}
                   onDelete={() => deleteTag(tag)}
@@ -266,7 +280,7 @@ const Tags = defineComponent({
           <Sider>
             <SiderContent />
           </Sider>
-          <Main class="relative flex min-h-screen flex-col">
+          <Main ref={mainRef} class="relative flex min-h-screen flex-col">
             <ListHeader />
             <ListArea />
           </Main>
