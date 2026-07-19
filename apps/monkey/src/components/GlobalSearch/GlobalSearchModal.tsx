@@ -120,26 +120,15 @@ const GlobalSearchModal = defineComponent({
               )}
             </div>
           )}
-          titleActions={() => (
-            <>
-              {!isEmpty && (
-                <button
-                  class="btn btn-primary btn-sm gap-1"
-                  type="button"
-                  onClick={() => search.submit()}
-                >
-                  <Icon name={I.SEARCH} size="sm" />
-                  搜索
-                </button>
-              )}
-              <button
-                class="btn btn-ghost btn-sm btn-circle"
-                type="button"
-                onClick={() => search.close()}
-              >
-                <Icon class="text-xl" name={I.CLOSE} />
-              </button>
-            </>
+          titleActions={() => !isEmpty && (
+            <button
+              class="btn btn-primary btn-sm gap-1"
+              type="button"
+              onClick={() => search.submit()}
+            >
+              <Icon name={I.SEARCH} size="sm" />
+              搜索
+            </button>
           )}
           content={() => (
             <div class="max-h-[48vh] overflow-y-auto p-2">
