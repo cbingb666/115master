@@ -63,6 +63,8 @@ export const useDriveStore = defineStore('drive', () => {
   const fc_mix = shallowRef<Share.Base.Sorter['fc_mix']>()
 
   let generation = 0
+  /** cid 切换重载时置位，待 load 完成后由 loading watcher 恢复滚动 */
+  let pendingRestore = false
 
   const isSearch = computed(() => nav.area.value === 'search')
   const pageCount = computed(() => Math.ceil(total.value / query.size.value))
@@ -97,9 +99,14 @@ export const useDriveStore = defineStore('drive', () => {
     const top = scrollPositions.get(scrollKey())
     if (top === undefined)
       return
-    nextTick(() => {
-      requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' }))
-    })
+    if (loading.value) {
+      // cid 切换重载：等 load 完成后由 loading watcher 恢复
+      pendingRestore = true
+    }
+    else {
+      // 内容已就绪（keep-alive 复活）：立即恢复
+      nextTick(() => requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' })))
+    }
   }
 
   function applyRes(res: ListData) {
@@ -413,6 +420,16 @@ export const useDriveStore = defineStore('drive', () => {
     },
     { immediate: true },
   )
+
+  // cid 切换重载完成（loading true→false）后恢复滚动位置
+  watch(loading, (n, o) => {
+    if (!(o && !n && pendingRestore))
+      return
+    pendingRestore = false
+    const top = scrollPositions.get(scrollKey())
+    if (top !== undefined)
+      nextTick(() => requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' })))
+  })
 
   return {
     query,

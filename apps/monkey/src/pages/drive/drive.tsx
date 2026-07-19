@@ -2,8 +2,8 @@ import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { format } from '@115master/utils'
 import { useStorage, useTitle } from '@vueuse/core'
-import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { router } from '@/app/router'
 import LogoWordmark from '@/assets/logo-wordmark-inline.svg?component'
 import {
@@ -39,6 +39,13 @@ const Drive = defineComponent({
     useTitle('115Master')
 
     const store = useDriveStore()
+
+    /** 离开 drive 路由：保存当前滚动位置（onBeforeRouteLeave 在卸载前触发，scrollY 仍准确） */
+    onBeforeRouteLeave(() => store.saveScroll())
+    /** 进入 drive：恢复滚动（onMounted 覆盖重挂载，onActivated 覆盖 keep-alive 复活） */
+    onMounted(() => store.restoreScroll())
+    onActivated(() => store.restoreScroll())
+
     const action = useDriveAction()
     const search = useGlobalSearch()
     const spaceInfo = useDriveSpaceInfoStore()

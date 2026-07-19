@@ -1,7 +1,7 @@
 import type { Share } from '@115master/drive115'
 import { createPinia, setActivePinia } from 'pinia'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 
 import { drive115 } from '@/utils/drive115Instance'
 import { pageCache, useDriveStore } from '../index'
@@ -290,5 +290,52 @@ describe('driveStore 星标跨目录', () => {
     store.applyStarMutation([items[0]])
     // star 区缓存已失效 → 重新拉取
     expect(pageCache.get(starKey)).toBeUndefined()
+  })
+})
+
+describe('driveStore 滚动恢复', () => {
+  it('restoreScroll：loading=false → 立即滚到记录位置（keep-alive 复活路径）', async () => {
+    vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes([item('a')]))
+    const store = useDriveStore()
+    await store.navigate(1)
+
+    // 预置当前目录滚动位置
+    window.scrollY = 500
+    store.saveScroll()
+
+    const scrollTo = window.scrollTo as unknown as ReturnType<typeof vi.fn>
+    scrollTo.mockClear()
+    store.restoreScroll()
+    await nextTick()
+    expect(scrollTo).toHaveBeenCalledWith({ top: 500, behavior: 'instant' })
+  })
+
+  it('restoreScroll：loading 中 → 等 load 完成后再滚（cid 切换重载路径 / Bug 1）', async () => {
+    type Res = Awaited<ReturnType<typeof file.getFilesWithFallback>>
+    let resolveLoad!: (v: Res) => void
+    vi.mocked(file.getFilesWithFallback).mockReturnValue(new Promise<Res>((r) => {
+      resolveLoad = r
+    }))
+    const store = useDriveStore()
+
+    window.scrollY = 800
+    store.saveScroll()
+
+    const scrollTo = window.scrollTo as unknown as ReturnType<typeof vi.fn>
+    scrollTo.mockClear()
+
+    /** 触发重载（loading=true），并在 loading 期间调 restoreScroll → 不应立即滚 */
+    const loadPromise = store.navigate(1)
+    expect(store.loading).toBe(true)
+    store.restoreScroll()
+    await nextTick()
+    expect(scrollTo).not.toHaveBeenCalled()
+
+    // load 完成（loading→false）→ 由 loading watcher 触发恢复
+    resolveLoad(filesRes([item('a')]))
+    await loadPromise
+    await nextTick()
+    await nextTick()
+    expect(scrollTo).toHaveBeenCalledWith({ top: 800, behavior: 'instant' })
   })
 })
