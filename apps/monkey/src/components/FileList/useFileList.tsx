@@ -1,8 +1,7 @@
 import type { Share } from '@115master/drive115'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
-import { useMagicKeys } from '@vueuse/core'
-import { computed, ref, shallowRef, watch } from 'vue'
-import { useMarqueeSelect } from '@/hooks/useMarqueeSelect'
+import { computed, ref, shallowRef } from 'vue'
+import { useListSelection } from '@/hooks/useListSelection'
 import { Utils115 } from '@/utils/utils115'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 
@@ -33,7 +32,6 @@ export interface FileListInteractionProps {
   checkeds: Set<Share.Entity.FilesItem>
   onChecked: (item: Share.Entity.FilesItem, checked: boolean) => void
   onCheckedClear: () => void
-  onRadio: (item: Share.Entity.FilesItem) => void
   onDragStart?: (items: Share.Entity.FilesItem[], event: DragEvent) => void
   onDragMove?: (cid: string, items: Share.Entity.FilesItem[]) => void
   /** 框选容器，缺省取列表网格容器 */
@@ -46,24 +44,16 @@ export function useFileList(props: FileListInteractionProps) {
   const contextmenuShow = shallowRef(false)
   const contextmenuPosition = shallowRef({ x: 0, y: 0 })
 
-  const keys = useMagicKeys({
-    target: () => containerRef.value!,
-    passive: false,
-    onEventFired: (e) => {
-      e.preventDefault()
+  /** 通用多选交互（框选 + 点击 + Shift/Meta·Ctrl + ESC/Cmd·Ctrl+A） */
+  const selection = useListSelection<Share.Entity.FilesItem>({
+    container: () => props.marqueeContainer?.() ?? containerRef.value,
+    list: () => props.listData,
+    key: item => item.pc,
+    selection: {
+      has: item => props.checkeds.has(item),
+      toggle: props.onChecked,
+      clear: () => props.onCheckedClear(),
     },
-  })
-
-  const KeyMeta = keys.Meta
-  const KeyShift = keys.Shift
-  const KeyEscape = keys.Escape
-  const KeyMetaA = keys['Meta+A']
-
-  const lastCheckedIndex = ref<number>(-1)
-  const currentFocusIndex = ref<number>(-1)
-
-  useMarqueeSelect({
-    container: props.marqueeContainer ?? (() => containerRef.value),
     disabled: props.pathSelect,
   })
 
@@ -73,13 +63,8 @@ export function useFileList(props: FileListInteractionProps) {
 
     dragging.value = true
 
-    if (!props.checkeds.has(item)) {
+    if (!props.checkeds.has(item))
       props.onChecked(item, true)
-      if (props.listData) {
-        const currentIndex = props.listData.findIndex(data => data.pc === item.pc)
-        lastCheckedIndex.value = currentIndex
-      }
-    }
 
     const selected = props.checkeds.size > 0
       ? Array.from(props.checkeds)
@@ -98,7 +83,7 @@ export function useFileList(props: FileListInteractionProps) {
     props.onDragStart?.(selected, event)
   }
 
-  const handleDragEnd = (_item: Share.Entity.FilesItem, _event: DragEvent) => {
+  const handleDragEnd = () => {
     dragging.value = false
   }
 
@@ -121,69 +106,12 @@ export function useFileList(props: FileListInteractionProps) {
       y: e.clientY,
     }
 
-    if (props.checkeds.size > 1) {
+    // 多选已存在：确保右键项被选中（不清空）；否则 radio 单选该项
+    if (props.checkeds.size > 1)
       props.onChecked(item, true)
-      if (props.listData) {
-        const currentIndex = props.listData.findIndex(data => data.pc === item.pc)
-        lastCheckedIndex.value = currentIndex
-      }
-    }
-    else {
-      props.onRadio?.(item)
-    }
+    else
+      selection.handleClick(item)
   }
-
-  const handleClick = (item: Share.Entity.FilesItem) => {
-    if (!props.listData)
-      return
-
-    const currentIndex = props.listData.findIndex(data => data.pc === item.pc)
-
-    if (KeyShift.value && lastCheckedIndex.value !== -1) {
-      const startIndex = Math.min(lastCheckedIndex.value, currentIndex)
-      const endIndex = Math.max(lastCheckedIndex.value, currentIndex)
-
-      for (let i = startIndex; i <= endIndex; i++) {
-        const targetItem = props.listData[i]
-        if (targetItem && !props.checkeds.has(targetItem)) {
-          props.onChecked(targetItem, true)
-        }
-      }
-
-      lastCheckedIndex.value = currentIndex
-    }
-    else if (KeyMeta.value) {
-      const isChecked = props.checkeds.has(item)
-      props.onChecked(item, !isChecked)
-
-      if (!isChecked) {
-        lastCheckedIndex.value = currentIndex
-      }
-    }
-    else {
-      props.onRadio?.(item)
-      lastCheckedIndex.value = currentIndex
-    }
-  }
-
-  /** 监听 esc 键，取消选中 */
-  watch(KeyEscape, (value) => {
-    if (value) {
-      props.onCheckedClear?.()
-      contextmenuShow.value = false
-      lastCheckedIndex.value = -1
-      currentFocusIndex.value = -1
-    }
-  })
-
-  /** 监听 meta+a 键，全选 */
-  watch(KeyMetaA, (value) => {
-    if (value) {
-      props.listData?.forEach((item) => {
-        props.onChecked(item, true)
-      })
-    }
-  })
 
   const itemProps = (item: Share.Entity.FilesItem) => ({
     'data-selection-key': item.pc,
@@ -192,12 +120,11 @@ export function useFileList(props: FileListInteractionProps) {
     'dragging': dragging.value && props.checkeds.has(item),
     'pathSelect': props.pathSelect,
     'onChecked': (checked: boolean) => props.onChecked?.(item, checked),
-    'onClick': () => handleClick(item),
+    'onClick': () => selection.handleClick(item),
     'onContextmenu': (e: MouseEvent) => handleContextmenu(item, e),
-    'onDragEnd': (event: DragEvent) => handleDragEnd(item, event),
+    'onDragEnd': handleDragEnd,
     'onDragStart': (event: DragEvent) => handleDragStart(item, event),
     'onDrop': (event: DragEvent) => handleDrop(item, event),
-    'onRadio': () => props.onRadio?.(item),
   })
 
   return {
@@ -205,6 +132,7 @@ export function useFileList(props: FileListInteractionProps) {
     contextmenuShow,
     contextmenuPosition,
     itemProps,
+    resetAnchor: selection.resetAnchor,
   }
 }
 
@@ -223,7 +151,6 @@ export function useFilePreview(props: { listData: Share.Entity.FilesItem[] }) {
         index: images.value?.length ?? 0 - index,
       }
     })
-
     Fancybox.show(dataSource, {
       startIndex: realIndex,
       mainStyle: {

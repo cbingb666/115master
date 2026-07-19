@@ -16,11 +16,11 @@ import {
   useDialog,
   useToast,
 } from '@/components'
+import { useListSelection } from '@/hooks/useListSelection'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
 import TagFormContent from './TagFormContent'
 import TagItem from './TagItem'
-import { useTagListInteraction } from './useTagListInteraction'
 
 const { LabelColor } = Api.TagApi.Req
 
@@ -41,13 +41,16 @@ const Tags = defineComponent({
 
     /** 框选容器：<Main> 根 div（已 relative，expose 了 el） */
     const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
-    const { handleClick } = useTagListInteraction({
+    const { itemProps, resetAnchor } = useListSelection<Tag>({
       container: () => mainRef.value?.el,
       list: () => store.filtered,
-      isSelected: store.isSelected,
-      toggle: store.toggle,
-      selectAll: store.selectAll,
-      clearSelection: store.clearSelection,
+      key: t => t.id,
+      selection: {
+        has: t => store.isSelected(t.id),
+        toggle: (t, on) => store.toggle(t.id, on),
+        clear: store.clearSelection,
+        selectAll: store.selectAll,
+      },
     })
 
     const isBatch = computed(() => store.selectedCount > 0)
@@ -181,7 +184,10 @@ const Tags = defineComponent({
                 type="button"
                 class="btn btn-circle btn-ghost btn-sm"
                 title="退出选择"
-                onClick={() => store.clearSelection()}
+                onClick={() => {
+                  store.clearSelection()
+                  resetAnchor()
+                }}
               >
                 <Icon name={I.CLOSE} />
               </button>
@@ -261,8 +267,7 @@ const Tags = defineComponent({
                   key={tag.id}
                   tag={tag}
                   selected={store.isSelected(tag.id)}
-                  data-selection-key={tag.id}
-                  onClick={() => handleClick(tag)}
+                  {...itemProps(tag)}
                   onToggle={on => store.toggle(tag.id, on)}
                   onEdit={() => openTagForm(tag)}
                   onDelete={() => deleteTag(tag)}

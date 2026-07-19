@@ -22,8 +22,8 @@ const TagItem = defineComponent({
       required: true,
     },
     onClick: {
-      type: Function as PropType<() => void>,
-      default: undefined,
+      type: Function as PropType<(e: MouseEvent) => void>,
+      default: () => {},
     },
     onEdit: {
       type: Function as PropType<() => void>,
@@ -47,12 +47,7 @@ const TagItem = defineComponent({
               ? 'bg-primary/10 sm:bg-primary/10'
               : 'bg-base-content/5 sm:hover:bg-base-content/5 sm:bg-transparent',
           ]}
-          onClick={(e) => {
-            // 点击落在交互控件上交由其自身处理（checkbox 走 onToggle，按钮走各自回调）
-            if ((e.target as HTMLElement).closest('input, button, label'))
-              return
-            props.onClick?.()
-          }}
+          onClick={props.onClick}
         >
           <input
             type="checkbox"

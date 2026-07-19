@@ -224,13 +224,12 @@ const Drive = defineComponent({
 
     const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
 
-    const { containerRef, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
+    const { containerRef, contextmenuShow, contextmenuPosition, itemProps, resetAnchor } = useFileList({
       get pathSelect() { return false },
       get listData() { return store.data?.data ?? [] },
       get checkeds() { return store.selection.checked },
       onChecked: store.selection.toggle,
       onCheckedClear: store.selection.clear,
-      onRadio: store.selection.radio,
       onDragMove: handleDragMove,
       marqueeContainer: () => mainRef.value?.el,
     })
@@ -390,9 +389,10 @@ const Drive = defineComponent({
       return <></>
     }
 
-    // cid 变化时清空选中
+    // cid 变化时清空选中并重置 Shift 锚点
     watch(() => store.nav.cid, () => {
       store.selection.clear()
+      resetAnchor()
     })
 
     onBeforeMount(() => {
