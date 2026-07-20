@@ -25,6 +25,11 @@ const FileActionBar = defineComponent({
       type: Function as PropType<() => void>,
       default: undefined,
     },
+    /** 选中数量；>0 时在关闭按钮右侧展示 */
+    count: {
+      type: Number as PropType<number>,
+      default: 0,
+    },
   },
   setup: (props) => {
     const itemStateMap = ref<Map<string, ActionBarItemState>>(
@@ -88,6 +93,15 @@ const FileActionBar = defineComponent({
                   />
                 </button>
               </div>
+              {props.count > 0 && (
+                <span class="text-base-content/80 px-1 text-sm whitespace-nowrap tabular-nums">
+                  已选
+                  {' '}
+                  {props.count}
+                  {' '}
+                  项
+                </span>
+              )}
               {props.data.length > 0 && <div class="bg-base-content/20 mx-2 h-6 w-px" />}
             </>
           )}
