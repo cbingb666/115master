@@ -27,7 +27,7 @@ export function useCloudDownloadAction() {
     const result = await fileBrowser.open({
       title: '选择保存目录',
       defaultCid: pid ?? '0',
-      className: 'sm:max-w-6xl! h-5/6! overflow-hidden',
+      size: 'xl',
       returnPath: true,
     })
 
@@ -138,7 +138,7 @@ export function useCloudDownloadAction() {
         title: '离线下载',
         maskClosable: true,
         history: true,
-        className: 'sm:w-11/12! sm:max-w-3xl!',
+        size: 'lg',
         content: () => (
           <CloudDownload
             path={directory.value.path}

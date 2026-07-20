@@ -1,4 +1,5 @@
 import type { Share } from '@115master/drive115'
+import type { DialogSize } from '@/components/Dialog'
 import type { QueryNavReturn } from '@/hooks/useDriveNav/useQueryNav'
 import { ref } from 'vue'
 import { router } from '@/app/router'
@@ -11,6 +12,8 @@ export interface FileBrowserDialogOptions {
   title: string
   /** 默认目录 ID */
   defaultCid: string
+  /** 尺寸档位，默认 'full'；className 可覆盖 */
+  size?: DialogSize
   /** 对话框样式类名 */
   className?: string
   /** 是否需要返回路径 */
@@ -53,7 +56,8 @@ export function useFileBrowserDialog() {
 
       instance = dialog.create({
         maskClosable: true,
-        className: options.className ?? 'sm:w-11/12! h-7/8! overflow-hidden',
+        size: options.size ?? 'full',
+        className: options.className,
         classNameContent: 'min-h-0 overflow-hidden p-0!',
         content: () => (
           <FileBroswer

@@ -2,6 +2,9 @@ import type { Component, VNode } from 'vue'
 
 // ============= Modal Types =============
 
+/** 尺寸档位：md 默认（沿用 modal-box 的 max-w-lg）；lg/xl/full 见 SIZE_CLASS */
+export type DialogSize = 'md' | 'lg' | 'xl' | 'full'
+
 export interface ModalProps {
   /** 对话框唯一标识 */
   id: string
@@ -21,6 +24,8 @@ export interface ModalProps {
   visible?: boolean
   /** 是否可以通过点击蒙层关闭 */
   maskClosable?: boolean
+  /** 尺寸档位，默认 'md'；可用 className 覆盖 */
+  size?: DialogSize
   /** BOX 的 CSS 类名 */
   className?: string
   /** Modal 的 CSS 类名 */

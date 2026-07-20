@@ -13,7 +13,8 @@ export function usePreferencesDialog() {
       showConfirm: false,
       showCancel: false,
       maskClosable: true,
-      className: 'w-full! sm:w-2/3! sm:max-w-xl sm:min-h-96',
+      size: 'lg',
+      className: 'sm:min-h-96',
       classNameContent: 'flex-none! min-h-0 overflow-hidden',
       titleActions: () => h(
         'button',

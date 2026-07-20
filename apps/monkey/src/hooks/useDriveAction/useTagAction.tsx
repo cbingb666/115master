@@ -143,7 +143,6 @@ export function useTagAction() {
       history: true,
       confirmText: '应用',
       cancelText: '取消',
-      className: 'sm:max-w-md!',
       content: () => (
         <TagPickerContent
           state={pickerState}

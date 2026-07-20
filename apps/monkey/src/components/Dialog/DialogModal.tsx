@@ -1,6 +1,15 @@
-import type { Component, VNode } from 'vue'
+import type { Component, PropType, VNode } from 'vue'
+import type { DialogSize } from './types.dialog'
 import { computed, defineComponent, h, isVNode, ref } from 'vue'
 import DialogTitle from './DialogTitle'
+
+/** 各档基准尺寸类；md 留空以沿用 modal-box 默认的 max-w-lg，保证 alert 视觉不变 */
+const SIZE_CLASS: Record<DialogSize, string> = {
+  md: '',
+  lg: 'sm:max-w-3xl!',
+  xl: 'sm:max-w-6xl! h-5/6! overflow-hidden',
+  full: 'sm:w-11/12! h-7/8! overflow-hidden',
+}
 
 const DialogModal = defineComponent({
   name: 'DialogModal',
@@ -14,6 +23,7 @@ const DialogModal = defineComponent({
     showCancel: { type: Boolean, default: true },
     visible: { type: Boolean, default: false },
     maskClosable: { type: Boolean, default: true },
+    size: { type: String as PropType<DialogSize>, default: 'md' },
     className: { type: String, default: undefined },
     classNameRoot: { type: String, default: undefined },
     classNameTitle: { type: String, default: undefined },
@@ -77,7 +87,7 @@ const DialogModal = defineComponent({
         ? `modal modal-bottom sm:modal-middle [scrollbar-gutter:unset] p-0! modal-open ${props.classNameRoot || ''}`
         : `modal modal-bottom sm:modal-middle [scrollbar-gutter:unset] p-0! ${props.classNameRoot || ''}`
 
-      const modalBoxClass = `modal-box flex flex-col p-0! bg-base-100/85 backdrop-blur-3xl border-1 border-base-content/20 shadow-2xl ${props.className || ''}`
+      const modalBoxClass = `modal-box flex flex-col p-0! bg-base-100/85 backdrop-blur-3xl border-1 border-base-content/20 shadow-2xl ${SIZE_CLASS[props.size]} ${props.className || ''}`
       const contentClass = `text-base-content/80 px-4 flex-1 ${props.classNameContent || ''}`
       const actionsClass = `modal-action sticky bottom-0 px-4 pb-4 mt-4 ${props.classNameActions || ''}`
 

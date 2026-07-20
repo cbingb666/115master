@@ -89,7 +89,7 @@ const GlobalSearchModal = defineComponent({
           showConfirm={false}
           showCancel={false}
           maskClosable
-          className="!max-w-2xl"
+          size="lg"
           classNameRoot="z-9999"
           classNameContent="!px-0"
           classNameActions={isEmpty ? 'hidden' : 'sm:hidden'}
