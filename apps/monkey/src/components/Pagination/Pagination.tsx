@@ -202,13 +202,11 @@ const Pagination = defineComponent({
             pattern="[0-9]*"
             class="
               bg-base-content/5
-              border-base-content/10
               text-base-content/60
-              focus:border-base-content/30 focus:bg-base-content/10 focus:text-base-content/80
+              focus:bg-base-content/10 focus:text-base-content/80
               h-9 w-24
               appearance-none
               rounded-full
-              border
               px-2
               text-center
               text-sm
@@ -276,13 +274,11 @@ const Pagination = defineComponent({
                     pattern="[0-9]*"
                     class="
                       bg-base-content/5
-                      border-base-content/10
                       text-base-content/60
-                      focus:border-base-content/30 focus:bg-base-content/10 focus:text-base-content/80
+                      focus:bg-base-content/10 focus:text-base-content/80
                       h-9 w-14
                       appearance-none
                       rounded-full
-                      border
                       px-1
                       text-center
                       text-sm
@@ -310,7 +306,7 @@ const Pagination = defineComponent({
                     duration-150
                     text-shadow-lg
                     ${isEllipsis ? 'hover:text-base-content/70 hover:bg-transparent' : ''}
-                    ${isActive ? 'bg-base-content/15 text-base-content/80 border-base-content/10 border font-semibold' : ''}
+                    ${isActive ? 'bg-base-content/15 text-base-content/80 font-semibold' : ''}
                   `}
                   onClick={() => isEllipsis ? handlePage(props.currentPage) : handlePage(pageNum as number)}
                 >
