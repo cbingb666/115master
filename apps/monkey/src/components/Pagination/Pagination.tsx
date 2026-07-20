@@ -176,8 +176,8 @@ const Pagination = defineComponent({
           py-1.5
         "
       >
-        <div class="flex items-center gap-1">
-          {/* prev */}
+        {/* Mobile: simplified pagination — prev, current page, jump input, next */}
+        <div class="flex items-center gap-1 md:hidden">
           <button
             class={`
               text-base-content text-shadow-base-100/10 hover:bg-base-content/10
@@ -196,7 +196,71 @@ const Pagination = defineComponent({
             «
           </button>
 
-          {/* page */}
+          <input
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            class="
+              bg-base-content/5
+              border-base-content/10
+              text-base-content/60
+              focus:border-base-content/30 focus:bg-base-content/10 focus:text-base-content/80
+              h-9 w-24
+              appearance-none
+              rounded-full
+              border
+              px-2
+              text-center
+              text-sm
+              focus:outline-none
+            "
+            placeholder={`${props.currentPage}/${pageCount.value}`}
+            min={1}
+            max={pageCount.value}
+            value={jumpValue.value}
+            onInput={handleJumpInput}
+            onKeydown={handleJumpKeydown}
+          />
+
+          <button
+            class={`
+              text-base-content text-shadow-base-100/10 hover:bg-base-content/10
+              relative flex h-9
+              w-9 cursor-pointer
+              items-center
+              justify-center rounded-full
+              text-lg transition-all
+              duration-150
+              text-shadow-lg
+              ${isLastPage.value ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
+            `}
+            disabled={isLastPage.value}
+            onClick={handleNext}
+          >
+            »
+          </button>
+        </div>
+
+        {/* Desktop: full pagination — prev, page buttons, jump input, next */}
+        <div class="hidden items-center gap-1 md:flex">
+          <button
+            class={`
+              text-base-content text-shadow-base-100/10 hover:bg-base-content/10
+              relative flex h-9
+              w-9 cursor-pointer
+              items-center
+              justify-center rounded-full
+              text-lg transition-all
+              duration-150
+              text-shadow-lg
+              ${isFirstPage.value ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
+            `}
+            disabled={isFirstPage.value}
+            onClick={handlePrev}
+          >
+            «
+          </button>
+
           {
             visiblePages.value.map((pageNum, index) => {
               const isActive = pageNum === props.currentPage
@@ -256,7 +320,6 @@ const Pagination = defineComponent({
             })
           }
 
-          {/* next */}
           <button
             class={`
               text-base-content text-shadow-base-100/10 hover:bg-base-content/10
@@ -279,7 +342,7 @@ const Pagination = defineComponent({
         {/* size selector */}
         {
           props.showSizeChanger && (
-            <div class="ml-4 flex items-center gap-2">
+            <div class="ml-4 hidden items-center gap-2 md:flex">
               <select
                 class="
                   bg-base-content/10
