@@ -8,7 +8,7 @@ const APP_ROOT_ID = 'my-app'
 /** 主题对应的根容器背景色（防止挂载前白闪/黑闪）；light 与 base-100 完全一致 */
 const APP_BG: Record<ResolvedTheme, string> = {
   dark: '#000',
-  light: 'oklch(99% 0.003 250)',
+  light: '#fff',
 }
 
 /** 当前主题模式（含跟随系统） */
