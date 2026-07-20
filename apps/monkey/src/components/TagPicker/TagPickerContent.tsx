@@ -1,10 +1,9 @@
 import type { PropType } from 'vue'
 import { Api } from '@115master/drive115'
-import { computed, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 import { Empty, LoadingError } from '@/components'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
-import { sameSet } from '@/utils/fileTag'
 
 const { LabelColor } = Api.TagApi.Req
 
@@ -12,7 +11,7 @@ const { LabelColor } = Api.TagApi.Req
 export interface TagPickerState {
   /** dialog 内独立勾选态（不复用 useTagStore.selected） */
   checked: Set<string>
-  /** 提交中（防重复提交 + 按钮 loading） */
+  /** 提交中（供 confirmCallback 防重复触发；不再用于渲染按钮态） */
   submitting: boolean
 }
 
@@ -25,6 +24,9 @@ export interface TagPickerState {
  *
  * 搜索词经 `useTagStore.keyword` 透传到 `filtered`；其为 dialog 内临时态，
  * 由调用方在打开时重置，不进 URL（区别于标签管理页的 URL 搜索词）。
+ *
+ * 取消 / 应用按钮由通用 dialog action 提供（`confirmText` / `cancelText` +
+ * `confirmCallback`），内容区只渲染列表与搜索。
  */
 const TagPickerContent = defineComponent({
   name: 'TagPickerContent',
@@ -34,17 +36,9 @@ const TagPickerContent = defineComponent({
       type: Object as PropType<TagPickerState>,
       required: true,
     },
-    /** 选中文件标签交集（初始勾选；用于「无变化则禁用确认」判定） */
+    /** 选中文件标签交集（初始勾选） */
     intersection: {
       type: Object as PropType<Set<string>>,
-      required: true,
-    },
-    onConfirm: {
-      type: Function as PropType<() => void | Promise<void>>,
-      required: true,
-    },
-    onCancel: {
-      type: Function as PropType<() => void>,
       required: true,
     },
     onGotoTags: {
@@ -54,9 +48,6 @@ const TagPickerContent = defineComponent({
   },
   setup(props) {
     const store = useTagStore()
-
-    /** 是否有勾选变化（确认按钮启用条件） */
-    const hasChange = computed(() => !sameSet(props.state.checked, props.intersection))
 
     function toggle(id: string, on: boolean) {
       const next = new Set(props.state.checked)
@@ -171,22 +162,6 @@ const TagPickerContent = defineComponent({
                           })}
                         </ul>
                       )}
-          </div>
-
-          {/* 操作栏（自定义，以支持「无变化禁用」+「提交 loading」） */}
-          <div class="modal-action mt-4">
-            <button type="button" class="btn btn-ghost" onClick={() => props.onCancel()}>
-              取消
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary gap-1"
-              disabled={!hasChange.value || props.state.submitting}
-              onClick={() => props.onConfirm()}
-            >
-              {props.state.submitting && <span class="loading loading-spinner loading-xs" />}
-              应用
-            </button>
           </div>
         </div>
       )

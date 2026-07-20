@@ -1,5 +1,4 @@
 import type { Share } from '@115master/drive115'
-import type { UseDialogInstance } from '@/components'
 import type { TagPickerState } from '@/components/TagPicker/TagPickerContent'
 import type { FileTagChange, FileTagInput } from '@/utils/fileTag'
 import { Core } from '@115master/drive115'
@@ -109,15 +108,13 @@ export function useTagAction() {
       submitting: false,
     })
 
-    /** 由 dialog.create 赋值；onConfirm 在赋值后才被调用（用户交互） */
-    let instance!: UseDialogInstance
-
-    async function onConfirm() {
+    /** 应用回调：返回 false 阻止关闭（无变化 / 提交中 / 失败时保留 dialog） */
+    async function onConfirm(): Promise<false | void> {
       if (pickerState.submitting)
-        return
+        return false
       const changes = resolveFileTagChanges(files, pickerState.checked)
       if (changes.length === 0)
-        return
+        return false
       pickerState.submitting = true
       try {
         const failed = await applyAll(changes)
@@ -125,7 +122,6 @@ export function useTagAction() {
 
         await reportResult(failed, changes.length, nameById)
 
-        instance.hide()
         // 成功项已生效：刷新徽章；失败项按 id 重新勾选以保留重试入口。全失败则不动列表。
         if (changes.length - failedIds.length > 0) {
           await drive.refresh()
@@ -136,32 +132,28 @@ export function useTagAction() {
       }
       catch (e) {
         await reportError(e)
+        return false
       }
       finally {
         pickerState.submitting = false
       }
     }
 
-    instance = dialog.create({
+    dialog.create({
       title: '打标签',
       maskClosable: true,
       history: true,
-      showConfirm: false,
-      showCancel: false,
-      classNameActions: '!hidden',
+      confirmText: '应用',
+      cancelText: '取消',
       className: 'sm:max-w-md!',
       content: () => (
         <TagPickerContent
           state={pickerState}
           intersection={intersection}
-          onConfirm={onConfirm}
-          onCancel={() => instance.hide()}
-          onGotoTags={() => {
-            instance.hide()
-            router.push('/tags')
-          }}
+          onGotoTags={() => router.push('/tags')}
         />
       ),
+      confirmCallback: onConfirm,
     })
   }
 
