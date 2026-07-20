@@ -18,7 +18,6 @@ const Header = defineComponent({
       <div
         class={[
           'sticky top-2 z-100 px-2 pb-4',
-          'contain-layout-paint',
           props.class,
         ]}
       >
@@ -31,10 +30,7 @@ const Header = defineComponent({
             justify-between
             gap-2
             overflow-hidden
-            rounded-full
-            border-2
-            border-transparent
-            py-2 pr-2
+            py-3 pr-2
             pl-4
           "
         >

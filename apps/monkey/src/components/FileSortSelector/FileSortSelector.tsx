@@ -60,7 +60,7 @@ const FileSortSelector = defineComponent({
         {{
           target: (_props: object) => (
             <button
-              class="btn btn-sm btn-glass gap-1.5 rounded-full px-2 sm:px-3"
+              class="btn btn-glass gap-1.5 rounded-full px-2 sm:px-3"
               aria-label={`当前排序：${sortLabel.value}`}
               title={`当前排序：${sortLabel.value}${props.fc_mix === 0 ? '，目录置顶已开启' : ''}`}
               tabindex="0"

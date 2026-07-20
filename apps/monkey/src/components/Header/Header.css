@@ -1,19 +1,12 @@
 .header-sticky-effect {
-  /* 玻璃态为兜底：不支持滚动驱动动画时恒为玻璃 */
-  background: oklch(5% 0 0 / 0.15);
-  border-color: oklch(100% 0 0 / 0.15);
-  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
-  backdrop-filter: blur(40px);
-  will-change: backdrop-filter, transform;
-  transform: translateZ(0);
-  contain: layout paint;
-
+  /* 沉浸式头部：容器无背景，控件各自悬浮，滚动时 ::before 羽化衬底 */
   &::before {
     content: '';
     position: absolute;
-    top: calc(-1 * var(--spacing) * 4);
-    left: calc(-1 * var(--spacing) * 4);
-    right: calc(-1 * var(--spacing) * 4);
+    /* 向上补出外层 top-2 的 8px，使渐变带完整覆盖到视口顶缘 */
+    top: calc(-1 * var(--spacing) * 2);
+    left: 0;
+    right: 0;
     bottom: 0;
     z-index: -1;
     pointer-events: none;
@@ -25,64 +18,8 @@
   }
 }
 
-[data-theme='light'] .header-sticky-effect {
-  background: oklch(100% 0 0 / 0.72);
-  border-color: oklch(0% 0 0 / 0.12);
-  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.18);
-}
-
 [data-theme='light'] .header-sticky-effect::before {
-  background: linear-gradient(to bottom, oklch(100% 0 0 / 0.45), transparent);
-}
-
-/** 顶部沉浸式：未滚动时无背景/边框/模糊，滚动 15vh 内渐变为玻璃态 */
-@supports (animation-timeline: scroll()) {
-  .header-sticky-effect {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: 0 4px 30px oklch(0% 0 0 / 0);
-    backdrop-filter: blur(0px);
-    animation: header-sticky-glass linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0 15vh;
-  }
-
-  [data-theme='light'] .header-sticky-effect {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: 0 4px 30px oklch(0% 0 0 / 0);
-    animation-name: header-sticky-glass-light;
-  }
-}
-
-@keyframes header-sticky-glass {
-  from {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: 0 4px 30px oklch(0% 0 0 / 0);
-    backdrop-filter: blur(0px);
-  }
-  to {
-    background: oklch(5% 0 0 / 0.15);
-    border-color: oklch(100% 0 0 / 0.15);
-    box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
-    backdrop-filter: blur(40px);
-  }
-}
-
-@keyframes header-sticky-glass-light {
-  from {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: 0 4px 30px oklch(0% 0 0 / 0);
-    backdrop-filter: blur(0px);
-  }
-  to {
-    background: oklch(100% 0 0 / 0.72);
-    border-color: oklch(0% 0 0 / 0.12);
-    box-shadow: 0 4px 30px oklch(0% 0 0 / 0.18);
-    backdrop-filter: blur(40px);
-  }
+  background: linear-gradient(to bottom, oklch(100% 0 0 / 0.6), transparent);
 }
 
 @keyframes header-sticky-gradient {

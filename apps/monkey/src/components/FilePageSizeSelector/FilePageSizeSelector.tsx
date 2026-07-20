@@ -22,7 +22,7 @@ const FilePageSizeSelector = defineComponent({
         {{
           target: (_props: object) => (
             <button
-              class="btn btn-sm btn-glass rounded-full"
+              class="btn btn-glass rounded-full"
               tabindex="0"
               {..._props}
             >

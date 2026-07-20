@@ -16,7 +16,7 @@ const FileNewFolderButton = defineComponent({
     }
 
     return () => (
-      <button class="btn btn-sm btn-glass rounded-full" onClick={handleClick}>
+      <button class="btn btn-glass rounded-full" onClick={handleClick}>
         <Icon class="text-xl" name={I.NEW_FOLDER} />
         <span class="hidden sm:inline">新建</span>
       </button>

@@ -229,7 +229,7 @@ const Drive = defineComponent({
             />
           </div>
           <div class="flex flex-none items-center gap-2">
-            <button class="btn btn-sm btn-glass rounded-full" onClick={() => search.open()}>
+            <button class="btn btn-glass rounded-full" onClick={() => search.open()}>
               <Icon class="text-xl" name={I.SEARCH} />
               <span class="hidden sm:inline">搜索</span>
             </button>
@@ -257,7 +257,7 @@ const Drive = defineComponent({
                 <ResponsiveMenu title="更多操作">
                   {{
                     target: (_props: object) => (
-                      <button class="btn btn-sm btn-glass rounded-full" {..._props}>
+                      <button class="btn btn-glass btn-circle" {..._props}>
                         <Icon class="text-xl" name={I.MORE} />
                       </button>
                     ),

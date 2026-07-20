@@ -56,7 +56,7 @@ const FileViewType = defineComponent({
     }
 
     return () => (
-      <button class="btn btn-sm btn-glass rounded-full" onClick={handleCycle}>
+      <button class="btn btn-glass rounded-full" onClick={handleCycle}>
         <Icon class="text-xl" name={currentOption.value.icon} />
         <span class="hidden sm:inline">{currentOption.value.name}</span>
       </button>

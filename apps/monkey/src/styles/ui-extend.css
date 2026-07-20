@@ -37,4 +37,9 @@
 
 .btn-glass {
   --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 15%, transparent);
+  backdrop-filter: blur(20px);
+}
+
+[data-theme='light'] .btn-glass {
+  --btn-bg: oklch(100% 0 0 / 0.72);
 }
