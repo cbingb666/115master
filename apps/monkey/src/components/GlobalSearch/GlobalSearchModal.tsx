@@ -90,93 +90,101 @@ const GlobalSearchModal = defineComponent({
           showCancel={false}
           maskClosable
           size="lg"
+          className="!border-base-content/10 !bg-base-100/60 backdrop-saturate-150 max-sm:min-h-[65dvh]"
           classNameRoot="z-9999"
           classNameContent="!px-0"
           classNameActions={isEmpty ? 'hidden' : 'sm:hidden'}
           onCancel={() => search.close()}
-          title={() => (
-            <div class="flex w-full items-center gap-3">
-              <Icon class="text-base-content/70 shrink-0 text-2xl" name={I.SEARCH} />
-              <input
-                ref={inputRef}
-                class="h-10 flex-1 bg-transparent !text-base !font-normal outline-none"
-                placeholder="搜索文件，按 Enter 查看结果"
-                type="text"
-                value={search.word.value}
-                onInput={e => search.change((e.target as HTMLInputElement).value)}
-                onCompositionstart={() => composing.value = true}
-                onCompositionend={() => composing.value = false}
-                onKeydown={onKeydown}
-              />
-              {!isEmpty && (
-                <button
-                  class="text-base-content/70 hover:text-base-content flex-none text-xl"
-                  type="button"
-                  title="清除"
-                  onClick={() => search.change('')}
-                >
-                  <Icon name={I.CLOSE} />
-                </button>
-              )}
-            </div>
-          )}
           content={() => (
-            <div class="max-h-[48vh] overflow-y-auto p-2">
-              {isEmpty && (
-                <>
-                  <div class="text-base-content/70 flex items-center justify-between px-3 pt-2 pb-3 text-sm">
-                    <span>最近搜索</span>
-                    <button
-                      class="btn btn-ghost btn-xs"
-                      type="button"
-                      disabled={!search.history.value.length}
-                      onClick={() => search.clearHistory()}
-                    >
-                      清空全部
-                    </button>
+            <div class="flex h-full flex-col">
+              <div class="border-base-content/10 flex items-center gap-3 border-b px-6">
+                <Icon class="text-base-content/40 shrink-0" name={I.SEARCH} size="lg" />
+                <input
+                  ref={inputRef}
+                  class="text-base-content placeholder:text-base-content/40 caret-primary h-16 min-w-0 flex-1 bg-transparent text-lg outline-none"
+                  placeholder="搜索文件，按 Enter 查看结果"
+                  type="text"
+                  value={search.word.value}
+                  onInput={e => search.change((e.target as HTMLInputElement).value)}
+                  onCompositionstart={() => composing.value = true}
+                  onCompositionend={() => composing.value = false}
+                  onKeydown={onKeydown}
+                />
+                {!isEmpty && (
+                  <button
+                    class="bg-base-content/10 text-base-content/60 hover:bg-base-content/15 hover:text-base-content grid size-6 shrink-0 place-items-center rounded-full transition-colors"
+                    type="button"
+                    title="清除"
+                    onClick={() => search.change('')}
+                  >
+                    <Icon name={I.CLOSE} size="xs" />
+                  </button>
+                )}
+              </div>
+
+              <div class="max-h-[48vh] flex-1 overflow-y-auto p-2 max-sm:max-h-none">
+                {isEmpty && (
+                  <>
+                    <div class="flex items-baseline justify-between px-3 pt-2 pb-1 select-none">
+                      <span class="text-base-content/45 text-xs font-medium">最近搜索</span>
+                      <button
+                        class="text-base-content/45 hover:text-base-content text-xs transition-colors disabled:pointer-events-none disabled:opacity-40"
+                        type="button"
+                        disabled={!search.history.value.length}
+                        onClick={() => search.clearHistory()}
+                      >
+                        清空全部
+                      </button>
+                    </div>
+                    {!search.history.value.length && (
+                      <div class="text-base-content/40 px-3 py-12 text-center text-sm">
+                        暂无搜索历史
+                      </div>
+                    )}
+                    {search.history.value.map((item, i) => (
+                      <div
+                        key={`history-${item}-${i}`}
+                        class={[
+                          'group flex items-center gap-1 rounded-xl px-1 transition-colors',
+                          search.idx.value === i ? 'bg-primary/15' : 'hover:bg-base-content/5',
+                        ]}
+                      >
+                        <button
+                          class="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2 py-2.5 text-left text-sm"
+                          type="button"
+                          onMouseenter={() => search.setIndex(i)}
+                          onClick={() => search.submit(item)}
+                        >
+                          <Icon class="text-base-content/40 shrink-0" name={I.HISTORY} size="sm" />
+                          <span class="line-clamp-1">{item}</span>
+                        </button>
+                        <button
+                          class="text-base-content/40 hover:bg-base-content/10 hover:text-base-content grid size-6 place-items-center rounded-full opacity-0 transition group-hover:opacity-100 max-sm:opacity-100"
+                          type="button"
+                          title="删除"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            search.removeHistory(item)
+                          }}
+                        >
+                          <Icon name={I.DELETE} size="xs" />
+                        </button>
+                      </div>
+                    ))}
+                  </>
+                )}
+                {!isEmpty && (
+                  <div class="text-base-content/40 hidden px-3 py-12 text-center text-sm sm:block">
+                    按 Enter 直接搜索
                   </div>
-                  {!search.history.value.length && (
-                    <div class="text-base-content/60 px-3 py-6 text-sm">
-                      暂无搜索历史
-                    </div>
-                  )}
-                  {search.history.value.map((item, i) => (
-                    <div
-                      key={`history-${item}-${i}`}
-                      class={[
-                        'flex items-center gap-2 rounded-xl px-2 py-1 transition-colors',
-                        search.idx.value === i ? 'bg-primary/15' : 'hover:bg-base-content/5',
-                      ]}
-                    >
-                      <button
-                        class="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 text-left"
-                        type="button"
-                        onMouseenter={() => search.setIndex(i)}
-                        onClick={() => search.submit(item)}
-                      >
-                        <Icon class="text-base-content/70 shrink-0 text-lg" name={I.HISTORY} />
-                        <span class="line-clamp-1">{item}</span>
-                      </button>
-                      <button
-                        class="btn btn-ghost btn-xs btn-circle"
-                        type="button"
-                        title="删除"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          search.removeHistory(item)
-                        }}
-                      >
-                        <Icon class="text-base-content/70 text-base" name={I.DELETE} />
-                      </button>
-                    </div>
-                  ))}
-                </>
-              )}
-              {!isEmpty && (
-                <div class="text-base-content/60 hidden px-3 py-6 text-sm sm:block">
-                  按 Enter 直接搜索
-                </div>
-              )}
+                )}
+              </div>
+
+              <div class="border-base-content/10 text-base-content/40 hidden items-center justify-center gap-5 border-t px-5 py-2.5 text-xs select-none sm:flex">
+                <span>↑↓ 选择</span>
+                <span>Enter 搜索</span>
+                <span>Esc 关闭</span>
+              </div>
             </div>
           )}
           v-slots={{
