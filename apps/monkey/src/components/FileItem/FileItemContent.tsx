@@ -130,9 +130,7 @@ const FileItemContent = defineComponent({
                   badge bg-base-content/10 badge-sm
                   border-none
                 "
-                style={{
-                  backgroundColor: `color-mix(in oklab, ${tag.color} 50%, transparent)`,
-                }}
+                style={{ backgroundColor: tag.color }}
               >
                 { tag.name }
               </span>

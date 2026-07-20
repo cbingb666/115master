@@ -151,7 +151,7 @@ const TagPickerContent = defineComponent({
                                       'size-4 flex-none rounded-full',
                                       blank ? 'border-base-content/30 bg-base-content/5 border' : '',
                                     ]}
-                                    style={blank ? undefined : { backgroundColor: `color-mix(in oklab, ${tag.color} 65%, transparent)` }}
+                                    style={blank ? undefined : { backgroundColor: tag.color }}
                                   />
                                   <span class="min-w-0 flex-1 truncate font-medium" title={tag.name}>
                                     {tag.name}

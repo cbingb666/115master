@@ -63,7 +63,7 @@ const TagFormContent = defineComponent({
                     : 'border-base-content/10 hover:border-base-content/30',
                   c === LabelColor.Blank ? 'bg-base-content/5' : '',
                 ]}
-                style={c === LabelColor.Blank ? undefined : { backgroundColor: `color-mix(in oklab, ${c} 70%, transparent)` }}
+                style={c === LabelColor.Blank ? undefined : { backgroundColor: c }}
                 onClick={() => {
                   props.form.color = c
                   props.form.error = ''
