@@ -421,7 +421,10 @@ const Drive = defineComponent({
             <List />
             <FixedBottom />
             {selectMode.value && (
-              <FileActionBar data={actionConfig.value} onClose={exitSelectMode} />
+              <FileActionBar
+                data={store.selection.count > 0 ? actionConfig.value : []}
+                onClose={exitSelectMode}
+              />
             )}
           </Main>
         </Layout>

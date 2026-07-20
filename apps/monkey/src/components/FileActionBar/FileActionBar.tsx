@@ -88,7 +88,7 @@ const FileActionBar = defineComponent({
                   />
                 </button>
               </div>
-              <div class="bg-base-content/20 mx-2 h-6 w-px" />
+              {props.data.length > 0 && <div class="bg-base-content/20 mx-2 h-6 w-px" />}
             </>
           )}
           {
