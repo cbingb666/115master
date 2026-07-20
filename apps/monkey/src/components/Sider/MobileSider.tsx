@@ -59,19 +59,16 @@ const MobileSider = defineComponent({
         {/* 底部弹出层 */}
         <div
           class="
-            border-base-content/10
-            bg-base-100/85 fixed
+            app-box-glass-strong
+            fixed
             inset-x-0 bottom-0
             z-130 flex
             max-h-[80dvh]
             flex-col
             overflow-y-auto
             rounded-t-2xl
-            border-t
             px-4
             pb-4
-            shadow-2xl
-            backdrop-blur-sm
             transition-transform duration-300 ease-out
             sm:hidden
           "

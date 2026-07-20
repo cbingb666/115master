@@ -63,7 +63,7 @@ const FileActionBar = defineComponent({
     }
 
     return () => (
-      <div class="pointer-events-none fixed right-0 bottom-18 left-(--sider-width) flex items-center justify-center">
+      <div class="pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
         <div
           class="
             app-box-glass pointer-events-auto

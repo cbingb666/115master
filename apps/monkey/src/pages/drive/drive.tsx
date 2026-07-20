@@ -344,7 +344,7 @@ const Drive = defineComponent({
         return (
           <div class="fixed right-0 bottom-0 left-(--sider-width) flex justify-center">
             <div class="from-base-100/50 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent"></div>
-            <div class="app-box-glass relative mb-4 rounded-full">
+            <div class="app-box-glass relative mb-2 rounded-full">
               <Pagination
                 key="pagination"
                 currentPage={store.query.page}

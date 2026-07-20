@@ -13,7 +13,7 @@ const DesktopSider = defineComponent({
     return () => (
       <div
         class="
-          border-base-content/10 bg-base-100/60
+          app-box-glass-strong
           fixed
           top-2 bottom-2
           left-2 z-100
@@ -21,11 +21,8 @@ const DesktopSider = defineComponent({
           w-[calc(var(--sider-width)-var(--spacing)*4)]
           flex-col
           rounded-2xl
-          border
           px-4
           pb-4
-          shadow-2xl
-          backdrop-blur-xl
           max-sm:hidden
         "
       >

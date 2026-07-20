@@ -53,7 +53,22 @@
 }
 
 [data-theme='light'] .app-box-glass {
-  background: oklch(100% 0 0 / 0.25);
+  background: oklch(100% 0 0 / 0.72);
+  border-color: oklch(0% 0 0 / 0.12);
+  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.18);
+}
+
+/** app-box-glass 的大面积变体：侧边栏、移动端 bottom sheet 等大面板，提高不透明度避免背后内容干扰 */
+@utility app-box-glass-strong {
+  background: oklch(5% 0 0 / 0.4);
+  border-color: oklch(100% 0 0 / 0.15);
+  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
+  backdrop-filter: blur(40px);
+  border-width: 1px;
+}
+
+[data-theme='light'] .app-box-glass-strong {
+  background: oklch(100% 0 0 / 0.88);
   border-color: oklch(0% 0 0 / 0.12);
   box-shadow: 0 4px 30px oklch(0% 0 0 / 0.18);
 }

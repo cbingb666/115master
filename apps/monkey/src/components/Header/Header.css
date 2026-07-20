@@ -1,8 +1,8 @@
 .header-sticky-effect {
   background: oklch(5% 0 0 / 0.15);
   border-color: oklch(100% 0 0 / 0.15);
-  box-shadow: 0 2px 16px oklch(0% 0 0 / 0.5);
-  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
+  backdrop-filter: blur(40px);
   will-change: backdrop-filter, transform;
   transform: translateZ(0);
   contain: layout paint;
@@ -25,9 +25,9 @@
 }
 
 [data-theme='light'] .header-sticky-effect {
-  background: oklch(100% 0 0 / 0.4);
-  border-color: oklch(0% 0 0 / 0.1);
-  box-shadow: 0 2px 16px oklch(0% 0 0 / 0.18);
+  background: oklch(100% 0 0 / 0.72);
+  border-color: oklch(0% 0 0 / 0.12);
+  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.18);
 }
 
 [data-theme='light'] .header-sticky-effect::before {
