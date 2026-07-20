@@ -58,13 +58,13 @@ const FileActionBar = defineComponent({
     }
 
     return () => (
-      <div class="pointer-events-none fixed inset-x-0 bottom-18 flex items-center justify-center">
+      <div class="pointer-events-none fixed right-0 bottom-18 left-(--sider-width) flex items-center justify-center">
         <div
           class="
-            rounded-box bg-base-300/80 shadow-base-content/10 ring-base-300/80
-            pointer-events-auto flex
-            items-center justify-center shadow-md ring-1
-            backdrop-blur-xl backdrop-saturate-180
+            app-box-glass pointer-events-auto
+            flex items-center
+            justify-center rounded-full
+            px-2 py-1.5
           "
         >
           {props.onClose && (
@@ -72,23 +72,23 @@ const FileActionBar = defineComponent({
               <div class="flex items-center justify-center">
                 <button
                   class="
-                    group btn btn-xl btn-ghost max-sm:btn-md
-                    rounded-box tooltip tooltip-top hover:bg-base-content/5
-                    relative flex
-                    items-center justify-center
-                    border-none transition-opacity
+                    text-base-content hover:bg-base-content/10
+                    tooltip tooltip-top relative flex h-9
+                    w-9 cursor-pointer
+                    items-center justify-center rounded-full
+                    transition-all duration-150
                   "
                   data-tip="取消"
                   title="取消"
                   onClick={() => props.onClose?.()}
                 >
                   <Icon
-                    class="drop-shadow-base-200/50 size-8 drop-shadow-sm max-sm:size-5"
+                    class="drop-shadow-base-200/50 size-5 drop-shadow-sm"
                     name={I.CLOSE}
                   />
                 </button>
               </div>
-              <div class="bg-base-content/20 mx-2 h-8 w-px" />
+              <div class="bg-base-content/20 mx-2 h-6 w-px" />
             </>
           )}
           {
@@ -120,11 +120,11 @@ const FileActionBar = defineComponent({
                           <button
                             key={item.icon}
                             class="
-                              group btn btn-xl btn-ghost max-sm:btn-md
-                              rounded-box tooltip tooltip-top hover:bg-base-content/5
-                              relative flex
-                              items-center justify-center
-                              border-none transition-opacity
+                              text-base-content hover:bg-base-content/10
+                              tooltip tooltip-top relative flex h-9
+                              w-9 cursor-pointer
+                              items-center justify-center rounded-full
+                              transition-all duration-150
                             "
                             data-tip={label}
                             title={label}
@@ -133,7 +133,7 @@ const FileActionBar = defineComponent({
                             {/* loading */}
                             <span
                               class={[
-                                'loading loading-spinner loading-xl',
+                                'loading loading-spinner loading-sm',
                                 'absolute inset-0 m-auto',
                                 'transition-all',
                                 isLoading ? 'opacity-100' : 'opacity-0',
@@ -142,7 +142,7 @@ const FileActionBar = defineComponent({
                             {/* icon */}
                             <Icon
                               class={[
-                                'drop-shadow-base-200/50 size-8 drop-shadow-sm max-sm:size-5',
+                                'drop-shadow-base-200/50 size-5 drop-shadow-sm',
                                 isLoading ? 'opacity-20' : '',
                                 iconColor,
                               ]}
@@ -156,7 +156,7 @@ const FileActionBar = defineComponent({
                   {
 
                     (groupIndex < props.data.length - 1) && (
-                      <div class="bg-base-content/20 mx-2 h-8 w-px" />
+                      <div class="bg-base-content/20 mx-2 h-6 w-px" />
                     )
                   }
                 </>
