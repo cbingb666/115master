@@ -12,7 +12,7 @@ const Layout = defineComponent({
         class="
           app-bg-mesh min-h-screen
           [--sider-width:0]
-          sm:[--sider-width:calc(var(--spacing)*60)]
+          sm:[--sider-width:calc(var(--spacing)*64)]
         "
       >
         {slots.default?.()}

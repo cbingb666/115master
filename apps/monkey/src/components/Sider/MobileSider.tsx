@@ -1,5 +1,6 @@
 import type { SlotsType } from 'vue'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { I, Icon } from '@/icons'
 import SiderMenuButton from './SiderMenuButton'
 
@@ -14,6 +15,9 @@ const MobileSider = defineComponent({
     const isOpen = ref(false)
     const open = () => isOpen.value = true
     const close = () => isOpen.value = false
+
+    const route = useRoute()
+    watch(() => route.fullPath, close)
 
     return () => (
       <>
@@ -52,19 +56,19 @@ const MobileSider = defineComponent({
           />
         )}
 
-        {/* 抽屉 */}
+        {/* 底部弹出层 */}
         <div
           class="
-            border-base-content/5
-            bg-base-100/80 fixed
-            top-0
-            bottom-0 left-0
+            border-base-content/10
+            bg-base-100/85 fixed
+            inset-x-0 bottom-0
             z-130 flex
-            w-[70vw]
+            max-h-[80dvh]
             flex-col
-            border-r
+            overflow-y-auto
+            rounded-t-2xl
+            border-t
             px-4
-            pt-4
             pb-4
             shadow-2xl
             backdrop-blur-sm
@@ -72,9 +76,10 @@ const MobileSider = defineComponent({
             sm:hidden
           "
           style={{
-            transform: isOpen.value ? 'translateX(0)' : 'translateX(-100%)',
+            transform: isOpen.value ? 'translateY(0)' : 'translateY(100%)',
           }}
         >
+          <div class="bg-base-content/20 mx-auto mt-2 mb-1 h-1 w-10 flex-none rounded-full" />
           {slots.default?.()}
           <div class="mt-auto flex flex-col gap-4">
             {slots.left?.()}
