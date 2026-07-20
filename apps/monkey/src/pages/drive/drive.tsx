@@ -158,8 +158,8 @@ const Drive = defineComponent({
     } satisfies Record<string, Action>
 
     const actionConfig = computed<Action[][]>(() => [
-      [actionAtom.top, actionAtom.star],
-      [actionAtom.move, actionAtom.improve, actionAtom.rename, actionAtom.tag],
+      [actionAtom.top, actionAtom.star, actionAtom.tag],
+      [actionAtom.move, actionAtom.improve, actionAtom.rename],
       [actionAtom.delete],
     ])
 
