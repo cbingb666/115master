@@ -35,11 +35,128 @@
   }
 }
 
-.btn-glass {
-  --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 15%, transparent);
-  backdrop-filter: blur(20px);
+/* 覆写 btn：胶囊外形 */
+.btn {
+  border-start-start-radius: var(--join-ss, 9999px);
+  border-start-end-radius: var(--join-se, 9999px);
+  border-end-end-radius: var(--join-ee, 9999px);
+  border-end-start-radius: var(--join-es, 9999px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
-[data-theme='light'] .btn-glass {
-  --btn-bg: oklch(100% 0 0 / 0.72);
+/* 普通按钮（无色彩修饰）：半透明玻璃材质 */
+.btn:not(
+  .btn-primary,
+  .btn-secondary,
+  .btn-accent,
+  .btn-neutral,
+  .btn-info,
+  .btn-success,
+  .btn-warning,
+  .btn-error,
+  .btn-ghost,
+  .btn-link,
+  .btn-outline,
+  .btn-dash,
+  .btn-soft,
+  .btn-glass
+) {
+  --btn-bg: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  --btn-border: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+  --btn-inset: 0 1px 0 oklch(100% 0 0 / 0.3);
+  --btn-shadow: 0 1px 2px oklch(0% 0 0 / 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+
+  @media (hover: hover) {
+    &:hover {
+      --btn-bg: color-mix(in oklab, var(--color-base-content) 14%, transparent);
+    }
+  }
+
+  &:active:not(.btn-active),
+  &.btn-active {
+    --btn-bg: color-mix(in oklab, var(--color-base-content) 17%, transparent);
+  }
+}
+
+/* 彩色按钮：实色底 + 顶部高光 + 同色系软阴影 */
+.btn:is(.btn-primary, .btn-secondary, .btn-accent, .btn-neutral, .btn-info, .btn-success, .btn-warning, .btn-error) {
+  --btn-border: color-mix(in oklab, var(--btn-color), #000 12%);
+  --btn-inset: 0 1px 0 oklch(100% 0 0 / 0.3);
+  --btn-shadow:
+    0 1px 2px color-mix(in oklab, var(--btn-color) 40%, transparent),
+    0 4px 12px color-mix(in oklab, var(--btn-color) 22%, transparent);
+}
+
+.btn-glass {
+  --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 15%, transparent);
+  --btn-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 20%, transparent);
+  --btn-inset: 0 1px 0 oklch(100% 0 0 / 0.3);
+  --btn-shadow: 0 1px 2px oklch(0% 0 0 / 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+
+  @media (hover: hover) {
+    &:hover {
+      --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 20%, transparent);
+    }
+  }
+
+  &:active:not(.btn-active),
+  &.btn-active {
+    --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 24%, transparent);
+  }
+}
+
+[data-theme='light'] {
+  .btn:not(
+    .btn-primary,
+    .btn-secondary,
+    .btn-accent,
+    .btn-neutral,
+    .btn-info,
+    .btn-success,
+    .btn-warning,
+    .btn-error,
+    .btn-ghost,
+    .btn-link,
+    .btn-outline,
+    .btn-dash,
+    .btn-soft,
+    .btn-glass
+  ) {
+    --btn-bg: oklch(100% 0 0 / 0.65);
+    --btn-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    --btn-inset: 0 1px 0 oklch(100% 0 0 / 0.65);
+    --btn-shadow: 0 1px 2px oklch(0% 0 0 / 0.08);
+
+    @media (hover: hover) {
+      &:hover {
+        --btn-bg: oklch(100% 0 0 / 0.8);
+      }
+    }
+
+    &:active:not(.btn-active),
+    &.btn-active {
+      --btn-bg: color-mix(in oklab, oklch(93% 0.004 286) 85%, transparent);
+    }
+  }
+
+  .btn-glass {
+    --btn-bg: oklch(100% 0 0 / 0.72);
+    --btn-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    --btn-inset: 0 1px 0 oklch(100% 0 0 / 0.65);
+    --btn-shadow: 0 1px 2px oklch(0% 0 0 / 0.08);
+
+    @media (hover: hover) {
+      &:hover {
+        --btn-bg: oklch(100% 0 0 / 0.85);
+      }
+    }
+
+    &:active:not(.btn-active),
+    &.btn-active {
+      --btn-bg: color-mix(in oklab, oklch(93% 0.004 286) 85%, transparent);
+    }
+  }
 }
