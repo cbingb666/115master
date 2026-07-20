@@ -24,7 +24,8 @@ interface TagApplyFailure {
  * 在文件列表右键对选中文件（单 / 批、文件 / 文件夹）增量增删已有标签：
  * 弹窗初始勾选为选中文件标签交集，确认后客户端 diff 出每文件目标标签集，
  * 逐文件全量写回（`setFileLabels`），其余标签保留。批量用 `Promise.allSettled`
- * 聚合 + 三态 Toast；auth 类错误升级 dialog（US 14 行动指引）；失败项保留选中便于重试。
+ * 聚合；全成功靠 UI 徽章反馈（`drive.refresh()` 后 tag badge 更新），仅失败时
+ * toast 提示并把失败项重新勾选便于重试。auth 类错误升级 dialog（US 14 行动指引）。
  */
 export function useTagAction() {
   const dialog = useDialog()
@@ -61,25 +62,22 @@ export function useTagAction() {
     toast.error(err.message)
   }
 
-  /** 三态 Toast（成功 / 部分失败含名称 / 全失败） */
-  function reportBatch(total: number, failedIds: string[], nameById: Map<string, string>) {
-    if (failedIds.length === 0) {
-      toast.success(total === 1 ? '已应用标签' : `已应用标签（${total} 个文件）`)
+  /** 失败反馈：仅在有失败项时 toast（部分失败含名称 / 全失败），全成功靠 UI 徽章 */
+  function reportBatch(failedIds: string[], nameById: Map<string, string>) {
+    if (failedIds.length === 0)
       return
-    }
-    const successCount = total - failedIds.length
     const names = failedIds.map(id => nameById.get(id) ?? id).join('、')
-    toast.error(successCount > 0 ? `${failedIds.length} 个文件打标签失败：${names}` : `打标签失败：${names}`)
+    toast.error(`${failedIds.length} 个文件打标签失败：${names}`)
   }
 
-  /** 结果反馈：auth 类错误升级 dialog 给行动指引；否则走三态 toast */
-  async function reportResult(failed: TagApplyFailure[], total: number, nameById: Map<string, string>) {
+  /** 结果反馈：auth 类错误升级 dialog 给行动指引；否则仅失败时 toast */
+  async function reportResult(failed: TagApplyFailure[], nameById: Map<string, string>) {
     const authError = failed.find(f => f.error.action === 'relogin' || f.error.action === 'verify')
     if (authError) {
       await dialog.alert({ title: '提示', content: authError.error.message })
       return
     }
-    reportBatch(total, failed.map(f => f.id), nameById)
+    reportBatch(failed.map(f => f.id), nameById)
   }
 
   /** 失败项按 id 重新勾选（refresh 后引用已变，按 id 在新列表中匹配） */
@@ -120,7 +118,7 @@ export function useTagAction() {
         const failed = await applyAll(changes)
         const failedIds = failed.map(f => f.id)
 
-        await reportResult(failed, changes.length, nameById)
+        await reportResult(failed, nameById)
 
         // 成功项已生效：刷新徽章；失败项按 id 重新勾选以保留重试入口。全失败则不动列表。
         if (changes.length - failedIds.length > 0) {

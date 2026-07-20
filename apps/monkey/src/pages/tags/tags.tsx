@@ -84,7 +84,6 @@ const Tags = defineComponent({
               await store.update(tag.id, form.name.trim(), form.color)
             else
               await store.create(form.name.trim(), form.color)
-            toast.success(tag ? '已更新标签' : '已创建标签')
           }
           catch (e) {
             form.error = Core.toDrive115Error(e).message
@@ -108,7 +107,6 @@ const Tags = defineComponent({
         return
       try {
         await store.remove(tag.id)
-        toast.success('已删除标签')
       }
       catch (e) {
         toast.error(Core.toDrive115Error(e).message)
@@ -128,10 +126,8 @@ const Tags = defineComponent({
       if (!confirmed)
         return
       const failed = await store.removeBatch(ids)
-      if (failed.length === 0) {
-        toast.success(`已删除 ${ids.length} 个标签`)
+      if (failed.length === 0)
         return
-      }
       const names = failed
         .map(f => store.tags.find(t => t.id === f.id)?.name ?? f.id)
         .join('、')

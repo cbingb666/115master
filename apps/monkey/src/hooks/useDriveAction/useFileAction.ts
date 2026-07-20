@@ -1,7 +1,7 @@
 import type { Share } from '@115master/drive115'
 import { Api } from '@115master/drive115'
 import { string } from '@115master/utils'
-import { useDialog, useToast } from '@/components'
+import { useDialog } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'
 import { composeRenamedName, getFileIds } from './helpers'
@@ -9,7 +9,6 @@ import { composeRenamedName, getFileIds } from './helpers'
 /** 文件基础操作（置顶、星标、重命名、新建文件夹） */
 export function useFileAction() {
   const dialog = useDialog()
-  const toast = useToast()
 
   /** 置顶批量 */
   async function topBatch(items: Share.Entity.FilesItem[]): Promise<boolean> {
@@ -21,7 +20,6 @@ export function useFileAction() {
       top,
     })
     if (res.state) {
-      toast.success(hasTop ? '取消置顶成功' : '置顶成功')
       return Promise.resolve(true)
     }
     else {
@@ -44,7 +42,6 @@ export function useFileAction() {
       star,
     })
     if (res.state) {
-      toast.success(hasStar ? '取消星标成功' : '星标成功')
       return Promise.resolve(true)
     }
     else {
@@ -81,7 +78,6 @@ export function useFileAction() {
         [`files_new_name[${fid}]`]: dialogRes,
       })
       if (res.state) {
-        toast.success('重命名成功')
         return Promise.resolve(composeRenamedName(item.n, dialogRes))
       }
       else {
@@ -112,7 +108,6 @@ export function useFileAction() {
         cname: dialogRes,
       })
       if (res.state) {
-        toast.success('新建文件夹成功')
         return Promise.resolve(true)
       }
       else {

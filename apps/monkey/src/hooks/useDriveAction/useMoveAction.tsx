@@ -48,7 +48,6 @@ export function useMoveAction() {
       try {
         const progress = await moveGetProgress(move_proid)
         if (progress === 100) {
-          toast.success('移动成功')
           return Promise.resolve(true)
         }
       }
@@ -93,10 +92,6 @@ export function useMoveAction() {
     }
 
     const moveRes = await moveCore(prevLevelId, items)
-    if (moveRes) {
-      toast.success('提到上级成功')
-    }
-
     return moveRes
   }
 

@@ -1,12 +1,11 @@
 import type { Share } from '@115master/drive115'
-import { useDialog, useToast } from '@/components'
+import { useDialog } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFileIds } from './helpers'
 
 /** 删除操作 */
 export function useDeleteAction() {
   const dialog = useDialog()
-  const toast = useToast()
 
   /** 删除确认 */
   async function deleteConfirm() {
@@ -32,7 +31,6 @@ export function useDeleteAction() {
       ...fids,
     })
     if (res.state) {
-      toast.success('删除成功')
       return Promise.resolve(true)
     }
     else {
