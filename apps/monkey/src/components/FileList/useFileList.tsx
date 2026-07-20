@@ -63,10 +63,12 @@ export function useFileList(props: FileListInteractionProps) {
     onExitSelectMode: exitSelectMode,
   })
 
-  /** 首个选中产生 → 进入选择模式（选中归零不自动退出，退出靠 exitSelectMode） */
+  /** 选中数驱动选择模式进出：0→N 进入；N→0 自动退出（取消最后一项等） */
   watch(() => props.checkeds.size, (size, prev) => {
     if (prev === 0 && size > 0)
       selectMode.value = true
+    if (prev > 0 && size === 0)
+      exitSelectMode()
   })
 
   function exitSelectMode() {
