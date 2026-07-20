@@ -7,6 +7,7 @@ import { useVModels } from '@vueuse/core'
 import {
 
   inject,
+  onScopeDispose,
   provide,
   ref,
 } from 'vue'
@@ -205,6 +206,13 @@ export function usePlayerProvide(
   /** 播放设置 */
   const playSettings = usePlaySettings(context)
   context.playSettings = playSettings
+
+  // 组件卸载时销毁播放器核心，释放 worker / 解码线程 / WebGL / 音频等资源
+  onScopeDispose(() => {
+    context.playerCore.value?.destroy().catch((e) => {
+      context.logger.error('销毁播放器失败:', e)
+    })
+  })
 
   provide(PlayerSymbol, context)
   return context
