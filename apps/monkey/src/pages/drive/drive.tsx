@@ -387,9 +387,17 @@ const Drive = defineComponent({
       exitSelectMode()
     })
 
-    // 点列表外空白退出选择模式
-    useEventListener(() => mainRef.value?.el, 'click', (e: MouseEvent) => {
+    /** 点列表外空白退出选择模式；框选拖拽位移大时不退出（否则框选松开会清空刚选中的项） */
+    let downX = 0
+    let downY = 0
+    useEventListener(() => containerRef.value, 'pointerdown', (e: PointerEvent) => {
+      downX = e.clientX
+      downY = e.clientY
+    })
+    useEventListener(() => containerRef.value, 'pointerup', (e: PointerEvent) => {
       if (!selectMode.value)
+        return
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) > 5)
         return
       if ((e.target as HTMLElement).closest('[data-selection-key]'))
         return
@@ -413,7 +421,7 @@ const Drive = defineComponent({
             <List />
             <FixedBottom />
             {selectMode.value && (
-              <FileActionBar data={actionConfig.value} />
+              <FileActionBar data={actionConfig.value} onClose={exitSelectMode} />
             )}
           </Main>
         </Layout>

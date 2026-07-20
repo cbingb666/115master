@@ -124,11 +124,11 @@ export function useFileList(props: FileListInteractionProps) {
       y: e.clientY,
     }
 
-    // 多选已存在：确保右键项被选中（不清空）；否则 radio 单选该项
-    if (props.checkeds.size > 1)
-      props.onChecked(item, true)
-    else
-      selection.handleClick(item)
+    // 多选已存在：确保右键项被选中（不清空）；否则 radio 单选该项。
+    // 不走 selection.handleClick——其默认态分支会触发 onOpen 打开文件
+    if (props.checkeds.size <= 1)
+      props.onCheckedClear()
+    props.onChecked(item, true)
   }
 
   const itemProps = (item: Share.Entity.FilesItem) => ({

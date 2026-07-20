@@ -2,7 +2,7 @@ import type { PropType } from 'vue'
 import type { ActionBarItem, ActionBarItemState } from './FileActionBar.types'
 import type { IconName } from '@/icons'
 import { defineComponent, ref, toValue, triggerRef } from 'vue'
-import { Icon } from '@/icons'
+import { I, Icon } from '@/icons'
 
 /**
  * 文件操作栏
@@ -19,6 +19,11 @@ const FileActionBar = defineComponent({
         (item: ActionBarItem) => Promise<void> | void
       >,
       default: () => {},
+    },
+    /** 关闭操作栏（如退出选择模式）；提供则左侧渲染关闭按钮 */
+    onClose: {
+      type: Function as PropType<() => void>,
+      default: undefined,
     },
   },
   setup: (props) => {
@@ -62,6 +67,30 @@ const FileActionBar = defineComponent({
             backdrop-blur-xl backdrop-saturate-180
           "
         >
+          {props.onClose && (
+            <>
+              <div class="flex items-center justify-center">
+                <button
+                  class="
+                    group btn btn-xl btn-ghost max-sm:btn-md
+                    rounded-box tooltip tooltip-top hover:bg-base-content/5
+                    relative flex
+                    items-center justify-center
+                    border-none transition-opacity
+                  "
+                  data-tip="取消"
+                  title="取消"
+                  onClick={() => props.onClose?.()}
+                >
+                  <Icon
+                    class="drop-shadow-base-200/50 size-8 drop-shadow-sm max-sm:size-5"
+                    name={I.CLOSE}
+                  />
+                </button>
+              </div>
+              <div class="bg-base-content/20 mx-2 h-8 w-px" />
+            </>
+          )}
           {
             props.data.map((group, groupIndex) => {
               const groupItems = group.filter(item =>
