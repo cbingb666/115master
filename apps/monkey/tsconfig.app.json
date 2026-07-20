@@ -35,5 +35,9 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx"
   ]
 }

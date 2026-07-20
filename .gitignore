@@ -44,3 +44,4 @@ coverage
 # Playwright
 .playwright-mcp/
 .playwright-cli/
+storybook-static
