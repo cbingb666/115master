@@ -81,16 +81,6 @@
   border-color: rgba(0, 0, 0, 0.15);
 }
 
-/** 悬浮 pill 控件底色（面包屑等非 btn 元素）；btn 场景用 .btn-glass */
-@utility app-pill-glass {
-  background: color-mix(in oklab, var(--color-base-content) 15%, transparent);
-  backdrop-filter: blur(20px);
-}
-
-[data-theme='light'] .app-pill-glass {
-  background: oklch(100% 0 0 / 0.72);
-}
-
 @utility app-bg-gradient-glass {
   &::before {
     content: '';

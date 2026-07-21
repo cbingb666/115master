@@ -80,6 +80,95 @@
   }
 }
 
+/* 玻璃 pill：面包屑、计数标识等非 btn 悬浮控件；btn 场景用 .btn-glass */
+/* 尺寸档与 btn 对标（同一 --size-field 基准）；置于 components 层，使 Tailwind utilities 可覆盖其内边距等属性 */
+@layer components {
+  .pill {
+    --pill-size: calc(var(--size-field, 0.25rem) * 10);
+    --pill-p: 1rem;
+    --pill-fs: 0.875rem;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    height: var(--pill-size);
+    border-radius: 9999px;
+    padding-inline: var(--pill-p);
+    font-size: var(--pill-fs);
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: oklch(100% 0 0 / 0.08);
+    border: 0.5px solid oklch(100% 0 0 / 0.1);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0.5px oklch(100% 0 0 / 0.3),
+      inset 0 -1px 0.5px oklch(100% 0 0 / 0.08),
+      inset 0 0 0 0.5px oklch(100% 0 0 / 0.04),
+      0 1px 2px oklch(0% 0 0 / 0.2),
+      0 4px 12px oklch(0% 0 0 / 0.12);
+  }
+
+  .pill-xs {
+    --pill-size: calc(var(--size-field, 0.25rem) * 6);
+    --pill-p: 0.5rem;
+    --pill-fs: 0.6875rem;
+  }
+
+  .pill-sm {
+    --pill-size: calc(var(--size-field, 0.25rem) * 8);
+    --pill-p: 0.75rem;
+    --pill-fs: 0.75rem;
+  }
+
+  .pill-lg {
+    --pill-size: calc(var(--size-field, 0.25rem) * 12);
+    --pill-p: 1.25rem;
+    --pill-fs: 1.125rem;
+  }
+
+  .pill-xl {
+    --pill-size: calc(var(--size-field, 0.25rem) * 14);
+    --pill-p: 1.5rem;
+    --pill-fs: 1.375rem;
+  }
+
+  :is(a, button).pill {
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  @media (hover: hover) {
+    :is(a, button).pill:hover {
+      background-color: oklch(100% 0 0 / 0.14);
+    }
+  }
+
+  :is(a, button).pill:active {
+    background-color: oklch(100% 0 0 / 0.18);
+  }
+
+  [data-theme='light'] .pill {
+    background-color: oklch(100% 0 0 / 0.6);
+    border-color: oklch(0% 0 0 / 0.06);
+    box-shadow:
+      inset 0 1px 0.5px oklch(100% 0 0 / 0.95),
+      inset 0 -1px 0.5px oklch(0% 0 0 / 0.05),
+      inset 0 0 0 0.5px oklch(100% 0 0 / 0.3),
+      0 1px 2px oklch(0% 0 0 / 0.05),
+      0 4px 12px oklch(0% 0 0 / 0.04);
+  }
+
+  @media (hover: hover) {
+    [data-theme='light'] :is(a, button).pill:hover {
+      background-color: oklch(100% 0 0 / 0.75);
+    }
+  }
+
+  [data-theme='light'] :is(a, button).pill:active {
+    background-color: oklch(100% 0 0 / 0.85);
+  }
+}
+
 /* 彩色按钮：实色底 + 顶部高光 + 同色系软阴影 */
 .btn:is(.btn-primary, .btn-secondary, .btn-accent, .btn-neutral, .btn-info, .btn-success, .btn-warning, .btn-error) {
   --btn-border: color-mix(in oklab, var(--btn-color), #000 12%);

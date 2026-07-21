@@ -82,14 +82,9 @@ const FilePath = defineComponent({
                         <span
                           aria-current="page"
                           class="
-                            app-pill-glass
+                            pill
                             text-base-content/70
                             cursor-default
-                            rounded-full
-                            px-3
-                            py-1
-                            text-sm
-                            font-semibold
                             text-shadow-2xs
                           "
                         >
@@ -99,14 +94,8 @@ const FilePath = defineComponent({
                     : (
                         <Link
                           class="
+                            pill
                             data-[drop-zone=true]:bg-primary
-                            app-pill-glass
-                            hover:bg-base-content/25
-                            rounded-full
-                            px-3
-                            py-1
-                            text-sm
-                            font-semibold
                             no-underline!
                             text-shadow-2xs
                           "
