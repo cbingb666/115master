@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
-import { useEventListener, useStorage, useTitle } from '@vueuse/core'
+import { breakpointsTailwind, useBreakpoints, useEventListener, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { router } from '@/app/router'
@@ -51,6 +51,8 @@ const Drive = defineComponent({
     const action = useDriveAction()
     const dialog = useDialog()
     const search = useGlobalSearch()
+    const bp = useBreakpoints(breakpointsTailwind)
+    const searchTooltip = computed(() => bp.greater('sm').value ? '搜索 (⌘K)' : '搜索')
     const route = useRoute()
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
     const isSearch = computed(() => store.nav.area === 'search')
@@ -243,7 +245,7 @@ const Drive = defineComponent({
             />
           </div>
           <div class="flex flex-none items-center gap-2">
-            <Tooltip content="搜索">
+            <Tooltip content={searchTooltip.value}>
               <button class="btn btn-glass rounded-full" onClick={() => search.open()}>
                 <Icon class="text-xl" name={I.SEARCH} />
               </button>
