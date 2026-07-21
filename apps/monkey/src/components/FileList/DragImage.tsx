@@ -1,7 +1,7 @@
 import type { Share } from '@115master/drive115'
 import type { FunctionalComponent, PropType, SVGAttributes } from 'vue'
 import { loadIcons } from '@iconify/vue'
-import { defineComponent } from 'vue'
+import { defineComponent, h, render } from 'vue'
 import { I, Icon } from '@/icons'
 import FolderSvg from '@/icons/custom/folder.svg?component'
 import ImageFileSvg from '@/icons/custom/image-file.svg?component'
@@ -34,20 +34,22 @@ const DragImage = defineComponent({
       const name = dragIcon(props.items[0])
       const Custom = CUSTOM[name]
       return (
-        <div class="relative size-16 select-none">
+        // 边框仅深色主题保留：浅色下 1px 半透明边框会被感知为「直角矩形框」；
+        // 根容器留出 p-2 内边距，让卡片阴影在捕获边界内自然衰减（避免阴影被截出直角边）
+        <div class="relative size-20 p-2 select-none">
           {count > 2 && (
-            <div class="border-base-content/10 bg-base-100/70 absolute size-14 translate-x-2 translate-y-2 rounded-xl border shadow-sm" />
+            <div class="bg-base-100/70 [data-theme='dark']_&:border [data-theme='dark']_&:border-base-content/15 absolute size-14 translate-x-2.5 translate-y-2.5 rounded-xl shadow-sm" />
           )}
           {count > 1 && (
-            <div class="border-base-content/10 bg-base-100/90 absolute size-14 translate-x-1 translate-y-1 rounded-xl border shadow" />
+            <div class="bg-base-100/90 [data-theme='dark']_&:border [data-theme='dark']_&:border-base-content/15 absolute size-14 translate-x-[5px] translate-y-[5px] rounded-xl shadow-sm" />
           )}
-          <div class="border-base-content/10 bg-base-100 absolute flex size-14 items-center justify-center rounded-xl border shadow-lg">
+          <div class="bg-base-100 [data-theme='dark']_&:border [data-theme='dark']_&:border-base-content/15 absolute flex size-14 items-center justify-center rounded-xl shadow-md">
             {Custom
               ? <Custom class="size-8" />
               : <Icon name={name} size="custom" class="text-primary size-8" />}
           </div>
           {count > 1 && (
-            <span class="bg-primary text-primary-content absolute -top-1 right-0 flex size-5 items-center justify-center rounded-full text-xs font-semibold shadow">
+            <span class="bg-primary text-primary-content absolute top-0 right-0 flex size-5 items-center justify-center rounded-full text-xs font-semibold">
               {count}
             </span>
           )}
@@ -58,3 +60,20 @@ const DragImage = defineComponent({
 })
 
 export default DragImage
+
+/** 挂载拖拽跟随图到屏外容器（setDragImage 要求元素在文档中） */
+export function mountDragImage(items: Share.Entity.FilesItem[]) {
+  const container = document.createElement('div')
+  // 主题变量只挂在 [data-theme] 选择器上（非 :root），容器是 #my-app 的兄弟节点，须自行带上主题
+  container.setAttribute('data-theme', document.getElementById('my-app')?.getAttribute('data-theme') || 'dark')
+  container.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:9999'
+  render(h(DragImage, { items }), container)
+  document.body.appendChild(container)
+  return {
+    el: container.firstElementChild as HTMLElement,
+    dispose: () => {
+      render(null, container)
+      container.remove()
+    },
+  }
+}

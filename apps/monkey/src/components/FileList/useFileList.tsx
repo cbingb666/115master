@@ -1,27 +1,10 @@
 import type { Share } from '@115master/drive115'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
-import { computed, h, ref, render, shallowRef, watch } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 import { useListSelection } from '@/hooks/useListSelection'
 import { Utils115 } from '@/utils/utils115'
-import DragImage from './DragImage'
+import { mountDragImage } from './DragImage'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
-
-/** 挂载拖拽跟随图到屏外容器（setDragImage 要求元素在文档中） */
-function mountDragImage(items: Share.Entity.FilesItem[]) {
-  const container = document.createElement('div')
-  // 主题变量只挂在 [data-theme] 选择器上（非 :root），容器是 #my-app 的兄弟节点，须自行带上主题
-  container.setAttribute('data-theme', document.getElementById('my-app')?.getAttribute('data-theme') || 'dark')
-  container.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:9999'
-  render(h(DragImage, { items }), container)
-  document.body.appendChild(container)
-  return {
-    el: container.firstElementChild as HTMLElement,
-    dispose: () => {
-      render(null, container)
-      container.remove()
-    },
-  }
-}
 
 export interface FileListInteractionProps {
   pathSelect: boolean
@@ -91,7 +74,7 @@ export function useFileList(props: FileListInteractionProps) {
     event.dataTransfer.effectAllowed = 'move'
 
     const drag = mountDragImage(selected)
-    event.dataTransfer.setDragImage(drag.el, 28, 28)
+    event.dataTransfer.setDragImage(drag.el, 36, 36)
     setTimeout(drag.dispose, 0)
 
     props.onDragStart?.(selected, event)
