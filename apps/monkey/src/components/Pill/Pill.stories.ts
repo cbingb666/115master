@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import Pill from '@/components/Pill/Pill'
+import Pill from './Pill'
 
 const meta = {
   title: 'UI/Pill',
@@ -12,7 +12,8 @@ const meta = {
       },
     },
   },
-} satisfies Meta
+  tags: ['autodocs'],
+} satisfies Meta<typeof Pill>
 
 export default meta
 type Story = StoryObj<typeof meta>

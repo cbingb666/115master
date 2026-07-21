@@ -32,6 +32,7 @@ const meta = {
       },
     },
   },
+  tags: ['autodocs'],
 } satisfies Meta
 
 export default meta

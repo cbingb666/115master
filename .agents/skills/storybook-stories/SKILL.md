@@ -9,7 +9,24 @@ Storybook 10 + `@storybook/vue3-vite` + vue-tsc。启动 `pnpm -F @115master/mon
 
 ## 写 stories
 
-位置：组件目录内 `Xxx.stories.ts`；无归属组件的通用样式元素放 `src/stories/`。
+位置：组件目录内 `Xxx.stories.ts`；无组件的纯样式演示（如 Button 的 daisyUI 元素）放 `src/stories/`。
+
+文件结构顺序：import → meta → `export default meta` → `type Story` → stories。
+
+### meta
+
+- `title: 'UI/组件名'`；`component` + `satisfies Meta<typeof X>`（纯样式演示无组件，用裸 `satisfies Meta`）。
+- `tags: ['autodocs']`。
+- `parameters.docs.description.component`：一句话职责 + 设计要点。
+- 多 story 共用的 args（如 noop 事件）放 meta 级 `args`。
+
+### story
+
+- `name` 用中文，场景导向（基础 / 方向 / 嵌套 overflow 容器）。
+- **能用 args 就不用 render**：story 间仅 props 不同 → `args`；涉及 slot 内容、组合结构、静态演示 → `render: () => ({ components, setup, template })`。
+- 事件 props 传 noop——未装 actions addon。
+- story 级 `parameters.docs.description`：仅当「这个 story 验证什么」从名字看不出时写（典范：Tooltip 的 Overflow）。
+- 图标：render 里 `components: { Icon }` + `setup: () => ({ I })`，template 中用 `<Icon :name="I.X" />`。
 
 骨架：
 
@@ -35,20 +52,17 @@ type Story = StoryObj<typeof meta>
 
 export const Basic: Story = {
   name: '基础',
+  args: {}, // 仅 props 差异时
+}
+
+export const Composite: Story = {
+  name: '组合场景',
   render: () => ({
     components: { Xxx },
-    template: `<Xxx />`,
+    template: `<Xxx />`, // 组合 / slot / 静态结构时
   }),
 }
 ```
-
-约定：
-
-- `render` 用 template 字符串 + `components` 注册。
-- 纯 props 驱动的 story 省略 render，直接给 `args`（参考 `SelectionHeader.stories.ts`）。
-- 事件类 props 传 noop（`onExit: () => {}`）——未装 actions addon。
-- story `name` 用中文。
-- 图标走 `@/icons`（`I.*` + `Icon`）。
 
 ## react 污染（TSX 组件 stories 的最大坑）
 
