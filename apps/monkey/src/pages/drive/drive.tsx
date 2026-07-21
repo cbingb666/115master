@@ -183,13 +183,6 @@ const Drive = defineComponent({
     //   router.push({ path: '/drive/search', query: { keyword: value } })
     // }
 
-    async function handleDragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
-      const success = await action.dragMove(cid, originItems)
-      if (success)
-        store.applyRemoveMutation(originItems, cid)
-      return success
-    }
-
     const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
 
     const { preview } = useFilePreview({
@@ -204,7 +197,7 @@ const Drive = defineComponent({
       })
     }
 
-    const { containerRef, selectMode, exitSelectMode, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
+    const { containerRef, dragging, selectMode, exitSelectMode, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
       get pathSelect() { return false },
       get listData() { return store.data?.data ?? [] },
       get checkeds() { return store.selection.checked },
@@ -215,8 +208,18 @@ const Drive = defineComponent({
       marqueeContainer: () => mainRef.value?.el,
     })
 
+    /** 拖拽移动：乐观退出多选，避免等待 API 期间多选头部闪现 */
+    async function handleDragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
+      exitSelectMode()
+      const success = await action.dragMove(cid, originItems)
+      if (success)
+        store.applyRemoveMutation(originItems, cid)
+      return success
+    }
+
     function ListHeader() {
-      if (selectMode.value) {
+      // 拖拽期间冻结在多选头部之外：保住面包屑投放目标
+      if (selectMode.value && !dragging.value) {
         return (
           <SelectionHeader
             count={store.selection.count}

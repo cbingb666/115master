@@ -97,6 +97,7 @@ export const I = {
   ALL_FILE: 'ion:file-tray-full-outline',
   FILE_FOLDER: 'custom:folder',
   FILE_IMAGE: 'custom:image-file',
+  FILE_VIDEO: 'ion:film',
   FILE_IMPROVE: 'ion:arrow-up',
 
   // === 标签 ===

@@ -1,29 +1,24 @@
 import type { Share } from '@115master/drive115'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, h, ref, render, shallowRef, watch } from 'vue'
 import { useListSelection } from '@/hooks/useListSelection'
 import { Utils115 } from '@/utils/utils115'
+import DragImage from './DragImage'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 
-function createDragImage(count: number): HTMLElement {
-  const el = document.createElement('div')
-  el.className = [
-    'flex items-center justify-center',
-    'bg-primary text-primary-content',
-    'rounded-lg shadow-lg',
-    'px-4 py-2',
-    'text-sm font-medium',
-    'min-w-24',
-  ].join(' ')
-  el.textContent = count === 1 ? '移动1个文件' : `移动${count}个文件`
-
-  el.style.color = 'var(--color-base-100)'
-  el.style.backgroundColor = 'var(--color-base-content)'
-  el.style.position = 'absolute'
-  el.style.pointerEvents = 'none'
-  el.style.zIndex = '9999'
-
-  return el
+/** 挂载拖拽跟随图到屏外容器（setDragImage 要求元素在文档中） */
+function mountDragImage(items: Share.Entity.FilesItem[]) {
+  const container = document.createElement('div')
+  container.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:9999'
+  render(h(DragImage, { items }), container)
+  document.body.appendChild(container)
+  return {
+    el: container.firstElementChild as HTMLElement,
+    dispose: () => {
+      render(null, container)
+      container.remove()
+    },
+  }
 }
 
 export interface FileListInteractionProps {
@@ -93,12 +88,9 @@ export function useFileList(props: FileListInteractionProps) {
     event.dataTransfer.setData('application/json', JSON.stringify(selected))
     event.dataTransfer.effectAllowed = 'move'
 
-    const dragImage = createDragImage(selected.length)
-    document.body.appendChild(dragImage)
-    event.dataTransfer.setDragImage(dragImage, 50, 20)
-    setTimeout(() => {
-      document.body.removeChild(dragImage)
-    }, 0)
+    const drag = mountDragImage(selected)
+    event.dataTransfer.setDragImage(drag.el, 28, 28)
+    setTimeout(drag.dispose, 0)
 
     props.onDragStart?.(selected, event)
   }
@@ -149,6 +141,7 @@ export function useFileList(props: FileListInteractionProps) {
 
   return {
     containerRef,
+    dragging,
     selectMode,
     exitSelectMode,
     contextmenuShow,

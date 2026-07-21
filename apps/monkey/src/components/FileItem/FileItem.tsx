@@ -155,7 +155,8 @@ const FileItem = defineComponent({
           `
             group data-[checked=true]:bg-primary/10! data-[checked=true]:ring-primary/10
             data-[checked=true]:hover:bg-primary/15! data-[checked=true]:hover:ring-primary/15!
-            data-[dropzone=true]:bg-primary/5
+            data-[dropzone=true]:bg-primary/10
+            data-[dropzone=true]:ring-primary
             hover:bg-base-content/5
             data-[view-type=list]:even:bg-base-content/[0.03]
             data-[view-type=list]:hover:bg-base-content/5
@@ -165,8 +166,10 @@ const FileItem = defineComponent({
             flex
             min-w-0
             rounded-xs
+            transition
             data-[checked=true]:bg-linear-to-br
             data-[dragging=true]:opacity-30
+            data-[dropzone=true]:ring-2
             data-[view-type=card]:h-full
             data-[view-type=card]:flex-col
             data-[view-type=card]:rounded-2xl

@@ -95,9 +95,12 @@ const FilePath = defineComponent({
                         <Link
                           class="
                             pill
-                            data-[drop-zone=true]:bg-primary
+                            data-[drop-zone=true]:bg-primary/10
+                            data-[drop-zone=true]:ring-primary
                             no-underline!
+                            transition
                             text-shadow-2xs
+                            data-[drop-zone=true]:ring-2
                           "
                           data-drop-zone={dropZone.value === p.cid}
                           href={p.cid === '0' ? '#/drive' : `#/drive/${p.cid}`}
