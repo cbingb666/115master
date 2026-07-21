@@ -170,6 +170,7 @@ const FileItem = defineComponent({
             data-[checked=true]:bg-linear-to-br
             data-[dragging=true]:opacity-30
             data-[dropzone=true]:ring-2
+            data-[dropzone=true]:ring-inset
             data-[view-type=card]:h-full
             data-[view-type=card]:flex-col
             data-[view-type=card]:rounded-2xl

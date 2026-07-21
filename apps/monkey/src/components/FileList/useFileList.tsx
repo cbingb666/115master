@@ -9,6 +9,8 @@ import '@fancyapps/ui/dist/fancybox/fancybox.css'
 /** 挂载拖拽跟随图到屏外容器（setDragImage 要求元素在文档中） */
 function mountDragImage(items: Share.Entity.FilesItem[]) {
   const container = document.createElement('div')
+  // 主题变量只挂在 [data-theme] 选择器上（非 :root），容器是 #my-app 的兄弟节点，须自行带上主题
+  container.setAttribute('data-theme', document.getElementById('my-app')?.getAttribute('data-theme') || 'dark')
   container.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:9999'
   render(h(DragImage, { items }), container)
   document.body.appendChild(container)

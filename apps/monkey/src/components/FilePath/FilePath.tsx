@@ -101,6 +101,7 @@ const FilePath = defineComponent({
                             transition
                             text-shadow-2xs
                             data-[drop-zone=true]:ring-2
+                            data-[drop-zone=true]:ring-inset
                           "
                           data-drop-zone={dropZone.value === p.cid}
                           href={p.cid === '0' ? '#/drive' : `#/drive/${p.cid}`}
