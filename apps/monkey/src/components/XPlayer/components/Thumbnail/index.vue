@@ -90,15 +90,15 @@ const styles = clsx({
       'bg-black',
       'box-content',
       'cursor-pointer',
-      'border-base-content border-4',
+      'border-4 border-white',
     ],
     loading:
-      'loading loading-spinner text-base-content/80 absolute m-auto size-12 rounded-full',
+      'loading loading-spinner absolute m-auto size-12 rounded-full text-white/80',
     error: 'absolute inset-0 flex items-center justify-center',
   },
   timeBox: {
     container:
-      'text-base-content app-font-time text-center text-sm select-none',
+      'app-font-time text-center text-sm text-white select-none',
   },
 })
 

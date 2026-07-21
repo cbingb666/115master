@@ -31,7 +31,7 @@ const styles = clsx({
     dot2: 'loading-dot-delay-2',
     dot3: 'loading-dot-delay-3',
   },
-  speed: 'text-base-content text-sm font-semibold',
+  speed: 'text-sm font-semibold text-white',
 })
 
 const { playerCore } = usePlayerContext()

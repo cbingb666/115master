@@ -72,12 +72,12 @@ const styles = clsx({
   fileInfo: {
     container: 'flex flex-1 flex-col',
     file: 'flex flex-wrap items-center gap-2 tracking-tight',
-    name: 'text-base-content app-text-shadow-dark line-clamp-2 text-xl font-semibold',
-    size: 'text-base-content app-text-shadow-dark flex-shrink-0 text-xs font-medium tracking-wide whitespace-nowrap',
+    name: 'app-text-shadow-dark line-clamp-2 text-xl font-semibold text-white',
+    size: 'app-text-shadow-dark flex-shrink-0 text-xs font-medium tracking-wide whitespace-nowrap text-white',
     path: {
       container: [
         'breadcrumbs',
-        'text-base-content text-xs font-medium',
+        'text-xs font-medium text-white',
         'tracking-wide',
         'app-text-shadow-dark',
       ],
