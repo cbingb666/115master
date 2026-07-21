@@ -1,4 +1,5 @@
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { Image } from '@/components/Image'
 import { I, Icon } from '@/icons'
 import { useUserAqStore } from '@/store/userAq'
 
@@ -9,12 +10,7 @@ export const UserInfo = defineComponent({
   name: 'UserInfo',
   setup: () => {
     const userInfo = useUserAqStore()
-    const imageError = ref(false)
     const showDropdown = ref(false)
-
-    function handleImageError() {
-      imageError.value = true
-    }
 
     function toggleDropdown() {
       // 检查是否为移动端（屏幕宽度小于 640px，对应 sm 断点）
@@ -60,20 +56,17 @@ export const UserInfo = defineComponent({
         >
           {/* 用户头像（始终显示） */}
           <div class="shrink-0">
-            {data.face?.face_l && !imageError.value
-              ? (
-                  <img
-                    src={data.face.face_l}
-                    alt={data.uname || '用户头像'}
-                    class="border-base-300 h-8 w-8 rounded-full border object-cover"
-                    onError={handleImageError}
-                  />
-                )
-              : (
-                  <div class="bg-primary/20 text-primary flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold">
-                    {data.uname?.charAt(0)?.toUpperCase() || 'U'}
-                  </div>
-                )}
+            <Image
+              class="border-base-300 h-8 w-8 rounded-full border"
+              src={data.face?.face_l || ''}
+              alt={data.uname || '用户头像'}
+              fit="cover"
+              fallback={(
+                <div class="bg-primary/20 text-primary flex h-full w-full items-center justify-center text-sm font-semibold">
+                  {data.uname?.charAt(0)?.toUpperCase() || 'U'}
+                </div>
+              )}
+            />
           </div>
 
           {/* 桌面端用户信息（直接显示） */}

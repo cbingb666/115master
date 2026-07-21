@@ -82,7 +82,7 @@
             >
               <div :class="styles.actors.avatarWrapper">
                 <div :class="styles.actors.avatarContainer">
-                  <img :src="actor.face || DEFAULT_AVATAR" :alt="actor.name" :class="styles.actors.avatarImage">
+                  <Image :src="actor.face || DEFAULT_AVATAR" :alt="actor.name" class="aspect-square w-full rounded-full" fit="cover" />
                 </div>
                 <span
                   v-if="actor.sex !== undefined"
@@ -104,7 +104,7 @@
             >
               <div :class="styles.actors.avatarWrapper">
                 <div :class="styles.actors.avatarContainer">
-                  <img :src="actor.face || DEFAULT_AVATAR" :alt="actor.name" :class="styles.actors.avatarImage">
+                  <Image :src="actor.face || DEFAULT_AVATAR" :alt="actor.name" class="aspect-square w-full rounded-full" fit="cover" />
                 </div>
                 <span
                   v-if="actor.sex !== undefined"
@@ -216,7 +216,7 @@
             :href="item.raw"
             target="_blank"
           >
-            <img :src="item.raw" alt="thumb" loading="lazy" :class="styles.thumbnails.image">
+            <Image :src="item.raw || ''" alt="thumb" class="size-full" fit="cover" lazy />
           </a>
         </div>
       </template>
@@ -238,6 +238,7 @@ import {
   Empty,
   LoadingError,
 } from '@/components'
+import { Image } from '@/components/Image'
 import { clsx } from '@/utils/clsx'
 import CopyButton from './components/CopyButton.vue'
 import 'photoswipe/style.css'

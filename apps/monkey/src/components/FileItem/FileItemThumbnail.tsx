@@ -3,7 +3,8 @@ import type { PropType } from 'vue'
 import type { IconName } from '@/icons'
 import { image as imageUtil } from '@115master/utils'
 import { defineComponent } from 'vue'
-import { Icon } from '@/icons'
+import { Image } from '@/components/Image'
+import { I, Icon } from '@/icons'
 import { Utils115 } from '@/utils/utils115'
 
 const FileItemThumbnail = defineComponent({
@@ -53,22 +54,20 @@ const FileItemThumbnail = defineComponent({
 
     function renderActressCover() {
       return (
-        <img
+        <Image
           class="
             group-data-[view-type=card]:border-base-content/5
             group-data-[view-type=list]:border-base-content/10
-            aspect-square
-            cursor-grab
-            rounded-full object-cover
-            object-top
+            aspect-square cursor-grab rounded-full
             group-data-[view-type=card]:absolute group-data-[view-type=card]:h-[61%]!
             group-data-[view-type=card]:rounded-full
             group-data-[view-type=card]:border-3 group-data-[view-type=list]:size-13
             group-data-[view-type=list]:border
           "
-          draggable={props.draggable}
-          src={props.actressUrl}
-          onMousedown={props.onMouseDown}
+          imgClass="object-top"
+          src={props.actressUrl ?? ''}
+          fit="cover"
+          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
         />
       )
     }
@@ -85,18 +84,14 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:overflow-hidden group-data-[view-type=card]:rounded-2xl
             group-data-[view-type=list]:rounded-lg
           "
-          draggable={props.draggable}
-          onMousedown={props.onMouseDown}
+          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
         >
-          <img
-            class="
-              h-full w-full object-cover transition-all duration-300
-              ease-[cubic-bezier(0.33_0_0.67_1)]
-              group-data-[view-type=card]:group-hover:scale-105
-              group-data-[view-type=card]:data-[portrait=true]:object-contain
-            "
-            data-portrait={imageUtil.isPortrait(props.videoCover.width, props.videoCover.height)}
+          <Image
+            class="h-full w-full"
+            imgClass="transition-all duration-300 ease-[cubic-bezier(0.33_0_0.67_1)] group-data-[view-type=card]:group-hover:scale-105 group-data-[view-type=card]:data-[portrait=true]:object-contain"
             src={props.videoCover.img}
+            fit="cover"
+            data-portrait={imageUtil.isPortrait(props.videoCover.width, props.videoCover.height)}
           />
         </div>
       )
@@ -104,35 +99,35 @@ const FileItemThumbnail = defineComponent({
 
     function renderImageCover() {
       return (
-        <img
+        <Image
           class="
             group-data-[view-type=list]:ring-base-content/10 cursor-grab rounded-md
-            object-cover group-data-[view-type=card]:relative
+            group-data-[view-type=card]:relative
             group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[70%]
-            group-data-[view-type=card]:object-contain
             group-data-[view-type=card]:transition-all group-data-[view-type=list]:size-14
             group-data-[view-type=list]:ring-1
           "
-          decoding="async"
-          draggable={props.draggable}
-          loading="lazy"
+          imgClass="group-data-[view-type=card]:object-contain"
           src={props.data.u}
-          onMousedown={props.onMouseDown}
+          fit="cover"
+          lazy
+          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
         />
       )
     }
 
     function renderOfficialIcon(iconUrl: string) {
       return (
-        <img
+        <Image
           class="
-            relative cursor-grab object-contain
-            group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all
+            relative cursor-grab
+            group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all
             group-data-[view-type=list]:size-14
           "
-          draggable={props.draggable}
           src={iconUrl}
-          onMousedown={props.onMouseDown}
+          fit="contain"
+          fallback={<Icon name={I.DOCUMENT} class="text-base-content/40 h-full w-full" />}
+          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
         />
       )
     }
@@ -145,8 +140,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[61%]
             group-data-[view-type=list]:size-14
           "
-          draggable={props.draggable}
-          onMousedown={props.onMouseDown}
+          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
         >
           <Icon
             class="text-primary/80 h-full w-auto drop-shadow-md"
@@ -164,8 +158,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all
             group-data-[view-type=list]:size-14
           "
-          draggable={props.draggable}
-          onMousedown={props.onMouseDown}
+          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
         >
           <Icon
             class="h-full w-full"
