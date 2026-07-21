@@ -2,7 +2,7 @@ import type { PropType } from 'vue'
 import type { ActionBarItem, ActionBarItemState } from './FileActionBar.types'
 import type { IconName } from '@/icons'
 import { defineComponent, ref, toValue, triggerRef } from 'vue'
-import { I, Icon } from '@/icons'
+import { Icon } from '@/icons'
 
 /**
  * 文件操作栏
@@ -19,16 +19,6 @@ const FileActionBar = defineComponent({
         (item: ActionBarItem) => Promise<void> | void
       >,
       default: () => {},
-    },
-    /** 关闭操作栏（如退出选择模式）；提供则左侧渲染关闭按钮 */
-    onClose: {
-      type: Function as PropType<() => void>,
-      default: undefined,
-    },
-    /** 选中数量；>0 时在关闭按钮右侧展示 */
-    count: {
-      type: Number as PropType<number>,
-      default: 0,
     },
   },
   setup: (props) => {
@@ -72,39 +62,6 @@ const FileActionBar = defineComponent({
             px-2 py-1.5
           "
         >
-          {props.onClose && (
-            <>
-              <div class="flex items-center justify-center">
-                <button
-                  class="
-                    text-base-content hover:bg-base-content/10
-                    tooltip tooltip-top relative flex h-9
-                    w-9 cursor-pointer
-                    items-center justify-center rounded-full
-                    transition-all duration-150
-                  "
-                  data-tip="取消"
-                  title="取消"
-                  onClick={() => props.onClose?.()}
-                >
-                  <Icon
-                    class="drop-shadow-base-200/50 size-5 drop-shadow-sm"
-                    name={I.CLOSE}
-                  />
-                </button>
-              </div>
-              {props.count > 0 && (
-                <span class="text-base-content/80 px-1 text-sm whitespace-nowrap tabular-nums">
-                  已选
-                  {' '}
-                  {props.count}
-                  {' '}
-                  项
-                </span>
-              )}
-              {props.data.length > 0 && <div class="bg-base-content/20 mx-2 h-6 w-px" />}
-            </>
-          )}
           {
             props.data.map((group, groupIndex) => {
               const groupItems = group.filter(item =>

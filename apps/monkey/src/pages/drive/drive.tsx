@@ -20,6 +20,7 @@ import {
   PageSizeOptions,
   Pagination,
   ResponsiveMenu,
+  SelectionHeader,
   Sider,
   SiderContent,
   SortOptions,
@@ -210,6 +211,18 @@ const Drive = defineComponent({
     })
 
     function ListHeader() {
+      if (selectMode.value) {
+        return (
+          <Header>
+            <SelectionHeader
+              count={store.selection.count}
+              onExit={exitSelectMode}
+              onInvert={() => store.selection.invert(store.data?.data ?? [])}
+              onSelectAll={() => store.selection.selectAll(store.data?.data ?? [])}
+            />
+          </Header>
+        )
+      }
       const sorter: { asc: Share.Base.Sorter['asc'], fc_mix: Share.Base.Sorter['fc_mix'], order: Share.Base.Sorter['o'] } = {
         asc: store.asc || 0,
         fc_mix: store.fc_mix || 0,
@@ -398,12 +411,8 @@ const Drive = defineComponent({
             <ListHeader />
             <List />
             <FixedBottom />
-            {selectMode.value && (
-              <FileActionBar
-                data={store.selection.count > 0 ? actionConfig.value : []}
-                onClose={exitSelectMode}
-                count={store.selection.count}
-              />
+            {selectMode.value && store.selection.count > 0 && (
+              <FileActionBar data={actionConfig.value} />
             )}
           </Main>
         </Layout>
