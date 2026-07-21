@@ -1,6 +1,7 @@
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
+import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
 import PageSizeOptions from './PageSizeOptions'
 
@@ -21,14 +22,15 @@ const FilePageSizeSelector = defineComponent({
       <ResponsiveMenu title="请选择页大小">
         {{
           target: (_props: object) => (
-            <button
-              class="btn btn-glass rounded-full"
-              tabindex="0"
-              {..._props}
-            >
-              <Icon class="text-2xl" name={I.DOCUMENT} />
-              <span class="hidden sm:inline">{props.currentPageSize}</span>
-            </button>
+            <Tooltip content={`每页 ${props.currentPageSize} 项`}>
+              <button
+                class="btn btn-glass rounded-full"
+                tabindex="0"
+                {..._props}
+              >
+                <Icon class="text-2xl" name={I.DOCUMENT} />
+              </button>
+            </Tooltip>
           ),
           default: () => (
             <PageSizeOptions

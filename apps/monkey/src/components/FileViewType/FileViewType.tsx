@@ -1,6 +1,7 @@
 import type { PropType } from 'vue'
 import { useCycleList } from '@vueuse/core'
 import { computed, defineComponent, watch } from 'vue'
+import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
 
 export type ViewType = 'list' | 'card'
@@ -56,10 +57,11 @@ const FileViewType = defineComponent({
     }
 
     return () => (
-      <button class="btn btn-glass rounded-full" onClick={handleCycle}>
-        <Icon class="text-xl" name={currentOption.value.icon} />
-        <span class="hidden sm:inline">{currentOption.value.name}</span>
-      </button>
+      <Tooltip content={currentOption.value.name}>
+        <button class="btn btn-glass rounded-full" onClick={handleCycle}>
+          <Icon class="text-xl" name={currentOption.value.icon} />
+        </button>
+      </Tooltip>
     )
   },
 })

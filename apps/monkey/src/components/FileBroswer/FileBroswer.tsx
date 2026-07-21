@@ -17,6 +17,7 @@ import {
   FileSortSelector,
   FileViewType,
   Pagination,
+  Tooltip,
 } from '@/components'
 import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
@@ -152,8 +153,8 @@ const FileBroswer = defineComponent({
         props.keyword.value = ''
     }
 
-    /** 桌面端搜索框常驻；移动端仅展开时显示搜索框、隐藏操作按钮 */
-    const showSearchBox = computed(() => !isMobile.value || searchExpanded.value)
+    /** 搜索默认收起为纯 icon 按钮，点击展开；移动端展开时隐藏操作按钮 */
+    const showSearchBox = computed(() => searchExpanded.value)
     const showActions = computed(() => !isMobile.value || !searchExpanded.value)
 
     function expandSearch() {
@@ -234,7 +235,7 @@ const FileBroswer = defineComponent({
                   </label>
                 )}
 
-                {isMobile.value && searchExpanded.value && (
+                {searchExpanded.value && (
                   <button
                     class="btn btn-ghost btn-sm shrink-0"
                     type="button"
@@ -244,15 +245,16 @@ const FileBroswer = defineComponent({
                   </button>
                 )}
 
-                {isMobile.value && !searchExpanded.value && (
-                  <button
-                    class="btn btn-sm btn-glass shrink-0 rounded-full"
-                    type="button"
-                    title="搜索目录"
-                    onClick={expandSearch}
-                  >
-                    <Icon class="text-xl" name={I.SEARCH} />
-                  </button>
+                {!searchExpanded.value && (
+                  <Tooltip content="搜索">
+                    <button
+                      class="btn btn-glass shrink-0 rounded-full"
+                      type="button"
+                      onClick={expandSearch}
+                    >
+                      <Icon class="text-xl" name={I.SEARCH} />
+                    </button>
+                  </Tooltip>
                 )}
 
                 {showActions.value && (

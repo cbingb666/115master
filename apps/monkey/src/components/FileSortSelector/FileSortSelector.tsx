@@ -2,6 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { computed, defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
+import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
 import { SORT_OPTIONS } from './config'
 import SortOptions from './SortOptions'
@@ -59,29 +60,27 @@ const FileSortSelector = defineComponent({
       <ResponsiveMenu title="请选择排序方式">
         {{
           target: (_props: object) => (
-            <button
-              class="btn btn-glass gap-1.5 rounded-full px-2 sm:px-3"
-              aria-label={`当前排序：${sortLabel.value}`}
-              title={`当前排序：${sortLabel.value}${props.fc_mix === 0 ? '，目录置顶已开启' : ''}`}
-              tabindex="0"
-              {..._props}
-            >
-              <span class="relative inline-flex items-center gap-0.5">
-                {
-                  props.fc_mix === 0
-                  && <div class="bg-primary absolute top-0 -left-1 size-1.5 -translate-y-1/2 rounded-full" />
-                }
-                <Icon class="text-xl" name={sortField.value} />
-                <Icon
-                  size="xs"
-                  class={`text-base-content/60 ${props.asc === 1 ? '' : 'rotate-180'}`}
-                  name={I.ARROW_UP}
-                />
-              </span>
-              <span class="relative hidden max-w-24 truncate text-xs sm:inline sm:max-w-none sm:text-sm">
-                {sortLabel.value}
-              </span>
-            </button>
+            <Tooltip content={`当前排序：${sortLabel.value}${props.fc_mix === 0 ? '（目录置顶）' : ''}`}>
+              <button
+                class="btn btn-glass rounded-full"
+                aria-label={`当前排序：${sortLabel.value}`}
+                tabindex="0"
+                {..._props}
+              >
+                <span class="relative inline-flex items-center gap-0.5">
+                  {
+                    props.fc_mix === 0
+                    && <div class="bg-primary absolute top-0 -left-1 size-1.5 -translate-y-1/2 rounded-full" />
+                  }
+                  <Icon class="text-xl" name={sortField.value} />
+                  <Icon
+                    size="xs"
+                    class={`text-base-content/60 ${props.asc === 1 ? '' : 'rotate-180'}`}
+                    name={I.ARROW_UP}
+                  />
+                </span>
+              </button>
+            </Tooltip>
           ),
           default: () => (
             <SortOptions

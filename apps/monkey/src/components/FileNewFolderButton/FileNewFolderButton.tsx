@@ -1,5 +1,6 @@
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
+import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
 
 const FileNewFolderButton = defineComponent({
@@ -16,10 +17,11 @@ const FileNewFolderButton = defineComponent({
     }
 
     return () => (
-      <button class="btn btn-glass rounded-full" onClick={handleClick}>
-        <Icon class="text-xl" name={I.NEW_FOLDER} />
-        <span class="hidden sm:inline">新建</span>
-      </button>
+      <Tooltip content="新建">
+        <button class="btn btn-glass rounded-full" onClick={handleClick}>
+          <Icon class="text-xl" name={I.NEW_FOLDER} />
+        </button>
+      </Tooltip>
     )
   },
 })
