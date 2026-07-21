@@ -22,6 +22,7 @@ const SIZE_MAP: Record<IconSize, string> = {
   'lg': 'size-6',
   'xl': 'size-16',
   '2xl': 'size-24',
+  'custom': '',
 }
 
 const cls = computed(() => clsx(SIZE_MAP[props.size]))

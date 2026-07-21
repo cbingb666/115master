@@ -3,7 +3,7 @@ import type { IconName, IconSize } from '@/icons'
 import { defineComponent } from 'vue'
 import { Icon } from '@/icons'
 
-type Size = IconSize
+type Size = Exclude<IconSize, 'custom'>
 
 const paddingClasses: Record<Size, string> = {
   'xs': 'p-2',

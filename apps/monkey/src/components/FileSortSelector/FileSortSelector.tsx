@@ -67,15 +67,15 @@ const FileSortSelector = defineComponent({
                 tabindex="0"
                 {..._props}
               >
-                <span class="relative inline-flex items-center gap-0.5">
+                <span class="relative inline-flex items-center">
                   {
                     props.fc_mix === 0
                     && <div class="bg-primary absolute top-0 -left-1 size-1.5 -translate-y-1/2 rounded-full" />
                   }
                   <Icon class="text-xl" name={sortField.value} />
                   <Icon
-                    size="xs"
-                    class={`text-base-content/60 ${props.asc === 1 ? '' : 'rotate-180'}`}
+                    size="custom"
+                    class={`text-base-content/70 absolute -right-1 -bottom-0.5 size-2.5 ${props.asc === 1 ? '' : 'rotate-180'}`}
                     name={I.ARROW_UP}
                   />
                 </span>
