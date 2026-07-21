@@ -1,5 +1,6 @@
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
+import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
 
 /**
@@ -56,24 +57,24 @@ const SelectionHeader = defineComponent({
         </div>
         <div class="flex flex-none items-center gap-2">
           {props.onSelectAll && (
-            <button
-              class="btn btn-glass rounded-full"
-              title="全选"
-              onClick={() => props.onSelectAll?.()}
-            >
-              <Icon class="text-xl" name={I.SELECT_ALL} />
-              <span class="hidden sm:inline">全选</span>
-            </button>
+            <Tooltip content="全选">
+              <button
+                class="btn btn-glass rounded-full"
+                onClick={() => props.onSelectAll?.()}
+              >
+                <Icon class="text-xl" name={I.SELECT_ALL} />
+              </button>
+            </Tooltip>
           )}
           {props.onInvert && (
-            <button
-              class="btn btn-glass rounded-full"
-              title="反选"
-              onClick={() => props.onInvert?.()}
-            >
-              <Icon class="text-xl" name={I.INVERT} />
-              <span class="hidden sm:inline">反选</span>
-            </button>
+            <Tooltip content="反选">
+              <button
+                class="btn btn-glass rounded-full"
+                onClick={() => props.onInvert?.()}
+              >
+                <Icon class="text-xl" name={I.INVERT} />
+              </button>
+            </Tooltip>
           )}
         </div>
       </>

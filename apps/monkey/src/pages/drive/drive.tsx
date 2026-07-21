@@ -28,6 +28,7 @@ import {
   useFileList,
   useFilePreview,
 } from '@/components'
+import { Tooltip } from '@/components/Tooltip'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import { I, Icon } from '@/icons'
@@ -242,10 +243,11 @@ const Drive = defineComponent({
             />
           </div>
           <div class="flex flex-none items-center gap-2">
-            <button class="btn btn-glass rounded-full" onClick={() => search.open()}>
-              <Icon class="text-xl" name={I.SEARCH} />
-              <span class="hidden sm:inline">搜索</span>
-            </button>
+            <Tooltip content="搜索">
+              <button class="btn btn-glass rounded-full" onClick={() => search.open()}>
+                <Icon class="text-xl" name={I.SEARCH} />
+              </button>
+            </Tooltip>
             {isSearch.value
               ? <FilePageSizeSelector {...page} />
               : (
