@@ -1,5 +1,6 @@
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
+import { Header, HeaderEnd, HeaderStart } from '@/components/Header'
 import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
 
@@ -40,8 +41,8 @@ const SelectionHeader = defineComponent({
   },
   setup: (props) => {
     return () => (
-      <>
-        <div class="relative flex min-w-0 flex-1 items-center gap-4 overflow-hidden">
+      <Header>
+        <HeaderStart>
           <button
             class="btn btn-glass rounded-full"
             title="退出多选"
@@ -54,8 +55,8 @@ const SelectionHeader = defineComponent({
               项
             </span>
           </button>
-        </div>
-        <div class="flex flex-none items-center gap-2">
+        </HeaderStart>
+        <HeaderEnd>
           {props.onSelectAll && (
             <Tooltip content="全选">
               <button
@@ -76,8 +77,8 @@ const SelectionHeader = defineComponent({
               </button>
             </Tooltip>
           )}
-        </div>
-      </>
+        </HeaderEnd>
+      </Header>
     )
   },
 })

@@ -15,6 +15,8 @@ import {
   FileSortSelector,
   FileViewType,
   Header,
+  HeaderEnd,
+  HeaderStart,
   Layout,
   Main,
   PageSizeOptions,
@@ -216,14 +218,12 @@ const Drive = defineComponent({
     function ListHeader() {
       if (selectMode.value) {
         return (
-          <Header>
-            <SelectionHeader
-              count={store.selection.count}
-              onExit={exitSelectMode}
-              onInvert={() => store.selection.invert(store.data?.data ?? [])}
-              onSelectAll={() => store.selection.selectAll(store.data?.data ?? [])}
-            />
-          </Header>
+          <SelectionHeader
+            count={store.selection.count}
+            onExit={exitSelectMode}
+            onInvert={() => store.selection.invert(store.data?.data ?? [])}
+            onSelectAll={() => store.selection.selectAll(store.data?.data ?? [])}
+          />
         )
       }
       const sorter: { asc: Share.Base.Sorter['asc'], fc_mix: Share.Base.Sorter['fc_mix'], order: Share.Base.Sorter['o'] } = {
@@ -237,14 +237,14 @@ const Drive = defineComponent({
       }
       return (
         <Header>
-          <div class="relative flex min-w-0 flex-1 items-center gap-4 overflow-hidden">
+          <HeaderStart>
             <FilePath
               path={store.path ?? []}
               onDragMove={handleDragMove}
               onPathClick={handleClickPath}
             />
-          </div>
-          <div class="flex flex-none items-center gap-2">
+          </HeaderStart>
+          <HeaderEnd>
             <Tooltip content={searchTooltip.value}>
               <button class="btn btn-glass rounded-full" onClick={() => search.open()}>
                 <Icon class="text-xl" name={I.SEARCH} />
@@ -314,7 +314,7 @@ const Drive = defineComponent({
                 </ResponsiveMenu>
               </div>
             )}
-          </div>
+          </HeaderEnd>
         </Header>
       )
     }

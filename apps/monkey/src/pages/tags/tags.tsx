@@ -6,6 +6,8 @@ import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
 import {
   Header,
+  HeaderEnd,
+  HeaderStart,
   Layout,
   LoadingError,
   Main,
@@ -162,7 +164,7 @@ const Tags = defineComponent({
       if (isBatch.value) {
         return (
           <Header>
-            <div class="flex min-w-0 flex-1 items-center gap-2">
+            <HeaderStart>
               <button
                 type="button"
                 class="btn btn-circle btn-ghost btn-sm"
@@ -175,8 +177,8 @@ const Tags = defineComponent({
                 <Icon name={I.CLOSE} />
               </button>
               <span class="font-medium">{`已选 ${store.selectedCount} 项`}</span>
-            </div>
-            <div class="flex flex-none items-center gap-0.5">
+            </HeaderStart>
+            <HeaderEnd>
               <button type="button" class="btn btn-ghost btn-sm gap-1" title="全选" onClick={() => store.selectAll()}>
                 <Icon name={I.SELECT_ALL} size="sm" />
                 <span class="hidden sm:inline">全选</span>
@@ -194,18 +196,18 @@ const Tags = defineComponent({
                 <Icon name={I.DELETE} size="sm" />
                 <span class="hidden sm:inline">删除</span>
               </button>
-            </div>
+            </HeaderEnd>
           </Header>
         )
       }
       return (
         <Header>
-          <div class="flex min-w-0 flex-1 items-center gap-2.5">
+          <HeaderStart>
             <Icon name={I.TAG} class="text-xl" />
             <span class="truncate text-lg font-medium">标签管理</span>
             <span class="text-base-content/50 flex-none text-sm">{store.tags.length}</span>
-          </div>
-          <div class="flex flex-none items-center gap-2">
+          </HeaderStart>
+          <HeaderEnd>
             <SearchInput />
             <button
               type="button"
@@ -215,7 +217,7 @@ const Tags = defineComponent({
               <Icon name={I.PLUS} size="sm" />
               <span class="hidden sm:inline">新建标签</span>
             </button>
-          </div>
+          </HeaderEnd>
         </Header>
       )
     }
