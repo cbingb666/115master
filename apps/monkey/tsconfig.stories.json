@@ -5,12 +5,14 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.stories.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "react": ["./.storybook/react-stub.d.ts"]
     },
     "declaration": false,
     "declarationMap": false
   },
   "include": [
+    "src/**/*.d.ts",
     "src/**/*.stories.ts",
     "src/**/*.stories.tsx"
   ]
