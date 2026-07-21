@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Pill from '@/components/Pill/Pill'
-import { I, Icon } from '@/icons'
 
 const meta = {
   title: 'UI/Pill',
@@ -57,22 +56,6 @@ export const Sizes: Story = {
         <Pill class="pill-lg">LG</Pill>
         <Pill class="pill-xl">XL</Pill>
       </div>
-    `,
-  }),
-}
-
-export const WithButton: Story = {
-  name: '内嵌按钮',
-  render: () => ({
-    components: { Pill, Icon },
-    setup: () => ({ I }),
-    template: `
-      <Pill class="pl-2">
-        <button type="button" class="btn btn-ghost btn-circle btn-xs">
-          <Icon :name="I.CLOSE" size="xs" />
-        </button>
-        <span class="tabular-nums">已选 5 项</span>
-      </Pill>
     `,
   }),
 }
