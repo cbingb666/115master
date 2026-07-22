@@ -41,7 +41,7 @@ const FileDragPreview = defineComponent({
           )}
           <div class="bg-base-100 [data-theme='dark']_&:border [data-theme='dark']_&:border-base-content/15 absolute flex size-14 items-center justify-center rounded-xl shadow-md">
             {Custom
-              ? <Custom class="size-8" />
+              ? <Custom class="text-primary size-8" />
               : <Icon name={name} size="custom" class="text-primary size-8" />}
           </div>
           {count > 1 && (
