@@ -1,14 +1,11 @@
 import type { Share } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
-import { computed, h, shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { router } from '@/app/router'
 import { useDialog } from '@/components'
-import { useDndSource, useDndTarget } from '@/components/Dnd'
-import DragImage from '@/components/FileList/DragImage'
 import { useFolderImagePreview } from '@/hooks/useFolderImagePreview'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { actressFaceDB } from '@/utils/actressFaceDB'
-import { getFilesItemId } from '@/utils/filesItem'
 import { openFilesItem, resolveFileLink } from '@/utils/openFilesItem'
 
 interface ActressFaceDBActress {
@@ -21,15 +18,10 @@ interface ActressFaceDBActress {
 
 interface UseFileItemOptions {
   data: Share.Entity.FilesItem
-  pathSelect?: boolean
-  selectMode?: boolean
   cid?: string
   order?: Share.Base.Sorter['o']
   asc?: Share.Base.Sorter['asc']
   onPreview?: (data: Share.Entity.FilesItem) => void
-  /** 拖拽激活时惰性求值被拖项（自动勾选当前项后返回全集） */
-  dragPayload?: () => Share.Entity.FilesItem[]
-  onDragMove?: (cid: string, items: Share.Entity.FilesItem[]) => void
 }
 
 export function useFileItem(options: UseFileItemOptions) {
@@ -98,25 +90,8 @@ export function useFileItem(options: UseFileItemOptions) {
     })
   }
 
-  /** 拖拽源（缩略图按住拖动）：触摸仅在多选态启用 */
-  const source = useDndSource<Share.Entity.FilesItem[]>({
-    payload: () => options.dragPayload?.() ?? [data],
-    ghost: items => h(DragImage, { items }),
-    offset: { x: 36, y: 36 },
-    disabled: e => !!options.pathSelect || (e.pointerType === 'touch' && !options.selectMode),
-  })
-
-  /** 投放目标：仅文件夹，且被拖项不含自身 */
-  const target = useDndTarget<Share.Entity.FilesItem[]>({
-    id: getFilesItemId(data),
-    el: () => itemRef.value,
-    accept: items => isFolder.value && !items.some(item => getFilesItemId(item) === getFilesItemId(data)),
-    onDrop: items => options.onDragMove?.(getFilesItemId(data), items),
-  })
-
   return {
     itemRef,
-    isDrogzone: target.hovering,
     isVideo,
     isFolder,
     link,
@@ -126,7 +101,6 @@ export function useFileItem(options: UseFileItemOptions) {
     actressAsyncState,
     videoCoverResult,
     open,
-    onPointerdown: source.onPointerdown,
     isIconUrl,
   }
 }

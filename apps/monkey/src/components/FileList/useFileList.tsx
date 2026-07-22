@@ -1,7 +1,6 @@
 import type { Share } from '@115master/drive115'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
 import { computed, ref, shallowRef, watch } from 'vue'
-import { useDndSession } from '@/components/Dnd'
 import { useListSelection } from '@/hooks/useListSelection'
 import { Utils115 } from '@/utils/utils115'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
@@ -21,7 +20,6 @@ export interface FileListInteractionProps {
 
 export function useFileList(props: FileListInteractionProps) {
   const containerRef = ref<HTMLElement>()
-  const dnd = useDndSession()
   const selectMode = shallowRef(false)
   const contextmenuShow = shallowRef(false)
   const contextmenuPosition = shallowRef({ x: 0, y: 0 })
@@ -70,18 +68,18 @@ export function useFileList(props: FileListInteractionProps) {
     props.onChecked(item, true)
   }
 
-  /** 拖拽激活时惰性求值：自动勾选当前项后返回全集（呼应 useDndSource 的惰性调用时机） */
+  /** 拖拽激活时惰性求值：自动勾选当前项后返回全集（呼应 DndSource 的惰性 payload）。 */
   const dragPayload = (item: Share.Entity.FilesItem) => () => {
     if (!props.checkeds.has(item))
       props.onChecked(item, true)
     return props.checkeds.size > 0 ? Array.from(props.checkeds) : [item]
   }
 
-  const itemProps = (item: Share.Entity.FilesItem) => ({
+  const itemProps = (item: Share.Entity.FilesItem, dragging: boolean) => ({
     'data-selection-key': item.pc,
     'checked': props.checkeds.has(item),
     'data': item,
-    'dragging': dnd.active.value && props.checkeds.has(item),
+    'dragging': dragging && props.checkeds.has(item),
     'pathSelect': props.pathSelect,
     'onChecked': (checked: boolean) => props.onChecked?.(item, checked),
     'onClick': () => selection.handleClick(item),
@@ -92,7 +90,6 @@ export function useFileList(props: FileListInteractionProps) {
 
   return {
     containerRef,
-    dragging: dnd.active,
     selectMode,
     exitSelectMode,
     contextmenuShow,

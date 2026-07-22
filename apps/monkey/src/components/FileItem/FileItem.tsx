@@ -1,8 +1,11 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
+import type { FileDndSourceBindings, FileDndTargetBindings } from '../FileDnd'
 import { defineComponent, withModifiers } from 'vue'
 import { useContextmenu } from '@/hooks/useContextmenu'
 import { useLongPress } from '@/hooks/useLongPress'
+import { getFilesItemId } from '@/utils/filesItem'
+import { FileDndSource, FileDndTarget } from '../FileDnd'
 import { Link } from '../Link'
 import FileItemCheckbox from './FileItemCheckbox'
 import FileItemContent from './FileItemContent'
@@ -11,7 +14,7 @@ import { useFileItem } from './useFileItem'
 
 const FileItem = defineComponent({
   name: 'FileItem',
-  inheritAttrs: true,
+  inheritAttrs: false,
   props: {
     viewType: {
       type: String as PropType<'card' | 'list'>,
@@ -85,7 +88,6 @@ const FileItem = defineComponent({
   setup: (props, { slots, attrs }) => {
     const {
       itemRef,
-      isDrogzone,
       isVideo,
       isFolder,
       link,
@@ -95,17 +97,12 @@ const FileItem = defineComponent({
       actressAsyncState,
       videoCoverResult,
       open,
-      onPointerdown,
     } = useFileItem({
       data: props.data,
-      pathSelect: props.pathSelect,
-      selectMode: props.selectMode,
       cid: props.cid,
       order: props.order,
       asc: props.asc,
       onPreview: props.onPreview,
-      dragPayload: props.dragPayload,
-      onDragMove: props.onDragMove,
     })
 
     /** 移动端长按：选中该项（watch count 自动进入选择模式）；鼠标不触发 */
@@ -145,11 +142,26 @@ const FileItem = defineComponent({
       props.onContextmenu?.(e)
     })
 
+    /** 触摸仅在多选态启用；路径选择模式保持禁用。 */
+    function disabled(event: PointerEvent) {
+      return props.pathSelect || (event.pointerType === 'touch' && !props.selectMode)
+    }
+
     return () => (
-      <div
-        ref={itemRef}
-        class={[
-          `
+      <FileDndTarget
+        cid={getFilesItemId(props.data)}
+        disabled={!isFolder.value}
+        onDrop={items => props.onDragMove?.(getFilesItemId(props.data), items)}
+      >
+        {{ default: ({ targetProps, hovering }: { targetProps: FileDndTargetBindings, hovering: boolean }) => (
+          <div
+            {...attrs}
+            ref={(value) => {
+              itemRef.value = value instanceof HTMLElement ? value : undefined
+              targetProps.ref(value)
+            }}
+            class={[
+              `
             group data-[checked=true]:bg-primary/10! data-[checked=true]:ring-primary/10
             data-[checked=true]:hover:bg-primary/15! data-[checked=true]:hover:ring-primary/15!
             data-[dropzone=true]:bg-primary/10
@@ -176,25 +188,25 @@ const FileItem = defineComponent({
             max-sm:select-none
             max-sm:[-webkit-touch-callout:none]
           `,
-          attrs.class,
-        ]}
-        data-checked={props.checked}
-        data-dragging={props.dragging}
-        data-dropzone={isDrogzone.value}
-        data-select-mode={props.selectMode}
-        data-view-type={props.viewType}
-      >
-        {/* 复选框 */}
-        <FileItemCheckbox
-          checked={props.checked}
-          pathSelect={props.pathSelect}
-          onChecked={props.onChecked}
-          onEnter={open}
-        />
+              attrs.class,
+            ]}
+            data-checked={props.checked}
+            data-dragging={props.dragging}
+            data-dropzone={hovering}
+            data-select-mode={props.selectMode}
+            data-view-type={props.viewType}
+          >
+            {/* 复选框 */}
+            <FileItemCheckbox
+              checked={props.checked}
+              pathSelect={props.pathSelect}
+              onChecked={props.onChecked}
+              onEnter={open}
+            />
 
-        {/* 链接区域 */}
-        <Link
-          class="
+            {/* 链接区域 */}
+            <Link
+              class="
             cursor-default
             group-data-[view-type=card]:flex group-data-[view-type=card]:min-w-0
             group-data-[view-type=card]:flex-1 group-data-[view-type=card]:flex-col
@@ -202,52 +214,60 @@ const FileItem = defineComponent({
             group-data-[view-type=list]:flex-1 group-data-[view-type=list]:items-center
             group-data-[view-type=list]:gap-3 group-data-[view-type=list]:py-1
           "
-          {...link.value}
-          draggable={false}
-          onClickCapture={withModifiers(handleClick, ['prevent'])}
-        >
-          {/* 缩略图容器 */}
-          <span
-            class="
-              group-data-[view-type=card]:bg-base-content/3 flex items-center
-              justify-center group-data-[select-mode=true]:touch-none
-              group-data-[view-type=card]:relative group-data-[view-type=card]:aspect-video
-              group-data-[view-type=card]:w-full
-              group-data-[view-type=card]:rounded-2xl group-data-[view-type=list]:relative
-              group-data-[view-type=list]:size-14
-            "
-            onMousedown={handleMouseDown}
-            onPointerdown={onPointerdown}
-          >
-            {slots.thumbnail?.({
-              data: props.data,
-              isFolder: isFolder.value,
-              isVideo: isVideo.value,
-              actressUrl: hasActressCover.value ? actressAsyncState.state.value?.url : undefined,
-              videoCover: hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined,
-              hasImagePreview: hasImagePreview.value,
-              onMouseDown: handleMouseDown,
-            }) ?? (
-              <FileItemThumbnail
-                data={props.data}
-                isFolder={isFolder.value}
-                isVideo={isVideo.value}
-                actressUrl={hasActressCover.value ? actressAsyncState.state.value?.url : undefined}
-                videoCover={hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined}
-                hasImagePreview={hasImagePreview.value}
-                draggable={false}
-                onMouseDown={handleMouseDown}
-              />
-            )}
-          </span>
+              {...link.value}
+              draggable={false}
+              onClickCapture={withModifiers(handleClick, ['prevent'])}
+            >
+              {/* 缩略图容器 */}
+              <FileDndSource
+                items={() => props.dragPayload?.() ?? [props.data]}
+                disabled={disabled}
+              >
+                {{ default: ({ sourceProps }: { sourceProps: FileDndSourceBindings }) => (
+                  <span
+                    class="
+                  group-data-[view-type=card]:bg-base-content/3 flex items-center
+                  justify-center group-data-[select-mode=true]:touch-none
+                  group-data-[view-type=card]:relative group-data-[view-type=card]:aspect-video
+                  group-data-[view-type=card]:w-full
+                  group-data-[view-type=card]:rounded-2xl group-data-[view-type=list]:relative
+                  group-data-[view-type=list]:size-14
+                "
+                    onMousedown={handleMouseDown}
+                    {...sourceProps}
+                  >
+                    {slots.thumbnail?.({
+                      data: props.data,
+                      isFolder: isFolder.value,
+                      isVideo: isVideo.value,
+                      actressUrl: hasActressCover.value ? actressAsyncState.state.value?.url : undefined,
+                      videoCover: hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined,
+                      hasImagePreview: hasImagePreview.value,
+                      onMouseDown: handleMouseDown,
+                    }) ?? (
+                      <FileItemThumbnail
+                        data={props.data}
+                        isFolder={isFolder.value}
+                        isVideo={isVideo.value}
+                        actressUrl={hasActressCover.value ? actressAsyncState.state.value?.url : undefined}
+                        videoCover={hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined}
+                        hasImagePreview={hasImagePreview.value}
+                        onMouseDown={handleMouseDown}
+                      />
+                    )}
+                  </span>
+                ) }}
+              </FileDndSource>
 
-          {/* 内容区域 */}
-          <FileItemContent
-            data={props.data}
-            pathSelect={props.pathSelect}
-          />
-        </Link>
-      </div>
+              {/* 内容区域 */}
+              <FileItemContent
+                data={props.data}
+                pathSelect={props.pathSelect}
+              />
+            </Link>
+          </div>
+        ) }}
+      </FileDndTarget>
     )
   },
 })

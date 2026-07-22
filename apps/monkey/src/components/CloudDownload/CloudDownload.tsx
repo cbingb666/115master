@@ -145,7 +145,6 @@ const CloudDownload = defineComponent({
                 {thumbnailData.value && (
                   <FileItemThumbnail
                     {...thumbnailData.value}
-                    draggable={false}
                   />
                 )}
               </div>

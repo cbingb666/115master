@@ -5,23 +5,20 @@ import { defineComponent } from 'vue'
 import { I, Icon } from '@/icons'
 import FolderSvg from '@/icons/custom/folder.svg?component'
 import ImageFileSvg from '@/icons/custom/image-file.svg?component'
-import { dragIcon } from './dragIcon'
+import { resolveFileDragIcon } from './resolveFileDragIcon'
 
-// 预热：setDragImage 同步截图，ion 图标数据须先于首次拖拽就绪
+// 预热异步图标数据，确保首次跟随层渲染时图标已经就绪。
 loadIcons([I.FILE_VIDEO, I.AUDIO_TRACK, I.DOCUMENT])
 
-/** custom:* 在 icon.vue 内经 defineAsyncComponent 加载，赶不上 setDragImage 同步截图；静态导入直接渲染 */
+/** 自定义图标在 Icon 内异步加载；跟随层首帧改用静态组件，避免短暂空白。 */
 const CUSTOM: Record<string, FunctionalComponent<SVGAttributes>> = {
   [I.FILE_FOLDER]: FolderSvg,
   [I.FILE_IMAGE]: ImageFileSvg,
 }
 
-/**
- * 拖拽跟随图（堆叠卡片 + 数量角标）
- * 由 DndLayer 渲染（自研 Pointer 拖拽）
- */
-const DragImage = defineComponent({
-  name: 'DragImage',
+/** 文件拖拽跟随预览：按数量渲染堆叠卡片和数量角标。 */
+const FileDragPreview = defineComponent({
+  name: 'FileDragPreview',
   props: {
     items: {
       type: Array as PropType<Share.Entity.FilesItem[]>,
@@ -31,11 +28,10 @@ const DragImage = defineComponent({
   setup: (props) => {
     return () => {
       const count = props.items.length
-      const name = dragIcon(props.items[0])
+      const name = resolveFileDragIcon(props.items[0])
       const Custom = CUSTOM[name]
       return (
-        // 边框仅深色主题保留：浅色下 1px 半透明边框会被感知为「直角矩形框」；
-        // 根容器留出 p-2 内边距，让卡片阴影在捕获边界内自然衰减（避免阴影被截出直角边）
+        // 浅色主题仅用阴影塑形；根容器留出余量，避免阴影在捕获边缘截成直角。
         <div class="relative size-20 p-2 select-none">
           {count > 2 && (
             <div class="bg-base-100/70 [data-theme='dark']_&:border [data-theme='dark']_&:border-base-content/15 absolute size-14 translate-x-2.5 translate-y-2.5 rounded-xl shadow-sm" />
@@ -59,4 +55,4 @@ const DragImage = defineComponent({
   },
 })
 
-export default DragImage
+export default FileDragPreview

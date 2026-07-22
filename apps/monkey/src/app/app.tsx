@@ -7,6 +7,7 @@ import {
   ToastContainer,
   useSponsorBoot,
 } from '@/components'
+import { DndRoot } from '@/components/Dnd'
 import { appLogger } from '@/utils/logger'
 
 const Boot = defineComponent({
@@ -25,7 +26,7 @@ const App = defineComponent({
     })
 
     return () => (
-      <>
+      <DndRoot>
         <GlassDistortionFilter></GlassDistortionFilter>
         <DialogContainer>
           <Boot />
@@ -44,7 +45,7 @@ const App = defineComponent({
             </RouterView>
           </ToastContainer>
         </DialogContainer>
-      </>
+      </DndRoot>
     )
   },
 })

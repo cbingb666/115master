@@ -1,12 +1,12 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
-import { defineComponent, shallowRef, withModifiers } from 'vue'
-import { useDndTarget } from '@/components/Dnd'
+import type { FileDndTargetBindings } from '../FileDnd'
+import { defineComponent, withModifiers } from 'vue'
+import { FileDndTarget } from '../FileDnd'
 import { Link } from '../Link'
 
 /**
- * 面包屑单项（含 li 包装，可点击 + 拖拽投放目标）
- * 抽成子组件：path 循环内无法直接调用 composable
+ * 面包屑单项（含 li 包装，可点击 + 文件投放目标）。
  */
 const FilePathLink = defineComponent({
   name: 'FilePathLink',
@@ -25,19 +25,15 @@ const FilePathLink = defineComponent({
     },
   },
   setup: (props) => {
-    const el = shallowRef<HTMLElement>()
-
-    const target = useDndTarget<Share.Entity.FilesItem[]>({
-      id: props.item.cid,
-      el: () => el.value,
-      accept: () => true,
-      onDrop: items => props.onDragMove?.(props.item.cid, items),
-    })
-
     return () => (
-      <li ref={el}>
-        <Link
-          class="
+      <FileDndTarget
+        cid={props.item.cid}
+        onDrop={items => props.onDragMove?.(props.item.cid, items)}
+      >
+        {{ default: ({ targetProps, hovering }: { targetProps: FileDndTargetBindings, hovering: boolean }) => (
+          <li ref={targetProps.ref}>
+            <Link
+              class="
             pill
             data-[drop-zone=true]:bg-primary/10
             data-[drop-zone=true]:ring-primary
@@ -47,13 +43,15 @@ const FilePathLink = defineComponent({
             data-[drop-zone=true]:ring-2
             data-[drop-zone=true]:ring-inset
           "
-          data-drop-zone={target.hovering.value}
-          href={props.item.cid === '0' ? '#/drive' : `#/drive/${props.item.cid}`}
-          onClick={withModifiers(() => props.onPathClick?.(props.item), ['prevent'])}
-        >
-          {props.item.name}
-        </Link>
-      </li>
+              data-drop-zone={hovering}
+              href={props.item.cid === '0' ? '#/drive' : `#/drive/${props.item.cid}`}
+              onClick={withModifiers(() => props.onPathClick?.(props.item), ['prevent'])}
+            >
+              {props.item.name}
+            </Link>
+          </li>
+        ) }}
+      </FileDndTarget>
     )
   },
 })

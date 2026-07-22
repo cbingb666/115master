@@ -30,7 +30,7 @@ import {
   useFileList,
   useFilePreview,
 } from '@/components'
-import { DndLayer } from '@/components/Dnd'
+import { DndMonitor } from '@/components/Dnd'
 import { Tooltip } from '@/components/Tooltip'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
@@ -198,7 +198,7 @@ const Drive = defineComponent({
       })
     }
 
-    const { containerRef, dragging, selectMode, exitSelectMode, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
+    const { containerRef, selectMode, exitSelectMode, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
       get pathSelect() { return false },
       get listData() { return store.data?.data ?? [] },
       get checkeds() { return store.selection.checked },
@@ -218,9 +218,9 @@ const Drive = defineComponent({
       return success
     }
 
-    function ListHeader() {
+    function ListHeader(dragging: boolean) {
       // 拖拽期间冻结在多选头部之外：保住面包屑投放目标
-      if (selectMode.value && !dragging.value) {
+      if (selectMode.value && !dragging) {
         return (
           <SelectionHeader
             count={store.selection.count}
@@ -323,7 +323,7 @@ const Drive = defineComponent({
       )
     }
 
-    function List() {
+    function List(dragging: boolean) {
       return (
         <FileList
           class="
@@ -346,7 +346,7 @@ const Drive = defineComponent({
               cid={store.nav.cid}
               order={store.order}
               asc={store.asc}
-              {...itemProps(item)}
+              {...itemProps(item, dragging)}
               onPreview={() => preview(item)}
             />
           )) ?? []}
@@ -410,22 +410,25 @@ const Drive = defineComponent({
     })
 
     return () => (
-      <div class="flex h-full flex-col">
-        <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
-          <Sider>
-            <SiderContent />
-          </Sider>
-          <Main ref={mainRef} class="relative flex min-h-screen flex-col">
-            <ListHeader />
-            <List />
-            <FixedBottom />
-            {selectMode.value && store.selection.count > 0 && (
-              <FileActionBar data={actionConfig.value} />
-            )}
-            <DndLayer />
-          </Main>
-        </Layout>
-      </div>
+      <DndMonitor>
+        {{ default: ({ active }: { active: boolean }) => (
+          <div class="flex h-full flex-col">
+            <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
+              <Sider>
+                <SiderContent />
+              </Sider>
+              <Main ref={mainRef} class="relative flex min-h-screen flex-col">
+                {ListHeader(active)}
+                {List(active)}
+                <FixedBottom />
+                {selectMode.value && store.selection.count > 0 && (
+                  <FileActionBar data={actionConfig.value} />
+                )}
+              </Main>
+            </Layout>
+          </div>
+        ) }}
+      </DndMonitor>
     )
   },
 })

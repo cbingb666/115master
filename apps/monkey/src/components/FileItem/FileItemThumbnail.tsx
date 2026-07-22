@@ -38,13 +38,9 @@ const FileItemThumbnail = defineComponent({
       type: Boolean,
       required: true,
     },
-    draggable: {
-      type: Boolean,
-      default: true,
-    },
     onMouseDown: {
       type: Function as PropType<(e: MouseEvent) => void>,
-      required: false,
+      default: undefined,
     },
   },
   setup(props) {
@@ -67,7 +63,8 @@ const FileItemThumbnail = defineComponent({
           imgClass="object-top"
           src={props.actressUrl ?? ''}
           fit="cover"
-          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
+          draggable={false}
+          {...{ onMousedown: props.onMouseDown }}
         />
       )
     }
@@ -84,13 +81,14 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:overflow-hidden group-data-[view-type=card]:rounded-2xl
             group-data-[view-type=list]:rounded-lg
           "
-          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
+          onMousedown={props.onMouseDown}
         >
           <Image
             class="h-full w-full"
             imgClass="transition-all duration-300 ease-[cubic-bezier(0.33_0_0.67_1)] group-data-[view-type=card]:group-hover:scale-105 group-data-[view-type=card]:data-[portrait=true]:object-contain"
             src={props.videoCover.img}
             fit="cover"
+            draggable={false}
             data-portrait={imageUtil.isPortrait(props.videoCover.width, props.videoCover.height)}
           />
         </div>
@@ -111,7 +109,8 @@ const FileItemThumbnail = defineComponent({
           src={props.data.u}
           fit="cover"
           lazy
-          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
+          draggable={false}
+          {...{ onMousedown: props.onMouseDown }}
         />
       )
     }
@@ -127,7 +126,8 @@ const FileItemThumbnail = defineComponent({
           src={iconUrl}
           fit="contain"
           fallback={<Icon name={I.DOCUMENT} class="text-base-content/40 h-full w-full" />}
-          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
+          draggable={false}
+          {...{ onMousedown: props.onMouseDown }}
         />
       )
     }
@@ -140,7 +140,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[61%]
             group-data-[view-type=list]:size-14
           "
-          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
+          onMousedown={props.onMouseDown}
         >
           <Icon
             class="text-primary/80 h-full w-auto drop-shadow-md"
@@ -158,7 +158,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all
             group-data-[view-type=list]:size-14
           "
-          {...{ draggable: props.draggable, onMousedown: props.onMouseDown }}
+          onMousedown={props.onMouseDown}
         >
           <Icon
             class="h-full w-full"
