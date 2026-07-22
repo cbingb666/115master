@@ -5,7 +5,7 @@ import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, 
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { router } from '@/app/router'
 import {
-  FileActionBar,
+  ActionBar,
   FileContextMenu,
   FileItem,
   FileList,
@@ -422,7 +422,9 @@ const Drive = defineComponent({
                 {List(active)}
                 <FixedBottom />
                 {selectMode.value && store.selection.count > 0 && (
-                  <FileActionBar data={actionConfig.value} />
+                  <div class="pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
+                    <ActionBar groups={actionConfig.value} />
+                  </div>
                 )}
               </Main>
             </Layout>
