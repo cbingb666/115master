@@ -3,6 +3,7 @@ import type { ActionBarItem, ActionBarItemState } from './FileActionBar.types'
 import type { IconName } from '@/icons'
 import { defineComponent, ref, toValue, triggerRef } from 'vue'
 import { Icon } from '@/icons'
+import Pill from '../Pill/Pill'
 
 /**
  * 文件操作栏
@@ -54,14 +55,7 @@ const FileActionBar = defineComponent({
 
     return () => (
       <div class="pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
-        <div
-          class="
-            app-box-glass pointer-events-auto
-            flex items-center
-            justify-center rounded-full
-            px-2 py-1.5
-          "
-        >
+        <Pill as="div" class="pill-xl pointer-events-auto justify-center p-1.5">
           {
             props.data.map((group, groupIndex) => {
               const groupItems = group.filter(item =>
@@ -92,8 +86,8 @@ const FileActionBar = defineComponent({
                             key={item.icon}
                             class="
                               text-base-content hover:bg-base-content/10
-                              tooltip tooltip-top relative flex h-9
-                              w-9 cursor-pointer
+                              tooltip tooltip-top relative flex h-11
+                              w-11 cursor-pointer
                               items-center justify-center rounded-full
                               transition-all duration-150
                             "
@@ -104,7 +98,7 @@ const FileActionBar = defineComponent({
                             {/* loading */}
                             <span
                               class={[
-                                'loading loading-spinner loading-sm',
+                                'loading loading-spinner loading-md',
                                 'absolute inset-0 m-auto',
                                 'transition-all',
                                 isLoading ? 'opacity-100' : 'opacity-0',
@@ -113,7 +107,7 @@ const FileActionBar = defineComponent({
                             {/* icon */}
                             <Icon
                               class={[
-                                'drop-shadow-base-200/50 size-5 drop-shadow-sm',
+                                'drop-shadow-base-200/50 size-6 drop-shadow-sm',
                                 isLoading ? 'opacity-20' : '',
                                 iconColor,
                               ]}
@@ -127,14 +121,14 @@ const FileActionBar = defineComponent({
                   {
 
                     (groupIndex < props.data.length - 1) && (
-                      <div class="bg-base-content/20 mx-2 h-6 w-px" />
+                      <div class="bg-base-content/20 mx-1 h-8 w-px" />
                     )
                   }
                 </>
               )
             })
           }
-        </div>
+        </Pill>
       </div>
     )
   },
