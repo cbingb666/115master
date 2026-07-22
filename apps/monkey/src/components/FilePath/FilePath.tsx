@@ -1,10 +1,11 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-import { defineComponent, shallowRef, withModifiers } from 'vue'
+import { defineComponent, withModifiers } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { I, Icon } from '@/icons'
 import { Link } from '../Link'
+import FilePathLink from './FilePathLink'
 
 /**
  * 文件路径面包屑导航
@@ -42,27 +43,7 @@ const FilePath = defineComponent({
     },
   },
   setup: (props) => {
-    const dropZone = shallowRef<string>()
     const breakpoints = useBreakpoints(breakpointsTailwind)
-
-    const handleDragover = (e: DragEvent, cid: string) => {
-      e.preventDefault()
-      dropZone.value = cid
-    }
-
-    const handleDragleave = () => {
-      dropZone.value = undefined
-    }
-
-    const handleDrop = (e: DragEvent, item: Share.Entity.PathItem) => {
-      const data = e.dataTransfer?.getData('application/json')
-      if (!data)
-        return
-
-      const items = JSON.parse(data) as Share.Entity.FilesItem[]
-      props.onDragMove?.(item.cid, items)
-      dropZone.value = undefined
-    }
 
     return () => {
       const { path } = props
@@ -76,9 +57,9 @@ const FilePath = defineComponent({
           <div class="breadcrumbs rounded-full py-0">
             <ul>
               {path.map((p, i) => (
-                <li key={p.cid}>
-                  {last(i)
-                    ? (
+                last(i)
+                  ? (
+                      <li key={p.cid}>
                         <span
                           aria-current="page"
                           class="
@@ -90,30 +71,16 @@ const FilePath = defineComponent({
                         >
                           {p.name}
                         </span>
-                      )
-                    : (
-                        <Link
-                          class="
-                            pill
-                            data-[drop-zone=true]:bg-primary/10
-                            data-[drop-zone=true]:ring-primary
-                            no-underline!
-                            transition
-                            text-shadow-2xs
-                            data-[drop-zone=true]:ring-2
-                            data-[drop-zone=true]:ring-inset
-                          "
-                          data-drop-zone={dropZone.value === p.cid}
-                          href={p.cid === '0' ? '#/drive' : `#/drive/${p.cid}`}
-                          onClick={withModifiers(() => props.onPathClick?.(p), ['prevent'])}
-                          onDragleave={handleDragleave}
-                          onDragover={e => handleDragover(e, p.cid)}
-                          onDrop={e => handleDrop(e, p)}
-                        >
-                          {p.name}
-                        </Link>
-                      )}
-                </li>
+                      </li>
+                    )
+                  : (
+                      <FilePathLink
+                        key={p.cid}
+                        item={p}
+                        onDragMove={props.onDragMove}
+                        onPathClick={props.onPathClick}
+                      />
+                    )
               ))}
             </ul>
           </div>

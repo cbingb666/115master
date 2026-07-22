@@ -1,8 +1,10 @@
 import type { Share } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
-import { computed, shallowRef } from 'vue'
+import { computed, h, shallowRef } from 'vue'
 import { router } from '@/app/router'
 import { useDialog } from '@/components'
+import { useDndSource, useDndTarget } from '@/components/Dnd'
+import DragImage from '@/components/FileList/DragImage'
 import { useFolderImagePreview } from '@/hooks/useFolderImagePreview'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { actressFaceDB } from '@/utils/actressFaceDB'
@@ -20,18 +22,20 @@ interface ActressFaceDBActress {
 interface UseFileItemOptions {
   data: Share.Entity.FilesItem
   pathSelect?: boolean
+  selectMode?: boolean
   cid?: string
   order?: Share.Base.Sorter['o']
   asc?: Share.Base.Sorter['asc']
   onPreview?: (data: Share.Entity.FilesItem) => void
+  /** 拖拽激活时惰性求值被拖项（自动勾选当前项后返回全集） */
+  dragPayload?: () => Share.Entity.FilesItem[]
+  onDragMove?: (cid: string, items: Share.Entity.FilesItem[]) => void
 }
 
 export function useFileItem(options: UseFileItemOptions) {
   const { data, onPreview } = options
   const dialog = useDialog()
   const itemRef = shallowRef<HTMLElement>()
-  const isDrogzone = shallowRef(false)
-  const isDragging = shallowRef(false)
 
   /** 添加 folder image preview 支持 */
   const folderPreview = options.cid
@@ -94,46 +98,25 @@ export function useFileItem(options: UseFileItemOptions) {
     })
   }
 
-  function handleDragLeave(): void {
-    isDrogzone.value = false
-  }
+  /** 拖拽源（缩略图按住拖动）：触摸仅在多选态启用 */
+  const source = useDndSource<Share.Entity.FilesItem[]>({
+    payload: () => options.dragPayload?.() ?? [data],
+    ghost: items => h(DragImage, { items }),
+    offset: { x: 36, y: 36 },
+    disabled: e => !!options.pathSelect || (e.pointerType === 'touch' && !options.selectMode),
+  })
 
-  function handleDragOver(e: DragEvent): void {
-    e.preventDefault()
-
-    // 只有文件夹才允许作为拖拽目标
-    if (!isFolder.value) {
-      return
-    }
-
-    isDrogzone.value = true
-  }
-
-  function handleDrop(e: DragEvent, onDrop?: (e: DragEvent) => void): void {
-    if (!isDrogzone.value) {
-      return
-    }
-
-    isDrogzone.value = false
-
-    const dropData = e.dataTransfer?.getData('application/json')
-    if (!dropData) {
-      return
-    }
-
-    /** 如果拖拽的文件中包含当前文件，则不进行拖拽 */
-    const items = JSON.parse(dropData) as Share.Entity.FilesItem[]
-    if (items.some(item => getFilesItemId(item) === getFilesItemId(data))) {
-      return
-    }
-
-    onDrop?.(e)
-  }
+  /** 投放目标：仅文件夹，且被拖项不含自身 */
+  const target = useDndTarget<Share.Entity.FilesItem[]>({
+    id: getFilesItemId(data),
+    el: () => itemRef.value,
+    accept: items => isFolder.value && !items.some(item => getFilesItemId(item) === getFilesItemId(data)),
+    onDrop: items => options.onDragMove?.(getFilesItemId(data), items),
+  })
 
   return {
     itemRef,
-    isDrogzone,
-    isDragging,
+    isDrogzone: target.hovering,
     isVideo,
     isFolder,
     link,
@@ -143,9 +126,7 @@ export function useFileItem(options: UseFileItemOptions) {
     actressAsyncState,
     videoCoverResult,
     open,
-    handleDragLeave,
-    handleDragOver,
-    handleDrop,
+    onPointerdown: source.onPointerdown,
     isIconUrl,
   }
 }

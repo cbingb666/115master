@@ -49,16 +49,13 @@ const FileItem = defineComponent({
       type: Function as PropType<() => void>,
       default: () => {},
     },
-    onDragStart: {
-      type: Function as PropType<(event: DragEvent) => void>,
-      default: () => {},
+    /** 拖拽激活时惰性求值被拖项（自动勾选当前项后返回全集） */
+    dragPayload: {
+      type: Function as PropType<() => Share.Entity.FilesItem[]>,
+      default: undefined,
     },
-    onDragEnd: {
-      type: Function as PropType<(event: DragEvent) => void>,
-      default: () => {},
-    },
-    onDrop: {
-      type: Function as PropType<(event: DragEvent) => void>,
+    onDragMove: {
+      type: Function as PropType<(cid: string, items: Share.Entity.FilesItem[]) => void>,
       default: () => {},
     },
     onContextmenu: {
@@ -89,7 +86,6 @@ const FileItem = defineComponent({
     const {
       itemRef,
       isDrogzone,
-      isDragging: itemDragging,
       isVideo,
       isFolder,
       link,
@@ -99,16 +95,17 @@ const FileItem = defineComponent({
       actressAsyncState,
       videoCoverResult,
       open,
-      handleDragLeave,
-      handleDragOver,
-      handleDrop,
+      onPointerdown,
     } = useFileItem({
       data: props.data,
       pathSelect: props.pathSelect,
+      selectMode: props.selectMode,
       cid: props.cid,
       order: props.order,
       asc: props.asc,
       onPreview: props.onPreview,
+      dragPayload: props.dragPayload,
+      onDragMove: props.onDragMove,
     })
 
     /** 移动端长按：选中该项（watch count 自动进入选择模式）；鼠标不触发 */
@@ -186,9 +183,6 @@ const FileItem = defineComponent({
         data-dropzone={isDrogzone.value}
         data-select-mode={props.selectMode}
         data-view-type={props.viewType}
-        onDragleave={handleDragLeave}
-        onDragover={handleDragOver}
-        onDrop={e => handleDrop(e as DragEvent, props.onDrop)}
       >
         {/* 复选框 */}
         <FileItemCheckbox
@@ -216,20 +210,14 @@ const FileItem = defineComponent({
           <span
             class="
               group-data-[view-type=card]:bg-base-content/3 flex items-center
-              justify-center group-data-[view-type=card]:relative
-              group-data-[view-type=card]:aspect-video group-data-[view-type=card]:w-full
-              group-data-[view-type=card]:rounded-2xl
-              group-data-[view-type=list]:relative group-data-[view-type=list]:size-14
+              justify-center group-data-[select-mode=true]:touch-none
+              group-data-[view-type=card]:relative group-data-[view-type=card]:aspect-video
+              group-data-[view-type=card]:w-full
+              group-data-[view-type=card]:rounded-2xl group-data-[view-type=list]:relative
+              group-data-[view-type=list]:size-14
             "
-            onDragend={(e) => {
-              itemDragging.value = false
-              props.onDragEnd?.(e as DragEvent)
-            }}
-            onDragstart={(e) => {
-              e.stopPropagation()
-              itemDragging.value = true
-              props.onDragStart?.(e as DragEvent)
-            }}
+            onMousedown={handleMouseDown}
+            onPointerdown={onPointerdown}
           >
             {slots.thumbnail?.({
               data: props.data,
@@ -247,6 +235,7 @@ const FileItem = defineComponent({
                 actressUrl={hasActressCover.value ? actressAsyncState.state.value?.url : undefined}
                 videoCover={hasVideoCover.value ? videoCoverResult?.videoCover.state[0] : undefined}
                 hasImagePreview={hasImagePreview.value}
+                draggable={false}
                 onMouseDown={handleMouseDown}
               />
             )}

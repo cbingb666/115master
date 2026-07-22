@@ -1,7 +1,7 @@
 import type { Share } from '@115master/drive115'
 import type { FunctionalComponent, PropType, SVGAttributes } from 'vue'
 import { loadIcons } from '@iconify/vue'
-import { defineComponent, h, render } from 'vue'
+import { defineComponent } from 'vue'
 import { I, Icon } from '@/icons'
 import FolderSvg from '@/icons/custom/folder.svg?component'
 import ImageFileSvg from '@/icons/custom/image-file.svg?component'
@@ -18,7 +18,7 @@ const CUSTOM: Record<string, FunctionalComponent<SVGAttributes>> = {
 
 /**
  * 拖拽跟随图（堆叠卡片 + 数量角标）
- * 由 useFileList 通过 render() 挂载到屏外容器，供 dataTransfer.setDragImage 使用
+ * 由 DndLayer 渲染（自研 Pointer 拖拽）
  */
 const DragImage = defineComponent({
   name: 'DragImage',
@@ -60,20 +60,3 @@ const DragImage = defineComponent({
 })
 
 export default DragImage
-
-/** 挂载拖拽跟随图到屏外容器（setDragImage 要求元素在文档中） */
-export function mountDragImage(items: Share.Entity.FilesItem[]) {
-  const container = document.createElement('div')
-  // 主题变量只挂在 [data-theme] 选择器上（非 :root），容器是 #my-app 的兄弟节点，须自行带上主题
-  container.setAttribute('data-theme', document.getElementById('my-app')?.getAttribute('data-theme') || 'dark')
-  container.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:9999'
-  render(h(DragImage, { items }), container)
-  document.body.appendChild(container)
-  return {
-    el: container.firstElementChild as HTMLElement,
-    dispose: () => {
-      render(null, container)
-      container.remove()
-    },
-  }
-}

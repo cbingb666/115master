@@ -1,9 +1,9 @@
 import type { Share } from '@115master/drive115'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
 import { computed, ref, shallowRef, watch } from 'vue'
+import { useDndSession } from '@/components/Dnd'
 import { useListSelection } from '@/hooks/useListSelection'
 import { Utils115 } from '@/utils/utils115'
-import { mountDragImage } from './DragImage'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 
 export interface FileListInteractionProps {
@@ -14,7 +14,6 @@ export interface FileListInteractionProps {
   onCheckedClear: () => void
   /** 默认态（非选择模式）plain click 打开该项 */
   onOpen?: (item: Share.Entity.FilesItem) => void
-  onDragStart?: (items: Share.Entity.FilesItem[], event: DragEvent) => void
   onDragMove?: (cid: string, items: Share.Entity.FilesItem[]) => void
   /** 框选容器，缺省取列表网格容器 */
   marqueeContainer?: () => HTMLElement | undefined
@@ -22,7 +21,7 @@ export interface FileListInteractionProps {
 
 export function useFileList(props: FileListInteractionProps) {
   const containerRef = ref<HTMLElement>()
-  const dragging = shallowRef(false)
+  const dnd = useDndSession()
   const selectMode = shallowRef(false)
   const contextmenuShow = shallowRef(false)
   const contextmenuPosition = shallowRef({ x: 0, y: 0 })
@@ -57,45 +56,6 @@ export function useFileList(props: FileListInteractionProps) {
     selection.resetAnchor()
   }
 
-  const handleDragStart = (item: Share.Entity.FilesItem, event: DragEvent) => {
-    if (!event.dataTransfer)
-      return
-
-    dragging.value = true
-
-    if (!props.checkeds.has(item))
-      props.onChecked(item, true)
-
-    const selected = props.checkeds.size > 0
-      ? Array.from(props.checkeds)
-      : [item]
-
-    event.dataTransfer.setData('application/json', JSON.stringify(selected))
-    event.dataTransfer.effectAllowed = 'move'
-
-    const drag = mountDragImage(selected)
-    event.dataTransfer.setDragImage(drag.el, 36, 36)
-    setTimeout(drag.dispose, 0)
-
-    props.onDragStart?.(selected, event)
-  }
-
-  const handleDragEnd = () => {
-    dragging.value = false
-  }
-
-  const handleDrop = (item: Share.Entity.FilesItem, event: DragEvent) => {
-    if (item.fc !== 0)
-      return
-
-    const data = event.dataTransfer?.getData('application/json')
-    if (!data)
-      return
-
-    const items = JSON.parse(data) as Share.Entity.FilesItem[]
-    props.onDragMove?.(item.cid, items)
-  }
-
   const handleContextmenu = (item: Share.Entity.FilesItem, e: MouseEvent) => {
     contextmenuShow.value = true
     contextmenuPosition.value = {
@@ -110,23 +70,29 @@ export function useFileList(props: FileListInteractionProps) {
     props.onChecked(item, true)
   }
 
+  /** 拖拽激活时惰性求值：自动勾选当前项后返回全集（呼应 useDndSource 的惰性调用时机） */
+  const dragPayload = (item: Share.Entity.FilesItem) => () => {
+    if (!props.checkeds.has(item))
+      props.onChecked(item, true)
+    return props.checkeds.size > 0 ? Array.from(props.checkeds) : [item]
+  }
+
   const itemProps = (item: Share.Entity.FilesItem) => ({
     'data-selection-key': item.pc,
     'checked': props.checkeds.has(item),
     'data': item,
-    'dragging': dragging.value && props.checkeds.has(item),
+    'dragging': dnd.active.value && props.checkeds.has(item),
     'pathSelect': props.pathSelect,
     'onChecked': (checked: boolean) => props.onChecked?.(item, checked),
     'onClick': () => selection.handleClick(item),
     'onContextmenu': (e: MouseEvent) => handleContextmenu(item, e),
-    'onDragEnd': handleDragEnd,
-    'onDragStart': (event: DragEvent) => handleDragStart(item, event),
-    'onDrop': (event: DragEvent) => handleDrop(item, event),
+    'dragPayload': dragPayload(item),
+    'onDragMove': (cid: string, items: Share.Entity.FilesItem[]) => props.onDragMove?.(cid, items),
   })
 
   return {
     containerRef,
-    dragging,
+    dragging: dnd.active,
     selectMode,
     exitSelectMode,
     contextmenuShow,

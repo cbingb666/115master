@@ -30,6 +30,7 @@ import {
   useFileList,
   useFilePreview,
 } from '@/components'
+import { DndLayer } from '@/components/Dnd'
 import { Tooltip } from '@/components/Tooltip'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
@@ -421,6 +422,7 @@ const Drive = defineComponent({
             {selectMode.value && store.selection.count > 0 && (
               <FileActionBar data={actionConfig.value} />
             )}
+            <DndLayer />
           </Main>
         </Layout>
       </div>
