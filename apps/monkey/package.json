@@ -23,7 +23,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "type-check": "vue-tsc -b --noEmit",
+    "type-check": "vue-tsc -b --noEmit && vue-tsc -p tsconfig.stories.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",

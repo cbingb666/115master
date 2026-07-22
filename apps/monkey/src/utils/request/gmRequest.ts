@@ -62,7 +62,34 @@ export class GMRequest implements IRequest {
     }
 
     return new Promise((resolve, reject) => {
-      GM_xmlhttpRequest({
+      const signal = options.signal
+      let settled = false
+      let request: ReturnType<typeof GM_xmlhttpRequest> | undefined
+
+      function cleanup() {
+        signal?.removeEventListener('abort', handleAbort)
+      }
+
+      function fail(error: unknown) {
+        if (settled)
+          return
+        settled = true
+        cleanup()
+        reject(error)
+      }
+
+      function handleAbort() {
+        request?.abort()
+        fail(signal?.reason ?? new DOMException('请求已取消', 'AbortError'))
+      }
+
+      if (signal?.aborted) {
+        handleAbort()
+        return
+      }
+      signal?.addEventListener('abort', handleAbort, { once: true })
+
+      request = GM_xmlhttpRequest({
         method: options.method || 'GET',
         url: requestUrl,
         headers: Object.fromEntries(Object.entries(options.headers || {})),
@@ -72,36 +99,44 @@ export class GMRequest implements IRequest {
         nocache: !useCache,
         redirect,
         onload: async (rawResponse) => {
-          /** 解析响应头 */
-          const headers = this.parseResponseHeaders(
-            rawResponse.responseHeaders,
-          )
+          try {
+            /** 解析响应头 */
+            const headers = this.parseResponseHeaders(
+              rawResponse.responseHeaders,
+            )
 
-          /** 创建Headers对象 */
-          const responseHeaders = new Headers()
-          Object.entries(headers).forEach(([key, value]) => {
-            responseHeaders.append(key, value)
-          })
+            /** 创建Headers对象 */
+            const responseHeaders = new Headers()
+            Object.entries(headers).forEach(([key, value]) => {
+              responseHeaders.append(key, value)
+            })
 
-          const response = new Response(rawResponse.response, {
-            status: rawResponse.status,
-            statusText: rawResponse.statusText,
-            headers: responseHeaders,
-          })
+            const response = new Response(rawResponse.response, {
+              status: rawResponse.status,
+              statusText: rawResponse.statusText,
+              headers: responseHeaders,
+            })
 
-          // 如果启用缓存，将响应存入缓存
-          if (useCache) {
-            await this.cache!.set(requestUrl, response.clone(), options)
+            // 如果启用缓存，将响应存入缓存
+            if (useCache)
+              await this.cache!.set(requestUrl, response.clone(), options)
+            if (settled)
+              return
+            settled = true
+            cleanup()
+            resolve(response)
           }
-
-          resolve(response)
+          catch (error) {
+            fail(error)
+          }
         },
         onerror: (e) => {
-          reject(new InfraError('请求失败', requestUrl, undefined, true, e.error))
+          fail(new InfraError('请求失败', requestUrl, undefined, true, e.error))
         },
         ontimeout: () => {
-          reject(new InfraError('请求超时', requestUrl, undefined, true))
+          fail(new InfraError('请求超时', requestUrl, undefined, true))
         },
+        onabort: () => fail(new DOMException('请求已取消', 'AbortError')),
       })
     })
   }

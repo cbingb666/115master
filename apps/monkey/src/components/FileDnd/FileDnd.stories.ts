@@ -19,6 +19,7 @@ const doc = item({ fc: 1, fid: 'doc-source', iv: 0, ico: 'pdf', n: '说明.pdf',
 const meta = {
   title: 'UI/FileDnd',
   component: FileDragPreview,
+  args: { items: [] },
   parameters: {
     docs: {
       description: {

@@ -21,11 +21,10 @@
         <div :class="styles.cover.container">
           <a href="javascript:void(0)" :alt="extInfo.state.value?.title" :class="styles.cover.link">
             <Image
-              skeleton-mode="light"
               :src="extInfo.state.value?.cover?.url ?? ''"
               :alt="extInfo.state.value?.title ?? ''"
-              :referer="extInfo.state.value?.cover?.referer"
-              cache
+              :loader="coverLoader"
+              class="size-full"
             />
           </a>
         </div>
@@ -143,13 +142,14 @@
 <script setup lang="ts">
 import { format } from '@115master/utils'
 import { useAsyncState, useElementVisibility } from '@vueuse/core'
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import {
   Empty,
   Image,
   LoadingError,
 } from '@/components'
 import { clsx } from '@/utils/clsx'
+import { createGMImageLoader } from '@/utils/imageLoader'
 import { Jav, JavBus, JavDB } from '@/utils/jav'
 import { MissAV } from '@/utils/jav/missAV'
 
@@ -241,6 +241,13 @@ const extInfo = useAsyncState(
     immediate: false,
   },
 )
+
+const coverLoader = computed(() => {
+  const referer = extInfo.state.value?.cover?.referer
+  if (!referer)
+    return undefined
+  return createGMImageLoader({ referer })
+})
 
 watch(extInfoRefVisible, (visible) => {
   if (visible) {
