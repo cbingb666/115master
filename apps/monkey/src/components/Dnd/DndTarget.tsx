@@ -1,5 +1,7 @@
+import type { MaybeElement } from '@vueuse/core'
 import type { PropType, SlotsType } from 'vue'
 import type { DndTargetBindings } from './useDnd'
+import { unrefElement } from '@vueuse/core'
 import { computed, defineComponent, onBeforeUnmount, shallowRef } from 'vue'
 import { useDnd } from './useDnd'
 
@@ -30,7 +32,7 @@ const DndTarget = defineComponent({
     const stop = dnd.register(target)
     const targetProps: DndTargetBindings = {
       ref: (value) => {
-        el.value = value instanceof HTMLElement ? value : undefined
+        el.value = (unrefElement(value as MaybeElement) as HTMLElement | null | undefined) ?? undefined
       },
     }
     const hovering = computed(() => dnd.session.value?.target === target)

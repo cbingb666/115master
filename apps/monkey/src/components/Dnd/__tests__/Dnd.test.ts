@@ -80,6 +80,7 @@ beforeAll(() => {
 
 afterEach(() => {
   document.dispatchEvent(pointer('pointercancel', 0, 0))
+  vi.unstubAllGlobals()
   apps.splice(0).forEach(app => app.unmount())
   document.body.innerHTML = ''
 })
@@ -117,7 +118,7 @@ describe('dndSource', () => {
     await nextTick()
     expect(root.querySelector('#monitor')?.getAttribute('data-active')).toBe('false')
 
-    document.dispatchEvent(pointer('pointermove', 111, 100, 'touch'))
+    document.dispatchEvent(pointer('pointermove', 110, 100, 'touch'))
     await nextTick()
     expect(root.querySelector('#monitor')?.getAttribute('data-active')).toBe('true')
   })
@@ -132,6 +133,22 @@ describe('dndSource', () => {
 })
 
 describe('dndTarget', () => {
+  it('跨 realm 元素仍可作为投放目标', async () => {
+    const frame = document.createElement('iframe')
+    document.body.appendChild(frame)
+    vi.stubGlobal('HTMLElement', (frame.contentWindow as Window & typeof globalThis).HTMLElement)
+    const drop = vi.fn()
+    const root = mount({ drop })
+
+    start(root)
+    document.dispatchEvent(pointer('pointermove', 150, 150))
+    await nextTick()
+    expect(root.querySelector('#target')?.getAttribute('data-hovering')).toBe('true')
+
+    document.dispatchEvent(pointer('pointerup', 150, 150))
+    expect(drop).toHaveBeenCalledWith(['a'])
+  })
+
   it('命中目标会公开 hovering，并在释放时触发 drop', async () => {
     const drop = vi.fn()
     const root = mount({ drop })

@@ -1,6 +1,8 @@
 import type { Share } from '@115master/drive115'
+import type { MaybeElement } from '@vueuse/core'
 import type { PropType } from 'vue'
 import type { FileDndSourceBindings, FileDndTargetBindings } from '../FileDnd'
+import { unrefElement } from '@vueuse/core'
 import { defineComponent, withModifiers } from 'vue'
 import { useContextmenu } from '@/hooks/useContextmenu'
 import { useLongPress } from '@/hooks/useLongPress'
@@ -105,8 +107,10 @@ const FileItem = defineComponent({
       onPreview: props.onPreview,
     })
 
-    /** 移动端长按：选中该项（watch count 自动进入选择模式）；鼠标不触发 */
+    /** 移动端长按：200ms 选中该项；多选态交给点击与拖拽处理。 */
     const longPressFired = useLongPress(itemRef, {
+      disabled: () => props.pathSelect || props.selectMode,
+      threshold: 200,
       onTrigger: () => {
         if (!props.checked)
           props.onChecked(true)
@@ -157,7 +161,7 @@ const FileItem = defineComponent({
           <div
             {...attrs}
             ref={(value) => {
-              itemRef.value = value instanceof HTMLElement ? value : undefined
+              itemRef.value = (unrefElement(value as MaybeElement) as HTMLElement | null | undefined) ?? undefined
               targetProps.ref(value)
             }}
             class={[
