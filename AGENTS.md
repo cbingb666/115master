@@ -56,10 +56,10 @@ drive115 / subtitle-source → shared, utils
 - 使用规范（强制）: @.agents/rules/icons-usage.md
 - 设计规范（按需）: 调用 `icons-design` skill —— 视觉原则、registry 设计、自定义 SVG、迁移与验收策略
 
-## Playwright
+## Testing
 
-**使用 Playwright 前必读**
-@.agents/PLAYWRIGHT_GUIDE.md
+**执行测试与验收前必读**
+@.agents/TEST_GUIDE.md
 
 ## Packages
 
