@@ -1,10 +1,13 @@
 import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
+import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
 import {
+  ActionBar,
+  ActionMenu,
   Header,
   HeaderEnd,
   HeaderStart,
@@ -12,12 +15,13 @@ import {
   LoadingError,
   Main,
   Progress,
+  SelectionHeader,
   Sider,
   SiderContent,
   useDialog,
   useToast,
 } from '@/components'
-import { useListSelection } from '@/hooks/useListSelection'
+import { useMultiSelect } from '@/hooks/useMultiSelect'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
 import TagFormContent from './TagFormContent'
@@ -42,7 +46,7 @@ const Tags = defineComponent({
 
     /** 框选容器：<Main> 根 div（已 relative，expose 了 el） */
     const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
-    const { itemProps, resetAnchor } = useListSelection<Tag>({
+    const multi = useMultiSelect<Tag>({
       container: () => mainRef.value?.el,
       list: () => store.filtered,
       key: t => t.id,
@@ -52,9 +56,9 @@ const Tags = defineComponent({
         clear: store.clearSelection,
         selectAll: store.selectAll,
       },
+      count: () => store.selectedCount,
     })
 
-    const isBatch = computed(() => store.selectedCount > 0)
     const emptyText = computed(() =>
       store.keyword ? '无匹配标签' : '暂无标签，点击右上角「新建标签」',
     )
@@ -136,6 +140,39 @@ const Tags = defineComponent({
       toast.error(`${failed.length} 个删除失败：${names}`)
     }
 
+    /** 右键菜单：编辑（仅单选）/ 删除（批量，作用于全部选中） */
+    const contextActions = computed<Action[][]>(() => [
+      [{
+        name: 'edit',
+        label: '编辑',
+        icon: I.RENAME,
+        show: () => store.selectedCount === 1,
+        onClick: () => {
+          const tag = store.filtered.find(t => store.isSelected(t.id))
+          if (tag)
+            openTagForm(tag)
+        },
+      }],
+      [{
+        name: 'delete',
+        label: '删除',
+        icon: I.DELETE,
+        iconColor: 'text-error',
+        onClick: () => deleteBatch(),
+      }],
+    ])
+
+    /** 底部操作栏：批量删除 */
+    const batchActions = computed<Action[][]>(() => [[
+      {
+        name: 'delete',
+        label: '批量删除',
+        icon: I.DELETE,
+        iconColor: 'text-error',
+        onClick: () => deleteBatch(),
+      },
+    ]])
+
     function SearchInput() {
       return (
         <div class="bg-base-content/10 flex h-8 items-center gap-2 rounded-full px-3 sm:w-64">
@@ -161,43 +198,14 @@ const Tags = defineComponent({
     }
 
     function ListHeader() {
-      if (isBatch.value) {
+      if (multi.selectMode.value) {
         return (
-          <Header>
-            <HeaderStart>
-              <button
-                type="button"
-                class="btn btn-circle btn-ghost btn-sm"
-                title="退出选择"
-                onClick={() => {
-                  store.clearSelection()
-                  resetAnchor()
-                }}
-              >
-                <Icon name={I.CLOSE} />
-              </button>
-              <span class="font-medium">{`已选 ${store.selectedCount} 项`}</span>
-            </HeaderStart>
-            <HeaderEnd>
-              <button type="button" class="btn btn-ghost btn-sm gap-1" title="全选" onClick={() => store.selectAll()}>
-                <Icon name={I.SELECT_ALL} size="sm" />
-                <span class="hidden sm:inline">全选</span>
-              </button>
-              <button type="button" class="btn btn-ghost btn-sm gap-1" title="反选" onClick={() => store.invert()}>
-                <Icon name={I.INVERT} size="sm" />
-                <span class="hidden sm:inline">反选</span>
-              </button>
-              <button
-                type="button"
-                class="btn btn-error btn-sm gap-1"
-                title="删除选中"
-                onClick={() => deleteBatch()}
-              >
-                <Icon name={I.DELETE} size="sm" />
-                <span class="hidden sm:inline">删除</span>
-              </button>
-            </HeaderEnd>
-          </Header>
+          <SelectionHeader
+            count={store.selectedCount}
+            onExit={multi.exit}
+            onSelectAll={() => store.selectAll()}
+            onInvert={multi.invert}
+          />
         )
       }
       return (
@@ -252,7 +260,7 @@ const Tags = defineComponent({
                   key={tag.id}
                   tag={tag}
                   selected={store.isSelected(tag.id)}
-                  {...itemProps(tag)}
+                  {...multi.itemProps(tag)}
                   onToggle={on => store.toggle(tag.id, on)}
                   onEdit={() => openTagForm(tag)}
                   onDelete={() => deleteTag(tag)}
@@ -275,6 +283,17 @@ const Tags = defineComponent({
             <ListArea />
           </Main>
         </Layout>
+        {multi.selectMode.value && store.selectedCount > 0 && (
+          <div class="pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
+            <ActionBar groups={batchActions.value} />
+          </div>
+        )}
+        <ActionMenu
+          show={multi.contextmenuShow.value}
+          position={multi.contextmenuPosition.value}
+          actionConfig={contextActions.value}
+          onClose={multi.closeContextmenu}
+        />
       </div>
     )
   },

@@ -25,6 +25,10 @@ const TagItem = defineComponent({
       type: Function as PropType<(e: MouseEvent) => void>,
       default: () => {},
     },
+    onContextmenu: {
+      type: Function as PropType<(e: MouseEvent) => void>,
+      default: undefined,
+    },
     onEdit: {
       type: Function as PropType<() => void>,
       required: true,
@@ -48,6 +52,7 @@ const TagItem = defineComponent({
               : 'bg-base-content/5 sm:hover:bg-base-content/5 sm:bg-transparent',
           ]}
           onClick={props.onClick}
+          onContextmenu={props.onContextmenu}
         >
           <input
             type="checkbox"

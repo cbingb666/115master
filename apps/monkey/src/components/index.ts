@@ -1,4 +1,5 @@
 export * from './ActionBar'
+export { ActionMenu } from './ActionMenu'
 export * from './CloudDownload'
 export * from './ContextMenu'
 export * from './Dialog'
