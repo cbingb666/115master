@@ -44,10 +44,10 @@ const Tags = defineComponent({
 
     onBeforeMount(() => store.load())
 
-    /** 框选容器：<Main> 根 div（已 relative，expose 了 el） */
-    const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
+    /** 框选 / 点空白容器：列表可视区（不含 SelectionHeader，避免点头部按钮被误判为点空白） */
+    const listRef = ref<HTMLElement>()
     const multi = useMultiSelect<Tag>({
-      container: () => mainRef.value?.el,
+      container: () => listRef.value,
       list: () => store.filtered,
       key: t => t.id,
       selection: {
@@ -245,7 +245,7 @@ const Tags = defineComponent({
       }
       const list = store.filtered
       return (
-        <div class="relative flex-1 px-3 pb-24 sm:px-5">
+        <div ref={listRef} class="relative flex-1 px-3 pb-24 sm:px-5">
           <Progress active={store.loading} />
           {!store.loading && list.length === 0 && (
             <div class="text-base-content/60 flex flex-col items-center justify-center gap-3 pt-24">
@@ -278,22 +278,22 @@ const Tags = defineComponent({
           <Sider>
             <SiderContent />
           </Sider>
-          <Main ref={mainRef} class="relative flex min-h-screen flex-col">
+          <Main class="relative flex min-h-screen flex-col">
             <ListHeader />
             <ListArea />
+            {multi.selectMode.value && store.selectedCount > 0 && (
+              <div class="pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
+                <ActionBar groups={batchActions.value} />
+              </div>
+            )}
+            <ActionMenu
+              show={multi.contextmenuShow.value}
+              position={multi.contextmenuPosition.value}
+              actionConfig={contextActions.value}
+              onClose={multi.closeContextmenu}
+            />
           </Main>
         </Layout>
-        {multi.selectMode.value && store.selectedCount > 0 && (
-          <div class="pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
-            <ActionBar groups={batchActions.value} />
-          </div>
-        )}
-        <ActionMenu
-          show={multi.contextmenuShow.value}
-          position={multi.contextmenuPosition.value}
-          actionConfig={contextActions.value}
-          onClose={multi.closeContextmenu}
-        />
       </div>
     )
   },
