@@ -2,6 +2,7 @@ import type { PropType } from 'vue'
 import type { Tag } from '@/store/tagList'
 import { Api } from '@115master/drive115'
 import { defineComponent } from 'vue'
+import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 
 const { LabelColor } = Api.TagApi.Req
@@ -78,24 +79,27 @@ const TagItem = defineComponent({
           </span>
 
           <div class="flex flex-none items-center gap-0.5">
-            <button
-              type="button"
-              class="btn btn-ghost btn-sm gap-1"
+            <Button
+              variant="ghost"
+              size="sm"
+              class="gap-1"
               title="编辑"
               onClick={() => props.onEdit()}
             >
               <Icon name={I.RENAME} size="sm" />
               <span class="hidden sm:inline">编辑</span>
-            </button>
-            <button
-              type="button"
-              class="btn btn-ghost btn-sm text-error hover:bg-error/10 gap-1"
+            </Button>
+            <Button
+              color="error"
+              variant="ghost"
+              size="sm"
+              class="gap-1"
               title="删除"
               onClick={() => props.onDelete()}
             >
               <Icon name={I.DELETE} size="sm" />
               <span class="hidden sm:inline">删除</span>
-            </button>
+            </Button>
           </div>
         </li>
       )

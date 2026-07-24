@@ -1,7 +1,8 @@
 <template>
-  <button
+  <Button
     ref="buttonRef"
-    :class="[styles.btn.root]"
+    variant="ghost"
+    shape="circle"
     :title="subtitleTip"
     :disabled="subtitles.loading.value || !subtitles.ready.value || subtitles.list.value?.length === 0"
     @click="toggleMenu"
@@ -9,24 +10,24 @@
     <!-- loading -->
     <Icon
       v-if="subtitles.loading.value || !subtitles.ready.value"
-      :class="[styles.btn.icon]"
+      :class="styles.btn.icon"
       :name="I.LOADING"
     />
     <!-- found 字幕 -->
     <Icon
       v-else
       :name="subtitles.current.value ? I.SUBTITLES : I.SUBTITLES_OFF"
-      :class="[styles.btn.icon]"
+      :class="styles.btn.icon"
       :disabled="subtitles.list.value?.length === 0"
     />
-  </button>
+  </Button>
 
   <Popup
     v-model:visible="menuVisible"
     :trigger="buttonRef"
     placement="top"
   >
-    <ul v-if="subtitles.hasSubtitles.value" :class="[styles.menu.root]">
+    <ul v-if="subtitles.hasSubtitles.value" :class="styles.menu.root">
       <li
         v-for="item in menuItems"
         :key="item.id"
@@ -41,7 +42,7 @@
           :title="item.label"
           @click="handleSubtitleSelect(item.value)"
         >
-          <Icon v-if="item.icon" :class="[styles.menu.icon]" :name="item.icon" />
+          <Icon v-if="item.icon" :class="styles.menu.icon" :name="item.icon" />
           <template v-if="item.id !== -1">
             <SubtitleDisplay
               :label="item.label"
@@ -55,7 +56,7 @@
             />
           </template>
           <template v-else>
-            <span :class="[styles.menu.label]">{{ item.label }}</span>
+            <span :class="styles.menu.label">{{ item.label }}</span>
           </template>
         </a>
       </li>
@@ -72,6 +73,7 @@ import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
 const styles = clsx({
   menu: {

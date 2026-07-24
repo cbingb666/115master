@@ -2,6 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
 import { DndRoot } from '../Dnd'
+import Pill from '../Pill/Pill'
 import FileDndSource from './FileDndSource'
 import FileDndTarget from './FileDndTarget'
 import FileDragPreview from './FileDragPreview'
@@ -94,7 +95,7 @@ export const FileDrop: Story = {
     },
   },
   render: () => ({
-    components: { DndRoot, FileDndSource, FileDndTarget },
+    components: { DndRoot, FileDndSource, FileDndTarget, Pill },
     setup: () => {
       const result = ref('等待投放')
       const payload = () => [video, doc]
@@ -131,9 +132,9 @@ export const FileDrop: Story = {
               <span class="text-base-content/50 text-xs">面包屑目标</span>
               <FileDndTarget cid="root" @drop="drop('全部文件', $event)">
                 <template #default="{ targetProps, hovering }">
-                  <span v-bind="targetProps" :data-drop-zone="hovering" class="pill data-[drop-zone=true]:bg-primary/10 data-[drop-zone=true]:ring-primary data-[drop-zone=true]:ring-2 data-[drop-zone=true]:ring-inset">
+                  <Pill v-bind="targetProps" variant="glass-surface" :data-drop-zone="hovering" class="data-[drop-zone=true]:bg-primary/10 data-[drop-zone=true]:ring-primary data-[drop-zone=true]:ring-2 data-[drop-zone=true]:ring-inset">
                     全部文件
-                  </span>
+                  </Pill>
                 </template>
               </FileDndTarget>
             </div>

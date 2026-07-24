@@ -24,7 +24,7 @@
           :class="[styles.controlBar.mainBar]"
         >
           <div :class="styles.controlBar.mainBarLeft">
-            <ControlBox>
+            <PlayerControlSurface>
               <!-- 上一集按钮 -->
               <EpisodeButton
                 type="playPrevious"
@@ -39,22 +39,22 @@
                 :disabled="!rootProps.hasNext"
                 :on-click="handlePlayNext"
               />
-            </ControlBox>
-            <ControlBox>
+            </PlayerControlSurface>
+            <PlayerControlSurface>
               <!-- 音量控制 -->
               <VolumeControl />
-            </ControlBox>
-            <ControlBox class="hidden lg:flex">
+            </PlayerControlSurface>
+            <PlayerControlSurface class="hidden lg:flex">
               <TimeDisplay />
-            </ControlBox>
+            </PlayerControlSurface>
           </div>
           <div :class="styles.controlBar.mainBarCenter">
             <!-- 进度条 -->
             <ProgressBar />
           </div>
           <div :class="styles.controlBar.mainBarRight">
-            <ControlBox>
-              <ControlButtonGroup>
+            <PlayerControlSurface>
+              <ExpandableControlGroup>
                 <template #expanded>
                   <!-- 画面变换 -->
                   <TransformButton />
@@ -65,25 +65,25 @@
                 </template>
                 <!-- 字幕按钮 -->
                 <SubtitleButton />
-              </ControlButtonGroup>
-            </ControlBox>
+              </ExpandableControlGroup>
+            </PlayerControlSurface>
 
-            <ControlBox>
+            <PlayerControlSurface>
               <!-- 倍速控制 -->
               <PlaybackRateButton />
-            </ControlBox>
+            </PlayerControlSurface>
 
-            <ControlBox>
+            <PlayerControlSurface>
               <!-- 画质控制 -->
               <QualityButton />
-            </ControlBox>
+            </PlayerControlSurface>
 
-            <ControlBox>
+            <PlayerControlSurface>
               <!-- 画中画 -->
               <PipButton />
               <!-- 全屏控制 -->
               <FullscreenButton />
-            </ControlBox>
+            </PlayerControlSurface>
           </div>
         </div>
       </div>
@@ -97,13 +97,13 @@ import { useControlsMouseDetection } from '@/components/XPlayer/hooks/useControl
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { clsx } from '@/utils/clsx'
 import AudioTrackButton from './AudioTrackButton.vue'
-import ControlBox from './ControlBox.vue'
-import ControlButtonGroup from './ControlButtonGroup.vue'
 import EpisodeButton from './EpisodeButton.vue'
+import ExpandableControlGroup from './ExpandableControlGroup'
 import FullscreenButton from './FullscreenButton.vue'
 import PipButton from './PipButton.vue'
 import PlaybackRateButton from './PlaybackRateButton.vue'
 import PlayButton from './PlayButton.vue'
+import PlayerControlSurface from './PlayerControlSurface'
 import ProgressBar from './ProgressBar.vue'
 import QualityButton from './QualityButton.vue'
 import SubtitleButton from './SubtitleButton.vue'

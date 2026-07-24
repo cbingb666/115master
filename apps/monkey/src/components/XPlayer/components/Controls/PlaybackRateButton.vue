@@ -1,20 +1,22 @@
 <template>
-  <button
+  <Button
     ref="buttonRef"
-    :class="[styles.btnText.root]"
+    variant="ghost"
+    size="sm"
+    :class="styles.btnText.root"
     :disabled="!playerCore?.canplay"
     :title="playbackRateTip"
     @click="toggleSpeedMenu"
   >
     <Icon v-if="playbackRate.current.value === 1" :class="styles.btn.icon" :name="I.PLAYBACK_RATE" />
     <span v-else>{{ buttonText }}</span>
-  </button>
+  </Button>
   <Popup
     v-model:visible="menuVisible"
     :trigger="buttonRef"
     placement="top"
   >
-    <ul :class="[styles.menu.root]">
+    <ul :class="styles.menu.root">
       <li
         v-for="rate in rateOptions"
         :key="rate"
@@ -36,11 +38,9 @@ import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
-import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
-const styles = clsx({
-  ...controlStyles,
-})
+const styles = controlStyles
 
 const NAME = '倍速'
 

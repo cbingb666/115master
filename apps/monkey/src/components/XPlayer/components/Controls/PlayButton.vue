@@ -1,11 +1,9 @@
 <template>
-  <button
-    class="swap swap-rotate" :class="[
-      styles.btn.root,
-      {
-        'swap-active': playerCore?.paused,
-      },
-    ]"
+  <Button
+    variant="ghost"
+    shape="circle"
+    class="swap swap-rotate"
+    :class="{ 'swap-active': playerCore?.paused }"
     :disabled="!playerCore?.canplay"
     :title="playTip"
     @click="playerCore?.togglePlay"
@@ -20,7 +18,7 @@
         styles.btn.icon,
       ]"
     />
-  </button>
+  </Button>
 </template>
 
 <script setup lang="ts">
@@ -28,14 +26,9 @@ import { computed } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
-import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
-const styles = clsx({
-  btn: {
-    ...controlStyles.btn,
-    root: [controlStyles.btn.root],
-  },
-})
+const styles = controlStyles
 
 const NAME = '播放/暂停'
 

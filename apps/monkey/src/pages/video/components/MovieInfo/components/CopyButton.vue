@@ -1,16 +1,18 @@
 <template>
-  <button
-    :class="[
-      styles.button.base,
-      isCopied ? styles.button.success : styles.button.normal,
-    ]"
+  <Button
+    :color="isCopied ? 'primary' : 'neutral'"
+    variant="ghost"
+    size="xs"
+    shape="circle"
+    :class="styles.button"
     @click="handleCopy"
   >
     <Icon :name="I.COPY" class="size-4" />
-  </button>
+  </Button>
 </template>
 
 <script setup lang="ts">
+import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 import { useCopy } from '@/pages/video/components/MovieInfo/hooks/useCopy'
 import { clsx } from '@/utils/clsx'
@@ -31,11 +33,7 @@ async function handleCopy() {
 
 /** 样式常量定义 */
 const styles = clsx({
-  button: {
-    base: 'btn btn-xs btn-ghost transition-all duration-200 ease-in-out',
-    normal: 'btn-neutral',
-    success: 'btn-primary',
-  },
+  button: 'transition-colors duration-200 ease-in-out',
   text: 'text-xs whitespace-nowrap',
 })
 </script>

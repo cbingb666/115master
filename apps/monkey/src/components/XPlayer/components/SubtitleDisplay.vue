@@ -17,22 +17,26 @@
           {{ source }}
         </span>
         <div v-if="showActions" :class="styles.actions">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="xs"
+            shape="circle"
             :class="styles.action"
             :title="`查看 ${label}`"
             @click="emit('view')"
           >
             <Icon :class="styles.actionIcon" :name="I.VIEW" />
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="ghost"
+            size="xs"
+            shape="circle"
             :class="styles.action"
             :title="`下载 ${label}`"
             @click="emit('download')"
           >
             <Icon :class="styles.actionIcon" :name="I.DOWNLOAD" />
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -42,6 +46,7 @@
 <script setup lang="ts">
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../Button/Button'
 
 interface Props {
   label: string
@@ -69,12 +74,7 @@ const styles = clsx({
   label: 'line-clamp-2 text-sm leading-snug font-medium break-all',
   badge: 'bg-base-content/10 text-base-content/60 rounded-md px-1.5 py-0.5 text-xs font-medium whitespace-nowrap',
   actions: 'ml-auto flex items-center gap-1',
-  action: [
-    'btn btn-circle btn-ghost btn-xs flex-shrink-0',
-    'hover:bg-base-content/10',
-    'hover:border-base-content/10',
-    'transition-all',
-  ],
+  action: 'flex-shrink-0',
   actionIcon: 'size-4',
 })
 </script>

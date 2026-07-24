@@ -4,6 +4,7 @@ import { defineComponent } from 'vue'
 import { Empty, LoadingError } from '@/components'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
+import Button from '../Button/Button'
 
 const { LabelColor } = Api.TagApi.Req
 
@@ -75,14 +76,16 @@ const TagPickerContent = defineComponent({
                 onInput={e => store.setKeyword((e.target as HTMLInputElement).value)}
               />
               {store.keyword && (
-                <button
-                  type="button"
-                  class="text-base-content/50 hover:text-base-content flex-none"
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  shape="circle"
+                  class="flex-none"
                   title="清除"
                   onClick={() => store.setKeyword('')}
                 >
                   <Icon name={I.CLOSE} size="xs" />
-                </button>
+                </Button>
               )}
             </div>
           )}
@@ -110,14 +113,15 @@ const TagPickerContent = defineComponent({
                   ? (
                       <div class="py-6">
                         <Empty icon={I.TAG} description="暂无标签，请先在标签管理页创建">
-                          <button
-                            type="button"
-                            class="btn btn-primary btn-sm gap-1"
+                          <Button
+                            color="primary"
+                            size="sm"
+                            class="gap-1"
                             onClick={() => props.onGotoTags()}
                           >
                             <Icon name={I.RIGHT} size="sm" />
                             去创建标签
-                          </button>
+                          </Button>
                         </Empty>
                       </div>
                     )

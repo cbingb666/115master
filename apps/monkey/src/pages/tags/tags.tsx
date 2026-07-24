@@ -21,6 +21,7 @@ import {
   useDialog,
   useToast,
 } from '@/components'
+import Button from '@/components/Button/Button'
 import { useMultiSelect } from '@/hooks/useMultiSelect'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
@@ -184,14 +185,16 @@ const Tags = defineComponent({
             onInput={e => keyword.value = (e.target as HTMLInputElement).value}
           />
           {keyword.value && (
-            <button
-              type="button"
-              class="text-base-content/50 hover:text-base-content flex-none"
+            <Button
+              variant="ghost"
+              size="xs"
+              shape="circle"
+              class="flex-none"
               title="清除"
               onClick={() => keyword.value = ''}
             >
               <Icon name={I.CLOSE} size="xs" />
-            </button>
+            </Button>
           )}
         </div>
       )
@@ -217,14 +220,15 @@ const Tags = defineComponent({
           </HeaderStart>
           <HeaderEnd>
             <SearchInput />
-            <button
-              type="button"
-              class="btn btn-primary btn-sm gap-1"
+            <Button
+              color="primary"
+              size="sm"
+              class="gap-1"
               onClick={() => openTagForm()}
             >
               <Icon name={I.PLUS} size="sm" />
               <span class="hidden sm:inline">新建标签</span>
-            </button>
+            </Button>
           </HeaderEnd>
         </Header>
       )

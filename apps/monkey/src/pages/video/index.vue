@@ -60,33 +60,36 @@
           </template>
           <template #headerRight="{ ctx }">
             <div class="flex items-center gap-2">
-              <ControlBox v-if="isMac && DataFileInfo.isReady" @click="handleLocalPlay('iina')">
+              <PlayerControlSurface v-if="isMac && DataFileInfo.isReady">
                 <!-- IINA 播放按钮 -->
-                <button
-                  :class="styles.controls.btn.root"
+                <Button
+                  variant="ghost"
+                  shape="circle"
                   :title="getActionNameTip(ctx, 'IINA 播放', 'playWithIINA')"
+                  @click="handleLocalPlay('iina')"
                 >
                   <img
                     :class="styles.controls.iinaIcon"
                     :src="iinaIcon"
                     alt="IINA"
                   >
-                </button>
-              </ControlBox>
+                </Button>
+              </PlayerControlSurface>
 
-              <ControlBox>
+              <PlayerControlSurface>
                 <!-- 播放列表切换按钮 -->
-                <button
-                  :class="styles.controls.btn.root"
+                <Button
+                  variant="ghost"
+                  shape="circle"
                   :title="getActionNameTip(ctx, '播放列表', 'toggleShowSider')"
                   @click="togglePlaylist"
                 >
                   <Icon
                     :name="I.PLAYLIST"
-                    :class="[styles.controls.btn.icon]"
+                    :class="styles.controls.btn.icon"
                   />
-                </button>
-              </ControlBox>
+                </Button>
+              </PlayerControlSurface>
             </div>
           </template>
           <template #aboutContent>
@@ -142,10 +145,11 @@ import { useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
 import { computed, h, nextTick, onMounted, ref, shallowRef, toValue, watch } from 'vue'
 import iinaIcon from '@/assets/icons/iina-icon.png'
-import ControlBox from '@/components/XPlayer/components/Controls/ControlBox.vue'
+import Button from '@/components/Button/Button'
+import PlayerControlSurface from '@/components/XPlayer/components/Controls/PlayerControlSurface'
 import { ACTION_GROUPS } from '@/components/XPlayer/components/Shortcuts/shortcuts.const'
 import XPlayer from '@/components/XPlayer/index.vue'
-import { controlRightStyles } from '@/components/XPlayer/styles/common'
+import { controlStyles } from '@/components/XPlayer/styles/common'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { PLUS_VERSION } from '@/constants'
 import { useLockFn } from '@/hooks/useLockFn'
@@ -222,7 +226,7 @@ const styles = clsx({
   },
   // 控制样式
   controls: {
-    btn: controlRightStyles.btn,
+    btn: controlStyles.btn,
     iinaIcon: 'size-7 contrast-200 grayscale invert',
   },
 })

@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import PageSizeOptions from './PageSizeOptions'
 
 const FilePageSizeSelector = defineComponent({
@@ -23,13 +24,14 @@ const FilePageSizeSelector = defineComponent({
         {{
           target: (_props: object) => (
             <Tooltip content={`每页 ${props.currentPageSize} 项`}>
-              <button
-                class="btn btn-glass rounded-full"
+              <Button
+                variant="glass-floating"
+                shape="circle"
                 tabindex="0"
                 {..._props}
               >
                 <Icon class="text-2xl" name={I.DOCUMENT} />
-              </button>
+              </Button>
             </Tooltip>
           ),
           default: () => (

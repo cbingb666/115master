@@ -1,5 +1,6 @@
 import type { PropType, SlotsType } from 'vue'
 import { defineComponent } from 'vue'
+import Button from '../Button/Button'
 
 /**
  * 示例组件
@@ -28,7 +29,7 @@ const Example = defineComponent({
 
     return () => (
       <div class="flex">
-        <button onClick={handleClickEat}>Eat</button>
+        <Button onClick={handleClickEat}>Eat</Button>
         {slots.default?.()}
       </div>
     )

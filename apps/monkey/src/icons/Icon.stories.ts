@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
+import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 
 const meta = {
@@ -128,17 +129,17 @@ export const CustomSvg: Story = {
 export const Dynamic: Story = {
   name: '动态切换',
   render: () => ({
-    components: { Icon },
+    components: { Button, Icon },
     setup: () => {
       const playing = ref(false)
       return { I, playing }
     },
     template: `
       <div class="flex flex-col items-start gap-3">
-        <button type="button" class="btn btn-primary" @click="playing = !playing">
+        <Button color="primary" type="button" @click="playing = !playing">
           <Icon :name="playing ? I.PAUSE : I.PLAY" size="sm" />
           {{ playing ? '暂停' : '播放' }}
-        </button>
+        </Button>
         <p class="text-sm opacity-60">点击按钮切换 PLAY / PAUSE 图标</p>
       </div>
     `,

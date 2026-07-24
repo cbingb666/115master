@@ -1,6 +1,7 @@
 import type { Component, PropType, VNode } from 'vue'
 import type { DialogSize } from './types.dialog'
 import { computed, defineComponent, h, isVNode, ref } from 'vue'
+import Button from '../Button/Button'
 import DialogTitle from './DialogTitle'
 
 /** 各档基准尺寸类；md 留空以沿用 modal-box 默认的 max-w-lg，保证 alert 视觉不变 */
@@ -153,14 +154,14 @@ const DialogModal = defineComponent({
                 : (
                     <>
                       {props.showCancel && (
-                        <button class="btn btn-neutral max-sm:flex-1" onClick={handleCancel}>
+                        <Button color="neutral" class="max-sm:flex-1" onClick={handleCancel}>
                           {renderNode(props.cancelText, '取消')}
-                        </button>
+                        </Button>
                       )}
                       {props.showConfirm && (
-                        <button class="btn btn-primary max-sm:flex-1" onClick={handleConfirm}>
+                        <Button color="primary" class="max-sm:flex-1" onClick={handleConfirm}>
                           {renderNode(props.confirmText, '确认')}
-                        </button>
+                        </Button>
                       )}
                     </>
                   )}

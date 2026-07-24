@@ -1,15 +1,16 @@
 <template>
-  <button
+  <Button
     ref="buttonRef"
-    :class="[styles.btn.root]"
+    variant="ghost"
+    shape="circle"
     title="画面变换"
     @click="toggleMenu"
   >
     <Icon
-      :class="[styles.btn.icon]"
+      :class="styles.btn.icon"
       :name="I.TRANSFORM"
     />
-  </button>
+  </Button>
   <Popup
     v-model:visible="menuVisible"
     :trigger="buttonRef"
@@ -26,6 +27,7 @@ import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 import TransformSettings from './TransformSettings.vue'
 
 const styles = clsx({

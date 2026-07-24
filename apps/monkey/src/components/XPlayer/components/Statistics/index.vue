@@ -2,7 +2,7 @@
   <Popup
     :class="styles.root"
     :visible="statistics.visible.value"
-    :mild="true"
+    variant="panel"
   >
     <div :class="styles.container.main">
       <!-- 头部 -->
@@ -13,9 +13,15 @@
             Statistics
           </h3>
         </div>
-        <button :class="styles.closeButton" @click="statistics.toggleVisible">
+        <Button
+          variant="ghost"
+          size="xs"
+          shape="circle"
+          :class="styles.closeButton"
+          @click="statistics.toggleVisible"
+        >
           <Icon :name="I.CLOSE" class="size-4" />
-        </button>
+        </Button>
       </div>
 
       <!-- 滚动内容区 -->
@@ -154,6 +160,7 @@ import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
 const styles = clsx({
   // 根元素样式
@@ -194,7 +201,7 @@ const styles = clsx({
   error:
     'bg-error/10 border-error text-error-content rounded border-l-2 p-2 font-mono text-xs whitespace-pre-wrap',
   // 关闭按钮样式
-  closeButton: 'btn btn-ghost btn-circle btn-xs',
+  closeButton: '',
 })
 
 /** 读取播放器上下文 */

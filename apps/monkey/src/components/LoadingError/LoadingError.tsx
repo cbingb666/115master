@@ -4,6 +4,7 @@ import { useClipboard } from '@vueuse/core'
 import { computed, defineComponent } from 'vue'
 import { MEDIA_ERROR_NAME } from '@/components/XPlayer/index.const'
 import { Icon } from '@/icons'
+import Button from '../Button/Button'
 
 type ErrorType = 'error' | 'warning' | 'info' | 'success'
 type Size = 'mini' | 'small' | 'medium' | 'large'
@@ -136,30 +137,21 @@ export const LoadingError = defineComponent({
         </p>
 
         {props.showDetailButton && isError(props.message) && (
-          <button
-            class="btn btn-error btn-xs"
-            onClick={handleShowDetail}
-          >
+          <Button color="error" size="xs" onClick={handleShowDetail}>
             查看错误
-          </button>
+          </Button>
         )}
 
         {props.retryable && (
-          <button
-            class="btn btn-error btn-sm hover:btn-error transition-all duration-200 hover:scale-105 active:scale-95"
-            onClick={() => emit('retry')}
-          >
+          <Button color="error" size="sm" onClick={() => emit('retry')}>
             {props.retryText}
-          </button>
+          </Button>
         )}
 
         {props.closable && (
-          <button
-            class="btn btn-neutral btn-xs"
-            onClick={() => emit('close')}
-          >
+          <Button color="neutral" size="xs" onClick={() => emit('close')}>
             {props.closeText}
-          </button>
+          </Button>
         )}
       </div>
     )

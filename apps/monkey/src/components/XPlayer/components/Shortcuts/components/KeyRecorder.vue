@@ -13,23 +13,26 @@
     <kbd v-if="displayValue" :class="styles.kbd">{{ displayValue }}</kbd>
     <span v-else-if="isRecording" :class="styles.recordingText">录制中...</span>
     <Icon v-else :class="styles.placeholder" :name="I.PLUS" />
-    <button
+    <Button
       v-if="modelValue && !isRecording"
-      :class="styles.remove" type="button"
+      color="error"
+      size="xs"
+      shape="circle"
+      :class="styles.remove"
       @click.stop="handleRemove"
     >
       <Icon :name="I.CLOSE" class="size-5" />
-    </button>
+    </Button>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { KeyBindingStr } from '@/components/XPlayer/components/Shortcuts/shortcuts.types'
 /**
  * 组件: 快捷键录制
  * @description 用于录制、显示、移除快捷键
  */
 
-import type { KeyBindingStr } from '@/components/XPlayer/components/Shortcuts/shortcuts.types'
 import { computed, shallowRef } from 'vue'
 import {
   formatKeyDisplay,
@@ -39,6 +42,7 @@ import {
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../../Button/Button'
 
 const props = withDefaults(defineProps<{
   modelValue?: KeyBindingStr
@@ -77,7 +81,6 @@ const styles = clsx({
   recordingText: 'text-base-content font-semibold',
   remove: [
     'absolute -top-2.5 -right-2 p-1',
-    'btn btn-xs btn-error btn-circle',
     'opacity-0',
     'group-hover/recorder:opacity-100',
   ],

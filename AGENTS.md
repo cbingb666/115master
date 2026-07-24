@@ -117,3 +117,7 @@ Issues 以 markdown 文件形式存放在 `.scratch/<feature>/` 下。详见 `do
 ### Domain docs
 
 Multi-context —— 根目录 `CONTEXT-MAP.md` 指向各 package/app 的 `CONTEXT.md`。详见 `docs/agents/domain.md`。
+
+### Glass UI
+
+新增或重构 Button、Pill、Popup、播放器控制组、媒体浮层、侧栏或 Sheet 的 Glass 材质时，调用 `glass-ui` skill。

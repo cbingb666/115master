@@ -21,19 +21,27 @@
       <span v-if="conflictMessage" :class="styles.conflict">{{ conflictMessage }}</span>
       <span>{{ action.tip }}</span>
     </div>
-    <button v-if="isModified" :class="styles.reset" type="button" title="重置" @click="handleReset">
+    <Button
+      v-if="isModified"
+      variant="ghost"
+      size="xs"
+      shape="circle"
+      :class="styles.reset"
+      title="重置"
+      @click="handleReset"
+    >
       <Icon :name="I.RESET" class="size-4" />
-    </button>
+    </Button>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { Action, ActionKey, KeyBindings, KeyBindingStr } from '@/components/XPlayer/components/Shortcuts/shortcuts.types'
 /**
  * 组件: 快捷键 Item
  * @description 用于显示快捷键项
  */
 
-import type { Action, ActionKey, KeyBindings, KeyBindingStr } from '@/components/XPlayer/components/Shortcuts/shortcuts.types'
 import { computed } from 'vue'
 import {
   hasEmptyKeybindings,
@@ -43,6 +51,7 @@ import {
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../../Button/Button'
 import KeyRecorder from './KeyRecorder.vue'
 
 const props = defineProps<{
@@ -80,9 +89,7 @@ const styles = clsx({
     'flex flex-wrap items-center',
     'gap-x-2 gap-y-2',
   ],
-  reset: [
-    'btn btn-xs btn-circle mt-0.5',
-  ],
+  reset: 'mt-0.5',
   conflict: 'text-error mt-1 text-xs font-medium',
 })
 

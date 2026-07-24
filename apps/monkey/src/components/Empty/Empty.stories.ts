@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import Empty from './Empty'
 
 const meta = {
@@ -31,12 +32,12 @@ export const Basic: Story = {
 export const CustomDescription: Story = {
   name: '自定义描述',
   render: () => ({
-    components: { Empty },
+    components: { Button, Empty },
     template: `
       <div class="space-y-6">
         <Empty description="没有找到相关文件" />
         <Empty description="文件夹为空">
-          <button type="button" class="btn btn-primary btn-sm">上传文件</button>
+          <Button color="primary" size="sm" type="button">上传文件</Button>
         </Empty>
       </div>
     `,
@@ -88,14 +89,14 @@ export const CustomImage: Story = {
 export const WithAction: Story = {
   name: '带操作按钮',
   render: () => ({
-    components: { Empty },
+    components: { Button, Empty },
     template: `
       <div class="space-y-6">
         <Empty description="还没有上传过文件">
-          <button type="button" class="btn btn-primary btn-sm">立即上传</button>
+          <Button color="primary" size="sm" type="button">立即上传</Button>
         </Empty>
         <Empty description="连接已断开" :icon="I.ERROR" size="lg">
-          <button type="button" class="btn btn-outline btn-sm">重新连接</button>
+          <Button variant="outline" size="sm" type="button">重新连接</Button>
         </Empty>
       </div>
     `,

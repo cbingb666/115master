@@ -1,8 +1,9 @@
 <!-- 已弃用,仅限开发调试使用 -->
 <template>
-  <button
+  <Button
     ref="buttonRef"
-    :class="[styles.btn.root]"
+    variant="ghost"
+    shape="circle"
     title="播放器核心"
     :disabled="source?.current?.value?.type === 'hls' || source?.isSwitching?.value"
     @click="toggleVisible"
@@ -13,13 +14,13 @@
         'motion-safe:animate-spin': source?.isSwitching?.value,
       }]" :name="I.PLAYER_CORE"
     />
-  </button>
+  </Button>
   <Popup
     v-model:visible="menuVisible"
     :trigger="buttonRef"
     placement="top"
   >
-    <ul :class="[styles.menu.root]">
+    <ul :class="styles.menu.root">
       <li
         v-for="(type) in [PlayerCoreType.Native, PlayerCoreType.AvPlayer]"
         :key="type"
@@ -47,15 +48,9 @@ import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
-import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
-const styles = clsx({
-  ...controlStyles,
-  btn: {
-    ...controlStyles.btn,
-    root: [controlStyles.btn.root, 'btn-'],
-  },
-})
+const styles = controlStyles
 
 const { source, playerCore } = usePlayerContext()
 const menuVisible = shallowRef(false)

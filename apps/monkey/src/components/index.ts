@@ -1,5 +1,12 @@
 export * from './ActionBar'
 export { ActionMenu } from './ActionMenu'
+export { Button } from './Button'
+export type {
+  ButtonColor,
+  ButtonShape,
+  ButtonSize,
+  ButtonVariant,
+} from './Button'
 export * from './CloudDownload'
 export * from './ContextMenu'
 export * from './Dialog'
@@ -26,6 +33,7 @@ export * from './Main'
 export * from './Menu'
 export * from './Pagination'
 export { Pill } from './Pill'
+export type { PillSize, PillVariant } from './Pill'
 export * from './Progress'
 export * from './ResponsiveMenu'
 export { SelectionHeader } from './SelectionHeader'

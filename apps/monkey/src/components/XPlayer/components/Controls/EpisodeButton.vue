@@ -1,12 +1,13 @@
 <template>
-  <button
-    :class="[styles.btn.root]"
+  <Button
+    variant="ghost"
+    shape="circle"
     :title="tip"
     :disabled="disabled"
     @click="onClick"
   >
-    <Icon :class="[styles.btn.icon]" :name="icon" />
-  </button>
+    <Icon :class="controlStyles.btn.icon" :name="icon" />
+  </Button>
 </template>
 
 <script setup lang="ts">
@@ -14,7 +15,7 @@ import { computed } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
-import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
 const props = defineProps<{
   type: 'playPrevious' | 'playNext'
@@ -31,10 +32,6 @@ const LABELS = {
   playPrevious: '上一集',
   playNext: '下一集',
 } satisfies Record<typeof props.type, string>
-
-const styles = clsx({
-  btn: controlStyles.btn,
-})
 
 const ctx = usePlayerContext()
 

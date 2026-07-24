@@ -13,7 +13,7 @@ const DesktopSider = defineComponent({
     return () => (
       <div
         class="
-          app-box-glass-strong
+          app-glass-panel
           fixed
           top-2 bottom-2
           left-2 z-100

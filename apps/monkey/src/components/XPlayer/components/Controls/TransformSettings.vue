@@ -11,23 +11,25 @@
             旋转 <span class="badge badge-sm">{{ transform.rotate.value }}°</span>
           </legend>
           <div class="flex gap-2">
-            <button
-              class="btn btn-sm flex-1"
+            <Button
+              size="sm"
+              class="flex-1"
               :disabled="transform.rotate.value === -270"
               @click="transform.left"
             >
               <Icon :name="I.ROTATE_LEFT" class="size-4" />
-            </button>
-            <button class="btn btn-sm flex-1" @click="transform.normal">
+            </Button>
+            <Button size="sm" class="flex-1" @click="transform.normal">
               <Icon :name="I.ROTATE_NORMAL" class="size-4" />
-            </button>
-            <button
-              class="btn btn-sm flex-1"
+            </Button>
+            <Button
+              size="sm"
+              class="flex-1"
               :disabled="transform.rotate.value === 270"
               @click="transform.right"
             >
               <Icon :name="I.ROTATE_RIGHT" class="size-4" />
-            </button>
+            </Button>
           </div>
         </fieldset>
 
@@ -37,22 +39,26 @@
             翻转
           </legend>
           <div class="flex gap-2">
-            <button
-              class="btn btn-sm flex-1"
-              :class="{ 'btn-primary': transform.flipX.value }"
+            <Button
+              size="sm"
+              :color="transform.flipX.value ? 'primary' : 'default'"
+              :active="transform.flipX.value"
+              class="flex-1"
               @click="transform.toggleFlipX"
             >
               <Icon :name="I.FLIP_X" class="size-4" />
               水平
-            </button>
-            <button
-              class="btn btn-sm flex-1"
-              :class="{ 'btn-primary': transform.flipY.value }"
+            </Button>
+            <Button
+              size="sm"
+              :color="transform.flipY.value ? 'primary' : 'default'"
+              :active="transform.flipY.value"
+              class="flex-1"
               @click="transform.toggleFlipY"
             >
               <Icon :name="I.FLIP_Y" class="size-4" />
               垂直
-            </button>
+            </Button>
           </div>
         </fieldset>
       </div>
@@ -63,6 +69,7 @@
 <script setup lang="ts">
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
+import Button from '../../../Button/Button'
 
 const { transform } = usePlayerContext()
 </script>

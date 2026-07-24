@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import type { FileDndTargetBindings } from '../FileDnd'
 import { defineComponent, withModifiers } from 'vue'
 import { FileDndTarget } from '../FileDnd'
-import { Link } from '../Link'
+import Pill from '../Pill/Pill'
 
 /**
  * 面包屑单项（含 li 包装，可点击 + 文件投放目标）。
@@ -32,9 +32,10 @@ const FilePathLink = defineComponent({
       >
         {{ default: ({ targetProps, hovering }: { targetProps: FileDndTargetBindings, hovering: boolean }) => (
           <li ref={targetProps.ref}>
-            <Link
+            <Pill
+              as="a"
+              variant="glass-surface"
               class="
-            pill
             data-[drop-zone=true]:bg-primary/10
             data-[drop-zone=true]:ring-primary
             no-underline!
@@ -48,7 +49,7 @@ const FilePathLink = defineComponent({
               onClick={withModifiers(() => props.onPathClick?.(props.item), ['prevent'])}
             >
               {props.item.name}
-            </Link>
+            </Pill>
           </li>
         ) }}
       </FileDndTarget>

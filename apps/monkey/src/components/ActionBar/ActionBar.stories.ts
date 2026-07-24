@@ -19,7 +19,8 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: '通用分组操作栏，统一处理操作的显隐、激活状态与异步加载反馈。',
+        component:
+          '通用分组操作栏：glass-floating Pill 承载分组，ghost Button 统一处理操作的显隐、激活状态与异步加载反馈。',
       },
     },
   },

@@ -1,0 +1,33 @@
+.x-player-control-surface .btn {
+  --btn-bg: transparent;
+  --btn-border: transparent;
+  --btn-inset: 0 0 oklch(0% 0 0 / 0);
+  --btn-shadow: none;
+
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  transition: opacity 150ms ease;
+}
+
+@media (hover: hover) {
+  .x-player-control-surface .btn:hover:not(:disabled) {
+    --btn-bg: transparent;
+
+    background-color: transparent;
+    opacity: 0.78;
+  }
+}
+
+.x-player-control-surface .btn:active:not(:disabled) {
+  --btn-bg: transparent;
+
+  background-color: transparent;
+  opacity: 0.62;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .x-player-control-surface .btn {
+    transition: none;
+  }
+}

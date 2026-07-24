@@ -6,6 +6,7 @@ import { useDriveAction } from '@/hooks/useDriveAction'
 import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
 import { useDriveSpaceInfoStore } from '@/store/driveSpaceInfo'
+import Button from '../Button/Button'
 
 const SiderContent = defineComponent({
   name: 'SiderContent',
@@ -31,13 +32,10 @@ const SiderContent = defineComponent({
           <LogoWordmark role="img" aria-label="115Master" class="text-base-content h-10 w-auto" />
         </div>
         <div class="bg-base-content/5 mb-3 h-px w-full" />
-        <button
-          class="btn btn-primary h-10"
-          onClick={() => cloudDownload()}
-        >
+        <Button color="primary" onClick={() => cloudDownload()}>
           <Icon class="text-xl" name={I.ADD_LINK} />
           离线下载
-        </button>
+        </Button>
         <div class="bg-base-content/5 my-3 h-px w-full" />
         <Menu class="flex-1" />
         <div class="bg-base-content/5 my-3 h-px w-full" />

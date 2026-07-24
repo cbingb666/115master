@@ -1,12 +1,14 @@
 <template>
-  <button
+  <Button
     ref="buttonRef"
+    variant="ghost"
+    size="sm"
     :class="styles.btnText.root"
     :title="qualityTip"
     @click="toggleMenu"
   >
     <span>{{ currentQuality }}</span>
-  </button>
+  </Button>
   <Popup
     v-model:visible="menuVisible"
     :trigger="buttonRef"
@@ -40,11 +42,9 @@ import { computed, shallowRef } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
-import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
-const styles = clsx({
-  ...controlStyles,
-})
+const styles = controlStyles
 
 const { source, shortcuts } = usePlayerContext()
 const menuVisible = shallowRef(false)

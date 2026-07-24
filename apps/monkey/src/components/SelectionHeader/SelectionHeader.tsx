@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import { Header, HeaderEnd, HeaderStart } from '@/components/Header'
 import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 
 /**
  * 多选头部（退出多选 + 已选数量 + 全选/反选）
@@ -43,8 +44,8 @@ const SelectionHeader = defineComponent({
     return () => (
       <Header>
         <HeaderStart>
-          <button
-            class="btn btn-glass rounded-full"
+          <Button
+            variant="glass-floating"
             title="退出多选"
             onClick={() => props.onExit()}
           >
@@ -54,27 +55,29 @@ const SelectionHeader = defineComponent({
               {' '}
               项
             </span>
-          </button>
+          </Button>
         </HeaderStart>
         <HeaderEnd>
           {props.onSelectAll && (
             <Tooltip content="全选">
-              <button
-                class="btn btn-glass rounded-full"
+              <Button
+                variant="glass-floating"
+                shape="circle"
                 onClick={() => props.onSelectAll?.()}
               >
                 <Icon class="text-xl" name={I.SELECT_ALL} />
-              </button>
+              </Button>
             </Tooltip>
           )}
           {props.onInvert && (
             <Tooltip content="反选">
-              <button
-                class="btn btn-glass rounded-full"
+              <Button
+                variant="glass-floating"
+                shape="circle"
                 onClick={() => props.onInvert?.()}
               >
                 <Icon class="text-xl" name={I.INVERT} />
-              </button>
+              </Button>
             </Tooltip>
           )}
         </HeaderEnd>

@@ -44,58 +44,6 @@
     0 0 14px rgba(0, 0, 0, 0.04);
 }
 
-@utility app-box-glass {
-  background: oklch(5% 0 0 / 0.15);
-  border-color: oklch(100% 0 0 / 0.15);
-  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
-  backdrop-filter: blur(40px);
-  border-width: 1px;
-}
-
-[data-theme='light'] .app-box-glass {
-  background: oklch(100% 0 0 / 0.72);
-  border-color: oklch(0% 0 0 / 0.12);
-  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.18);
-}
-
-/** app-box-glass 的大面积变体：侧边栏、移动端 bottom sheet 等大面板；底色跟随主题阶梯，与主体错开一档 */
-@utility app-box-glass-strong {
-  background: color-mix(in oklab, var(--color-base-300) 80%, transparent);
-  border-color: oklch(100% 0 0 / 0.15);
-  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.5);
-  backdrop-filter: blur(40px);
-  border-width: 1px;
-}
-
-[data-theme='light'] .app-box-glass-strong {
-  background: color-mix(in oklab, var(--color-base-200) 85%, transparent);
-  border-color: oklch(0% 0 0 / 0.12);
-  box-shadow: 0 4px 30px oklch(0% 0 0 / 0.18);
-}
-
-@utility app-glass-border {
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-[data-theme='light'] .app-glass-border {
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-@utility app-bg-gradient-glass {
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    backdrop-filter: blur(48px) saturate(180%) brightness(50%);
-    mask-image: linear-gradient(to top, transparent, black 50%);
-  }
-}
-
-[data-theme='light'] .app-bg-gradient-glass::before {
-  backdrop-filter: blur(48px) saturate(180%);
-}
-
 @utility app-bg-mesh {
   background-image:
     radial-gradient(140% 110% at 50% 22%, color-mix(in oklab, #4a6cae 10%, transparent) 0%, transparent 70%),

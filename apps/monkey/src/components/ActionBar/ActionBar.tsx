@@ -3,6 +3,7 @@ import type { IconName } from '@/icons'
 import type { Action } from '@/types/action'
 import { defineComponent, Fragment, ref, toValue, triggerRef } from 'vue'
 import { Icon } from '@/icons'
+import Button from '../Button/Button'
 import Pill from '../Pill/Pill'
 
 /**
@@ -49,7 +50,9 @@ const ActionBar = defineComponent({
       return (
         <Pill
           as="div"
-          class="pill-xl pointer-events-auto justify-center p-1.5"
+          variant="glass-floating"
+          size="xl"
+          class="pointer-events-auto justify-center p-1.5"
         >
           {groups.map((group, groupIndex) => (
             <Fragment key={group.map(item => item.name).join(':')}>
@@ -68,19 +71,14 @@ const ActionBar = defineComponent({
                     : item.iconColor
 
                   return (
-                    <button
+                    <Button
                       aria-label={label}
                       key={item.name}
-                      class="
-                        text-base-content hover:bg-base-content/10
-                        tooltip tooltip-top relative flex h-11
-                        w-11 cursor-pointer
-                        items-center justify-center rounded-full
-                        transition-all duration-150
-                      "
+                      variant="ghost"
+                      shape="circle"
+                      class="tooltip tooltip-top relative h-11 w-11"
                       data-tip={label}
                       title={label}
-                      type="button"
                       onClick={() => handleClick(item)}
                     >
                       <span
@@ -99,7 +97,7 @@ const ActionBar = defineComponent({
                         ]}
                         name={icon as IconName}
                       />
-                    </button>
+                    </Button>
                   )
                 })}
               </div>

@@ -4,6 +4,7 @@ import { computed, defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import { SORT_OPTIONS } from './config'
 import SortOptions from './SortOptions'
 
@@ -61,8 +62,9 @@ const FileSortSelector = defineComponent({
         {{
           target: (_props: object) => (
             <Tooltip content={`当前排序：${sortLabel.value}${props.fc_mix === 0 ? '（目录置顶）' : ''}`}>
-              <button
-                class="btn btn-glass rounded-full"
+              <Button
+                variant="glass-floating"
+                shape="circle"
                 aria-label={`当前排序：${sortLabel.value}`}
                 tabindex="0"
                 {..._props}
@@ -79,7 +81,7 @@ const FileSortSelector = defineComponent({
                     name={I.ARROW_UP}
                   />
                 </span>
-              </button>
+              </Button>
             </Tooltip>
           ),
           default: () => (

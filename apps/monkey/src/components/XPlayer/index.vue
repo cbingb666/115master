@@ -71,9 +71,9 @@
       v-if="source.isInterrupt.value"
       :class="styles.resumeContainer"
     >
-      <button :class="styles.resumeButton" @click="source.resumeSource">
+      <Button variant="glass-overlay" :class="styles.resumeButton" @click="source.resumeSource">
         恢复播放
-      </button>
+      </Button>
     </div>
   </div>
 </template>
@@ -84,6 +84,7 @@ import type { XPlayerEmit, XPlayerProps } from './types'
 import { shallowRef, watch, watchEffect } from 'vue'
 import { LoadingError } from '@/components'
 import { clsx } from '@/utils/clsx'
+import Button from '../Button/Button'
 import ContextMenu from './components/ContextMenu/index.vue'
 import ControlsBar from './components/Controls/ControlBar.vue'
 import ControlsHeader from './components/Controls/ControlHeader.vue'
@@ -134,7 +135,7 @@ const styles = clsx({
     'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform',
   resumeContainer:
     'absolute inset-0 z-2 flex items-center justify-center bg-black/90',
-  resumeButton: 'btn',
+  resumeButton: '',
 })
 
 /** 根元素 */

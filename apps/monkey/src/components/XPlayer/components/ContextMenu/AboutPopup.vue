@@ -2,7 +2,7 @@
   <Popup
     :visible="visible"
     :class="styles.root"
-    :mild="true"
+    variant="panel"
     @update:visible="$emit('update:visible', $event)"
   >
     <div :class="styles.container.main">
@@ -14,9 +14,15 @@
             关于
           </h3>
         </div>
-        <button :class="styles.closeButton" @click="$emit('update:visible', false)">
+        <Button
+          variant="ghost"
+          size="sm"
+          shape="circle"
+          :class="styles.closeButton"
+          @click="$emit('update:visible', false)"
+        >
           <Icon :name="I.CLOSE" class="size-6" />
-        </button>
+        </Button>
       </div>
 
       <!-- 滚动内容区 -->
@@ -42,6 +48,7 @@
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
 interface Props {
   visible: boolean
@@ -70,7 +77,7 @@ const styles = clsx({
     content: 'px-6 py-4',
   },
   // 关闭按钮样式
-  closeButton: 'btn btn-ghost btn-circle btn-sm',
+  closeButton: '',
   // 默认内容样式
   defaultContent: 'text-base-content/60 py-8 text-center',
   // 标题容器样式

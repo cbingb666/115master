@@ -27,23 +27,24 @@
     <!-- 底部操作按钮 -->
     <div :class="styles.footer">
       <div :class="styles.actions">
-        <button :class="styles.actionBtn" type="button" @click="handleImport">
+        <Button variant="ghost" size="sm" :class="styles.actionBtn" @click="handleImport">
           <Icon :name="I.IMPORT" class="size-3.5" />
           <span>导入</span>
-        </button>
-        <button :class="styles.actionBtn" type="button" @click="handleExport">
+        </Button>
+        <Button variant="ghost" size="sm" :class="styles.actionBtn" @click="handleExport">
           <Icon :name="I.EXPORT" class="size-3.5" />
           <span>导出</span>
-        </button>
-        <button
+        </Button>
+        <Button
           v-if="hasCustomConfig"
-          type="button"
+          variant="ghost"
+          size="sm"
           :class="[styles.actionBtn]"
           @click="handleResetAll"
         >
           <Icon :name="I.RESET_ALL" class="size-3.5" />
           重置全部
-        </button>
+        </Button>
       </div>
     </div>
   </div>
@@ -56,6 +57,7 @@ import { ACTION_GROUPS, EXPORT_FILE_PREFIX } from '@/components/XPlayer/componen
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
 const styles = clsx({
   container: [
@@ -89,10 +91,7 @@ const styles = clsx({
     'px-5 py-4',
   ],
   actions: 'flex items-center gap-2.5',
-  actionBtn: [
-    'btn btn-sm btn-ghost',
-    'gap-1',
-  ],
+  actionBtn: 'gap-1',
 })
 
 const { shortcuts } = usePlayerContext()

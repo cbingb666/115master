@@ -3,6 +3,7 @@ import type { PropType } from 'vue'
 import type { Sort } from './FileSortSelector.types'
 import { defineComponent } from 'vue'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import { SORT_OPTIONS } from './config'
 
 /**
@@ -84,19 +85,22 @@ const SortOptions = defineComponent({
                   const onItem = active(sub)
 
                   return (
-                    <button
+                    <Button
                       key={`${sub.order}-${sub.asc}`}
-                      class={`btn btn-xs ${onItem ? 'btn-primary' : `${on ? 'hover:bg-primary/25' : 'hover:bg-primary/15'} btn-ghost`}`}
+                      color={onItem ? 'primary' : 'default'}
+                      variant={onItem ? 'solid' : 'ghost'}
+                      size="xs"
+                      shape="circle"
+                      active={onItem}
                       aria-label={`${option.name}${sub.asc === 1 ? '升序' : '降序'}`}
                       tabindex="0"
-                      type="button"
                       onClick={() => handleSort(sub)}
                     >
                       <Icon
                         class={`text-sm ${sub.asc === 1 ? '' : 'rotate-180'}`}
                         name={I.ARROW_UP}
                       />
-                    </button>
+                    </Button>
                   )
                 })}
               </div>

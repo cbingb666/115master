@@ -4,7 +4,9 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { defineComponent, withModifiers } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import { Link } from '../Link'
+import Pill from '../Pill/Pill'
 import FilePathLink from './FilePathLink'
 
 /**
@@ -60,10 +62,10 @@ const FilePath = defineComponent({
                 last(i)
                   ? (
                       <li key={p.cid}>
-                        <span
+                        <Pill
                           aria-current="page"
+                          variant="glass-surface"
                           class="
-                            pill
                             text-base-content/70
                             cursor-default
                             text-shadow-2xs
@@ -71,7 +73,7 @@ const FilePath = defineComponent({
                           "
                         >
                           {p.name}
-                        </span>
+                        </Pill>
                       </li>
                     )
                   : (
@@ -93,24 +95,14 @@ const FilePath = defineComponent({
         <ResponsiveMenu title="文件路径">
           {{
             target: (trigger: { onClick: () => void }) => (
-              <button
-                class="
-                  bg-base-content/15
-                  hover:bg-base-content/25
-                  inline-flex
-                  items-center
-                  gap-1
-                  rounded-full
-                  px-3
-                  py-1
-                  text-sm
-                  font-semibold
-                "
+              <Button
+                variant="glass-floating"
+                size="sm"
                 onClick={trigger.onClick}
               >
                 {lastPath.name}
                 <Icon name={I.CHEVRON_DOWN} size="sm" />
-              </button>
+              </Button>
             ),
             default: () => path.map((p, i) => (
               <li key={p.cid}>

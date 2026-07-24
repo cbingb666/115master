@@ -1,0 +1,198 @@
+/*
+ * Glass material system
+ *
+ * surface  — weak hierarchy inside a panel
+ * floating — controls and contextual surfaces floating above the page
+ * overlay  — controls rendered above images or video
+ * panel    — large structural surfaces such as sidebars and sheets
+ * inset    — selected Button inside floating glass
+ */
+
+/* Surface Glass */
+:is(.btn-glass-surface, .app-glass-surface) {
+  --glass-fg: var(--btn-color, var(--color-base-content));
+  --glass-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 8%, transparent);
+  --glass-hover-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 12%, transparent);
+  --glass-active-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 16%, transparent);
+  --glass-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 10%, transparent);
+  --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.18);
+  --glass-shadow: 0 0 0 oklch(0% 0 0 / 0);
+
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Inset Glass: selected Button inside Float Glass, without a second blur layer */
+.btn-glass-inset {
+  --btn-fg: var(--btn-color, var(--color-base-content));
+  --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 12%, transparent);
+  --btn-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 14%, transparent);
+  --btn-inset: 0 1px 0 oklch(100% 0 0 / 0.3);
+  --btn-shadow: 0 1px 3px oklch(0% 0 0 / 0.1);
+
+  backdrop-filter: none;
+  font-weight: 600;
+
+  @media (hover: hover) {
+    &:hover {
+      --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 15%, transparent);
+    }
+  }
+
+  &:active:not(.btn-active),
+  &.btn-active {
+    --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 18%, transparent);
+  }
+}
+
+/* Floating Glass */
+:is(.btn-glass-floating, .app-glass-floating) {
+  --glass-fg: var(--btn-color, var(--color-base-content));
+  --glass-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 15%, transparent);
+  --glass-hover-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 20%, transparent);
+  --glass-active-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 24%, transparent);
+  --glass-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 20%, transparent);
+  --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.3);
+  --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.12), 0 6px 18px oklch(0% 0 0 / 0.1);
+
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Overlay Glass */
+:is(.btn-glass-overlay, .app-glass-overlay) {
+  --glass-fg: oklch(98% 0 0);
+  --glass-bg: oklch(12% 0.01 260 / 0.58);
+  --glass-hover-bg: oklch(12% 0.01 260 / 0.68);
+  --glass-active-bg: oklch(12% 0.01 260 / 0.76);
+  --glass-border: oklch(100% 0 0 / 0.18);
+  --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.22);
+  --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.22), 0 8px 24px oklch(0% 0 0 / 0.2);
+
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(150%);
+}
+
+/* Panel Glass */
+.app-glass-panel {
+  --glass-fg: var(--color-base-content);
+  --glass-bg: color-mix(in oklab, var(--color-base-300) 82%, transparent);
+  --glass-border: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+  --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.22);
+  --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.18), 0 12px 32px oklch(0% 0 0 / 0.2);
+
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  backdrop-filter: blur(32px) saturate(160%);
+}
+
+/* Button adapter: daisyUI consumes the shared material through --btn-* */
+:is(.btn-glass-surface, .btn-glass-floating, .btn-glass-overlay) {
+  --btn-fg: var(--glass-fg);
+  --btn-bg: var(--glass-bg);
+  --btn-border: var(--glass-border);
+  --btn-inset: var(--glass-inset);
+  --btn-shadow: var(--glass-shadow);
+}
+
+/* Container adapter: Pill and standalone surfaces consume the same material */
+:is(.app-glass-surface, .app-glass-floating, .app-glass-overlay, .app-glass-panel) {
+  color: var(--glass-fg);
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    var(--glass-inset) inset,
+    var(--glass-shadow);
+}
+
+@media (hover: hover) {
+  :is(.btn-glass-surface, .btn-glass-floating, .btn-glass-overlay):hover {
+    --btn-bg: var(--glass-hover-bg);
+  }
+
+  a.pill:is(.app-glass-surface, .app-glass-floating, .app-glass-overlay):hover {
+    background-color: var(--glass-hover-bg);
+  }
+}
+
+:is(.btn-glass-surface, .btn-glass-floating, .btn-glass-overlay) {
+  &:active:not(.btn-active),
+  &.btn-active {
+    --btn-bg: var(--glass-active-bg);
+  }
+}
+
+a.pill:is(.app-glass-surface, .app-glass-floating, .app-glass-overlay):active {
+  background-color: var(--glass-active-bg);
+}
+
+.btn-glass-overlay:focus-visible {
+  outline-color: oklch(100% 0 0 / 0.9);
+}
+
+/* Disabled glass keeps its material and reduces only the foreground strength */
+:is(.btn-glass-surface, .btn-glass-inset, .btn-glass-floating, .btn-glass-overlay):disabled {
+  color: color-mix(in oklch, var(--btn-fg) 30%, transparent);
+  background-color: var(--btn-bg);
+  border-color: var(--btn-border);
+  box-shadow:
+    var(--btn-inset) inset,
+    var(--btn-shadow);
+}
+
+/* Backdrop fade used by sticky headers inside a Glass panel */
+.app-glass-fade::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  backdrop-filter: blur(48px) saturate(180%) brightness(50%);
+  mask-image: linear-gradient(to top, transparent, black 50%);
+}
+
+[data-theme='light'] {
+  :is(.btn-glass-surface, .app-glass-surface) {
+    --glass-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 6%, transparent);
+    --glass-hover-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 10%, transparent);
+    --glass-active-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 14%, transparent);
+    --glass-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 9%, transparent);
+    --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.65);
+  }
+
+  .btn-glass-inset {
+    --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 7%, transparent);
+    --btn-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 8%, transparent);
+    --btn-inset: 0 1px 0 oklch(100% 0 0 / 0.75);
+    --btn-shadow: 0 1px 3px oklch(0% 0 0 / 0.08);
+
+    @media (hover: hover) {
+      &:hover {
+        --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 9%, transparent);
+      }
+    }
+
+    &:active:not(.btn-active),
+    &.btn-active {
+      --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 11%, transparent);
+    }
+  }
+
+  :is(.btn-glass-floating, .app-glass-floating) {
+    --glass-bg: oklch(100% 0 0 / 0.72);
+    --glass-hover-bg: oklch(100% 0 0 / 0.85);
+    --glass-active-bg: color-mix(in oklab, oklch(93% 0.004 286) 85%, transparent);
+    --glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.65);
+    --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.08), 0 6px 18px oklch(0% 0 0 / 0.06);
+  }
+
+  .app-glass-panel {
+    --glass-bg: color-mix(in oklab, var(--color-base-100) 88%, transparent);
+    --glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.72);
+    --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.06), 0 12px 32px oklch(0% 0 0 / 0.08);
+  }
+
+  .app-glass-fade::before {
+    backdrop-filter: blur(48px) saturate(180%);
+  }
+}

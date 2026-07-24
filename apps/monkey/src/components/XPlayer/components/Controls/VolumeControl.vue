@@ -2,7 +2,9 @@
   <div :class="[styles.tooltip]">
     <!-- 恢复音频提示 -->
     <div v-if="playerCore?.isSuspended" :class="[styles.tooltipContent]">
-      <button
+      <Button
+        variant="glass-overlay"
+        size="sm"
         :class="[styles.resumeBtn]"
         @click="() => {
           playerCore?.resumeSuspended();
@@ -10,31 +12,31 @@
         }"
       >
         点击恢复音频 {{ muteKey }}
-      </button>
+      </Button>
     </div>
 
-    <ControlButtonGroup direction="left" @wheel.prevent="handleWheelWithThrottle">
+    <ExpandableControlGroup direction="left" @wheel.prevent="handleWheelWithThrottle">
       <template #default>
-        <button
+        <Button
+          variant="ghost"
+          shape="circle"
           class="swap swap-rotate"
-          :class="[styles.btn.root, {
-            'swap-active': playerCore?.muted,
-          }]"
+          :class="{ 'swap-active': playerCore?.muted }"
           :title="muteTip"
           :disabled="!playerCore?.canplay || playerCore?.isSuspended"
           @click="playerCore?.toggleMute"
         >
           <Icon
             class="swap-off"
-            :class="[styles.btn.icon]"
+            :class="styles.btn.icon"
             :name="VolumeIcon"
           />
           <Icon
             class="swap-on"
-            :class="[styles.btn.icon]"
+            :class="styles.btn.icon"
             :name="VolumeIcon"
           />
-        </button>
+        </Button>
       </template>
 
       <template #expanded>
@@ -48,7 +50,7 @@
           @input="handleVolumeChange"
         >
       </template>
-    </ControlButtonGroup>
+    </ExpandableControlGroup>
   </div>
 </template>
 
@@ -67,11 +69,12 @@ import { getVolumeIcon } from '@/components/XPlayer/utils/icon'
  * - 滚轮调节音量
  * - 支持音频恢复提示
  *
- * 复用 ControlButtonGroup 实现展开/折叠逻辑
+ * 复用 ExpandableControlGroup 实现展开/折叠逻辑
  */
 import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import ControlButtonGroup from './ControlButtonGroup.vue'
+import Button from '../../../Button/Button'
+import ExpandableControlGroup from './ExpandableControlGroup'
 
 const { playerCore, hud, shortcuts } = usePlayerContext()
 

@@ -7,6 +7,7 @@ const meta = {
   title: 'UI/Pagination',
   component: Pagination,
   args: {
+    surface: 'floating',
     currentPage: 1,
     currentPageSize: 30,
     total: 100,
@@ -17,7 +18,7 @@ const meta = {
     docs: {
       description: {
         component:
-          '分页器：响应式双布局（桌面端完整页码 + 尺寸选择器 / 移动端简洁跳转输入），省略号折叠、页码跳转、pageSize 切换。纯展示组件——页码变更与 pageSize 变更通过 props 回调通知父级。',
+          '分页器：响应式双布局，浮动场景只在组合容器上承载一层 Float Glass；普通页码使用 ghost Button，当前页使用不叠加模糊的 glass-inset Button；plain 形态仍使用标准 soft Button。',
       },
     },
   },
@@ -55,6 +56,16 @@ export const ManyPages: Story = {
 export const NoSizeChanger: Story = {
   name: '隐藏尺寸选择器',
   args: { currentPage: 3, total: 150, showSizeChanger: false },
+}
+
+export const Plain: Story = {
+  name: '面板内嵌',
+  args: {
+    surface: 'plain',
+    currentPage: 3,
+    total: 150,
+    showSizeChanger: false,
+  },
 }
 
 export const CustomPageSize: Story = {

@@ -1,17 +1,10 @@
 export const controlStyles = {
   btn: {
-    root: [
-      'btn btn-link btn-circle',
-      'text-base-content disabled:text-base-content/30',
-      'hover:text-base-content/80',
-    ],
-    icon: ['size-7'],
+    icon: 'size-7',
   },
   btnText: {
     root: [
-      'btn btn-link text-base rounded-full px-1.5 font-semibold',
-      'text-base-content disabled:text-base-content/30',
-      'hover:text-base-content/80',
+      'text-base font-semibold',
       'no-underline hover:no-underline!',
       'text-shadow-[0_0_2px_rgba(0_0_0_/0.3),0_0_2px_rgba(0_0_0_/0.3),0_0_2px_rgba(0_0_0_/0.3)]',
     ],
@@ -26,14 +19,4 @@ export const controlStyles = {
   },
   text: 'text-sm text-base-content text-shadow-xs/60 text-shadow-[0_0_2px_rgba(0_0_0_/0.3),0_0_2px_rgba(0_0_0_/0.3),0_0_2px_rgba(0_0_0_/0.3)]',
   subtext: 'text-base-content/60',
-}
-
-export const controlRightStyles = {
-  btn: {
-    root: [controlStyles.btn.root],
-    icon: controlStyles.btn.icon,
-  },
-  btnText: {
-    root: controlStyles.btnText.root,
-  },
 }

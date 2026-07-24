@@ -2,7 +2,7 @@
   <Popup
     :visible="visible"
     :class="styles.root"
-    :mild="true"
+    variant="panel"
     @update:visible="$emit('update:visible', $event)"
   >
     <div :class="styles.container">
@@ -12,9 +12,15 @@
           <Icon :name="I.SETTINGS" class="size-6" />
           偏好设置
         </h3>
-        <button :class="styles.close" @click="$emit('update:visible', false)">
+        <Button
+          variant="ghost"
+          size="sm"
+          shape="circle"
+          :class="styles.close"
+          @click="$emit('update:visible', false)"
+        >
           <Icon :name="I.CLOSE" class="size-6" />
-        </button>
+        </Button>
       </div>
 
       <!-- Tabs -->
@@ -51,6 +57,7 @@ import { ref, watch } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 import PlayerSettingsPlay from './PlayerSettingsPlay.vue'
 import PlayerSettingsShortcuts from './PlayerSettingsShortcuts.vue'
 
@@ -97,8 +104,6 @@ const styles = clsx({
     'text-lg font-bold',
   ],
   close: [
-    'btn btn-sm btn-circle btn-ghost',
-    'hover:bg-base-300/80',
     'transition-colors',
   ],
 

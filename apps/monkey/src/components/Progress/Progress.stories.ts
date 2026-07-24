@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
+import Button from '../Button/Button'
 import Progress from './Progress'
 
 const meta = {
@@ -40,7 +41,7 @@ export const Toggle: Story = {
     },
   },
   render: () => ({
-    components: { Progress },
+    components: { Button, Progress },
     setup: () => {
       const active = ref(true)
       return { active }
@@ -48,9 +49,9 @@ export const Toggle: Story = {
     template: `
       <div>
         <Progress :active="active" />
-        <button type="button" class="btn btn-primary mt-16" @click="active = !active">
+        <Button color="primary" type="button" class="mt-16" @click="active = !active">
           {{ active ? '停止' : '启动' }} 进度条
-        </button>
+        </Button>
       </div>
     `,
   }),

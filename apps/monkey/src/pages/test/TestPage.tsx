@@ -1,5 +1,6 @@
 import { defineComponent, ref } from 'vue'
 import { UploadTest } from '@/components'
+import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 
 type TestItem = 'upload'
@@ -28,10 +29,10 @@ export default defineComponent({
         {active.value
           ? (
               <div class="p-8">
-                <button class="btn btn-ghost btn-sm mb-6" onClick={() => active.value = null}>
+                <Button variant="ghost" size="sm" class="mb-6" onClick={() => active.value = null}>
                   <Icon name={I.LEFT} class="text-lg" />
                   返回列表
-                </button>
+                </Button>
                 {active.value === 'upload' && <UploadTest cid="0" onClose={() => {}} />}
               </div>
             )

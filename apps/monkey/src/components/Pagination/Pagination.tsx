@@ -1,12 +1,33 @@
 import type { PropType } from 'vue'
+import type { PillVariant } from '../Pill/Pill'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS } from '@/constants'
+import Button from '../Button/Button'
+import Pill from '../Pill/Pill'
 
 type VisiblePageItem = number | '...'
+export type PaginationSurface = 'plain' | 'floating'
+
+const SURFACES: Record<PaginationSurface, PillVariant> = {
+  plain: 'plain',
+  floating: 'glass-floating',
+}
+
+function range(start: number, end: number) {
+  return Array.from({ length: end - start + 1 }, (_, index) => start + index)
+}
 
 const Pagination = defineComponent({
   name: 'Pagination',
   props: {
+    /**
+     * 分页器承载场景
+     * @default 'plain'
+     */
+    surface: {
+      type: String as PropType<PaginationSurface>,
+      default: 'plain',
+    },
     /**
      * 当前页码
      */
@@ -68,60 +89,32 @@ const Pagination = defineComponent({
       jumpValue.value = ''
     })
 
+    const pageCount = computed(() => {
+      return Math.ceil(props.total / props.currentPageSize)
+    })
+
     const isFirstPage = computed(() => {
       return props.currentPage === 1
     })
 
     const isLastPage = computed(() => {
-      return props.currentPage === Math.ceil(props.total / props.currentPageSize)
-    })
-
-    const pageCount = computed(() => {
-      return Math.ceil(props.total / props.currentPageSize)
+      return props.currentPage === pageCount.value
     })
 
     const visiblePages = computed<VisiblePageItem[]>(() => {
       const current = props.currentPage
       const total = pageCount.value
-      const visible: VisiblePageItem[] = []
 
-      // 总页数少于等于7页，显示所有页码
-      if (total <= 7) {
-        for (let i = 1; i <= total; i++) {
-          visible.push(i)
-        }
-      }
-      // 总页数大于7页，显示省略号
-      else {
-        if (current <= 4) {
-          // 当前页在前部
-          for (let i = 1; i <= 5; i++) {
-            visible.push(i)
-          }
-          visible.push('...')
-          visible.push(total)
-        }
-        else if (current >= total - 3) {
-          // 当前页在后部
-          visible.push(1)
-          visible.push('...')
-          for (let i = total - 4; i <= total; i++) {
-            visible.push(i)
-          }
-        }
-        else {
-          // 当前页在中间
-          visible.push(1)
-          visible.push('...')
-          for (let i = current - 1; i <= current + 1; i++) {
-            visible.push(i)
-          }
-          visible.push('...')
-          visible.push(total)
-        }
-      }
+      if (total <= 7)
+        return range(1, total)
 
-      return visible
+      if (current <= 4)
+        return [...range(1, 5), '...', total]
+
+      if (current >= total - 3)
+        return [1, '...', ...range(total - 4, total)]
+
+      return [1, '...', ...range(current - 1, current + 1), '...', total]
     })
 
     /** 上一页 */
@@ -141,7 +134,7 @@ const Pagination = defineComponent({
 
     /** 切换页面大小 */
     function handlePageSize(event: Event) {
-      props.onPageSizeChange?.(Number((event.target as HTMLSelectElement).value))
+      props.onPageSizeChange(Number((event.target as HTMLSelectElement).value))
     }
 
     /** 执行跳转 */
@@ -168,48 +161,36 @@ const Pagination = defineComponent({
     }
 
     return () => (
-      <div
-        class="
-          inline-flex
-          items-center
-          px-3
-          py-1.5
-        "
+      <Pill
+        as="div"
+        variant={SURFACES[props.surface]}
+        size="md"
+        class="h-auto items-center px-3 py-1.5"
       >
         {/* Mobile: simplified pagination — prev, current page, jump input, next */}
         <div class="flex items-center gap-1 md:hidden">
-          <button
-            class={`
-              text-base-content text-shadow-base-100/10 hover:bg-base-content/10
-              relative flex h-9
-              w-9 cursor-pointer
-              items-center
-              justify-center rounded-full
-              text-lg transition-all
-              duration-150
-              text-shadow-lg
-              ${isFirstPage.value ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
-            `}
+          <Button
+            variant="ghost"
+            size="md"
+            shape="circle"
+            class="text-lg"
             disabled={isFirstPage.value}
+            aria-label="上一页"
             onClick={handlePrev}
           >
             «
-          </button>
+          </Button>
 
           <input
             type="text"
             inputmode="numeric"
             pattern="[0-9]*"
             class="
-              bg-base-content/5
+              input input-ghost input-md
               text-base-content/60
               focus:bg-base-content/10 focus:text-base-content/80
-              h-9 w-24
-              appearance-none
-              rounded-full
-              px-2
-              text-center
-              text-sm
+              w-24 rounded-full px-2
+              text-center text-sm
               focus:outline-none
             "
             placeholder={`${props.currentPage}/${pageCount.value}`}
@@ -220,68 +201,49 @@ const Pagination = defineComponent({
             onKeydown={handleJumpKeydown}
           />
 
-          <button
-            class={`
-              text-base-content text-shadow-base-100/10 hover:bg-base-content/10
-              relative flex h-9
-              w-9 cursor-pointer
-              items-center
-              justify-center rounded-full
-              text-lg transition-all
-              duration-150
-              text-shadow-lg
-              ${isLastPage.value ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
-            `}
+          <Button
+            variant="ghost"
+            size="md"
+            shape="circle"
+            class="text-lg"
             disabled={isLastPage.value}
+            aria-label="下一页"
             onClick={handleNext}
           >
             »
-          </button>
+          </Button>
         </div>
 
         {/* Desktop: full pagination — prev, page buttons, jump input, next */}
         <div class="hidden items-center gap-1 md:flex">
-          <button
-            class={`
-              text-base-content text-shadow-base-100/10 hover:bg-base-content/10
-              relative flex h-9
-              w-9 cursor-pointer
-              items-center
-              justify-center rounded-full
-              text-lg transition-all
-              duration-150
-              text-shadow-lg
-              ${isFirstPage.value ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
-            `}
+          <Button
+            variant="ghost"
+            size="md"
+            shape="circle"
+            class="text-lg"
             disabled={isFirstPage.value}
+            aria-label="上一页"
             onClick={handlePrev}
           >
             «
-          </button>
+          </Button>
 
           {
             visiblePages.value.map((pageNum, index) => {
-              const isActive = pageNum === props.currentPage
-              const isEllipsis = pageNum === '...'
               const lastEllipsisIndex = visiblePages.value.lastIndexOf('...')
-              const isJumpInput = isEllipsis && lastEllipsisIndex === index
 
-              if (isJumpInput) {
+              if (pageNum === '...' && lastEllipsisIndex === index) {
                 return (
                   <input
                     type="text"
                     inputmode="numeric"
                     pattern="[0-9]*"
                     class="
-                      bg-base-content/5
+                      input input-ghost input-md
                       text-base-content/60
                       focus:bg-base-content/10 focus:text-base-content/80
-                      h-9 w-14
-                      appearance-none
-                      rounded-full
-                      px-1
-                      text-center
-                      text-sm
+                      w-14 rounded-full px-1
+                      text-center text-sm
                       focus:outline-none
                     "
                     placeholder="..."
@@ -294,45 +256,46 @@ const Pagination = defineComponent({
                 )
               }
 
+              if (pageNum === '...') {
+                return (
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    shape="circle"
+                    onClick={() => handlePage(props.currentPage)}
+                  >
+                    {pageNum}
+                  </Button>
+                )
+              }
+
+              const isActive = pageNum === props.currentPage
+              const activeVariant = props.surface === 'floating' ? 'glass-inset' : 'soft'
               return (
-                <button
-                  class={`
-                    text-base-content text-shadow-base-100/10 hover:bg-base-content/10
-                    relative flex h-9
-                    w-9 cursor-pointer
-                    items-center
-                    justify-center rounded-full
-                    text-lg transition-all
-                    duration-150
-                    text-shadow-lg
-                    ${isEllipsis ? 'hover:text-base-content/70 hover:bg-transparent' : ''}
-                    ${isActive ? 'bg-base-content/15 text-base-content/80 font-semibold' : ''}
-                  `}
-                  onClick={() => isEllipsis ? handlePage(props.currentPage) : handlePage(pageNum as number)}
+                <Button
+                  variant={isActive ? activeVariant : 'ghost'}
+                  size="md"
+                  shape="circle"
+                  aria-current={isActive ? 'page' : undefined}
+                  onClick={() => handlePage(pageNum)}
                 >
                   {pageNum}
-                </button>
+                </Button>
               )
             })
           }
 
-          <button
-            class={`
-              text-base-content text-shadow-base-100/10 hover:bg-base-content/10
-              relative flex h-9
-              w-9 cursor-pointer
-              items-center
-              justify-center rounded-full
-              text-lg transition-all
-              duration-150
-              text-shadow-lg
-              ${isLastPage.value ? 'hover:text-base-content/70 cursor-not-allowed opacity-30 hover:bg-transparent' : ''}
-            `}
+          <Button
+            variant="ghost"
+            size="md"
+            shape="circle"
+            class="text-lg"
             disabled={isLastPage.value}
+            aria-label="下一页"
             onClick={handleNext}
           >
             »
-          </button>
+          </Button>
         </div>
 
         {/* size selector */}
@@ -341,14 +304,8 @@ const Pagination = defineComponent({
             <div class="ml-4 hidden items-center gap-2 md:flex">
               <select
                 class="
-                  bg-base-content/10
-                  border-base-content/20
-                  text-base-content/80 cursor-pointer
-                  appearance-none
-                  rounded-xl border
-                  px-2
-                  py-1
-                  text-sm
+                  select select-ghost select-sm
+                  text-base-content/80 cursor-pointer rounded-xl
                   focus:outline-none
                 "
                 value={props.currentPageSize}
@@ -367,7 +324,7 @@ const Pagination = defineComponent({
             </div>
           )
         }
-      </div>
+      </Pill>
     )
   },
 })

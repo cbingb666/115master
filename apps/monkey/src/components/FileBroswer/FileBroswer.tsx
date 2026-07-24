@@ -23,6 +23,7 @@ import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import { useDrivePageList } from './useDrivePageList'
 
 /** 文件浏览器内容组件 */
@@ -223,37 +224,40 @@ const FileBroswer = defineComponent({
                       }}
                     />
                     {keywordInput.value && (
-                      <button
-                        class="btn btn-ghost btn-xs btn-circle h-6 min-h-6 w-6"
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        shape="circle"
                         title="清空搜索"
                         onClick={clearKeyword}
                       >
                         <Icon class="text-base-content/65 text-base" name={I.CLOSE} />
-                      </button>
+                      </Button>
                     )}
                   </label>
                 )}
 
                 {searchExpanded.value && (
-                  <button
-                    class="btn btn-ghost btn-sm shrink-0"
-                    type="button"
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    class="shrink-0"
                     onClick={collapseSearch}
                   >
                     取消
-                  </button>
+                  </Button>
                 )}
 
                 {!searchExpanded.value && (
                   <Tooltip content="搜索">
-                    <button
-                      class="btn btn-glass shrink-0 rounded-full"
-                      type="button"
+                    <Button
+                      variant="glass-floating"
+                      shape="circle"
+                      class="shrink-0"
                       onClick={expandSearch}
                     >
                       <Icon class="text-xl" name={I.SEARCH} />
-                    </button>
+                    </Button>
                   </Tooltip>
                 )}
 
@@ -336,6 +340,7 @@ const FileBroswer = defineComponent({
           {explorer.pageCount.value > 1 && (
             <div class="fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 justify-center">
               <Pagination
+                surface="floating"
                 currentPage={explorer.page.value}
                 currentPageSize={explorer.size.value}
                 showSizeChanger={false}

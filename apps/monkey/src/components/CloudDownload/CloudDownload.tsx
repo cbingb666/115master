@@ -5,6 +5,7 @@ import { computed, defineComponent, useTemplateRef, watch } from 'vue'
 import FileItemThumbnail from '@/components/FileItem/FileItemThumbnail'
 import { useOfflineQuotaPackageInfoStore } from '@/store/offlineQuotaPackageInfo'
 import { actressFaceDB } from '@/utils/actressFaceDB'
+import Button from '../Button/Button'
 
 const CloudDownload = defineComponent({
   props: {
@@ -129,13 +130,15 @@ const CloudDownload = defineComponent({
             <label class="mb-2 block text-lg font-medium">
               保存到
             </label>
-            <button
-              class="btn btn-sm btn-primary btn-soft"
+            <Button
+              color="primary"
+              variant="soft"
+              size="sm"
               type="button"
               onClick={props.onSelectDirectory}
             >
               选择
-            </button>
+            </Button>
           </div>
 
           {/* 当前选中的路径 */}

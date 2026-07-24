@@ -73,38 +73,7 @@
 
 @import './ease.css';
 @import './ui-extend.css';
+@import './glass.css';
 @import './scrollbar.css';
-
-@utility liquid-glass-border {
-  &:after {
-    content: '';
-    position: absolute;
-    inset: 0px;
-    overflow: hidden;
-    box-shadow:
-      inset 1px 1px 1px 0px rgba(255, 255, 255, 0.3),
-      inset 1px -1px 1px 1px rgba(255, 255, 255, 0.01),
-      0 0 1px rgba(255, 255, 255, 0.7);
-    transform: translateZ(0);
-    pointer-events: none;
-  }
-}
-
-@utility liquid-glass-effect {
-  &:before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    filter: url(#glass-distortion);
-    transform: translateZ(0);
-  }
-}
-
-@utility liquid-glass {
-  transform: translateZ(0);
-  @apply liquid-glass-effect;
-  @apply liquid-glass-border;
-}
 @import './app.css';
 @import './reset.css';

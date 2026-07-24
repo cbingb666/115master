@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import Tooltip from './Tooltip.vue'
 
 const meta = {
@@ -22,29 +23,29 @@ type Story = StoryObj<typeof meta>
 export const Basic: Story = {
   name: '基本',
   render: () => ({
-    components: { Tooltip, Icon },
+    components: { Button, Tooltip, Icon },
     setup: () => ({ I }),
     template: `
       <div class="flex flex-wrap items-center gap-3">
         <Tooltip content="新建文件夹">
-          <button type="button" class="btn btn-glass rounded-full">
+          <Button variant="glass-floating" shape="circle" type="button">
             <Icon :name="I.NEW_FOLDER" class="text-xl" />
-          </button>
+          </Button>
         </Tooltip>
         <Tooltip content="列表视图">
-          <button type="button" class="btn btn-glass rounded-full">
+          <Button variant="glass-floating" shape="circle" type="button">
             <Icon :name="I.LIST" class="text-xl" />
-          </button>
+          </Button>
         </Tooltip>
         <Tooltip content="每页 30 项">
-          <button type="button" class="btn btn-glass rounded-full">
+          <Button variant="glass-floating" shape="circle" type="button">
             <Icon :name="I.DOCUMENT" class="text-2xl" />
-          </button>
+          </Button>
         </Tooltip>
         <Tooltip content="当前排序：修改时间">
-          <button type="button" class="btn btn-glass rounded-full">
+          <Button variant="glass-floating" shape="circle" type="button">
             <Icon :name="I.SORT" class="text-xl" />
-          </button>
+          </Button>
         </Tooltip>
         <p class="w-full text-sm opacity-60">悬停按钮查看 tooltip</p>
       </div>
@@ -55,14 +56,14 @@ export const Basic: Story = {
 export const Placement: Story = {
   name: '方向',
   render: () => ({
-    components: { Tooltip },
+    components: { Button, Tooltip },
     template: `
       <div class="flex flex-col items-center gap-24 py-16">
         <Tooltip content="出现在下方" placement="bottom">
-          <button type="button" class="btn btn-glass rounded-full">placement: bottom</button>
+          <Button variant="glass-floating" type="button">placement: bottom</Button>
         </Tooltip>
         <Tooltip content="出现在上方" placement="top">
-          <button type="button" class="btn btn-glass rounded-full">placement: top</button>
+          <Button variant="glass-floating" type="button">placement: top</Button>
         </Tooltip>
       </div>
     `,
@@ -79,20 +80,20 @@ export const Overflow: Story = {
     },
   },
   render: () => ({
-    components: { Tooltip, Icon },
+    components: { Button, Tooltip, Icon },
     setup: () => ({ I }),
     template: `
       <div class="overflow-hidden rounded-3xl border border-base-content/20">
         <div class="sticky top-0 z-10 flex items-center gap-2 bg-base-200 px-4 py-3">
           <Tooltip content="新建">
-            <button type="button" class="btn btn-glass rounded-full">
+            <Button variant="glass-floating" shape="circle" type="button">
               <Icon :name="I.NEW_FOLDER" class="text-xl" />
-            </button>
+            </Button>
           </Tooltip>
           <Tooltip content="列表">
-            <button type="button" class="btn btn-glass rounded-full">
+            <Button variant="glass-floating" shape="circle" type="button">
               <Icon :name="I.LIST" class="text-xl" />
-            </button>
+            </Button>
           </Tooltip>
           <span class="text-sm opacity-60">外层 overflow-hidden + sticky，tooltip 仍正常溢出</span>
         </div>

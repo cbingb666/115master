@@ -5,6 +5,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { I, Icon } from '@/icons'
 import { useUserAqStore } from '@/store/userAq'
 import { drive115 } from '@/utils/drive115Instance'
+import Button from '../Button/Button'
 
 type UploadStatus = 'idle' | 'uploading' | 'completed' | 'error'
 
@@ -174,14 +175,15 @@ const UploadTest = defineComponent({
         {/* 操作按钮 */}
         <div class="flex gap-2">
           {(status.value === 'idle' || status.value === 'error') && file.value && (
-            <button class="btn btn-primary flex-1" onClick={startUpload} disabled={!uid.value}>
+            <Button color="primary" class="flex-1" onClick={startUpload} disabled={!uid.value}>
               <Icon name={I.UPLOAD} class="text-lg" />
               开始上传
-            </button>
+            </Button>
           )}
           {status.value === 'completed' && (
-            <button
-              class="btn btn-ghost flex-1"
+            <Button
+              variant="ghost"
+              class="flex-1"
               onClick={() => {
                 file.value = null
                 status.value = 'idle'
@@ -190,7 +192,7 @@ const UploadTest = defineComponent({
               }}
             >
               重新上传
-            </button>
+            </Button>
           )}
         </div>
 

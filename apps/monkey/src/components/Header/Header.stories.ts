@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import Header from './Header'
 import HeaderEnd from './HeaderEnd'
 import HeaderStart from './HeaderStart'
@@ -31,7 +32,7 @@ export const TwoSection: Story = {
     },
   },
   render: () => ({
-    components: { Header, HeaderStart, HeaderEnd, Icon },
+    components: { Button, Header, HeaderStart, HeaderEnd, Icon },
     setup: () => ({ I }),
     template: `
       <Header>
@@ -39,15 +40,15 @@ export const TwoSection: Story = {
           <span class="truncate text-lg font-medium">根目录 / 视频 / 一段很长很长的文件夹名称用于演示收缩截断</span>
         </HeaderStart>
         <HeaderEnd>
-          <button type="button" class="btn btn-glass rounded-full">
+          <Button variant="glass-floating" shape="circle" type="button">
             <Icon :name="I.SEARCH" class="text-xl" />
-          </button>
-          <button type="button" class="btn btn-glass rounded-full">
+          </Button>
+          <Button variant="glass-floating" shape="circle" type="button">
             <Icon :name="I.NEW_FOLDER" class="text-xl" />
-          </button>
-          <button type="button" class="btn btn-glass rounded-full">
+          </Button>
+          <Button variant="glass-floating" shape="circle" type="button">
             <Icon :name="I.SORT" class="text-xl" />
-          </button>
+          </Button>
         </HeaderEnd>
       </Header>
     `,
@@ -87,7 +88,7 @@ export const StickyScroll: Story = {
     },
   },
   render: () => ({
-    components: { Header, HeaderStart, HeaderEnd, Icon },
+    components: { Button, Header, HeaderStart, HeaderEnd, Icon },
     setup: () => ({ I }),
     template: `
       <div>
@@ -96,12 +97,12 @@ export const StickyScroll: Story = {
             <span class="truncate text-lg font-medium">滚动我</span>
           </HeaderStart>
           <HeaderEnd>
-            <button type="button" class="btn btn-glass rounded-full">
+            <Button variant="glass-floating" shape="circle" type="button">
               <Icon :name="I.SEARCH" class="text-xl" />
-            </button>
-            <button type="button" class="btn btn-glass rounded-full">
+            </Button>
+            <Button variant="glass-floating" shape="circle" type="button">
               <Icon :name="I.MORE" class="text-xl" />
-            </button>
+            </Button>
           </HeaderEnd>
         </Header>
         <div class="space-y-4 p-4">

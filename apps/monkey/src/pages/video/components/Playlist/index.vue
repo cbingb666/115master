@@ -10,9 +10,14 @@
             :class="styles.playlist.header.count"
           >({{ playlist.state?.data.length }})</span>
         </div>
-        <button :class="styles.playlist.header.close" @click="emit('close')">
+        <Button
+          variant="ghost"
+          shape="circle"
+          :class="styles.playlist.header.close"
+          @click="emit('close')"
+        >
           <Icon :name="I.CLOSE" :class="styles.playlist.header.closeIcon" />
-        </button>
+        </Button>
       </div>
 
       <div v-if="playlist.error" :class="styles.playlist.content">
@@ -45,6 +50,7 @@ import type PlaylistItemVue from './item.vue'
 import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
 import { nextTick, useTemplateRef, watch } from 'vue'
 import { LoadingError } from '@/components'
+import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 import PlaylistItem from './item.vue'
@@ -66,10 +72,9 @@ const styles = clsx({
     'relative',
     'h-[calc(100%-var(--space)*2)] w-[calc(100%-var(--space)*2)]',
     'mx-auto mt-[var(--space)]',
-    'bg-base-100',
     'rounded-3xl',
     'overflow-hidden',
-    'app-glass-border',
+    'app-glass-panel',
   ],
   playlist: {
     container: [
@@ -84,11 +89,11 @@ const styles = clsx({
         'h-(--app-playlist-header-height)',
         'px-(--app-playlist-space) py-4',
         'text-base-content',
-        'app-bg-gradient-glass',
+        'app-glass-fade',
       ],
       title: 'flex items-center gap-2.5 text-xl font-medium tracking-tight',
       count: 'text-base-content/70 text-sm tracking-wide',
-      close: 'btn btn-ghost btn-circle',
+      close: '',
       closeIcon: 'size-6',
     },
     content: [

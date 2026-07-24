@@ -1,6 +1,7 @@
 import type { PropType } from 'vue'
 import { Api } from '@115master/drive115'
 import { defineComponent } from 'vue'
+import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 import { TAG_NAME_MAX_LENGTH } from '@/store/tagList'
 
@@ -51,13 +52,15 @@ const TagFormContent = defineComponent({
           <span class="text-base-content/70 text-sm">颜色</span>
           <div class="flex flex-wrap items-center gap-2.5">
             {COLORS.map(c => (
-              <button
+              <Button
                 key={c}
-                type="button"
+                variant="ghost"
+                size="xs"
+                shape="circle"
                 title={c === LabelColor.Blank ? '无色' : c}
                 aria-label={c === LabelColor.Blank ? '无色' : c}
                 class={[
-                  'flex size-7 items-center justify-center rounded-full border-2 transition-transform',
+                  'size-7 border-2 transition-transform',
                   props.form.color === c
                     ? 'border-primary ring-primary/30 scale-110 ring-2'
                     : 'border-base-content/10 hover:border-base-content/30',
@@ -70,7 +73,7 @@ const TagFormContent = defineComponent({
                 }}
               >
                 {c === LabelColor.Blank && <Icon name={I.CLOSE} size="xs" class="text-base-content/40" />}
-              </button>
+              </Button>
             ))}
           </div>
         </div>

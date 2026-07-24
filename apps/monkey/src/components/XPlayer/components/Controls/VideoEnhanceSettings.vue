@@ -1,15 +1,16 @@
 <template>
-  <button
+  <Button
     ref="buttonRef"
-    :class="[styles.btn.root]"
+    variant="ghost"
+    shape="circle"
     title="视频色彩"
     @click="toggleMenu"
   >
     <Icon
-      :class="[styles.btn.icon]"
+      :class="styles.btn.icon"
       :name="I.COLOR_ADJUST"
     />
-  </button>
+  </Button>
   <Popup
     v-model:visible="menuVisible"
     :trigger="buttonRef"
@@ -22,13 +23,15 @@
           <h3 class="card-title">
             视频色彩
           </h3>
-          <button
-            class="btn btn-xs btn-circle btn-ghost"
+          <Button
+            variant="ghost"
+            size="xs"
+            shape="circle"
             title="重置"
             @click="resetAll"
           >
             <Icon :name="I.RESTART" class="size-6" />
-          </button>
+          </Button>
         </div>
         <div class="grid grid-flow-col grid-rows-5 gap-x-5 gap-y-2">
           <fieldset
@@ -74,6 +77,7 @@ import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import Button from '../../../Button/Button'
 
 const styles = clsx({
   ...controlStyles,

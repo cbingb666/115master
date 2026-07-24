@@ -3,6 +3,7 @@ import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PKG from '@/../package.json'
 import ThemeToggle from '@/components/ThemeToggle'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 
 type SectionId = 'appearance' | 'about'
 
@@ -101,14 +102,15 @@ const PreferencesContent = defineComponent({
           >
             {/* 移动端二级:返回按钮 + 标题 */}
             <div class="flex items-center gap-2 pb-3 sm:hidden">
-              <button
-                type="button"
-                class="text-base-content/60 hover:text-base-content flex cursor-pointer items-center gap-1 text-sm"
+              <Button
+                variant="ghost"
+                size="sm"
+                class="gap-1"
                 onClick={back}
               >
                 <Icon name={I.LEFT} class="text-base" />
                 <span>返回</span>
-              </button>
+              </Button>
               <span class="text-base-content/80 text-sm font-medium">
                 {currentLabel()}
               </span>

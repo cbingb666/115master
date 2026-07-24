@@ -30,6 +30,7 @@ import {
   useFileList,
   useFilePreview,
 } from '@/components'
+import Button from '@/components/Button/Button'
 import { DndMonitor } from '@/components/Dnd'
 import { Tooltip } from '@/components/Tooltip'
 import { useDriveAction } from '@/hooks/useDriveAction'
@@ -250,9 +251,9 @@ const Drive = defineComponent({
           </HeaderStart>
           <HeaderEnd>
             <Tooltip content={searchTooltip.value}>
-              <button class="btn btn-glass rounded-full" onClick={() => search.open()}>
+              <Button variant="glass-floating" shape="circle" onClick={() => search.open()}>
                 <Icon class="text-xl" name={I.SEARCH} />
-              </button>
+              </Button>
             </Tooltip>
             {isSearch.value
               ? <FilePageSizeSelector {...page} />
@@ -278,9 +279,9 @@ const Drive = defineComponent({
                 <ResponsiveMenu title="更多操作">
                   {{
                     target: (_props: object) => (
-                      <button class="btn btn-glass btn-circle" {..._props}>
+                      <Button variant="glass-floating" shape="circle" {..._props}>
                         <Icon class="text-xl" name={I.MORE} />
-                      </button>
+                      </Button>
                     ),
                     default: () => (
                       <>
@@ -365,17 +366,17 @@ const Drive = defineComponent({
         return (
           <div class="fixed right-0 bottom-0 left-(--sider-width) flex justify-center">
             <div class="from-base-100/50 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent"></div>
-            <div class="app-box-glass relative mb-2 rounded-full">
-              <Pagination
-                key="pagination"
-                currentPage={store.query.page}
-                currentPageSize={store.query.size}
-                showSizeChanger={false}
-                total={store.total}
-                onCurrentPageChange={store.changePage}
-                onPageSizeChange={store.changeSize}
-              />
-            </div>
+            <Pagination
+              key="pagination"
+              surface="floating"
+              class="relative mb-2"
+              currentPage={store.query.page}
+              currentPageSize={store.query.size}
+              showSizeChanger={false}
+              total={store.total}
+              onCurrentPageChange={store.changePage}
+              onPageSizeChange={store.changeSize}
+            />
           </div>
         )
       }

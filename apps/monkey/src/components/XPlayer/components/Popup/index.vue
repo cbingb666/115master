@@ -11,8 +11,7 @@
       <div
         v-show="visibleModel"
         ref="popupRef"
-        :class="styles.popup"
-        :data-mild="props.mild"
+        :class="[styles.popup, variants[props.variant]]"
         :style="style"
         v-bind="$attrs"
       >
@@ -23,10 +22,10 @@
 </template>
 
 <script setup lang="ts">
+import type { MaybeElement } from '@vueuse/core'
 import type { BaseTransitionProps } from 'vue'
-import { onClickOutside, useElementBounding, useVModel } from '@vueuse/core'
+import { onClickOutside, unrefElement, useElementBounding, useVModel } from '@vueuse/core'
 import {
-
   computed,
   onMounted,
   onUnmounted,
@@ -47,7 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
   y: 0,
   outsideStopPropagation: false,
   allowPreventControlsClose: true,
-  mild: false,
+  variant: 'floating',
 })
 
 const emit = defineEmits<{
@@ -60,15 +59,16 @@ const styles = clsx({
     [
       'relative',
       'x-popup',
-      'bg-base-100/75',
-      'backdrop-blur-sm backdrop-saturate-180',
       'rounded-3xl',
       'overflow-hidden',
-      'app-glass-border',
-      'data-[mild=true]:bg-base-100/90',
-      'data-[mild=true]:backdrop-blur-3xl',
     ],
 })
+
+const variants = {
+  floating: 'app-glass-floating',
+  overlay: 'app-glass-overlay',
+  panel: 'app-glass-panel',
+} as const
 
 interface Props {
   /** 是否显示 */
@@ -78,7 +78,7 @@ interface Props {
   /** 垂直位置 */
   y?: number
   /** 触发元素 */
-  trigger?: HTMLElement
+  trigger?: MaybeElement
   /** 位置 */
   placement?: 'top' | 'bottom'
   /** 偏移量 */
@@ -87,8 +87,8 @@ interface Props {
   outsideStopPropagation?: boolean
   /** 允许阻止控制栏关闭 */
   allowPreventControlsClose?: boolean
-  /** 是否温和 */
-  mild?: boolean
+  /** Glass 承载场景 */
+  variant?: keyof typeof variants
 }
 
 const { container } = usePortal()
@@ -120,6 +120,7 @@ const style = computed(() => ({
 }))
 
 const portalContainerBounding = useElementBounding(portalContainerEl)
+const trigger = computed(() => unrefElement(props.trigger) as HTMLElement | undefined)
 
 /** 生成唯一的popup ID */
 const popupId = `popup-${Math.random().toString(36).substr(2, 9)}`
@@ -132,7 +133,7 @@ watch(visibleModel, (newVisible) => {
 onMounted(() => {
   popupManager?.registerPopup(popupId, {
     visible: visibleModel.value,
-    trigger: props.trigger,
+    trigger: trigger.value,
     container: popupRef.value!,
     portalContainer: portalContainerEl.value!,
     allowPreventControlsClose: props.allowPreventControlsClose,
@@ -140,6 +141,8 @@ onMounted(() => {
 })
 // 组件卸载时确保清理popup状态
 onUnmounted(() => {
+  if (trigger.value)
+    triggerSet.delete(trigger.value)
   popupManager?.unregisterPopup(popupId)
 })
 
@@ -208,7 +211,7 @@ function getPosition(trigger?: HTMLElement, popup?: HTMLElement, portal?: HTMLEl
  */
 function updatePosition() {
   const positionNew = getPosition(
-    props.trigger,
+    trigger.value,
     popupRef.value,
     portalContainerEl.value,
   )
@@ -234,22 +237,22 @@ watch(
 )
 
 watch(
-  () => props.trigger,
+  trigger,
   (newVal, oldVal) => {
+    if (oldVal && oldVal !== newVal)
+      triggerSet.delete(oldVal)
     if (newVal && !triggerSet.has(newVal)) {
       triggerSet.add(newVal)
     }
-    if (!newVal && oldVal && triggerSet.has(oldVal)) {
-      triggerSet.delete(oldVal)
-    }
   },
+  { immediate: true },
 )
 
 // 点击外部
 onClickOutside(popupRef, (event) => {
   if (visibleModel.value) {
     // 点击触发元素阻止冒泡
-    if (props.trigger && isInContainsTrigger(event, props.trigger)) {
+    if (trigger.value && isInContainsTrigger(event, trigger.value)) {
       event.stopPropagation()
     }
 
@@ -284,9 +287,5 @@ const onAfterLeave: BaseTransitionProps['onAfterLeave'] = () => {
 .x-popup > * {
   position: relative;
   z-index: 1;
-}
-
-[data-theme='light'] .x-popup {
-  box-shadow: 0 8px 32px oklch(0% 0 0 / 0.15);
 }
 </style>

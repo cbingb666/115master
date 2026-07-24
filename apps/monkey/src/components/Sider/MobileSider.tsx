@@ -2,6 +2,7 @@ import type { SlotsType } from 'vue'
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { I, Icon } from '@/icons'
+import Button from '../Button/Button'
 import SiderMenuButton from './SiderMenuButton'
 
 const MobileSider = defineComponent({
@@ -22,25 +23,16 @@ const MobileSider = defineComponent({
     return () => (
       <>
         {/* 汉堡按钮 */}
-        <button
-          type="button"
+        <Button
+          color="primary"
+          size="lg"
+          shape="circle"
           aria-label="打开菜单"
-          class="
-            bg-primary
-            text-primary-content fixed right-4 bottom-4
-            z-110 flex
-            h-12 w-12 items-center
-            justify-center
-            rounded-full shadow-lg
-            transition-transform
-            hover:scale-105
-            active:scale-95
-            sm:hidden
-          "
+          class="fixed right-4 bottom-4 z-110 shadow-lg sm:hidden"
           onClick={open}
         >
           <Icon name={I.MENU} class="text-xl" />
-        </button>
+        </Button>
 
         {/* 遮罩层 */}
         {isOpen.value && (
@@ -59,7 +51,7 @@ const MobileSider = defineComponent({
         {/* 底部弹出层 */}
         <div
           class="
-            app-box-glass-strong
+            app-glass-panel
             fixed
             inset-x-0 bottom-0
             z-130 flex

@@ -1,18 +1,20 @@
 <template>
-  <button
-    class="btn btn-ghost btn-circle"
+  <Button
+    variant="ghost"
+    shape="circle"
     :class="{ 'swap-active': !fullscreen.isFullscreen.value }"
     :title="fullscreenTip"
     @click="fullscreen.toggleFullscreen"
   >
     <Icon class="size-7" :name="icon" />
-  </button>
+  </Button>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
+import Button from '../../../Button/Button'
 
 const { fullscreen, shortcuts } = usePlayerContext()
 
