@@ -8,6 +8,25 @@
  * inset    — selected Button inside floating glass
  */
 
+/* Blur profiles are internal material tokens, never caller-facing utilities. */
+:is(
+  .btn-glass-surface,
+  .btn-glass-inset,
+  .btn-glass-floating,
+  .btn-glass-overlay,
+  .app-glass-surface,
+  .app-glass-floating,
+  .app-glass-overlay,
+  .app-glass-panel
+) {
+  --glass-blur-none: 0px;
+  --glass-blur-standard: 20px;
+  --glass-blur-strong: 32px;
+  --glass-blur: var(--glass-blur-none);
+  --glass-saturation: 100%;
+  --glass-brightness: 100%;
+}
+
 /* Surface Glass */
 :is(.btn-glass-surface, .app-glass-surface) {
   --glass-fg: var(--btn-color, var(--color-base-content));
@@ -17,9 +36,7 @@
   --glass-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 10%, transparent);
   --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.18);
   --glass-shadow: 0 0 0 oklch(0% 0 0 / 0);
-
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  --glass-blur: var(--glass-blur-none);
 }
 
 /* Inset Glass: selected Button inside Float Glass, without a second blur layer */
@@ -29,8 +46,8 @@
   --btn-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 14%, transparent);
   --btn-inset: 0 1px 0 oklch(100% 0 0 / 0.3);
   --btn-shadow: 0 1px 3px oklch(0% 0 0 / 0.1);
+  --glass-blur: var(--glass-blur-none);
 
-  backdrop-filter: none;
   font-weight: 600;
 
   @media (hover: hover) {
@@ -54,9 +71,11 @@
   --glass-border: color-mix(in oklab, var(--btn-color, var(--color-base-content)) 20%, transparent);
   --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.3);
   --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.12), 0 6px 18px oklch(0% 0 0 / 0.1);
-
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  backdrop-filter: blur(20px) saturate(180%);
+  --glass-blur: var(--glass-blur-standard);
+  --glass-saturation: 180%;
+  --glass-opaque-bg: color-mix(in oklab, var(--btn-color, var(--color-base-300)) 92%, var(--color-base-300));
+  --glass-opaque-hover-bg: color-mix(in oklab, var(--glass-opaque-bg) 92%, var(--glass-fg));
+  --glass-opaque-active-bg: color-mix(in oklab, var(--glass-opaque-bg) 86%, var(--glass-fg));
 }
 
 /* Overlay Glass */
@@ -68,9 +87,11 @@
   --glass-border: oklch(100% 0 0 / 0.18);
   --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.22);
   --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.22), 0 8px 24px oklch(0% 0 0 / 0.2);
-
-  -webkit-backdrop-filter: blur(24px) saturate(150%);
-  backdrop-filter: blur(24px) saturate(150%);
+  --glass-blur: var(--glass-blur-standard);
+  --glass-saturation: 150%;
+  --glass-opaque-bg: oklch(12% 0.01 260 / 0.92);
+  --glass-opaque-hover-bg: oklch(16% 0.01 260 / 0.95);
+  --glass-opaque-active-bg: oklch(20% 0.01 260 / 0.98);
 }
 
 /* Panel Glass */
@@ -80,9 +101,20 @@
   --glass-border: color-mix(in oklab, var(--color-base-content) 12%, transparent);
   --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.22);
   --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.18), 0 12px 32px oklch(0% 0 0 / 0.2);
+  --glass-blur: var(--glass-blur-strong);
+  --glass-saturation: 160%;
+  --glass-opaque-bg: color-mix(in oklab, var(--color-base-300) 96%, var(--color-base-100));
+}
 
-  -webkit-backdrop-filter: blur(32px) saturate(160%);
-  backdrop-filter: blur(32px) saturate(160%);
+/* The none profile avoids a compositor layer; non-zero profiles share one recipe. */
+:is(.btn-glass-surface, .btn-glass-inset, .app-glass-surface) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:is(.btn-glass-floating, .btn-glass-overlay, .app-glass-floating, .app-glass-overlay, .app-glass-panel) {
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
 }
 
 /* Button adapter: daisyUI consumes the shared material through --btn-* */
@@ -139,14 +171,18 @@ a.pill:is(.app-glass-surface, .app-glass-floating, .app-glass-overlay):active {
     var(--btn-shadow);
 }
 
-/* Backdrop fade used by sticky headers inside a Glass panel */
+/* Gradient fade used by sticky headers inside a Glass panel; no second filter. */
 .app-glass-fade::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
-  backdrop-filter: blur(48px) saturate(180%) brightness(50%);
-  mask-image: linear-gradient(to top, transparent, black 50%);
+  background: linear-gradient(
+    to bottom,
+    var(--glass-bg) 0%,
+    color-mix(in oklab, var(--glass-bg) 72%, transparent) 58%,
+    transparent 100%
+  );
 }
 
 [data-theme='light'] {
@@ -183,6 +219,9 @@ a.pill:is(.app-glass-surface, .app-glass-floating, .app-glass-overlay):active {
     --glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
     --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.65);
     --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.08), 0 6px 18px oklch(0% 0 0 / 0.06);
+    --glass-opaque-bg: color-mix(in oklab, var(--btn-color, var(--color-base-100)) 94%, var(--color-base-100));
+    --glass-opaque-hover-bg: color-mix(in oklab, var(--glass-opaque-bg) 94%, var(--glass-fg));
+    --glass-opaque-active-bg: color-mix(in oklab, var(--glass-opaque-bg) 90%, var(--glass-fg));
   }
 
   .app-glass-panel {
@@ -190,9 +229,50 @@ a.pill:is(.app-glass-surface, .app-glass-floating, .app-glass-overlay):active {
     --glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
     --glass-inset: 0 1px 0 oklch(100% 0 0 / 0.72);
     --glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.06), 0 12px 32px oklch(0% 0 0 / 0.08);
+    --glass-opaque-bg: color-mix(in oklab, var(--color-base-100) 97%, var(--color-base-200));
   }
+}
 
-  .app-glass-fade::before {
-    backdrop-filter: blur(48px) saturate(180%);
+/* daisyUI Alert keeps its semantic tone while consuming Floating Glass. */
+.alert.app-glass-floating {
+  --glass-bg: color-mix(in oklab, var(--alert-color, var(--color-base-content)) 80%, transparent);
+  --glass-border: color-mix(in oklab, var(--alert-color, var(--color-base-content)) 74%, var(--glass-fg));
+  --glass-opaque-bg: color-mix(in oklab, var(--alert-color, var(--color-base-content)) 94%, var(--color-base-100));
+  --glass-opaque-hover-bg: var(--glass-opaque-bg);
+  --glass-opaque-active-bg: var(--glass-opaque-bg);
+}
+
+.alert-info.app-glass-floating {
+  --glass-fg: var(--color-info-content);
+}
+
+.alert-success.app-glass-floating {
+  --glass-fg: var(--color-success-content);
+}
+
+.alert-warning.app-glass-floating {
+  --glass-fg: var(--color-warning-content);
+}
+
+.alert-error.app-glass-floating {
+  --glass-fg: var(--color-error-content);
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :is(.btn-glass-floating, .btn-glass-overlay, .app-glass-floating, .app-glass-overlay, .app-glass-panel) {
+    --glass-bg: var(--glass-opaque-bg);
+    --glass-hover-bg: var(--glass-opaque-hover-bg, var(--glass-opaque-bg));
+    --glass-active-bg: var(--glass-opaque-active-bg, var(--glass-opaque-bg));
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :is(.btn-glass-floating, .btn-glass-overlay, .app-glass-floating, .app-glass-overlay, .app-glass-panel) {
+    --glass-bg: var(--glass-opaque-bg);
+    --glass-hover-bg: var(--glass-opaque-hover-bg, var(--glass-opaque-bg));
+    --glass-active-bg: var(--glass-opaque-active-bg, var(--glass-opaque-bg));
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }

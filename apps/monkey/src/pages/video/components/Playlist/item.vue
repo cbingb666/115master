@@ -97,12 +97,10 @@ const styles = clsx({
     container: [
       'absolute right-2 bottom-2 rounded-md',
       'px-1.5 py-0.5',
-      'backdrop-blur-md',
-      'bg-base-100/40 text-base-content/70 text-xs',
+      'app-glass-overlay text-xs',
       'font-medium',
       'tracking-tight',
       'app-font-time',
-      'app-shadow',
     ],
   },
   mark: {

@@ -9,7 +9,7 @@ description: apps/monkey 的 Glass 材质体系。创建或重构 Button/Pill Gl
 
 ## 步骤
 
-1. 阅读 `../../../apps/monkey/src/styles/glass.css` 和相关调用层。涉及 Button、Pill 或 XPlayer Popup 时，同时阅读其实现。完成标准：所有受影响表面及其内部动作都已列明。
+1. 阅读 `../../../../apps/monkey/src/styles/glass.css` 和相关调用层。涉及 Button、Pill 或 XPlayer Popup 时，同时阅读其实现。完成标准：所有受影响表面及其内部动作都已列明。
 2. 用下表给每个表面分类。完成标准：每个表面只有一种材质场景，每个内部动作只有一种交互样式。
 3. 通过现有接口应用材质。完成标准：调用层不再自行拼接背景、边框、阴影或 `backdrop-*` 来模拟 Glass。
 4. 验证源码、行为和 Storybook。完成标准：旧 Glass 类归零，针对性测试、type-check 和 lint 通过，并在明暗主题下检查受影响场景。
@@ -26,6 +26,16 @@ description: apps/monkey 的 Glass 材质体系。创建或重构 Button/Pill Gl
 
 `app-glass-fade` 是 Glass 面板内吸顶标题的背景渐隐，只补充材质，不构成独立场景。
 
+## 模糊档位
+
+| 档位 | 场景 | 合成规则 |
+| --- | --- | --- |
+| `none` | `surface`、`inset` | 使用 `backdrop-filter: none`，不创建第二个合成层 |
+| `standard` | `floating`、`overlay` | 只在最外层悬浮表面执行一次背景滤镜 |
+| `strong` | `panel` | 只用于大型结构表面，不与子层模糊叠加 |
+
+档位的具体数值只在 `glass.css` 定义。调用层不能传 blur prop、使用 `backdrop-blur-*`，也不能覆盖 saturation 或 brightness。`app-glass-fade` 只绘制渐变，不执行背景滤镜。
+
 ## 组合
 
 - 材质和背景滤镜只放在最外层表面一次。
@@ -34,6 +44,8 @@ description: apps/monkey 的 Glass 材质体系。创建或重构 Button/Pill Gl
 - 动作用 `Button`，非动作容器或链接用 `Pill`。
 - 语义色使用 Button 标准颜色；颜色变化不产生新 Glass 场景。
 - `glass.css` 通过 `--glass-*` 独占所有材质数值；Button 只把它们适配到 daisyUI `--btn-*`。
+- 浏览器不支持背景滤镜或用户要求降低透明度时，由材质切换为更不透明的背景；调用层不写 fallback。
+- 不在 hover、active 或过渡动画中切换模糊档位。
 
 这种组合只产生一层模糊和一条连续高光，可避免 XPlayer 控件出现不透明圆片和边框不一致。
 
@@ -61,10 +73,11 @@ description: apps/monkey 的 Glass 材质体系。创建或重构 Button/Pill Gl
 
 ```bash
 rg -n "app-box-glass|app-glass-border|app-bg-gradient-glass|liquid-glass" apps/monkey/src
+rg -n "backdrop-(blur|saturate|brightness)|backdrop-filter" apps/monkey/src --glob '!**/styles/glass.css'
 pnpm -F @115master/monkey test src/components/Button src/components/Pill src/components/Pagination src/components/ActionBar src/components/XPlayer/components/Controls
 pnpm -F @115master/monkey type-check
 pnpm -F @115master/monkey lint
 pnpm -F @115master/monkey build-storybook
 ```
 
-第一条命令必须没有结果。随后在 Storybook 的 Glass story 中切换明暗主题，确认外层高光连续、内容可读，ghost 动作周围没有额外的不透明透镜。
+前两条命令必须没有结果。随后在 Storybook 的 Glass story 中切换明暗主题，确认外层高光连续、内容可读，ghost 动作周围没有额外的不透明透镜；`surface` 和 `inset` 的 computed `backdrop-filter` 必须是 `none`。

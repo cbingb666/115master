@@ -71,10 +71,10 @@ export const Toast = defineComponent({
     })
 
     const typeClassMap: Record<NonNullable<ToastProps['type']>, string> = {
-      success: 'alert-success bg-success/80',
-      error: 'alert-error bg-error/80',
-      warning: 'alert-warning bg-warning/80',
-      info: 'alert-info bg-info/80',
+      success: 'alert-success',
+      error: 'alert-error',
+      warning: 'alert-warning',
+      info: 'alert-info',
     }
 
     function getTypeClass(type: ToastProps['type']) {
@@ -117,7 +117,7 @@ export const Toast = defineComponent({
 
     const toastClass = computed(() => {
       const baseClass = `
-        alert shadow-lg mb-3
+        alert app-glass-floating mb-3
         app-animate-slide-in-right
         transition-all duration-300
         flex items-center
@@ -125,7 +125,6 @@ export const Toast = defineComponent({
         cursor-pointer
         rounded-3xl
         px-4 py-3
-        backdrop-blur-xl
         relative z-50
         pointer-events-auto
         ${getTypeClass(props.type)}

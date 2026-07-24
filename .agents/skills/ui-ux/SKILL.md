@@ -1,6 +1,6 @@
 ---
-name: ui-ux-policy
-description: General UI/UX policy. Holds cross-cutting rules — feedback, layout, motion, accessibility, error handling. Each rule is one classic-terminology paragraph. Apply when designing, modifying, or reviewing any UI across web, mobile, or desktop.
+name: ui-ux
+description: General UI/UX policy and parent skill for specialized UI systems. Apply when designing, modifying, or reviewing UI across web, mobile, or desktop; use its child skills for domain-specific systems such as Glass.
 ---
 
 # UI/UX Policy
@@ -8,6 +8,10 @@ description: General UI/UX policy. Holds cross-cutting rules — feedback, layou
 Each section is one rule. Add a new rule by appending a new section in the same shape: **Rule → Why (classic terms) → Decision → Anti-patterns**.
 
 ---
+
+## 专项 skills
+
+- Glass 材质、Button/Pill Glass 变体、Popup、悬浮控制、媒体浮层、侧栏或 Sheet：调用子 skill [`glass-ui`](./glass-ui/SKILL.md)。
 
 ## Rule 1 — Feedback: visible change is its own notification
 
