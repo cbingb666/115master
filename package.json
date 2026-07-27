@@ -30,6 +30,7 @@
     "lint:fix": "turbo run lint:fix",
     "lint:inspector": "pnpm dlx @eslint/config-inspector",
     "analyze": "turbo run analyze",
+    "storybook": "pnpm -F @115master/monkey storybook",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "changeset publish",

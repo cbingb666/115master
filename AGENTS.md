@@ -14,7 +14,7 @@ pnpm lint                 # eslint
 pnpm lint:fix             # eslint --fix
 pnpm lint:inspector       # @eslint/config-inspector (调试规则冲突)
 pnpm analyze              # bundle 分析 (rollup-plugin-visualizer)
-pnpm -F @115master/monkey storybook   # 组件 Storybook (localhost:6006)
+pnpm storybook            # monkey 组件 Storybook (localhost:6006)
 pnpm changeset            # 新建 changeset (仅用户执行)
 pnpm clean:cache          # 清理 Turbo / Vite / Rollup / TypeScript 构建缓存
 pnpm clean                # 清理所有 dist、构建缓存及根目录 node_modules
