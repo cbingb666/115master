@@ -34,7 +34,8 @@
     "version-packages": "changeset version",
     "release": "changeset publish",
     "preinstall": "npx -y only-allow pnpm",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean:cache": "pnpm --include-workspace-root -r exec rm -rf .turbo .rollup.cache node_modules/.vite node_modules/.tmp",
+    "clean": "pnpm -r --if-present run clean && pnpm clean:cache && rm -rf node_modules"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.2",

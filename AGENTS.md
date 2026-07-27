@@ -16,7 +16,8 @@ pnpm lint:inspector       # @eslint/config-inspector (调试规则冲突)
 pnpm analyze              # bundle 分析 (rollup-plugin-visualizer)
 pnpm -F @115master/monkey storybook   # 组件 Storybook (localhost:6006)
 pnpm changeset            # 新建 changeset (仅用户执行)
-pnpm clean                # 清理所有 dist + node_modules
+pnpm clean:cache          # 清理 Turbo / Vite / Rollup / TypeScript 构建缓存
+pnpm clean                # 清理所有 dist、构建缓存及根目录 node_modules
 ```
 
 > **Plus 版**：`dev:plus` / `build:plus` 设置 `VITE_PLUS_VERSION=true`，用于 monkey 的实验性 plus 分支（功能差异由 `@apps/monkey` 内 `import.meta.env.VITE_PLUS_VERSION` 决定）。
