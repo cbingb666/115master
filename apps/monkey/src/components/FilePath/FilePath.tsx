@@ -68,8 +68,8 @@ const FilePath = defineComponent({
                           class="
                             text-base-content/70
                             cursor-default
-                            text-shadow-2xs
                             no-underline!
+                            text-shadow-2xs
                           "
                         >
                           {p.name}
