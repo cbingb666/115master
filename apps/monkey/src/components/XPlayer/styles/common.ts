@@ -6,7 +6,6 @@ export const controlStyles = {
     root: [
       'text-base font-semibold',
       'no-underline hover:no-underline!',
-      'text-shadow-[0_0_2px_rgba(0_0_0_/0.3),0_0_2px_rgba(0_0_0_/0.3),0_0_2px_rgba(0_0_0_/0.3)]',
     ],
   },
   menu: {
