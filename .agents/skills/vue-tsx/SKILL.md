@@ -6,7 +6,7 @@ description: 编写 / 重构 / 审查 apps/monkey 的 Vue TSX 组件时使用 �
 # Vue TSX 组件规范（apps/monkey）
 
 > 通用风格（命名、early return、导出规则）见 `.agents/STYLE_GUIDE.md`，不在此重复。
-> 图标一律 `name={I.X}`，见 `.agents/rules/icons-usage.md`。
+> 图标规则由 `icons` skill 维护。
 > 组件 stories 写法与 react 类型污染防护见 `storybook-stories` skill。
 
 ## 选型：一律 TSX
@@ -127,7 +127,6 @@ setup: (props, { slots }) => {
 | `defineComponent<Props>()` 泛型替代运行时声明 | 丢默认值与运行时校验，storybook docgen 也依赖运行时声明 | 运行时 props + `PropType` |
 | setup 返回响应式数据对象 | TSX 组件的契约是返回渲染函数 | `return () => (...)` |
 | 组件互引走 `@/components` barrel | 循环引用，dev 抛 `X is not defined` | 相对深路径 |
-| `<Icon name="PLAY" />` 字面量 | 绕过 `I.*` 集中引用（详见 icons 规则） | `name={I.PLAY}` |
 
 ## Stories
 
