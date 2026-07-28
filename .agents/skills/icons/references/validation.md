@@ -1,7 +1,6 @@
 # 图标验证
 
-规范判定以 [`usage.md`](usage.md) 和 [`design.md`](design.md) 为准；测试、UAT
-和结果报告遵循 `.agents/TEST_GUIDE.md`。
+规范判定以 [`usage.md`](usage.md) 和 [`design.md`](design.md) 为准，验证要求见下文。
 
 ## 源码一致性
 

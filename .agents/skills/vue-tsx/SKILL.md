@@ -27,7 +27,6 @@ description: 编写、重构或审查 apps/monkey 的 Vue TSX 时使用。覆盖
 | Glass Button、Pill、Popup、悬浮控制、媒体浮层、侧栏或 Sheet | `glass-ui` skill |
 | 图标选择、注册、迁移或自定义 SVG | `icons` skill |
 | 纯 UI 组件或 stories | `storybook-stories` skill；由它维护 Story 要求与完成标准 |
-| 测试、UAT、E2E 或结果报告 | `.agents/TEST_GUIDE.md` |
 
 同时涉及组件契约和渲染时，两个本地 reference 都要读取。
 

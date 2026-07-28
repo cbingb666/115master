@@ -56,11 +56,6 @@ drive115 / subtitle-source → shared, utils
 
 - 任何 `apps/monkey` 图标工作都调用 `icons` skill。
 
-## Testing
-
-**执行测试与验收前必读**
-@.agents/TEST_GUIDE.md
-
 ## Packages
 
 ### @packages/shared
