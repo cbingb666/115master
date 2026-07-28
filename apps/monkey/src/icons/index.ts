@@ -1,4 +1,4 @@
-import Icon from './icon.vue'
+import Icon from './icon'
 import { I } from './registry'
 
 export { I, Icon }

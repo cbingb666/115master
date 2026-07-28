@@ -69,7 +69,7 @@ export default Xxx
 | `@click.self.stop` | `onClick={withModifiers(fn, ['self', 'stop'])}`；`capture` / `once` / `passive` 用后缀：`onClickCapture`、`onKeyupOnce` |
 | `v-model="x"` | 显式展开：`modelValue={x.value}` + `onUpdate:modelValue={v => (x.value = v)}` |
 | `v-show` | `v-show={expr}`（插件支持，照写） |
-| `<component :is>` | `<component is={Comp} />` |
+| `<component :is>` | `h(Comp, props)`；禁止 `<component is={Comp} />`，JSX 会把它解析为名为 `component` 的组件 |
 | `<Teleport>` `<Transition>` `<KeepAlive>` | `import { Teleport, Transition, KeepAlive } from 'vue'` 后直接当标签用（JSX 按作用域变量解析，不 import 运行时才爆） |
 | 模板 ref | `shallowRef` + `ref={menuRef}`，读到的是元素本身 |
 | 无对应 | Fragment `<>...</>` 可用 |
