@@ -42,6 +42,7 @@ import type { Action, ActionKey, KeyBindings, KeyBindingStr } from '@/components
  * @description 用于显示快捷键项
  */
 
+import { Button } from '@115master/ui'
 import { computed } from 'vue'
 import {
   hasEmptyKeybindings,
@@ -51,7 +52,6 @@ import {
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import Button from '../../../../Button/Button'
 import KeyRecorder from './KeyRecorder.vue'
 
 const props = defineProps<{

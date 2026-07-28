@@ -1,15 +1,7 @@
 export * from './ActionBar'
 export { ActionMenu } from './ActionMenu'
-export { Button } from './Button'
-export type {
-  ButtonColor,
-  ButtonShape,
-  ButtonSize,
-  ButtonVariant,
-} from './Button'
 export * from './CloudDownload'
 export * from './ContextMenu'
-export * from './Dialog'
 export * from './Empty'
 export * from './Example'
 export * from './FileBroswer'

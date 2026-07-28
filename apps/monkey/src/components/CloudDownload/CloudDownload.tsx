@@ -1,13 +1,15 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
+import { Button } from '@115master/ui'
 import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, useTemplateRef, watch } from 'vue'
 import FileItemThumbnail from '@/components/FileItem/FileItemThumbnail'
 import { useOfflineQuotaPackageInfoStore } from '@/store/offlineQuotaPackageInfo'
 import { actressFaceDB } from '@/utils/actressFaceDB'
-import Button from '../Button/Button'
 
 const CloudDownload = defineComponent({
+  name: 'CloudDownload',
+
   props: {
     inputValue: {
       type: String,

@@ -1,9 +1,8 @@
 import type { PropType } from 'vue'
-import { Tooltip } from '@115master/ui'
+import { Button, Tooltip } from '@115master/ui'
 import { useCycleList } from '@vueuse/core'
 import { computed, defineComponent, watch } from 'vue'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 
 export type ViewType = 'list' | 'card'
 

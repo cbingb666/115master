@@ -2,9 +2,11 @@ import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
 import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
+import { Button } from '@115master/ui'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
+import { useAppDialog } from '@/app/dialog'
 import {
   ActionBar,
   ActionMenu,
@@ -18,10 +20,8 @@ import {
   SelectionHeader,
   Sider,
   SiderContent,
-  useDialog,
   useToast,
 } from '@/components'
-import Button from '@/components/Button/Button'
 import { useMultiSelect } from '@/hooks/useMultiSelect'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
@@ -36,7 +36,7 @@ const Tags = defineComponent({
     useTitle('标签管理 · 115Master')
 
     const store = useTagStore()
-    const dialog = useDialog()
+    const dialog = useAppDialog()
     const toast = useToast()
 
     /** URL ↔ 搜索词桥接（store 自身不依赖 router，便于 node 环境测试） */
@@ -76,8 +76,8 @@ const Tags = defineComponent({
         content: () => h(TagFormContent, { form }),
         confirmText: tag ? '保存' : '创建',
         cancelText: '取消',
-        maskClosable: true,
-        confirmCallback: async () => {
+        closeOnBackdrop: true,
+        onConfirm: async () => {
           if (form.submitting)
             return false
           const err = store.checkName(form.name, tag?.id)

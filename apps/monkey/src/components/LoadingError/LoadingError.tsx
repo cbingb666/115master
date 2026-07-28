@@ -1,10 +1,10 @@
 import type { PropType, VNode } from 'vue'
 import type { IconValue } from '@/icons'
+import { Button } from '@115master/ui'
 import { useClipboard } from '@vueuse/core'
 import { computed, defineComponent } from 'vue'
 import { MEDIA_ERROR_NAME } from '@/components/XPlayer/index.const'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 
 type ErrorType = 'error' | 'warning' | 'info' | 'success'
 type Size = 'mini' | 'small' | 'medium' | 'large'

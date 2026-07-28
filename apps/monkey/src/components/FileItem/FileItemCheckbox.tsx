@@ -24,7 +24,7 @@ const FileItemCheckbox = defineComponent({
   setup(props) {
     function handleCheckboxKeyDown(e: KeyboardEvent) {
       // 如果页面有打开的对话框，则不处理键盘事件
-      if (document.querySelector('[role="dialog"], .modal, .alert')) {
+      if (document.querySelector('[role="dialog"][open], .alert')) {
         return
       }
 

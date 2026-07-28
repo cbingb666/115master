@@ -1,9 +1,8 @@
 import type { PropType } from 'vue'
-import { Tooltip } from '@115master/ui'
+import { Button, Tooltip } from '@115master/ui'
 import { defineComponent } from 'vue'
 import { Header, HeaderEnd, HeaderStart } from '@/components/Header'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 
 /**
  * 多选头部（退出多选 + 已选数量 + 全选/反选）

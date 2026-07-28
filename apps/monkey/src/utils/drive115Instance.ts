@@ -1,6 +1,6 @@
 import { Crypto115, Drive115 } from '@115master/drive115'
 import { FetchRequest } from '@115master/shared'
-import { useDialog } from '@/components/Dialog'
+import { appDialog } from '@/app/dialog'
 import { appLogger } from '@/utils/logger'
 import { GMRequest } from '@/utils/request/gmRequest'
 
@@ -22,17 +22,18 @@ export const drive115 = new Drive115({
     if (result.action === 'relogin' && !reloginNotified) {
       reloginNotified = true
       try {
-        useDialog().create({
+        const handle = appDialog.create({
           title: '登录状态已过期',
           content: '请重新登录 115 账号后，返回本页刷新即可继续使用。',
           confirmText: '去登录',
           cancelText: '稍后',
           showCancel: true,
-          maskClosable: true,
-          confirmCallback: () => {
+          closeOnBackdrop: true,
+          onConfirm: () => {
             location.href = LOGIN_URL
           },
         })
+        void handle.closed.catch(e => appLogger.error('[drive115] 重新登录提醒失败:', e))
       }
       catch (e) {
         appLogger.error('[drive115] 重新登录提醒失败:', e)
@@ -42,10 +43,10 @@ export const drive115 = new Drive115({
     if (result.action === 'verify' && !verifyNotified) {
       verifyNotified = true
       try {
-        useDialog().alert({
+        void appDialog.alert({
           title: '需要人机验证',
           content: result.message,
-        })
+        }).catch(e => appLogger.error('[drive115] 人机验证提醒失败:', e))
       }
       catch (e) {
         appLogger.error('[drive115] 人机验证提醒失败:', e)

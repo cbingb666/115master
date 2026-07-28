@@ -1,11 +1,11 @@
 import type { PropType } from 'vue'
+import { Button } from '@115master/ui'
 import { format } from '@115master/utils'
 import { GM_xmlhttpRequest } from 'vite-plugin-monkey/dist/client'
 import { computed, defineComponent, ref } from 'vue'
 import { I, Icon } from '@/icons'
 import { useUserAqStore } from '@/store/userAq'
 import { drive115 } from '@/utils/drive115Instance'
-import Button from '../Button/Button'
 
 type UploadStatus = 'idle' | 'uploading' | 'completed' | 'error'
 

@@ -1,14 +1,14 @@
 import type { Share } from '@115master/drive115'
 import { Api } from '@115master/drive115'
 import { string } from '@115master/utils'
-import { useDialog } from '@/components'
+import { useAppDialog } from '@/app/dialog'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'
 import { composeRenamedName, getFileIds } from './helpers'
 
 /** 文件基础操作（置顶、星标、重命名、新建文件夹） */
 export function useFileAction() {
-  const dialog = useDialog()
+  const dialog = useAppDialog()
 
   /** 置顶批量 */
   async function topBatch(items: Share.Entity.FilesItem[]): Promise<boolean> {
@@ -58,6 +58,7 @@ export function useFileAction() {
   async function renameItem(item: Share.Entity.FilesItem): Promise<string | false> {
     const dialogRes = await dialog.prompt({
       title: '重命名',
+      inputLabel: '文件名',
       placeholder: '请输入文件名',
       defaultValue: string.removeFileExtension(item.n),
       multiline: true,
@@ -95,6 +96,7 @@ export function useFileAction() {
   async function newFolder(pid: string = '0', defaultValue: string = ''): Promise<boolean> {
     const dialogRes = await dialog.prompt({
       title: '新建文件夹',
+      inputLabel: '文件夹名称',
       defaultValue,
       placeholder: '请输入文件夹名称',
       inputType: 'text',

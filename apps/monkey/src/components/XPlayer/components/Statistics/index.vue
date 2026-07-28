@@ -154,13 +154,13 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@115master/ui'
 import { computed } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import Button from '../../../Button/Button'
 
 const styles = clsx({
   // 根元素样式

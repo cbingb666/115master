@@ -1,7 +1,7 @@
 import type { PropType } from 'vue'
 import { Api } from '@115master/drive115'
+import { Button } from '@115master/ui'
 import { defineComponent } from 'vue'
-import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 import { TAG_NAME_MAX_LENGTH } from '@/store/tagList'
 
@@ -10,7 +10,7 @@ const { LabelColor } = Api.TagApi.Req
 /** 8 种预设色（含无色 Blank） */
 const COLORS = Object.values(LabelColor)
 
-/** 创建 / 编辑弹窗共享的表单状态（由页面持有，透传给本组件与 confirmCallback） */
+/** 创建 / 编辑弹窗共享的表单状态（由页面持有，透传给本组件与 onConfirm） */
 export interface TagFormState {
   name: string
   color: string
@@ -19,9 +19,9 @@ export interface TagFormState {
 }
 
 /**
- * 创建 / 编辑标签的表单内容（作为 useDialog.create 的 content）。
+ * 创建 / 编辑标签的表单内容（作为 Dialog service create 的 content）。
  *
- * 直接 mutate 传入的 reactive `form`，供对话框 confirmCallback 读取并校验。
+ * 直接 mutate 传入的 reactive `form`，供对话框 onConfirm 读取并校验。
  */
 const TagFormContent = defineComponent({
   name: 'TagFormContent',

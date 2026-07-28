@@ -1,10 +1,9 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
-import { Tooltip } from '@115master/ui'
+import { Button, Tooltip } from '@115master/ui'
 import { computed, defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 import { SORT_OPTIONS } from './config'
 import SortOptions from './SortOptions'
 

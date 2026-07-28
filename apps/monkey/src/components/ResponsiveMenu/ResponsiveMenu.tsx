@@ -1,7 +1,7 @@
 import type { SlotsType, VNode } from 'vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { defineComponent, nextTick, onBeforeUnmount, shallowRef, Teleport, watch } from 'vue'
-import { useDialog } from '@/components'
+import { useAppDialog } from '@/app/dialog'
 
 type Slot = VNode
 interface Trigger {
@@ -156,7 +156,7 @@ const PullupModal = defineComponent({
     const TargetSlot = slots.target
     const DefaultSlot = slots.default
 
-    const dialog = useDialog()
+    const dialog = useAppDialog()
 
     const handleClick = () => {
       (document.activeElement as HTMLElement)?.blur()
@@ -171,7 +171,7 @@ const PullupModal = defineComponent({
               const target = event.target as HTMLElement | null
               if (!target?.closest('a,button,input,label,[role="menuitem"]'))
                 return
-              requestAnimationFrame(() => instance.hide())
+              requestAnimationFrame(() => instance.close())
             }}
           >
             <DefaultSlot />

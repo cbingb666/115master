@@ -1,3 +1,4 @@
+import { Button } from '@115master/ui'
 import { format } from '@115master/utils'
 import { computed, defineComponent } from 'vue'
 import LogoWordmark from '@/assets/logo-wordmark-inline.svg?component'
@@ -6,7 +7,6 @@ import { useDriveAction } from '@/hooks/useDriveAction'
 import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
 import { useDriveSpaceInfoStore } from '@/store/driveSpaceInfo'
-import Button from '../Button/Button'
 
 const SiderContent = defineComponent({
   name: 'SiderContent',

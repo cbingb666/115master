@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { Button } from '@115master/ui'
 import { ref } from 'vue'
-import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 
 const meta = {

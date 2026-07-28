@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 
+import { Button } from '@115master/ui'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createApp, h } from 'vue'
-import Button from '../../../../Button/Button'
 import PlayerControlSurface from '../PlayerControlSurface'
 
 const apps: ReturnType<typeof createApp>[] = []

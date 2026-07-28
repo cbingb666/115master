@@ -1,8 +1,8 @@
 import type { Share } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
+import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
-import { useDialog } from '@/components'
 import { useFolderImagePreview } from '@/hooks/useFolderImagePreview'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { actressFaceDB } from '@/utils/actressFaceDB'
@@ -26,7 +26,7 @@ interface UseFileItemOptions {
 
 export function useFileItem(options: UseFileItemOptions) {
   const { data, onPreview } = options
-  const dialog = useDialog()
+  const dialog = useAppDialog()
   const itemRef = shallowRef<HTMLElement>()
 
   /** 添加 folder image preview 支持 */

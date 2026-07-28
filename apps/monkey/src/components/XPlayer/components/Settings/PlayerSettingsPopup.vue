@@ -54,11 +54,11 @@
 <script setup lang="ts">
 import type { SettingsTab } from '@/components/XPlayer/hooks/useContextMenu'
 import type { IconValue } from '@/icons'
+import { Button } from '@115master/ui'
 import { ref, watch } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import Button from '../../../Button/Button'
 import PlayerSettingsPlay from './PlayerSettingsPlay.vue'
 import PlayerSettingsShortcuts from './PlayerSettingsShortcuts.vue'
 

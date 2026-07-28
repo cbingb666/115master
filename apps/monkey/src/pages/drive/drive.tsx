@@ -1,9 +1,10 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
-import { Tooltip } from '@115master/ui'
+import { Button, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useEventListener, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
 import {
   ActionBar,
@@ -27,11 +28,9 @@ import {
   Sider,
   SiderContent,
   SortOptions,
-  useDialog,
   useFileList,
   useFilePreview,
 } from '@/components'
-import Button from '@/components/Button/Button'
 import { DndMonitor } from '@/components/Dnd'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
@@ -53,7 +52,7 @@ const Drive = defineComponent({
     onActivated(() => store.restoreScroll())
 
     const action = useDriveAction()
-    const dialog = useDialog()
+    const dialog = useAppDialog()
     const search = useGlobalSearch()
     const bp = useBreakpoints(breakpointsTailwind)
     const searchTooltip = computed(() => bp.greater('sm').value ? '搜索 (⌘K)' : '搜索')

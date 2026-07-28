@@ -14,6 +14,23 @@ export type {
   DialogProps,
   DialogSize,
 } from './components/Dialog/Dialog'
+export { createDialogService, DialogHost, useDialog } from './components/Dialog/service'
+export type {
+  DialogAlertOptions,
+  DialogConfirmHandler,
+  DialogConfirmOptions,
+  DialogCreateOptions,
+  DialogHandle,
+  DialogHostProps,
+  DialogOptions,
+  DialogOutcome,
+  DialogPromptConfirmHandler,
+  DialogPromptOptions,
+  DialogRenderable,
+  DialogService,
+  DialogServiceMessages,
+  DialogServiceOptions,
+} from './components/Dialog/service'
 export { OverlayHost } from './components/OverlayHost/OverlayHost'
 export { Pill } from './components/Pill/Pill'
 export type {

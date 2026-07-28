@@ -101,6 +101,14 @@ const props = {
     type: String as PropType<ButtonType>,
     default: 'button',
   },
+  title: {
+    type: String,
+    default: undefined,
+  },
+  tabindex: {
+    type: [String, Number] as PropType<string | number>,
+    default: undefined,
+  },
   active: {
     type: Boolean,
     default: false,
@@ -143,6 +151,8 @@ export const Button = defineComponent({
     return () => (
       <button
         type={props.type}
+        title={props.title}
+        tabindex={props.tabindex}
         class={[
           'btn',
           'ui-button',

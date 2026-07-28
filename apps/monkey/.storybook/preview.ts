@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/vue3-vite'
-import { OverlayHost } from '@115master/ui'
+import { createDialogService, DialogHost, OverlayHost } from '@115master/ui'
 import { computed, watchEffect } from 'vue'
 import '../src/styles/main.css'
 
@@ -41,7 +41,7 @@ const preview: Preview = {
   },
   decorators: [
     (story, context) => ({
-      components: { OverlayHost, story },
+      components: { DialogHost, OverlayHost, story },
       setup() {
         /** context.globals 是 reactive 对象，必须通过 computed 读取才能响应工具栏切换 */
         const theme = computed(() => (context.globals.theme === 'light' ? 'light' : 'dark'))
@@ -55,12 +55,23 @@ const preview: Preview = {
           minHeight: '100vh',
           padding: '2rem',
         }))
-        return { theme, style }
+        const dialog = createDialogService({
+          messages: {
+            confirm: '确认',
+            cancel: '取消',
+            inputLabel: '输入',
+            requiredError: '此项为必填。',
+          },
+          onError: error => console.error(error),
+        })
+        return { dialog, theme, style }
       },
       template: `
         <div :data-theme="theme" class="app-bg-mesh" :style="style">
           <OverlayHost>
-            <story />
+            <DialogHost :service="dialog">
+              <story />
+            </DialogHost>
           </OverlayHost>
         </div>
       `,

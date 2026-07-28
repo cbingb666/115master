@@ -3,8 +3,9 @@ import type { TagPickerState } from '@/components/TagPicker/TagPickerContent'
 import type { FileTagChange, FileTagInput } from '@/utils/fileTag'
 import { Core } from '@115master/drive115'
 import { reactive } from 'vue'
+import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
-import { useDialog, useToast } from '@/components'
+import { useToast } from '@/components'
 import TagPickerContent from '@/components/TagPicker/TagPickerContent'
 import { useDriveStore } from '@/store/driveList'
 import { useTagStore } from '@/store/tagList'
@@ -28,7 +29,7 @@ interface TagApplyFailure {
  * toast 提示并把失败项重新勾选便于重试。auth 类错误升级 dialog（US 14 行动指引）。
  */
 export function useTagAction() {
-  const dialog = useDialog()
+  const dialog = useAppDialog()
   const toast = useToast()
   const tagStore = useTagStore()
   const drive = useDriveStore()
@@ -139,7 +140,7 @@ export function useTagAction() {
 
     dialog.create({
       title: '打标签',
-      maskClosable: true,
+      closeOnBackdrop: true,
       history: true,
       confirmText: '应用',
       cancelText: '取消',
@@ -150,7 +151,7 @@ export function useTagAction() {
           onGotoTags={() => router.push('/tags')}
         />
       ),
-      confirmCallback: onConfirm,
+      onConfirm,
     })
   }
 

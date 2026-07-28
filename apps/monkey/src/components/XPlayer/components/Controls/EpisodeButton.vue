@@ -11,11 +11,11 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@115master/ui'
 import { computed } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
-import Button from '../../../Button/Button'
 
 const props = defineProps<{
   type: 'playPrevious' | 'playNext'

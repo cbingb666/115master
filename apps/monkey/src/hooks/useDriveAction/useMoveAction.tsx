@@ -1,12 +1,13 @@
 import type { Share } from '@115master/drive115'
 import { promise } from '@115master/utils'
-import { useDialog, useFileBrowserDialog, useToast } from '@/components'
+import { useAppDialog } from '@/app/dialog'
+import { useFileBrowserDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFileIds } from './helpers'
 
 /** 移动操作 */
 export function useMoveAction() {
-  const dialog = useDialog()
+  const dialog = useAppDialog()
   const toast = useToast()
   const fileBrowser = useFileBrowserDialog()
 

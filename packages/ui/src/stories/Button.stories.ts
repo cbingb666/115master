@@ -72,7 +72,7 @@ export const Contract: Story = {
       <main aria-label="Button contract" class="flex flex-col gap-8 p-6">
         <section aria-labelledby="button-interaction-title" class="flex flex-wrap items-center gap-3">
           <h1 id="button-interaction-title" class="w-full text-lg font-semibold">Interaction</h1>
-          <Button v-bind="args" @click="act">
+          <Button v-bind="args" title="Save the current changes" :tabindex="0" @click="act">
             <svg aria-hidden="true" viewBox="0 0 16 16" class="size-4" fill="currentColor">
               <path d="M8 1.5 9.7 6.3 14.5 8l-4.8 1.7L8 14.5 6.3 9.7 1.5 8l4.8-1.7L8 1.5Z" />
             </svg>
@@ -129,6 +129,8 @@ export const Contract: Story = {
     const formButton = canvas.getByRole('button', { name: 'Does not submit' })
 
     await expect(save).toHaveAttribute('type', 'button')
+    await expect(save).toHaveAttribute('title', 'Save the current changes')
+    await expect(save).toHaveAttribute('tabindex', '0')
     await expect(save).toBeEnabled()
     await expect(canvas.getByRole('button', { name: 'Settings icon action' })).toBeVisible()
     await expect(disabled).toBeDisabled()

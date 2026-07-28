@@ -33,6 +33,7 @@ import type { KeyBindingStr } from '@/components/XPlayer/components/Shortcuts/sh
  * @description 用于录制、显示、移除快捷键
  */
 
+import { Button } from '@115master/ui'
 import { computed, shallowRef } from 'vue'
 import {
   formatKeyDisplay,
@@ -42,7 +43,6 @@ import {
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import Button from '../../../../Button/Button'
 
 const props = withDefaults(defineProps<{
   modelValue?: KeyBindingStr

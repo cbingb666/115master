@@ -1,10 +1,10 @@
 import type { IconValue } from '@/icons'
 import { GM_info } from '$'
+import { Button } from '@115master/ui'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PKG from '@/../package.json'
 import ThemeToggle from '@/components/ThemeToggle'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 
 type SectionId = 'appearance' | 'about'
 

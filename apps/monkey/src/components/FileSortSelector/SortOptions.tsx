@@ -1,9 +1,9 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import type { Sort } from './FileSortSelector.types'
+import { Button } from '@115master/ui'
 import { defineComponent } from 'vue'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 import { SORT_OPTIONS } from './config'
 
 /**

@@ -1,8 +1,8 @@
 import type { SlotsType } from 'vue'
+import { Button } from '@115master/ui'
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 import SiderMenuButton from './SiderMenuButton'
 
 const MobileSider = defineComponent({

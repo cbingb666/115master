@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { Button } from '@115master/ui'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 import Header from './Header'
 import HeaderEnd from './HeaderEnd'
 import HeaderStart from './HeaderStart'

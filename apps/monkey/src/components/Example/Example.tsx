@@ -1,6 +1,6 @@
 import type { PropType, SlotsType } from 'vue'
+import { Button } from '@115master/ui'
 import { defineComponent } from 'vue'
-import Button from '../Button/Button'
 
 /**
  * 示例组件

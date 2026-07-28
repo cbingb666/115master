@@ -81,10 +81,10 @@
 <script setup lang="ts">
 import type { PlayerContext } from './hooks/usePlayerProvide'
 import type { XPlayerEmit, XPlayerProps } from './types'
+import { Button } from '@115master/ui'
 import { shallowRef, watch, watchEffect } from 'vue'
 import { LoadingError } from '@/components'
 import { clsx } from '@/utils/clsx'
-import Button from '../Button/Button'
 import ContextMenu from './components/ContextMenu/index.vue'
 import ControlsBar from './components/Controls/ControlBar.vue'
 import ControlsHeader from './components/Controls/ControlHeader.vue'

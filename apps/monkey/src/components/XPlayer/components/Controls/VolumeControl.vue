@@ -55,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@115master/ui'
 import { useThrottleFn } from '@vueuse/core'
 import { computed } from 'vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
@@ -73,7 +74,6 @@ import { getVolumeIcon } from '@/components/XPlayer/utils/icon'
  */
 import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import Button from '../../../Button/Button'
 import ExpandableControlGroup from './ExpandableControlGroup'
 
 const { playerCore, hud, shortcuts } = usePlayerContext()

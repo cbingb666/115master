@@ -1,8 +1,8 @@
 import type { PropType } from 'vue'
 import type { Tag } from '@/store/tagList'
 import { Api } from '@115master/drive115'
+import { Button } from '@115master/ui'
 import { defineComponent } from 'vue'
-import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 
 const { LabelColor } = Api.TagApi.Req

@@ -45,10 +45,10 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@115master/ui'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import Button from '../../../Button/Button'
 
 interface Props {
   visible: boolean

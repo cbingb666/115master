@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import Button from '@/components/Button/Button'
+import { Button } from '@115master/ui'
 import { I, Icon } from '@/icons'
 import { useCopy } from '@/pages/video/components/MovieInfo/hooks/useCopy'
 import { clsx } from '@/utils/clsx'

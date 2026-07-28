@@ -2,11 +2,10 @@ import type { Share } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
-import { Tooltip } from '@115master/ui'
+import { Button, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import {
-  DialogTitle,
   FileContextMenu,
   FileItem,
   FileItemThumbnail,
@@ -23,17 +22,12 @@ import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 import { useDrivePageList } from './useDrivePageList'
 
 /** 文件浏览器内容组件 */
 const FileBroswer = defineComponent({
   name: 'FileBroswer',
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     defaultCid: {
       type: String,
       default: '0',
@@ -196,94 +190,90 @@ const FileBroswer = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        <DialogTitle title={props.title} class="pb-0!">
-          {{
-            actions: () => (
-              <div class="flex w-full items-center gap-2 sm:w-auto">
-                {showSearchBox.value && (
-                  <label
-                    class={[
-                      'input input-ghost bg-base-content/10 focus-within:bg-base-content/15 h-9 rounded-full',
-                      isMobile.value ? 'flex-1' : 'w-sm max-w-[60vw]',
-                    ]}
-                  >
-                    <Icon class="text-base-content/55 shrink-0 text-2xl" name={I.SEARCH} />
-                    <input
-                      ref={searchInputRef}
-                      class="grow bg-transparent text-sm"
-                      value={keywordInput.value}
-                      type="text"
-                      placeholder="搜索目录"
-                      onInput={e => keywordInput.value = (e.target as HTMLInputElement).value}
-                      onKeyup={(e: KeyboardEvent) => {
-                        if (e.key !== 'Enter')
-                          return
-                        keyword.value = keywordInput.value
-                        if (props.keyword)
-                          props.keyword.value = keywordInput.value
-                      }}
-                    />
-                    {keywordInput.value && (
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        shape="circle"
-                        title="清空搜索"
-                        onClick={clearKeyword}
-                      >
-                        <Icon class="text-base-content/65 text-base" name={I.CLOSE} />
-                      </Button>
-                    )}
-                  </label>
-                )}
-
-                {searchExpanded.value && (
+        <div class="sticky top-0 z-10 flex justify-end px-6 pt-3">
+          <div class="flex w-full items-center gap-2 sm:w-auto">
+            {showSearchBox.value && (
+              <label
+                class={[
+                  'input input-ghost bg-base-content/10 focus-within:bg-base-content/15 h-9 rounded-full',
+                  isMobile.value ? 'flex-1' : 'w-sm max-w-[60vw]',
+                ]}
+              >
+                <Icon class="text-base-content/55 shrink-0 text-2xl" name={I.SEARCH} />
+                <input
+                  ref={searchInputRef}
+                  class="grow bg-transparent text-sm"
+                  value={keywordInput.value}
+                  type="text"
+                  placeholder="搜索目录"
+                  onInput={e => keywordInput.value = (e.target as HTMLInputElement).value}
+                  onKeyup={(e: KeyboardEvent) => {
+                    if (e.key !== 'Enter')
+                      return
+                    keyword.value = keywordInput.value
+                    if (props.keyword)
+                      props.keyword.value = keywordInput.value
+                  }}
+                />
+                {keywordInput.value && (
                   <Button
                     variant="ghost"
-                    size="sm"
-                    class="shrink-0"
-                    onClick={collapseSearch}
+                    size="xs"
+                    shape="circle"
+                    title="清空搜索"
+                    onClick={clearKeyword}
                   >
-                    取消
+                    <Icon class="text-base-content/65 text-base" name={I.CLOSE} />
                   </Button>
                 )}
+              </label>
+            )}
 
-                {!searchExpanded.value && (
-                  <Tooltip content="搜索">
-                    <Button
-                      variant="glass-floating"
-                      shape="circle"
-                      class="shrink-0"
-                      onClick={expandSearch}
-                    >
-                      <Icon class="text-xl" name={I.SEARCH} />
-                    </Button>
-                  </Tooltip>
-                )}
+            {searchExpanded.value && (
+              <Button
+                variant="ghost"
+                size="sm"
+                class="shrink-0"
+                onClick={collapseSearch}
+              >
+                取消
+              </Button>
+            )}
 
-                {showActions.value && (
-                  <FileMenu class="relative z-10 shrink-0">
-                    <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
-                    <FilePageSizeSelector
-                      currentPageSize={explorer.size.value}
-                      onChangePageSize={explorer.changeSize}
-                    />
-                    <FileSortSelector
-                      asc={explorer.asc.value || 0}
-                      fc_mix={explorer.fc_mix.value || 0}
-                      order={explorer.order.value || 'user_ptime'}
-                      onSort={handleSort}
-                    />
-                    <FileViewType
-                      value={viewType.value}
-                      onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
-                    />
-                  </FileMenu>
-                )}
-              </div>
-            ),
-          }}
-        </DialogTitle>
+            {!searchExpanded.value && (
+              <Tooltip content="搜索">
+                <Button
+                  variant="glass-floating"
+                  shape="circle"
+                  class="shrink-0"
+                  onClick={expandSearch}
+                >
+                  <Icon class="text-xl" name={I.SEARCH} />
+                </Button>
+              </Tooltip>
+            )}
+
+            {showActions.value && (
+              <FileMenu class="relative z-10 shrink-0">
+                <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
+                <FilePageSizeSelector
+                  currentPageSize={explorer.size.value}
+                  onChangePageSize={explorer.changeSize}
+                />
+                <FileSortSelector
+                  asc={explorer.asc.value || 0}
+                  fc_mix={explorer.fc_mix.value || 0}
+                  order={explorer.order.value || 'user_ptime'}
+                  onSort={handleSort}
+                />
+                <FileViewType
+                  value={viewType.value}
+                  onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
+                />
+              </FileMenu>
+            )}
+          </div>
+        </div>
 
         {/* header */}
         <div class={['border-base-content/10 sticky top-0 z-10 min-w-0 border-b px-6 py-2', viewType.value === 'card' && 'mb-5']}>

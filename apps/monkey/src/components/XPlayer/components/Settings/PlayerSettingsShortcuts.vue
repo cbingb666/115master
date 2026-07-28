@@ -51,13 +51,13 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@115master/ui'
 import { computed, shallowRef } from 'vue'
 import ShortcutsItem from '@/components/XPlayer/components/Shortcuts/components/ShortcutsItem.vue'
 import { ACTION_GROUPS, EXPORT_FILE_PREFIX } from '@/components/XPlayer/components/Shortcuts/shortcuts.const'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import Button from '../../../Button/Button'
 
 const styles = clsx({
   container: [

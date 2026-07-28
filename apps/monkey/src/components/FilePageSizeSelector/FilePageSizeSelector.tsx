@@ -1,9 +1,8 @@
 import type { PropType } from 'vue'
-import { Tooltip } from '@115master/ui'
+import { Button, Tooltip } from '@115master/ui'
 import { defineComponent } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 import PageSizeOptions from './PageSizeOptions'
 
 const FilePageSizeSelector = defineComponent({

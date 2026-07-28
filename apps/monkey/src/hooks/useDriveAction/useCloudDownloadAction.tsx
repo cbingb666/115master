@@ -1,9 +1,9 @@
 import type { Share } from '@115master/drive115'
 import { Core } from '@115master/drive115'
 import { ref } from 'vue'
+import { useAppDialog } from '@/app/dialog'
 import {
   CloudDownload,
-  useDialog,
   useFileBrowserDialog,
   useToast,
 } from '@/components'
@@ -15,7 +15,7 @@ type Path = InstanceType<typeof CloudDownload>['$props']['path']
 
 /** 离线下载操作 */
 export function useCloudDownloadAction() {
-  const dialog = useDialog()
+  const dialog = useAppDialog()
   const toast = useToast()
   const fileBrowser = useFileBrowserDialog()
 
@@ -136,7 +136,7 @@ export function useCloudDownloadAction() {
 
       const instance = dialog.create({
         title: '离线下载',
-        maskClosable: true,
+        closeOnBackdrop: true,
         history: true,
         size: 'lg',
         content: () => (
@@ -158,7 +158,7 @@ export function useCloudDownloadAction() {
             onInput={value => input.value = value}
           />
         ),
-        confirmCallback: async () => {
+        onConfirm: async () => {
           const parsed = input.value
             .split('\n')
             .map(url => url.trim())
@@ -176,7 +176,6 @@ export function useCloudDownloadAction() {
             if (resolved)
               return
             resolved = true
-            instance.hide()
             resolve(true)
           }
           catch (error) {
@@ -188,12 +187,18 @@ export function useCloudDownloadAction() {
             return false
           }
         },
-        cancelCallback: () => {
-          if (resolved)
-            return
-          resolved = true
-          resolve(false)
-        },
+      })
+
+      void instance.closed.then(() => {
+        if (resolved)
+          return
+        resolved = true
+        resolve(false)
+      }, () => {
+        if (resolved)
+          return
+        resolved = true
+        resolve(false)
       })
     })
   }

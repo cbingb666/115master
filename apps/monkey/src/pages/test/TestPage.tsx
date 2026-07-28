@@ -1,6 +1,6 @@
+import { Button } from '@115master/ui'
 import { defineComponent, ref } from 'vue'
 import { UploadTest } from '@/components'
-import Button from '@/components/Button/Button'
 import { I, Icon } from '@/icons'
 
 type TestItem = 'upload'

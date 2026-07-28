@@ -1,10 +1,10 @@
 import type { PropType } from 'vue'
 import { Api } from '@115master/drive115'
+import { Button } from '@115master/ui'
 import { defineComponent } from 'vue'
 import { Empty, LoadingError } from '@/components'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
-import Button from '../Button/Button'
 
 const { LabelColor } = Api.TagApi.Req
 
@@ -12,12 +12,12 @@ const { LabelColor } = Api.TagApi.Req
 export interface TagPickerState {
   /** dialog 内独立勾选态（不复用 useTagStore.selected） */
   checked: Set<string>
-  /** 提交中（供 confirmCallback 防重复触发；不再用于渲染按钮态） */
+  /** 提交中（供 onConfirm 防重复触发；不再用于渲染按钮态） */
   submitting: boolean
 }
 
 /**
- * 打标签弹窗内容（作为 `useDialog.create` 的 content）。
+ * 打标签弹窗内容（作为 Dialog service `create` 的 content）。
  *
  * 复用 `useTagStore` 作为标签目录数据源（`tags` / `filtered` / `keyword`），
  * 但勾选态用独立的 `state.checked`，**不复用** `useTagStore.selected`
@@ -27,7 +27,7 @@ export interface TagPickerState {
  * 由调用方在打开时重置，不进 URL（区别于标签管理页的 URL 搜索词）。
  *
  * 取消 / 应用按钮由通用 dialog action 提供（`confirmText` / `cancelText` +
- * `confirmCallback`），内容区只渲染列表与搜索。
+ * `onConfirm`），内容区只渲染列表与搜索。
  */
 const TagPickerContent = defineComponent({
   name: 'TagPickerContent',

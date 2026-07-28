@@ -1,7 +1,7 @@
+import { Button } from '@115master/ui'
 import { defineComponent } from 'vue'
 import { usePreferencesDialog } from '@/components/Preferences'
 import { I, Icon } from '@/icons'
-import Button from '../Button/Button'
 
 const SiderMenuButton = defineComponent({
   name: 'SiderMenuButton',

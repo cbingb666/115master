@@ -1,8 +1,8 @@
-import { OverlayHost } from '@115master/ui'
+import { DialogHost, OverlayHost } from '@115master/ui'
 import { defineComponent, KeepAlive, onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
+import { appDialog } from '@/app/dialog'
 import {
-  DialogContainer,
   GlassDistortionFilter,
   GlobalSearchModal,
   ToastContainer,
@@ -30,7 +30,7 @@ const App = defineComponent({
       <OverlayHost>
         <DndRoot>
           <GlassDistortionFilter></GlassDistortionFilter>
-          <DialogContainer>
+          <DialogHost service={appDialog}>
             <Boot />
             <ToastContainer>
               <GlobalSearchModal />
@@ -46,7 +46,7 @@ const App = defineComponent({
                 }}
               </RouterView>
             </ToastContainer>
-          </DialogContainer>
+          </DialogHost>
         </DndRoot>
       </OverlayHost>
     )

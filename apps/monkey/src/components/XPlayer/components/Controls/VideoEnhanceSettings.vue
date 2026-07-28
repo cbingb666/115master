@@ -71,13 +71,13 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@115master/ui'
 import { shallowRef } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import Button from '../../../Button/Button'
 
 const styles = clsx({
   ...controlStyles,

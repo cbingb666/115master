@@ -1,11 +1,11 @@
 import type { Share } from '@115master/drive115'
-import { useDialog } from '@/components'
+import { useAppDialog } from '@/app/dialog'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFileIds } from './helpers'
 
 /** 删除操作 */
 export function useDeleteAction() {
-  const dialog = useDialog()
+  const dialog = useAppDialog()
 
   /** 删除确认 */
   async function deleteConfirm() {

@@ -38,11 +38,11 @@
 
 <script setup lang="ts">
 import type { VideoSource } from '@/components/XPlayer/types'
+import { Button } from '@115master/ui'
 import { computed, shallowRef } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { controlStyles } from '@/components/XPlayer/styles/common'
-import Button from '../../../Button/Button'
 
 const styles = controlStyles
 

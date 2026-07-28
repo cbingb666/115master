@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import type { FileActionMenuProps } from './FileActionMenu.types'
-import Button from '@/components/Button/Button'
+import { Button } from '@115master/ui'
 import PlayerControlSurface from '@/components/XPlayer/components/Controls/PlayerControlSurface'
 import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'

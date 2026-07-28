@@ -18,12 +18,20 @@ import {
 import { filled } from '../content'
 
 export type DialogSize = 'md' | 'lg' | 'xl' | 'full'
-export type DialogCloseReason = 'escape' | 'backdrop'
+export type DialogCloseReason
+  = | 'confirm'
+    | 'cancel'
+    | 'escape'
+    | 'backdrop'
+    | 'programmatic'
+    | 'destroy'
+    | 'close-all'
 export type DialogInitialFocus
   = | HTMLElement
     | string
     | (() => HTMLElement | null | undefined)
 
+type DialogDismissReason = Extract<DialogCloseReason, 'escape' | 'backdrop'>
 type DialogState = 'closed' | 'opening' | 'open' | 'closing'
 
 const sizes: Record<DialogSize, string> = {
@@ -66,6 +74,10 @@ const props = {
     type: [String, Object, Function] as PropType<DialogInitialFocus>,
     default: undefined,
   },
+  inert: {
+    type: Boolean,
+    default: false,
+  },
 } as const
 
 export type DialogProps = ExtractPublicPropTypes<typeof props>
@@ -99,7 +111,7 @@ export const Dialog = defineComponent({
 
   emits: {
     'update:open': (_open: boolean) => true,
-    'close': (_reason: DialogCloseReason) => true,
+    'close': (_reason: DialogDismissReason) => true,
     'opened': () => true,
     'closed': () => true,
   },
@@ -312,7 +324,7 @@ export const Dialog = defineComponent({
       })
     }
 
-    function request(reason: DialogCloseReason) {
+    function request(reason: DialogDismissReason) {
       if (requested || state.value === 'closing')
         return
       requested = true
@@ -402,6 +414,7 @@ export const Dialog = defineComponent({
           'aria-label': titled.value ? undefined : label.value,
           'aria-labelledby': titled.value ? titleId : undefined,
           'aria-describedby': described.value ? descriptionId : undefined,
+          'inert': props.inert || undefined,
           'data-ui-dialog-size': props.size,
           'data-ui-dialog-state': state.value,
           'onCancel': cancel,
