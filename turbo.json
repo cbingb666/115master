@@ -28,6 +28,7 @@
       "outputs": ["**/*.{ts,tsx,vue,js,json}"]
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     }

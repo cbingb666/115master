@@ -1,0 +1,85 @@
+{
+  "name": "@115master/ui",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "description": "Application-agnostic UI foundation for 115Master",
+  "author": "cbingb666",
+  "license": "MIT",
+  "homepage": "https://github.com/cbingb666/115master",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbingb666/115master.git",
+    "directory": "/packages/ui"
+  },
+  "bugs": {
+    "url": "https://github.com/cbingb666/115master/issues"
+  },
+  "sideEffects": [
+    "./dist/styles.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.12"
+  },
+  "scripts": {
+    "build": "vite build && vue-tsc -p tsconfig.build.json && pnpm verify:exports",
+    "dev": "vite build --watch",
+    "type-check": "vue-tsc -p tsconfig.json --noEmit && vue-tsc -p tsconfig.stories.json --noEmit",
+    "pretest": "pnpm build",
+    "test": "vitest run --project=storybook-light --project=storybook-dark",
+    "test:watch": "vitest --project=storybook-light --project=storybook-dark",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "prestorybook": "pnpm build",
+    "storybook": "storybook dev -p 6006",
+    "prebuild-storybook": "pnpm build",
+    "build-storybook": "storybook build",
+    "verify:exports": "node --input-type=module --eval \"import('@115master/ui')\"",
+    "clean": "rm -rf dist storybook-static node_modules/.tmp"
+  },
+  "peerDependencies": {
+    "daisyui": "^5.6.16",
+    "tailwindcss": "^4.1.7",
+    "vue": "^3.5.13"
+  },
+  "dependencies": {
+    "@floating-ui/vue": "^1.1.10"
+  },
+  "devDependencies": {
+    "@115master/eslint-config": "workspace:*",
+    "@115master/tsconfig": "workspace:*",
+    "@storybook/addon-a11y": "^10.5.5",
+    "@storybook/addon-docs": "^10.5.5",
+    "@storybook/addon-vitest": "^10.5.5",
+    "@storybook/vue3-vite": "^10.5.5",
+    "@tailwindcss/vite": "^4.1.7",
+    "@types/node": "^25.2.2",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^5.0.1",
+    "@vitest/browser-playwright": "^4.1.10",
+    "daisyui": "^5.6.16",
+    "playwright": "^1.57.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "storybook": "^10.5.5",
+    "tailwindcss": "^4.1.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
+    "vitest": "^4.1.10",
+    "vue": "^3.5.13",
+    "vue-tsc": "^2.2.10"
+  }
+}

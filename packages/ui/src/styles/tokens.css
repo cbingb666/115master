@@ -1,0 +1,6 @@
+:root {
+  --ui-glass-blur-none: 0px;
+  --ui-glass-blur-standard: 20px;
+  --ui-glass-blur-strong: 32px;
+  --ui-glass-brightness: 100%;
+}

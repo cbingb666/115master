@@ -1,0 +1,125 @@
+/*
+ * Glass material is selected by the carrying surface. Color, edge treatment,
+ * shadow and filter stay with the material so a region has one filter owner.
+ */
+
+:is(.ui-glass-surface, .ui-glass-inset, .ui-glass-floating, .ui-glass-overlay, .ui-glass-panel) {
+  color: var(--ui-glass-fg);
+  background-color: var(--ui-glass-bg);
+  border: var(--border) solid var(--ui-glass-border);
+  box-shadow:
+    var(--ui-glass-highlight) inset,
+    var(--ui-glass-shadow);
+}
+
+.ui-glass-surface {
+  --ui-glass-fg: var(--color-base-content);
+  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 8%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.18);
+  --ui-glass-shadow: 0 0 0 oklch(0% 0 0 / 0);
+  --ui-glass-backdrop: var(--ui-glass-blur-none);
+
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.ui-glass-inset {
+  --ui-glass-fg: var(--color-base-content);
+  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 14%, transparent);
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.3);
+  --ui-glass-shadow: 0 1px 3px oklch(0% 0 0 / 0.1);
+  --ui-glass-backdrop: var(--ui-glass-blur-none);
+
+  font-weight: 600;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.ui-glass-floating {
+  --ui-glass-fg: var(--color-base-content);
+  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 15%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.3);
+  --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.12), 0 6px 18px oklch(0% 0 0 / 0.1);
+  --ui-glass-backdrop: var(--ui-glass-blur-standard);
+  --ui-glass-saturation: 180%;
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--color-base-300) 92%, var(--color-base-content));
+}
+
+.ui-glass-overlay {
+  --ui-glass-fg: oklch(98% 0 0);
+  --ui-glass-bg: oklch(12% 0.01 260 / 0.58);
+  --ui-glass-border: oklch(100% 0 0 / 0.18);
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.22);
+  --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.22), 0 8px 24px oklch(0% 0 0 / 0.2);
+  --ui-glass-backdrop: var(--ui-glass-blur-standard);
+  --ui-glass-saturation: 150%;
+  --ui-glass-opaque-bg: oklch(12% 0.01 260 / 0.92);
+}
+
+.ui-glass-panel {
+  --ui-glass-fg: var(--color-base-content);
+  --ui-glass-bg: color-mix(in oklab, var(--color-base-300) 82%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.22);
+  --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.18), 0 12px 32px oklch(0% 0 0 / 0.2);
+  --ui-glass-backdrop: var(--ui-glass-blur-strong);
+  --ui-glass-saturation: 160%;
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--color-base-300) 96%, var(--color-base-100));
+}
+
+:is(.ui-glass-floating, .ui-glass-overlay, .ui-glass-panel) {
+  -webkit-backdrop-filter: blur(var(--ui-glass-backdrop)) saturate(var(--ui-glass-saturation))
+    brightness(var(--ui-glass-brightness));
+  backdrop-filter: blur(var(--ui-glass-backdrop)) saturate(var(--ui-glass-saturation))
+    brightness(var(--ui-glass-brightness));
+}
+
+[data-theme='light'] :is(.ui-glass-surface, .ui-glass-inset) {
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.65);
+}
+
+[data-theme='light'] .ui-glass-surface {
+  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 6%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 9%, transparent);
+}
+
+[data-theme='light'] .ui-glass-inset {
+  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 7%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 8%, transparent);
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.75);
+  --ui-glass-shadow: 0 1px 3px oklch(0% 0 0 / 0.08);
+}
+
+[data-theme='light'] .ui-glass-floating {
+  --ui-glass-bg: oklch(100% 0 0 / 0.72);
+  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.65);
+  --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.08), 0 6px 18px oklch(0% 0 0 / 0.06);
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--color-base-100) 94%, var(--color-base-content));
+}
+
+[data-theme='light'] .ui-glass-panel {
+  --ui-glass-bg: color-mix(in oklab, var(--color-base-100) 88%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.72);
+  --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.06), 0 12px 32px oklch(0% 0 0 / 0.08);
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--color-base-100) 97%, var(--color-base-200));
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  :is(.ui-glass-floating, .ui-glass-overlay, .ui-glass-panel) {
+    --ui-glass-bg: var(--ui-glass-opaque-bg);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :is(.ui-glass-floating, .ui-glass-overlay, .ui-glass-panel) {
+    --ui-glass-bg: var(--ui-glass-opaque-bg);
+
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

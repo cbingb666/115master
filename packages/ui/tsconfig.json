@@ -1,0 +1,23 @@
+{
+  "extends": "@115master/tsconfig/vue-app.json",
+  "compilerOptions": {
+    "composite": false,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    "baseUrl": ".",
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": [
+    "package.json",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx"
+  ]
+}
