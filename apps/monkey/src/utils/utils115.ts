@@ -1,14 +1,18 @@
 import type { Api } from '@115master/drive115'
+import type { IconValue } from '@/icons'
 import { GM_xmlhttpRequest } from '$'
 import { Share } from '@115master/drive115'
 
 import { I } from '@/icons'
 
+export type IconUrl = `https://${string}`
+export type FileIcon = IconValue | IconUrl
+
 export class Utils115 {
-  static getFileExtensionIcon(ico: string) {
+  static getFileExtensionIcon(ico: string): IconUrl {
     const ASSETS_URL = 'https://cdnres.115.com/site/static/style_v10.0/file/images/file_type'
 
-    const map: Record<string, string> = {
+    const map: Record<string, IconUrl> = {
       // document
       'docx': `${ASSETS_URL}/document/docx.svg?_vh=eb2e04a_88`,
       'xlsx': `${ASSETS_URL}/document/xlsx.svg?_vh=eb2e04a_88`,
@@ -36,13 +40,13 @@ export class Utils115 {
     return map[ico] ?? `${ASSETS_URL}/other/unknown.png?_vh=f0a959d_88`
   }
 
-  static getFolderIcon(data: Api.FileApi.Res.Files['data'][number]) {
+  static getFolderIcon(data: Api.FileApi.Res.Files['data'][number]): IconValue | undefined {
     if (Utils115.isFolder(data.fc)) {
       return I.FILE_FOLDER
     }
   }
 
-  static getFileIcon(data: Api.FileApi.Res.Files['data'][number]) {
+  static getFileIcon(data: Api.FileApi.Res.Files['data'][number]): FileIcon {
     if (Utils115.isVideo(data.iv)) {
       return Utils115.getVideoIcon(data.vdi ?? 0)
     }
@@ -80,7 +84,7 @@ export class Utils115 {
   }
 
   /** 获取视频图标 */
-  static getVideoIcon(vdi: number) {
+  static getVideoIcon(vdi: number): IconUrl {
     const quality = this.getVideoQuality(vdi)
     if (quality) {
       return `https://cdnres.115.com/site/static/style_v10.0/file/images/file_type/video_quality/${quality}.svg`

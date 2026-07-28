@@ -1,6 +1,3 @@
-import type { I, IconValue } from './registry'
-
-export type IconName = keyof typeof I
-export type { IconValue }
+export type { IconValue } from './registry'
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'custom'

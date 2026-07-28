@@ -1,4 +1,5 @@
 import type { VNode } from 'vue'
+import type { IconValue } from '@/icons'
 
 // HUD消息数据
 export interface HudMessageProgress {
@@ -13,7 +14,7 @@ export interface HudMessageProgress {
 export interface HudMessage {
   title?: string | VNode /** 标题 */
   value?: number | string | boolean | VNode /** 值 - 支持 JSX/VNode */
-  icon?: string /** 图标 */
+  icon?: IconValue /** 图标 */
   iconClass?: string /** 图标类名 */
   progress?: HudMessageProgress /** 数据 */
   duration?: number /** 持续时间（毫秒）, 默认1500ms */

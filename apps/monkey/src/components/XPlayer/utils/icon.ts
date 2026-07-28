@@ -1,3 +1,4 @@
+import type { IconValue } from '@/icons'
 import { I } from '@/icons'
 
 /**
@@ -6,7 +7,7 @@ import { I } from '@/icons'
  * @param muted 是否静音
  * @returns 音量图标 Symbol
  */
-export function getVolumeIcon(volume = 0, muted = false): string {
+export function getVolumeIcon(volume = 0, muted = false): IconValue {
   if (muted) {
     return I.VOLUME_OFF
   }

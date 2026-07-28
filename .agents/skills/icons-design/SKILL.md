@@ -5,7 +5,8 @@ description: 设计基于 ionicons 风格的自定义图标 —— 网格系统�
 
 # Icons 设计方法（基于 ionicons Filled 风格）
 
-> 调用方式、组件 API 见 `icons-usage` skill。
+> 强制使用约束见 `.agents/rules/icons-usage.md`；组件 API 以
+> `apps/monkey/src/icons/icon.tsx` 和 `types.ts` 为准。
 >
 > 本 skill 只讲**如何设计一个视觉上看起来像 ionicons 的图标**。当 ionicons 直接覆盖语义时，永远优先使用 ionicons。
 
@@ -103,7 +104,7 @@ ionicons Filled 的视觉特征由以下规则定义，逐一对照：
 
 ### 6.2 文件结构
 
-直接保存纯 SVG 文件，由 `icon.vue` 通过 `defineAsyncComponent` 动态导入并透传 `class`：
+直接保存纯 SVG 文件，由 `icon.tsx` 通过 `defineAsyncComponent` 动态导入并透传 `class`：
 
 ```svg
 <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -114,7 +115,7 @@ ionicons Filled 的视觉特征由以下规则定义，逐一对照：
 要点：
 
 - 顶层 `<svg>` 设 `fill="currentColor"`，子 `<path>` 不重复设置。
-- 不写 `:class` 绑定 —— `class` 由 `icon.vue` 通过 `<component :is="customComp" :class="cls" />` 透传到 `<svg>` 根元素。
+- 不写 `class` —— `class` 由 `icon.tsx` 渲染异步组件时透传到 `<svg>` 根元素。
 - 仅当图标是 Outline 风格时，才在 path 上覆盖 `fill="none"` + `stroke` 属性。
 - 文件以换行符结尾。
 
@@ -146,7 +147,7 @@ FILE_IMAGE: 'custom:image-file',
 
 视觉验收的目标是确认新接入或修改的图标在不同尺寸、颜色上下文与交互态下均无回退。流程：
 
-1. **多尺寸截图**：用 Playwright 在目标 size 档（`xs/sm/md/lg/xl`）分别渲染并截图，确认线条不糊、不溢出 viewBox。
+1. **多尺寸截图**：用 Playwright 在目标 size 档（`xs/sm/md/lg/xl/2xl`）分别渲染并截图，确认线条不糊、不溢出 viewBox。
 2. **颜色上下文**：在亮 / 暗主题、`text-base-content` / `text-error` / `text-primary` 等不同类下各取一张截图，确认 `currentColor` 正确继承。
 3. **交互态**：对存在激活 / 禁用态的图标（如音量、播放、收藏），分别在启用 / 禁用 / 激活三种状态截图，确认视觉语义清晰。
 4. **对比基准**：与改动前的截图作像素 diff，差异区域须肉眼复核是否合理。

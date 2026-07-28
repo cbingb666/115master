@@ -1,5 +1,6 @@
 import type { PlayerContext } from './usePlayerProvide'
 import type { ActionKey } from '@/components/XPlayer/components/Shortcuts/shortcuts.types'
+import type { IconValue } from '@/icons'
 import { ref, shallowRef } from 'vue'
 import { I } from '@/icons'
 
@@ -18,7 +19,7 @@ export interface ContextMenuItem {
   /**
    * 图标
    */
-  icon?: string
+  icon?: IconValue
   /**
    * 动作
    * @description 快捷键动作

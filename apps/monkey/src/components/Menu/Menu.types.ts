@@ -1,4 +1,5 @@
 import type { RouteLocationRaw } from 'vue-router'
+import type { IconValue } from '@/icons'
 
 /**
  * 菜单项激活匹配条件
@@ -17,7 +18,7 @@ export interface MenuItemActiveMatch {
  */
 export interface MenuItem {
   /** 图标 */
-  icon: string
+  icon: IconValue
   /** 图标颜色 */
   iconColor?: string
   /** 名称 */

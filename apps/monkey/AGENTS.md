@@ -150,5 +150,5 @@ new Drive115({
 
 - **TSX + SFC 混用**：App 骨架、drive 页用 `.tsx`（`defineComponent` + JSX）；UI 组件多用 `.vue` SFC。
 - **路径别名**：`@/` → `src/`。
-- **图标**：唯一入口 `@/icons`，`name` 必须用 `I.*` 表达式（强制，详见根 CLAUDE.md Icons 规范）。
+- **图标**：唯一入口 `@/icons`，`name` 必须用 `I.*` 表达式（强制，详见 `.agents/rules/icons-usage.md`）。
 - **错误处理**：业务异常经 `drive115` 的 `onError` 回调收敛为 `action`，UI 据 `action` 决定行为，不识别具体错误码。

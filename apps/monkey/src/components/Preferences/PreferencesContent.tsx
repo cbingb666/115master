@@ -1,3 +1,4 @@
+import type { IconValue } from '@/icons'
 import { GM_info } from '$'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PKG from '@/../package.json'
@@ -10,7 +11,7 @@ type SectionId = 'appearance' | 'about'
 interface SectionItem {
   id: SectionId
   label: string
-  icon: string
+  icon: IconValue
 }
 
 const SECTIONS: SectionItem[] = [

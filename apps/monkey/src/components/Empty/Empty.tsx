@@ -1,7 +1,7 @@
 import type { PropType } from 'vue'
-import type { IconName, IconSize } from '@/icons'
+import type { IconSize, IconValue } from '@/icons'
 import { defineComponent } from 'vue'
-import { Icon } from '@/icons'
+import { I, Icon } from '@/icons'
 
 type Size = Exclude<IconSize, 'custom'>
 
@@ -71,8 +71,8 @@ const Empty = defineComponent({
       default: true,
     },
     icon: {
-      type: String,
-      default: 'EMPTY' as IconName,
+      type: String as PropType<IconValue>,
+      default: I.EMPTY,
     },
   },
 
@@ -99,7 +99,7 @@ const Empty = defineComponent({
                 )
               : (
                   <Icon
-                    name={props.icon as IconName}
+                    name={props.icon}
                     size={props.size}
                     class="text-base-content/60"
                   />

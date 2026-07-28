@@ -53,6 +53,7 @@
 
 <script setup lang="ts">
 import type { SettingsTab } from '@/components/XPlayer/hooks/useContextMenu'
+import type { IconValue } from '@/icons'
 import { ref, watch } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { I, Icon } from '@/icons'
@@ -64,7 +65,7 @@ import PlayerSettingsShortcuts from './PlayerSettingsShortcuts.vue'
 interface Tab {
   key: SettingsTab
   name: string
-  icon: string
+  icon: IconValue
 }
 
 const props = withDefaults(

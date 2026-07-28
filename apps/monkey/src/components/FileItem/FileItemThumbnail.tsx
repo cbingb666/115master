@@ -1,6 +1,7 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
-import type { IconName } from '@/icons'
+import type { IconValue } from '@/icons'
+import type { FileIcon, IconUrl } from '@/utils/utils115'
 import { image as imageUtil } from '@115master/utils'
 import { defineComponent } from 'vue'
 import { Image } from '@/components/Image'
@@ -44,7 +45,7 @@ const FileItemThumbnail = defineComponent({
     },
   },
   setup(props) {
-    function isIconUrl(icon: string): boolean {
+    function isIconUrl(icon: FileIcon): icon is IconUrl {
       return icon.startsWith('https://')
     }
 
@@ -132,7 +133,7 @@ const FileItemThumbnail = defineComponent({
       )
     }
 
-    function renderFolderCover(icon: string) {
+    function renderFolderCover(icon: IconValue) {
       return (
         <div
           class="
@@ -144,13 +145,13 @@ const FileItemThumbnail = defineComponent({
         >
           <Icon
             class="text-primary/80 h-full w-auto drop-shadow-md"
-            name={icon as IconName}
+            name={icon}
           />
         </div>
       )
     }
 
-    function renderFileIcon(icon: string) {
+    function renderFileIcon(icon: IconValue) {
       return (
         <div
           class="
@@ -162,7 +163,7 @@ const FileItemThumbnail = defineComponent({
         >
           <Icon
             class="h-full w-full"
-            name={icon as IconName}
+            name={icon}
           />
         </div>
       )

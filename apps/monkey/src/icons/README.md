@@ -1,15 +1,29 @@
-# Icons 模块文件地图
+# Icons 模块
 
-> 无兼容层。所有引用必须直接走 `@/icons` 的 `Icon` + `I.*`。
+所有 Vue/TSX 图标直接使用 `@/icons` 的 `Icon` 与 `I.*`。`Icon` 的 `name`
+接收 registry 值 `IconValue`，不再兼容 `"PLAY"` 等 registry 键名。
 
-何时改哪个文件：
+```tsx
+import { I, Icon } from '@/icons'
 
-| 文件                | 何时改                                                      |
-| ------------------- | ----------------------------------------------------------- |
-| `registry.ts`       | **新增 / 删除 / 修改** 图标常量（包括映射到 ionicons 的值） |
-| `types.ts`          | 通常无需手动改，由 `registry.ts` 自动推导                   |
-| `icon.tsx`          | 修改组件行为（props、size 档、渲染逻辑）                    |
-| `index.ts`          | 仅在添加新的对外导出时改                                    |
-| `custom/<name>.svg` | 新增 / 修改自定义 SVG 变体                                  |
+<Icon name={I.PLAY} />
+```
 
-修改前先看 [`.agents/rules/icons-usage.md`](../../../.agents/rules/icons-usage.md)（强制约束）和 [`.agents/skills/icons-usage-detail/`](../../../.agents/skills/icons-usage-detail/SKILL.md)（详细用法）；设计自定义 SVG 时再看 [`.agents/skills/icons-design/`](../../../.agents/skills/icons-design/SKILL.md)。
+## 信息来源
+
+| 文件                           | 职责                                |
+| ------------------------------ | ----------------------------------- |
+| `.agents/rules/icons-usage.md` | 必须遵守的项目政策                  |
+| `registry.ts`                  | 图标语义常量与 `IconValue` 类型来源 |
+| `types.ts`                     | `IconSize` 等公开类型               |
+| `icon.tsx`                     | props、尺寸和渲染行为               |
+| `Icon.stories.ts`              | 可执行示例、尺寸展示和图标库        |
+| `custom/<name>.svg`            | 自定义 SVG                          |
+
+HOME Mod 向 115 官方 DOM 注入图标时使用 `<iconify-icon>`，`icon` 属性仍取自
+`I.*`。现有实现见 `pages/home/TopHeaderMod/index.ts` 和
+`pages/home/TopFilePathMod/index.ts`。
+
+修改前阅读 [Icons 使用规范](../../../.agents/rules/icons-usage.md)；只有设计或
+调整自定义 SVG 时才调用
+[`icons-design`](../../../.agents/skills/icons-design/SKILL.md)。

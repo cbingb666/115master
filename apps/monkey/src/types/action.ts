@@ -1,4 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue'
+import type { IconValue } from '@/icons'
 
 export interface Action {
   /** 名称 */
@@ -6,13 +7,13 @@ export interface Action {
   /** 标签 */
   label: string
   /** 图标 */
-  icon: string
+  icon: IconValue
   /** 图标颜色 */
   iconColor?: string
   /** 激活标签 */
   activeLabel?: string
   /** 激活图标 */
-  activeIcon?: string
+  activeIcon?: IconValue
   /** 激活图标颜色 */
   activeIconColor?: string
   /** 是否激活 */

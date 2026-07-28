@@ -1,5 +1,4 @@
 import type { PropType } from 'vue'
-import type { IconName } from '@/icons'
 import type { Action } from '@/types/action'
 import { defineComponent, Fragment, ref, toValue, triggerRef } from 'vue'
 import { Icon } from '@/icons'
@@ -95,7 +94,7 @@ const ActionBar = defineComponent({
                           isLoading ? 'opacity-20' : '',
                           iconColor,
                         ]}
-                        name={icon as IconName}
+                        name={icon}
                       />
                     </Button>
                   )

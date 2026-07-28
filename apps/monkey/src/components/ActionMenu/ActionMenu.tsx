@@ -1,5 +1,4 @@
 import type { PropType } from 'vue'
-import type { IconName } from '@/icons'
 import type { Action } from '@/types/action'
 import { defineComponent, Fragment, toValue } from 'vue'
 import { Icon } from '@/icons'
@@ -60,7 +59,7 @@ const ActionMenu = defineComponent({
                           : item.iconColor || ''}
                         name={(toValue(item.active) && item.activeIcon
                           ? item.activeIcon
-                          : item.icon) as IconName}
+                          : item.icon)}
                       />
                       {toValue(item.active) && item.activeLabel
                         ? item.activeLabel
