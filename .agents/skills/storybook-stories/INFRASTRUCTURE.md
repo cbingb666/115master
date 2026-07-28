@@ -1,46 +1,30 @@
-# Storybook 基础设施
+# Storybook infrastructure
 
-修改 `.storybook/main.ts`、`.storybook/preview.ts`、主题、Teleport 或 TSX docgen 时读取本文件。
+Read this before changing a Storybook `main`, `preview`, Vite configuration, Theme decorator, Teleport host, or docgen setting. Choose the host first; UI Foundation and Monkey intentionally have different responsibilities.
 
-## Preview 运行时约束
+## UI Foundation Storybook
 
-`.storybook/preview.ts` 提供三个项目级约束：
+`packages/ui/.storybook/` owns public UI Storybook runtime configuration. Its preview establishes the Theme toolbar and a Theme-scoped Story root. Its Vitest configuration runs the public Story suite in real Chromium for both light and dark Theme projects, and its a11y configuration treats violations as errors.
 
-1. 在模块求值阶段把 `#my-app` 追加到 `document.body`，确保 Vue mount 前 Teleport target 已存在。
-2. 主题 decorator 通过 `computed` 读取 `context.globals.theme`，使工具栏切换保持响应式。
-3. `data-theme` 同步写入 story wrapper 与 `#my-app`，使 Teleport 内容和普通内容使用同一主题。
+When changing UI preview or Theme behavior:
 
-新增全局 decorator 或 mock 前先复用现有设施。修改 preview 后，在普通组件和 Teleport 组件中各切换一次浅色与深色主题。
+1. Keep public Stories independent of Monkey's mount node, router, store, GM APIs, and application styles.
+2. Preserve the two Theme projects and test the same contract in each.
+3. Verify public overlays use the UI contract's Theme-scoped host rather than an application DOM assumption.
+4. Run UI type-check, Chromium Story tests, and the static Storybook build.
 
-完成标准：Teleport 挂载无警告，工具栏主题切换同时更新 Canvas 与 `#my-app` 内的内容。
+## Monkey integration Storybook
 
-## TSX props 与 controls
+`apps/monkey/.storybook/` owns application integration fixtures. Its preview may provide the application mount node and synchronize the application Theme scope for components that integrate with Monkey. Reuse that setup rather than creating competing document-level hosts.
 
-`meta.component` 暴露可配置 props 时，Docs 页面必须产生有效的 props / controls；组件族还要在 component description 中说明成员及组合关系。SFC 先使用默认 `vue-docgen-api`；TSX 提取不完整时，在 `.storybook/main.ts` 切换为 `vue-component-meta`：
+When changing Monkey preview or an integration decorator, inspect a normal component and the affected integration path in both Theme toolbar modes. Keep the router, store, GM mock, and DOM host scoped to the Story that needs them, and clean up document-level effects.
 
-```ts
-framework: {
-  name: '@storybook/vue3-vite',
-  options: {
-    builder: {
-      viteConfigPath: '.storybook/vite.config.ts',
-    },
-    docgen: {
-      plugin: 'vue-component-meta',
-      tsconfig: 'tsconfig.app.json',
-    },
-  },
-},
-```
+## Docs and TSX controls
 
-本仓库使用 tsconfig references 和 `@/` alias，因此 `tsconfig.app.json` 必须显式传给 docgen。保留现有 `builder.viteConfigPath`。
+Public component Stories expose the real component to `Meta` so Docs and controls can describe the public props. Component-family documentation names the public members and their composition boundary. A pure Foundation material Story may omit a component wrapper when it is the material contract under test.
 
-完成标准：目标 TSX 组件的 Docs 页面展示预期 props / controls，`@/` 导入可解析，`build-storybook` 退出 0。
+If Monkey TSX docgen or Story typing fails, use [TYPING.md](TYPING.md) before changing component code or TypeScript configuration. Do not transfer a Monkey-specific docgen or React-stub workaround to the UI Foundation without proving it is needed there.
 
-## 当前验证边界
+## Validation boundary
 
-当前 addons 只包含 `@storybook/addon-docs`。自动门是 type-check、lint 和 `build-storybook`；交互与可访问性检查在 Canvas 执行。
-
-引入 `play`、a11y 或视觉回归时，同一变更必须补齐依赖、配置、执行脚本和 `SKILL.md` 的验证命令。
-
-完成标准：skill 声明的自动检查均由仓库脚本实际执行，其余检查明确落在 Canvas 完成标准内。
+UI Foundation changes require real Chromium, play, a11y-error, and light/dark project coverage through the UI package scripts. Monkey integration changes require the application's own type-check, lint, and static Storybook build, plus the relevant Canvas inspection. Neither host requires a first-wave pixel-snapshot or cloud visual-regression baseline.
