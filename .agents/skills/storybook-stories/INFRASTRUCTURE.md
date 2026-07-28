@@ -16,7 +16,7 @@
 
 ## TSX props 与 controls
 
-默认 `vue-docgen-api` 对 TSX 组件提取不完整。只有 TSX 组件需要自动 props 表或 controls 时，才在 `.storybook/main.ts` 切换为 `vue-component-meta`：
+`meta.component` 暴露可配置 props 时，Docs 页面必须产生有效的 props / controls；组件族还要在 component description 中说明成员及组合关系。SFC 先使用默认 `vue-docgen-api`；TSX 提取不完整时，在 `.storybook/main.ts` 切换为 `vue-component-meta`：
 
 ```ts
 framework: {
@@ -36,3 +36,11 @@ framework: {
 本仓库使用 tsconfig references 和 `@/` alias，因此 `tsconfig.app.json` 必须显式传给 docgen。保留现有 `builder.viteConfigPath`。
 
 完成标准：目标 TSX 组件的 Docs 页面展示预期 props / controls，`@/` 导入可解析，`build-storybook` 退出 0。
+
+## 当前验证边界
+
+当前 addons 只包含 `@storybook/addon-docs`。自动门是 type-check、lint 和 `build-storybook`；交互与可访问性检查在 Canvas 执行。
+
+引入 `play`、a11y 或视觉回归时，同一变更必须补齐依赖、配置、执行脚本和 `SKILL.md` 的验证命令。
+
+完成标准：skill 声明的自动检查均由仓库脚本实际执行，其余检查明确落在 Canvas 完成标准内。
