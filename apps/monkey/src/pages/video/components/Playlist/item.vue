@@ -97,7 +97,7 @@ const styles = clsx({
     container: [
       'absolute right-2 bottom-2 rounded-md',
       'px-1.5 py-0.5',
-      'app-glass-overlay text-xs',
+      'ui-glass-overlay text-xs',
       'font-medium',
       'tracking-tight',
       'app-font-time',

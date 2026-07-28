@@ -81,7 +81,7 @@ const { playerCore, hud, shortcuts } = usePlayerContext()
 const styles = computed(() => clsx({
   btn: controlStyles.btn,
   range: [
-    'range range-2xs range-primary',
+    'range app-range-2xs range-primary',
     'w-24',
     'mx-2',
   ],

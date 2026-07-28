@@ -25,7 +25,7 @@ main.ts (run-at: document-start)
 src/
 ├── main.ts               # 入口：document.domain 设置 + URL 路由分发
 ├── app/                  # MASTER SPA 骨架
-│   ├── app.tsx           # App 根（GlassDistortionFilter + Dialog/Toast + RouterView/KeepAlive）
+│   ├── app.tsx           # App 根（OverlayHost + Dialog/Toast + RouterView/KeepAlive）
 │   ├── router.ts         # createWebHashHistory + 旧播放页重定向
 │   └── routes.ts         # drive / video / test 路由
 ├── pages/

@@ -74,7 +74,7 @@ const styles = clsx({
     'mx-auto mt-[var(--space)]',
     'rounded-3xl',
     'overflow-hidden',
-    'app-glass-panel',
+    'ui-glass-panel',
   ],
   playlist: {
     container: [
@@ -89,7 +89,7 @@ const styles = clsx({
         'h-(--app-playlist-header-height)',
         'px-(--app-playlist-space) py-4',
         'text-base-content',
-        'app-glass-fade',
+        'app-playlist-header-fade',
       ],
       title: 'flex items-center gap-2.5 text-xl font-medium tracking-tight',
       count: 'text-base-content/70 text-sm tracking-wide',
@@ -150,3 +150,18 @@ watch(
   () => scrollToActiveItem(true),
 )
 </script>
+
+<style>
+.app-playlist-header-fade::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    var(--color-base-100) 0%,
+    color-mix(in oklab, var(--color-base-100) 72%, transparent) 58%,
+    transparent 100%
+  );
+  content: '';
+}
+</style>

@@ -65,9 +65,9 @@ const styles = clsx({
 })
 
 const variants = {
-  floating: 'app-glass-floating',
-  overlay: 'app-glass-overlay',
-  panel: 'app-glass-panel',
+  floating: 'ui-glass-floating',
+  overlay: 'ui-glass-overlay',
+  panel: 'ui-glass-panel',
 } as const
 
 interface Props {

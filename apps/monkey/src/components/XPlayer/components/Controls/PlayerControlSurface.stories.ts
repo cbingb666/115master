@@ -42,7 +42,7 @@ export const PlayerControls: Story = {
           <Button data-testid="volume" variant="ghost" shape="circle" aria-label="音量">
             <Icon :name="I.VOLUME_UP" size="xl" />
           </Button>
-          <input type="range" class="range range-2xs range-primary mx-2 w-24" value="60">
+          <input type="range" class="range app-range-2xs range-primary mx-2 w-24" value="60">
         </PlayerControlSurface>
         <PlayerControlSurface data-testid="audio-track-surface">
           <Button variant="ghost" shape="circle" disabled aria-label="音频轨道">

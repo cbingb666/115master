@@ -88,7 +88,7 @@ export const UserInfo = defineComponent({
               class="animate-in slide-in-from-top-2 absolute top-full right-0 z-50 mt-2 duration-200 sm:hidden"
               onClick={(e: Event) => e.stopPropagation()}
             >
-              <div class="app-glass-floating min-w-64 rounded-lg p-4">
+              <div class="ui-glass-floating min-w-64 rounded-lg p-4">
                 {/* 用户信息 */}
                 <div class="border-base-300 mb-3 flex flex-col gap-1 border-b pb-3">
                   <div class="text-base-content text-base font-semibold">

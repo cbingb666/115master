@@ -80,9 +80,6 @@ importers:
       '@vueuse/router':
         specifier: ^14.1.0
         version: 14.2.1(vue-router@4.6.4(vue@3.5.27(typescript@5.9.3)))(vue@3.5.27(typescript@5.9.3))
-      '@wxperia/liquid-glass-vue':
-        specifier: ^1.0.9
-        version: 1.0.9(typescript@5.9.3)
       big-integer:
         specifier: ^1.6.52
         version: 1.6.52
@@ -2272,9 +2269,6 @@ packages:
 
   '@webcontainer/env@1.1.1':
     resolution: {integrity: sha512-6aN99yL695Hi9SuIk1oC88l9o0gmxL1nGWWQ/kNy81HigJ0FoaoTXpytCj6ItzgyCEwA9kF1wixsTuv5cjsgng==}
-
-  '@wxperia/liquid-glass-vue@1.0.9':
-    resolution: {integrity: sha512-uCGz2GIxhjMY6OshbYUmu+mNKhwiaLb5tdeeM7fdCXhrSrIqxPAirvZ15BtGfTi0yYKmodU6ssBIdjLg0PUhag==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -7001,12 +6995,6 @@ snapshots:
       vue: 3.5.27(typescript@5.9.3)
 
   '@webcontainer/env@1.1.1': {}
-
-  '@wxperia/liquid-glass-vue@1.0.9(typescript@5.9.3)':
-    dependencies:
-      vue: 3.5.27(typescript@5.9.3)
-    transitivePeerDependencies:
-      - typescript
 
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:

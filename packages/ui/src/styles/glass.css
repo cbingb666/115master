@@ -136,6 +136,33 @@
   outline-color: oklch(100% 0 0 / 0.9);
 }
 
+/* daisyUI Alert keeps its semantic tone while carrying Floating Glass. */
+.alert.ui-glass-floating {
+  --ui-glass-bg: color-mix(in oklab, var(--ui-glass-tone) 80%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--ui-glass-tone) 74%, var(--ui-glass-fg));
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--ui-glass-tone) 94%, var(--color-base-100));
+}
+
+.alert-info.ui-glass-floating {
+  --ui-glass-tone: var(--color-info);
+  --ui-glass-fg: var(--color-info-content);
+}
+
+.alert-success.ui-glass-floating {
+  --ui-glass-tone: var(--color-success);
+  --ui-glass-fg: var(--color-success-content);
+}
+
+.alert-warning.ui-glass-floating {
+  --ui-glass-tone: var(--color-warning);
+  --ui-glass-fg: var(--color-warning-content);
+}
+
+.alert-error.ui-glass-floating {
+  --ui-glass-tone: var(--color-error);
+  --ui-glass-fg: var(--color-error-content);
+}
+
 [data-theme='light'] :is(.ui-glass-surface, .ui-glass-inset) {
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.65);
 }

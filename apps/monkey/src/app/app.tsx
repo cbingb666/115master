@@ -3,7 +3,6 @@ import { defineComponent, KeepAlive, onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
 import { appDialog } from '@/app/dialog'
 import {
-  GlassDistortionFilter,
   GlobalSearchModal,
   ToastContainer,
   useSponsorBoot,
@@ -29,7 +28,6 @@ const App = defineComponent({
     return () => (
       <OverlayHost>
         <DndRoot>
-          <GlassDistortionFilter></GlassDistortionFilter>
           <DialogHost service={appDialog}>
             <Boot />
             <ToastContainer>

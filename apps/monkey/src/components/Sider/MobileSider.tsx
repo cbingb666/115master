@@ -51,7 +51,7 @@ const MobileSider = defineComponent({
         {/* 底部弹出层 */}
         <div
           class="
-            app-glass-panel
+            ui-glass-panel
             fixed
             inset-x-0 bottom-0
             z-130 flex

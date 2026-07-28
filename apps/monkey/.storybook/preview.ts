@@ -49,12 +49,6 @@ const preview: Preview = {
         watchEffect(() => {
           document.getElementById('my-app')?.setAttribute('data-theme', theme.value)
         })
-        const style = computed(() => ({
-          backgroundColor: theme.value === 'light' ? '#fff' : '#000',
-          color: theme.value === 'light' ? 'oklch(23.2% 0.004 286.1)' : 'oklch(97.1% 0.003 286.4)',
-          minHeight: '100vh',
-          padding: '2rem',
-        }))
         const dialog = createDialogService({
           messages: {
             confirm: '确认',
@@ -64,10 +58,10 @@ const preview: Preview = {
           },
           onError: error => console.error(error),
         })
-        return { dialog, theme, style }
+        return { dialog, theme }
       },
       template: `
-        <div :data-theme="theme" class="app-bg-mesh" :style="style">
+        <div :data-theme="theme" class="app-bg-mesh bg-base-100 text-base-content min-h-screen p-8">
           <OverlayHost>
             <DialogHost :service="dialog">
               <story />

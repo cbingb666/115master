@@ -128,7 +128,7 @@ const ContextMenu = defineComponent({
                 ref={menuRef}
                 class="
                   menu
-                  app-glass-floating
+                  ui-glass-floating
                   fixed
                   top-0
                   left-0

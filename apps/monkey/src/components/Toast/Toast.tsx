@@ -117,7 +117,7 @@ export const Toast = defineComponent({
 
     const toastClass = computed(() => {
       const baseClass = `
-        alert app-glass-floating mb-3
+        alert ui-glass-floating mb-3
         app-animate-slide-in-right
         transition-all duration-300
         flex items-center

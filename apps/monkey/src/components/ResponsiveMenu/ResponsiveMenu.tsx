@@ -119,7 +119,7 @@ const Dropdown = defineComponent({
               ref={menu}
               class="
                 menu
-                app-glass-floating
+                ui-glass-floating
                 fixed
                 top-0
                 left-0
