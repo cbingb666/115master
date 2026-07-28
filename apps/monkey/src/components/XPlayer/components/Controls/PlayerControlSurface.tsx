@@ -1,6 +1,6 @@
 import type { SlotsType, VNodeChild } from 'vue'
+import { Pill } from '@115master/ui'
 import { defineComponent } from 'vue'
-import Pill from '../../../Pill/Pill'
 import './PlayerControlSurface.css'
 
 /**

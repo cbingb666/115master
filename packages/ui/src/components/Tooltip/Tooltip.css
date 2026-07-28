@@ -1,0 +1,14 @@
+.ui-overlay-host {
+  display: contents;
+}
+
+.ui-tooltip > .tooltip-content {
+  position: static;
+  inset: auto;
+  opacity: 1;
+  transform: none;
+}
+
+.ui-tooltip::after {
+  display: none;
+}

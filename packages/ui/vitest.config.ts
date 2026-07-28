@@ -7,7 +7,22 @@ import vite from './vite.config'
 
 const root = dirname(fileURLToPath(import.meta.url))
 
-function storybook(theme: 'light' | 'dark') {
+function storybook(theme: 'light' | 'dark', mode: 'default' | 'reduced-motion' | 'mobile' = 'default') {
+  const name = mode === 'default' ? `storybook-${theme}` : `storybook-${mode}`
+  const options = mode === 'reduced-motion'
+    ? {
+        contextOptions: {
+          reducedMotion: 'reduce' as const,
+        },
+      }
+    : mode === 'mobile'
+      ? {
+          contextOptions: {
+            viewport: { width: 375, height: 667 },
+          },
+        }
+      : undefined
+
   return {
     extends: true,
     plugins: [
@@ -17,10 +32,10 @@ function storybook(theme: 'light' | 'dark') {
       }),
     ],
     test: {
-      name: `storybook-${theme}`,
+      name,
       browser: {
         enabled: true,
-        provider: playwright(),
+        provider: playwright(options),
         headless: true,
         instances: [{ browser: 'chromium' }],
       },
@@ -30,6 +45,11 @@ function storybook(theme: 'light' | 'dark') {
 
 export default mergeConfig(vite, defineConfig({
   test: {
-    projects: [storybook('light'), storybook('dark')],
+    projects: [
+      storybook('light'),
+      storybook('dark'),
+      storybook('light', 'reduced-motion'),
+      storybook('light', 'mobile'),
+    ],
   },
 }))

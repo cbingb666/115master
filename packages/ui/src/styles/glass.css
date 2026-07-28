@@ -13,9 +13,12 @@
 }
 
 .ui-glass-surface {
-  --ui-glass-fg: var(--color-base-content);
-  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 8%, transparent);
-  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  --ui-glass-tone: var(--color-base-content);
+  --ui-glass-fg: var(--ui-glass-tone);
+  --ui-glass-bg: color-mix(in oklab, var(--ui-glass-tone) 8%, transparent);
+  --ui-glass-hover-bg: color-mix(in oklab, var(--ui-glass-tone) 12%, transparent);
+  --ui-glass-active-bg: color-mix(in oklab, var(--ui-glass-tone) 16%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--ui-glass-tone) 10%, transparent);
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.18);
   --ui-glass-shadow: 0 0 0 oklch(0% 0 0 / 0);
   --ui-glass-backdrop: var(--ui-glass-blur-none);
@@ -25,9 +28,12 @@
 }
 
 .ui-glass-inset {
-  --ui-glass-fg: var(--color-base-content);
-  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 12%, transparent);
-  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 14%, transparent);
+  --ui-glass-tone: var(--color-base-content);
+  --ui-glass-fg: var(--ui-glass-tone);
+  --ui-glass-bg: color-mix(in oklab, var(--ui-glass-tone) 12%, transparent);
+  --ui-glass-hover-bg: color-mix(in oklab, var(--ui-glass-tone) 15%, transparent);
+  --ui-glass-active-bg: color-mix(in oklab, var(--ui-glass-tone) 18%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--ui-glass-tone) 14%, transparent);
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.3);
   --ui-glass-shadow: 0 1px 3px oklch(0% 0 0 / 0.1);
   --ui-glass-backdrop: var(--ui-glass-blur-none);
@@ -38,25 +44,34 @@
 }
 
 .ui-glass-floating {
-  --ui-glass-fg: var(--color-base-content);
-  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 15%, transparent);
-  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  --ui-glass-tone: var(--color-base-content);
+  --ui-glass-fg: var(--ui-glass-tone);
+  --ui-glass-bg: color-mix(in oklab, var(--ui-glass-tone) 15%, transparent);
+  --ui-glass-hover-bg: color-mix(in oklab, var(--ui-glass-tone) 20%, transparent);
+  --ui-glass-active-bg: color-mix(in oklab, var(--ui-glass-tone) 24%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--ui-glass-tone) 20%, transparent);
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.3);
   --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.12), 0 6px 18px oklch(0% 0 0 / 0.1);
   --ui-glass-backdrop: var(--ui-glass-blur-standard);
   --ui-glass-saturation: 180%;
-  --ui-glass-opaque-bg: color-mix(in oklab, var(--color-base-300) 92%, var(--color-base-content));
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--ui-glass-tone) 92%, var(--color-base-300));
+  --ui-glass-opaque-hover-bg: color-mix(in oklab, var(--ui-glass-opaque-bg) 92%, var(--ui-glass-fg));
+  --ui-glass-opaque-active-bg: color-mix(in oklab, var(--ui-glass-opaque-bg) 86%, var(--ui-glass-fg));
 }
 
 .ui-glass-overlay {
   --ui-glass-fg: oklch(98% 0 0);
   --ui-glass-bg: oklch(12% 0.01 260 / 0.58);
+  --ui-glass-hover-bg: oklch(12% 0.01 260 / 0.68);
+  --ui-glass-active-bg: oklch(12% 0.01 260 / 0.76);
   --ui-glass-border: oklch(100% 0 0 / 0.18);
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.22);
   --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.22), 0 8px 24px oklch(0% 0 0 / 0.2);
   --ui-glass-backdrop: var(--ui-glass-blur-standard);
   --ui-glass-saturation: 150%;
   --ui-glass-opaque-bg: oklch(12% 0.01 260 / 0.92);
+  --ui-glass-opaque-hover-bg: oklch(16% 0.01 260 / 0.95);
+  --ui-glass-opaque-active-bg: oklch(20% 0.01 260 / 0.98);
 }
 
 .ui-glass-panel {
@@ -77,28 +92,80 @@
     brightness(var(--ui-glass-brightness));
 }
 
+/* Components consume the material through its semantic variables, rather than
+ * recreating color, edge, shadow, or filter recipes in their own styles. */
+.ui-button:is(.ui-glass-surface, .ui-glass-inset, .ui-glass-floating, .ui-glass-overlay) {
+  --btn-fg: var(--ui-glass-fg);
+  --btn-bg: var(--ui-glass-bg);
+  --btn-border: var(--ui-glass-border);
+  --btn-inset: var(--ui-glass-highlight);
+  --btn-shadow: var(--ui-glass-shadow);
+}
+
+.ui-button:is(.ui-glass-surface, .ui-glass-inset, .ui-glass-floating) {
+  --ui-glass-tone: var(--btn-color, var(--color-base-content));
+}
+
+@media (hover: hover) {
+  :is(.ui-button, a.ui-pill):is(.ui-glass-surface, .ui-glass-floating, .ui-glass-overlay):hover {
+    --ui-glass-bg: var(--ui-glass-hover-bg);
+  }
+
+  :is(.ui-button, a.ui-pill).ui-glass-inset:hover {
+    --ui-glass-bg: var(--ui-glass-hover-bg);
+  }
+}
+
+:is(.ui-button, a.ui-pill):is(.ui-glass-surface, .ui-glass-floating, .ui-glass-overlay):active,
+.ui-button.btn-active:is(.ui-glass-surface, .ui-glass-floating, .ui-glass-overlay),
+:is(.ui-button, a.ui-pill).ui-glass-inset:active,
+.ui-button.btn-active.ui-glass-inset {
+  --ui-glass-bg: var(--ui-glass-active-bg);
+}
+
+.ui-button:is(.ui-glass-surface, .ui-glass-inset, .ui-glass-floating, .ui-glass-overlay):disabled {
+  color: color-mix(in oklch, var(--ui-glass-fg) 30%, transparent);
+  background-color: var(--ui-glass-bg);
+  border-color: var(--ui-glass-border);
+  box-shadow:
+    var(--ui-glass-highlight) inset,
+    var(--ui-glass-shadow);
+}
+
+.ui-button.ui-glass-overlay:focus-visible {
+  outline-color: oklch(100% 0 0 / 0.9);
+}
+
 [data-theme='light'] :is(.ui-glass-surface, .ui-glass-inset) {
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.65);
 }
 
 [data-theme='light'] .ui-glass-surface {
-  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 6%, transparent);
-  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 9%, transparent);
+  --ui-glass-bg: color-mix(in oklab, var(--ui-glass-tone) 6%, transparent);
+  --ui-glass-hover-bg: color-mix(in oklab, var(--ui-glass-tone) 10%, transparent);
+  --ui-glass-active-bg: color-mix(in oklab, var(--ui-glass-tone) 14%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--ui-glass-tone) 9%, transparent);
 }
 
 [data-theme='light'] .ui-glass-inset {
-  --ui-glass-bg: color-mix(in oklab, var(--color-base-content) 7%, transparent);
-  --ui-glass-border: color-mix(in oklab, var(--color-base-content) 8%, transparent);
+  --ui-glass-bg: color-mix(in oklab, var(--ui-glass-tone) 7%, transparent);
+  --ui-glass-hover-bg: color-mix(in oklab, var(--ui-glass-tone) 9%, transparent);
+  --ui-glass-active-bg: color-mix(in oklab, var(--ui-glass-tone) 11%, transparent);
+  --ui-glass-border: color-mix(in oklab, var(--ui-glass-tone) 8%, transparent);
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.75);
   --ui-glass-shadow: 0 1px 3px oklch(0% 0 0 / 0.08);
 }
 
 [data-theme='light'] .ui-glass-floating {
   --ui-glass-bg: oklch(100% 0 0 / 0.72);
+  --ui-glass-hover-bg: oklch(100% 0 0 / 0.85);
+  --ui-glass-active-bg: color-mix(in oklab, oklch(93% 0.004 286) 85%, transparent);
   --ui-glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.65);
   --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.08), 0 6px 18px oklch(0% 0 0 / 0.06);
-  --ui-glass-opaque-bg: color-mix(in oklab, var(--color-base-100) 94%, var(--color-base-content));
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--ui-glass-tone) 94%, var(--color-base-100));
+  --ui-glass-opaque-hover-bg: color-mix(in oklab, var(--ui-glass-opaque-bg) 94%, var(--ui-glass-fg));
+  --ui-glass-opaque-active-bg: color-mix(in oklab, var(--ui-glass-opaque-bg) 90%, var(--ui-glass-fg));
 }
 
 [data-theme='light'] .ui-glass-panel {
@@ -113,6 +180,11 @@
   :is(.ui-glass-floating, .ui-glass-overlay, .ui-glass-panel) {
     --ui-glass-bg: var(--ui-glass-opaque-bg);
   }
+
+  :is(.ui-button, a.ui-pill):is(.ui-glass-floating, .ui-glass-overlay) {
+    --ui-glass-hover-bg: var(--ui-glass-opaque-hover-bg, var(--ui-glass-opaque-bg));
+    --ui-glass-active-bg: var(--ui-glass-opaque-active-bg, var(--ui-glass-opaque-bg));
+  }
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -121,5 +193,10 @@
 
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  :is(.ui-button, a.ui-pill):is(.ui-glass-floating, .ui-glass-overlay) {
+    --ui-glass-hover-bg: var(--ui-glass-opaque-hover-bg, var(--ui-glass-opaque-bg));
+    --ui-glass-active-bg: var(--ui-glass-opaque-active-bg, var(--ui-glass-opaque-bg));
   }
 }

@@ -11,8 +11,16 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$"]
     },
+    "@115master/ui#type-check": {
+      "dependsOn": ["build"],
+      "inputs": ["$TURBO_DEFAULT$"]
+    },
     "test": {
       "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$"]
+    },
+    "@115master/ui#test": {
+      "dependsOn": ["build"],
       "inputs": ["$TURBO_DEFAULT$"]
     },
     "test:coverage": {

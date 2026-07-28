@@ -1,7 +1,7 @@
 import type { PropType } from 'vue'
+import { Tooltip } from '@115master/ui'
 import { useCycleList } from '@vueuse/core'
 import { computed, defineComponent, watch } from 'vue'
-import { Tooltip } from '@/components/Tooltip'
 import { I, Icon } from '@/icons'
 import Button from '../Button/Button'
 

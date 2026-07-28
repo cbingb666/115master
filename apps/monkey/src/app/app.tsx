@@ -1,3 +1,4 @@
+import { OverlayHost } from '@115master/ui'
 import { defineComponent, KeepAlive, onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
 import {
@@ -26,26 +27,28 @@ const App = defineComponent({
     })
 
     return () => (
-      <DndRoot>
-        <GlassDistortionFilter></GlassDistortionFilter>
-        <DialogContainer>
-          <Boot />
-          <ToastContainer>
-            <GlobalSearchModal />
-            <RouterView>
-              {{
-                default: ({ Component, route }: any) => {
-                  if (!Component)
-                    return null
-                  if (route.meta?.keepAlive)
-                    return <KeepAlive><Component key={route.name as string} /></KeepAlive>
-                  return <Component />
-                },
-              }}
-            </RouterView>
-          </ToastContainer>
-        </DialogContainer>
-      </DndRoot>
+      <OverlayHost>
+        <DndRoot>
+          <GlassDistortionFilter></GlassDistortionFilter>
+          <DialogContainer>
+            <Boot />
+            <ToastContainer>
+              <GlobalSearchModal />
+              <RouterView>
+                {{
+                  default: ({ Component, route }: any) => {
+                    if (!Component)
+                      return null
+                    if (route.meta?.keepAlive)
+                      return <KeepAlive><Component key={route.name as string} /></KeepAlive>
+                    return <Component />
+                  },
+                }}
+              </RouterView>
+            </ToastContainer>
+          </DialogContainer>
+        </DndRoot>
+      </OverlayHost>
     )
   },
 })

@@ -1,9 +1,9 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import type { FileDndTargetBindings } from '../FileDnd'
+import { Pill } from '@115master/ui'
 import { defineComponent, withModifiers } from 'vue'
 import { FileDndTarget } from '../FileDnd'
-import Pill from '../Pill/Pill'
 
 /**
  * 面包屑单项（含 li 包装，可点击 + 文件投放目标）。

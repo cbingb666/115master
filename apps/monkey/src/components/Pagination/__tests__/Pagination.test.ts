@@ -31,9 +31,9 @@ describe('pagination surface', () => {
     const root = mount().firstElementChild!
     const current = root.querySelector('[aria-current="page"]')
 
-    expect(root.classList).toContain('pill')
-    expect(root.classList).toContain('pill-md')
-    expect(root.classList).not.toContain('app-glass-floating')
+    expect(root.classList).toContain('ui-pill')
+    expect(root.classList).toContain('ui-pill-md')
+    expect(root.classList).not.toContain('ui-glass-floating')
     expect(current?.classList).toContain('btn-soft')
   })
 
@@ -42,8 +42,8 @@ describe('pagination surface', () => {
     const buttons = [...root.querySelectorAll('button')]
     const current = root.querySelector('[aria-current="page"]')
 
-    expect(root.classList).toContain('pill')
-    expect(root.classList).toContain('app-glass-floating')
+    expect(root.classList).toContain('ui-pill')
+    expect(root.classList).toContain('ui-glass-floating')
     expect(buttons).toHaveLength(7)
     expect(current?.classList).toContain('btn-glass-inset')
     expect(buttons.filter(button => button !== current).every(button => button.classList.contains('btn-ghost'))).toBe(true)

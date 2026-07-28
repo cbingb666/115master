@@ -19,9 +19,9 @@ describe('actionBar', () => {
     app.mount(host)
     apps.push(app)
 
-    const surface = host.querySelector('.pill')
+    const surface = host.querySelector('.ui-pill')
 
-    expect(surface?.classList).toContain('app-glass-floating')
-    expect(surface?.classList).toContain('pill-xl')
+    expect(surface?.classList).toContain('ui-glass-floating')
+    expect(surface?.classList).toContain('ui-pill-xl')
   })
 })

@@ -2,6 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
+import { Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import {
@@ -17,7 +18,6 @@ import {
   FileSortSelector,
   FileViewType,
   Pagination,
-  Tooltip,
 } from '@/components'
 import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'

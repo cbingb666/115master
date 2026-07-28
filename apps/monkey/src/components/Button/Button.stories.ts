@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { Pill } from '@115master/ui'
 import { I, Icon } from '@/icons'
-import Pill from '../Pill/Pill'
 import Button from './Button'
 
 const colors = [

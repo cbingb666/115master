@@ -30,11 +30,11 @@ describe('playerControlSurface', () => {
     app.mount(host)
     apps.push(app)
 
-    const surface = host.querySelector('.pill')
+    const surface = host.querySelector('.ui-pill')
     const button = host.querySelector('button')
 
-    expect(host.querySelectorAll('.app-glass-floating')).toHaveLength(1)
-    expect(surface?.classList).toContain('app-glass-floating')
+    expect(host.querySelectorAll('.ui-glass-floating')).toHaveLength(1)
+    expect(surface?.classList).toContain('ui-glass-floating')
     expect(surface?.classList).toContain('x-player-control-surface')
     expect(button?.classList).toContain('btn-ghost')
     expect(button?.hasAttribute('disabled')).toBe(true)

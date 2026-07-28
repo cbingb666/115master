@@ -1,9 +1,9 @@
+import type { PillVariant } from '@115master/ui'
 import type { PropType } from 'vue'
-import type { PillVariant } from '../Pill/Pill'
+import { Pill } from '@115master/ui'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS } from '@/constants'
 import Button from '../Button/Button'
-import Pill from '../Pill/Pill'
 
 type VisiblePageItem = number | '...'
 export type PaginationSurface = 'plain' | 'floating'

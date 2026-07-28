@@ -1,9 +1,9 @@
 import type { PropType } from 'vue'
 import type { Action } from '@/types/action'
+import { Pill } from '@115master/ui'
 import { defineComponent, Fragment, ref, toValue, triggerRef } from 'vue'
 import { Icon } from '@/icons'
 import Button from '../Button/Button'
-import Pill from '../Pill/Pill'
 
 /**
  * 分组操作栏

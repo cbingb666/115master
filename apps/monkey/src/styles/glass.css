@@ -126,7 +126,7 @@
   --btn-shadow: var(--glass-shadow);
 }
 
-/* Container adapter: Pill and standalone surfaces consume the same material */
+/* Container adapter: application surfaces consume the same material */
 :is(.app-glass-surface, .app-glass-floating, .app-glass-overlay, .app-glass-panel) {
   color: var(--glass-fg);
   background-color: var(--glass-bg);
@@ -140,10 +140,6 @@
   :is(.btn-glass-surface, .btn-glass-floating, .btn-glass-overlay):hover {
     --btn-bg: var(--glass-hover-bg);
   }
-
-  a.pill:is(.app-glass-surface, .app-glass-floating, .app-glass-overlay):hover {
-    background-color: var(--glass-hover-bg);
-  }
 }
 
 :is(.btn-glass-surface, .btn-glass-floating, .btn-glass-overlay) {
@@ -151,10 +147,6 @@
   &.btn-active {
     --btn-bg: var(--glass-active-bg);
   }
-}
-
-a.pill:is(.app-glass-surface, .app-glass-floating, .app-glass-overlay):active {
-  background-color: var(--glass-active-bg);
 }
 
 .btn-glass-overlay:focus-visible {

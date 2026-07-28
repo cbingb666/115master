@@ -1,1 +1,4 @@
-/* Component geometry is added with each public component contract. */
+@import './button.css';
+@import './dialog.css';
+@import './pill.css';
+@import './tooltip.css';

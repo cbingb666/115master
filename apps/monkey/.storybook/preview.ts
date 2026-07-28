@@ -1,11 +1,11 @@
 import type { Preview } from '@storybook/vue3-vite'
+import { OverlayHost } from '@115master/ui'
 import { computed, watchEffect } from 'vue'
 import '../src/styles/main.css'
 
 /**
- * 在 document 级创建 #my-app（Vue mount 之前就存在），供组件的 `Teleport to="#my-app"` 使用。
- * monkey 环境里 #my-app 是脚本挂载点（mount 前由脚本创建）；storybook 里若把 #my-app 放进
- * Vue 渲染树，组件挂载阶段整棵树尚未 insert 到 document，Teleport 会找不到 target。
+ * 应用仍有直接使用 #my-app 的历史 Teleport 集成；它不是 Tooltip 宿主。
+ * Tooltip 由下方 Theme 范围内的 OverlayHost 解析最近目标。
  */
 if (typeof document !== 'undefined' && !document.getElementById('my-app')) {
   const el = document.createElement('div')
@@ -41,11 +41,11 @@ const preview: Preview = {
   },
   decorators: [
     (story, context) => ({
-      components: { story },
+      components: { OverlayHost, story },
       setup() {
         /** context.globals 是 reactive 对象，必须通过 computed 读取才能响应工具栏切换 */
         const theme = computed(() => (context.globals.theme === 'light' ? 'light' : 'dark'))
-        /** 同步主题到 document 级 #my-app，让 Teleport 进去的 tooltip 也跟随主题 */
+        /** 同步应用级历史 Teleport 的 Theme。 */
         watchEffect(() => {
           document.getElementById('my-app')?.setAttribute('data-theme', theme.value)
         })
@@ -59,7 +59,9 @@ const preview: Preview = {
       },
       template: `
         <div :data-theme="theme" class="app-bg-mesh" :style="style">
-          <story />
+          <OverlayHost>
+            <story />
+          </OverlayHost>
         </div>
       `,
     }),

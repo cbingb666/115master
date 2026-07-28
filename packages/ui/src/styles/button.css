@@ -1,0 +1,10 @@
+@layer components {
+  .ui-button {
+    border-start-start-radius: var(--join-ss, 9999px);
+    border-start-end-radius: var(--join-se, 9999px);
+    border-end-end-radius: var(--join-ee, 9999px);
+    border-end-start-radius: var(--join-es, 9999px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+}

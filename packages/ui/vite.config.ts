@@ -13,6 +13,10 @@ const assets = [
   ['tokens.css', 'tokens.css'],
   ['glass.css', 'glass.css'],
   ['components.css', 'components.css'],
+  ['button.css', 'button.css'],
+  ['dialog.css', 'dialog.css'],
+  ['pill.css', 'pill.css'],
+  ['../components/Tooltip/Tooltip.css', 'tooltip.css'],
 ] as const
 
 function styles(): Plugin {

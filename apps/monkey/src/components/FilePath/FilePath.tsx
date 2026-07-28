@@ -1,12 +1,12 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
+import { Pill } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { defineComponent, withModifiers } from 'vue'
 import { ResponsiveMenu } from '@/components'
 import { I, Icon } from '@/icons'
 import Button from '../Button/Button'
 import { Link } from '../Link'
-import Pill from '../Pill/Pill'
 import FilePathLink from './FilePathLink'
 
 /**

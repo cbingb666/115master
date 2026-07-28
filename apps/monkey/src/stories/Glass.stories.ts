@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { Pill } from '@115master/ui'
 import Button from '../components/Button/Button'
-import Pill from '../components/Pill/Pill'
 
 const meta = {
   title: 'Foundations/Glass',
