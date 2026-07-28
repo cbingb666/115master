@@ -4,7 +4,7 @@ Read this before changing a Storybook `main`, `preview`, Vite configuration, The
 
 ## UI Foundation Storybook
 
-`packages/ui/.storybook/` owns public UI Storybook runtime configuration. Its preview establishes the Theme toolbar and a Theme-scoped Story root. Its Vitest configuration runs the public Story suite in real Chromium for both light and dark Theme projects, and its a11y configuration treats violations as errors.
+`packages/ui/.storybook/` owns public UI Storybook runtime configuration. Its preview establishes the Theme toolbar and a Theme-scoped Story root. Its Vitest configuration runs the public Story suite in real Chromium for both light and dark Theme projects, supplements them with light-mode reduced-motion and mobile projects, and treats a11y violations as errors.
 
 When changing UI preview or Theme behavior:
 

@@ -5,7 +5,7 @@ import { ref } from 'vue'
 import './foundation.css'
 
 const meta = {
-  title: 'Foundations/Theme and Glass',
+  title: 'Foundations/Theme, Token and Glass',
   parameters: {
     docs: {
       description: {
@@ -20,7 +20,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Tracer: Story = {
-  name: '主题与材质 tracer',
+  name: '主题、Token 与材质 tracer',
   render: () => ({
     components: { Button, Pill },
     setup() {
@@ -33,7 +33,7 @@ export const Tracer: Story = {
       <main class="ui-foundation-demo" data-ui-theme-tracer>
         <header class="ui-foundation-demo__intro">
           <p class="ui-foundation-demo__eyebrow">@115master/ui</p>
-          <h1 class="ui-foundation-demo__title">Theme and Glass tracer</h1>
+          <h1 class="ui-foundation-demo__title">Theme, Token and Glass tracer</h1>
           <p class="ui-foundation-demo__copy">Light 是默认主题；显式 data-theme 始终覆盖系统偏好。</p>
           <div class="ui-foundation-demo__actions">
             <button type="button" class="btn btn-sm" @click="act">daisyUI action</button>
@@ -99,7 +99,7 @@ export const Tracer: Story = {
       throw new Error('Theme and Glass tracer did not render its public surfaces')
 
     const theme = globals.theme === 'dark' ? 'dark' : 'light'
-    const base = getComputedStyle(tracer).getPropertyValue('--color-base-100').trim()
+    const style = getComputedStyle(tracer)
 
     const daisyAction = canvas.getByRole('button', { name: 'daisyUI action' })
     const nestedAction = canvas.getByRole('button', { name: 'Nested Button stays filter-free' })
@@ -113,7 +113,14 @@ export const Tracer: Story = {
     await userEvent.click(nestedAction)
     await expect(actions).toHaveTextContent('3')
     await expect(root).toHaveAttribute('data-theme', theme)
-    await expect(base).toBe(theme === 'dark' ? 'oklch(0% 0 0)' : 'oklch(100% 0 0)')
+    await expect(style.colorScheme).toBe(theme)
+    await expect([
+      '--color-base-100',
+      '--ui-glass-blur-none',
+      '--ui-glass-blur-standard',
+      '--ui-glass-blur-strong',
+      '--ui-glass-brightness',
+    ].every(token => style.getPropertyValue(token).trim())).toBe(true)
     await expect(getComputedStyle(owner).backdropFilter).not.toBe('none')
     await expect(getComputedStyle(pill).backdropFilter).toBe('none')
     await expect(getComputedStyle(button).backdropFilter).toBe('none')

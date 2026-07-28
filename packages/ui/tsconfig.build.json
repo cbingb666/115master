@@ -9,5 +9,12 @@
     "emitDeclarationOnly": true,
     "noEmit": false,
     "outDir": "./dist"
-  }
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx",
+    "src/**/__tests__/**"
+  ]
 }

@@ -14,7 +14,10 @@ pnpm lint                 # eslint
 pnpm lint:fix             # eslint --fix
 pnpm lint:inspector       # @eslint/config-inspector (调试规则冲突)
 pnpm analyze              # bundle 分析 (rollup-plugin-visualizer)
-pnpm storybook            # monkey 组件 Storybook (localhost:6006)
+pnpm storybook            # 并行启动 UI Foundation (6006) 与 Monkey 集成 Storybook (6007)
+pnpm storybook:ui         # 仅启动 UI Foundation Storybook
+pnpm storybook:monkey     # 仅启动 Monkey 集成 Storybook
+pnpm build-storybook      # 构建两套静态 Storybook
 pnpm changeset            # 新建 changeset (仅用户执行)
 pnpm clean:cache          # 清理 Turbo / Vite / Rollup / TypeScript 构建缓存
 pnpm clean                # 清理所有 dist、构建缓存及根目录 node_modules
@@ -34,12 +37,13 @@ packages/
 ├── shared                # 基础设施（被 drive115 / subtitle-source / monkey 消费）
 ├── drive115              # 115 API 门面（依赖 shared, utils）
 ├── subtitle-source       # 字幕来源（依赖 shared, utils）
+├── ui                    # 应用无关 UI Foundation
 ├── utils                 # 通用工具函数
 ├── tsconfig              # 共享 tsconfig
 └── eslint-config         # 共享 eslint 配置
 
 依赖方向（仅向下游）：
-monkey → drive115, subtitle-source, shared, utils
+monkey → ui, drive115, subtitle-source, shared, utils
 drive115 / subtitle-source → shared, utils
 ```
 
@@ -62,6 +66,11 @@ drive115 / subtitle-source → shared, utils
 
 简介：跨应用共享基础设施层——错误类型（InfraError）、缓存系统（CacheCore、MetaStore、QuotaManager）、日志（Logger）、HTTP请求抽象（IRequest、FetchRequest）。
 指令：@packages/shared/AGENTS.md
+
+### @packages/ui
+
+简介：应用无关 UI Foundation，拥有公共 Theme、Design Token、Glass、核心组件、Dialog 服务与基础 Storybook。
+上下文：@packages/ui/CONTEXT.md
 
 ### @packages/drive115
 

@@ -3,7 +3,7 @@ import { OverlayHost, Tooltip } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
 
 const meta = {
-  title: 'Components/OverlayHost',
+  title: 'UI/OverlayHost',
   component: OverlayHost,
   parameters: {
     docs: {

@@ -1,7 +1,12 @@
 import type { Preview } from '@storybook/vue3-vite'
 import { createDialogService, DialogHost, OverlayHost } from '@115master/ui'
+import { icons } from '@iconify-json/ion'
+import { addCollection } from '@iconify/vue'
 import { computed, watchEffect } from 'vue'
 import '../src/styles/main.css'
+
+/** 本地预载 registry 使用的 Ion 集合，避免 Story 渲染时访问 Iconify API。 */
+addCollection(icons)
 
 /**
  * 应用仍有直接使用 #my-app 的历史 Teleport 集成；它不是 Tooltip 宿主。

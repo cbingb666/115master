@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Button } from '@115master/ui'
+import logo from '@/assets/logo.svg?url'
 import { I, Icon } from '@/icons'
 import Empty from './Empty'
 
@@ -80,8 +81,9 @@ export const CustomImage: Story = {
   name: '自定义图片',
   render: () => ({
     components: { Empty },
+    setup: () => ({ image: logo }),
     template: `
-      <Empty image="https://placehold.co/200x200/EEE/999?text=No+Data" description="使用自定义图片" size="lg" />
+      <Empty :image="image" description="使用自定义图片" size="lg" />
     `,
   }),
 }

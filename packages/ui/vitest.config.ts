@@ -46,6 +46,14 @@ function storybook(theme: 'light' | 'dark', mode: 'default' | 'reduced-motion' |
 export default mergeConfig(vite, defineConfig({
   test: {
     projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/__tests__/**/*.test.ts'],
+        },
+      },
       storybook('light'),
       storybook('dark'),
       storybook('light', 'reduced-motion'),

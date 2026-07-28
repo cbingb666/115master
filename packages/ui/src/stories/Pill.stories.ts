@@ -3,7 +3,7 @@ import { Pill } from '@115master/ui'
 import { expect, within } from 'storybook/test'
 
 const meta = {
-  title: 'Components/Pill',
+  title: 'UI/Pill',
   component: Pill,
   parameters: {
     docs: {

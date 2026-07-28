@@ -7,6 +7,16 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", ".output/**", ".next/**"]
     },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": ["storybook-static/**"]
+    },
+    "@115master/ui#build-storybook": {
+      "dependsOn": ["build"],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": ["storybook-static/**"]
+    },
     "type-check": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$"]
@@ -37,6 +47,16 @@
     },
     "dev": {
       "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "storybook": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "@115master/ui#storybook": {
+      "dependsOn": ["build"],
       "cache": false,
       "persistent": true
     }

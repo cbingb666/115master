@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { getCurrentInstance } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import Menu from './Menu'
 
 const routes = [
@@ -11,7 +11,7 @@ const routes = [
 
 /** 创建 router 并安装到当前 app，然后导航到指定路径 */
 function useRouter(path: string) {
-  const router = createRouter({ history: createWebHashHistory(), routes })
+  const router = createRouter({ history: createMemoryHistory(), routes })
   const app = getCurrentInstance()?.appContext.app
   if (app) {
     app.use(router)

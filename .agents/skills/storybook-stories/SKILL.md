@@ -58,20 +58,22 @@ The first delivery does not require pixel snapshots, cloud visual regression, or
 
 ## Validate the changed owner
 
-For a UI Foundation Story or contract change, run the targeted package checks, including:
+Run targeted checks through Turbo so the package and its upstream workspace dependencies build before the check consumes dist.
+
+For a UI Foundation Story or contract change, run:
 
 ```bash
-pnpm -F @115master/ui type-check
-pnpm -F @115master/ui test
-pnpm -F @115master/ui build-storybook
+pnpm turbo run type-check --filter=@115master/ui
+pnpm turbo run test --filter=@115master/ui
+pnpm turbo run build-storybook --filter=@115master/ui
 ```
 
-For a Monkey integration Story, run the affected application checks, including:
+For a Monkey integration Story, run:
 
 ```bash
-pnpm -F @115master/monkey type-check
-pnpm -F @115master/monkey lint
-pnpm -F @115master/monkey build-storybook
+pnpm turbo run type-check --filter=@115master/monkey
+pnpm turbo run lint --filter=@115master/monkey
+pnpm turbo run build-storybook --filter=@115master/monkey
 ```
 
 Use [Design Tokens](../design-tokens/SKILL.md) for visual-value ownership and [Glass UI](../ui-ux/glass-ui/SKILL.md) for a material scenario. Use the icon and Vue TSX skills whenever those implementation concerns apply.

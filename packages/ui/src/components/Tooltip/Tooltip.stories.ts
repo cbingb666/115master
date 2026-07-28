@@ -4,7 +4,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { ref } from 'vue'
 
 const meta = {
-  title: 'Components/Tooltip',
+  title: 'UI/Tooltip',
   component: Tooltip,
   parameters: {
     docs: {
