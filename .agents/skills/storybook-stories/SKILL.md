@@ -1,11 +1,17 @@
 ---
 name: storybook-stories
-description: 在 monkey 包编写 Storybook stories（组件文档）、配置 storybook，或排查 stories type-check 报错（className / JSX.IntrinsicElements / ReactNode）时使用。
+description: apps/monkey 的纯 UI 组件必须使用；编写 Storybook stories（组件文档）、配置 Storybook，或排查 stories type-check 报错（className / JSX.IntrinsicElements / ReactNode）时同样触发。
 ---
 
 # Storybook Stories（apps/monkey）
 
 Storybook 10 + `@storybook/vue3-vite` + vue-tsc。启动 `pnpm -F @115master/monkey storybook`（localhost:6006）。
+
+## 适用范围
+
+纯 UI 组件由 props / slots 驱动，不依赖 store、router 或 GM API。无论组件使用 TSX 还是 SFC，纯 UI 组件都必须编写 stories；缺失视为未完成。
+
+依赖应用上下文的组件不强制归类为纯 UI，但能通过轻量 decorator 或 mock 稳定展示时仍应优先补 story。
 
 ## 写 stories
 
@@ -27,6 +33,8 @@ Storybook 10 + `@storybook/vue3-vite` + vue-tsc。启动 `pnpm -F @115master/mon
 - 事件 props 传 noop——未装 actions addon。
 - story 级 `parameters.docs.description`：仅当「这个 story 验证什么」从名字看不出时写（典范：Tooltip 的 Overflow）。
 - 图标：render 里 `components: { Icon }` + `setup: () => ({ I })`，template 中用 `<Icon :name="I.X" />`。
+- 按组件实际契约覆盖默认与关键变体，以及组件确实存在的空、加载、错误、禁用、slot 组合或 overflow 状态；不为凑数量创建无差异 story。
+- 组件样式受主题影响时，同时检查浅色与深色。
 
 骨架：
 
@@ -110,4 +118,4 @@ framework: {
 cd apps/monkey && pnpm type-check && pnpm lint && pnpm build-storybook
 ```
 
-`type-check`（`vue-tsc -b`）按 references 覆盖 stories program。三绿后在 dev server 肉眼过一遍，深色 / 浅色主题都切。
+`type-check`（`vue-tsc -b`）按 references 覆盖 stories program。三绿后在 dev server 肉眼检查相关 story 状态。
