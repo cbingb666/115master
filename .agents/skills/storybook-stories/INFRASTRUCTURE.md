@@ -1,0 +1,38 @@
+# Storybook 基础设施
+
+修改 `.storybook/main.ts`、`.storybook/preview.ts`、主题、Teleport 或 TSX docgen 时读取本文件。
+
+## Preview 运行时约束
+
+`.storybook/preview.ts` 提供三个项目级约束：
+
+1. 在模块求值阶段把 `#my-app` 追加到 `document.body`，确保 Vue mount 前 Teleport target 已存在。
+2. 主题 decorator 通过 `computed` 读取 `context.globals.theme`，使工具栏切换保持响应式。
+3. `data-theme` 同步写入 story wrapper 与 `#my-app`，使 Teleport 内容和普通内容使用同一主题。
+
+新增全局 decorator 或 mock 前先复用现有设施。修改 preview 后，在普通组件和 Teleport 组件中各切换一次浅色与深色主题。
+
+完成标准：Teleport 挂载无警告，工具栏主题切换同时更新 Canvas 与 `#my-app` 内的内容。
+
+## TSX props 与 controls
+
+默认 `vue-docgen-api` 对 TSX 组件提取不完整。只有 TSX 组件需要自动 props 表或 controls 时，才在 `.storybook/main.ts` 切换为 `vue-component-meta`：
+
+```ts
+framework: {
+  name: '@storybook/vue3-vite',
+  options: {
+    builder: {
+      viteConfigPath: '.storybook/vite.config.ts',
+    },
+    docgen: {
+      plugin: 'vue-component-meta',
+      tsconfig: 'tsconfig.app.json',
+    },
+  },
+},
+```
+
+本仓库使用 tsconfig references 和 `@/` alias，因此 `tsconfig.app.json` 必须显式传给 docgen。保留现有 `builder.viteConfigPath`。
+
+完成标准：目标 TSX 组件的 Docs 页面展示预期 props / controls，`@/` 导入可解析，`build-storybook` 退出 0。
