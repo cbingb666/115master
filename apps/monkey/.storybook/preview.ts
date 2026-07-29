@@ -1,7 +1,9 @@
-import type { Preview } from '@storybook/vue3-vite'
 import { createDialogService, DialogHost, OverlayHost } from '@115master/ui'
 import { icons } from '@iconify-json/ion'
 import { addCollection } from '@iconify/vue'
+import addonDocs from '@storybook/addon-docs'
+import addonVitest from '@storybook/addon-vitest'
+import { definePreview } from '@storybook/vue3-vite'
 import { computed, watchEffect } from 'vue'
 import '../src/styles/main.css'
 
@@ -20,7 +22,11 @@ if (typeof document !== 'undefined' && !document.getElementById('my-app')) {
   document.body.appendChild(el)
 }
 
-const preview: Preview = {
+const preview = definePreview({
+  addons: [
+    addonDocs(),
+    addonVitest(),
+  ],
   parameters: {
     layout: 'fullscreen',
     backgrounds: {
@@ -76,6 +82,6 @@ const preview: Preview = {
       `,
     }),
   ],
-}
+})
 
 export default preview

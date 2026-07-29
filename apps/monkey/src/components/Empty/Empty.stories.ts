@@ -92,6 +92,7 @@ export const WithAction: Story = {
   name: '带操作按钮',
   render: () => ({
     components: { Button, Empty },
+    setup: () => ({ I }),
     template: `
       <div class="space-y-6">
         <Empty description="还没有上传过文件">

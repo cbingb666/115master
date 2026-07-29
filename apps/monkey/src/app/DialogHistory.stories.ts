@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Button, createDialogService, DialogHost } from '@115master/ui'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { computed, ref } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
+import preview from '../../.storybook/preview'
 import { createAppDialogService } from './dialogAdapter'
 import { dialogMarker, instrumentDialogRouter } from './testing/dialogRouter'
 
-const meta = {
+const meta = preview.meta({
   title: 'App/Dialog history adapter',
   parameters: {
     docs: {
@@ -16,13 +16,10 @@ const meta = {
       },
     },
   },
-  tags: ['autodocs'],
-} satisfies Meta
+  tags: ['autodocs', 'test'],
+})
 
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const NestedAndForwardNavigation: Story = {
+export const NestedAndForwardNavigation = meta.story({
   render: () => ({
     components: { Button, DialogHost },
     setup() {
@@ -116,48 +113,49 @@ export const NestedAndForwardNavigation: Story = {
       </DialogHost>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const route = canvasElement.querySelector<HTMLOutputElement>('[data-dialog-history-route]')
-    const parent = canvasElement.querySelector<HTMLOutputElement>('[data-dialog-history-parent]')
-    const child = canvasElement.querySelector<HTMLOutputElement>('[data-dialog-history-child]')
-    const listeners = canvasElement.querySelector<HTMLOutputElement>('[data-dialog-history-listeners]')
+})
 
-    if (!route || !parent || !child || !listeners)
-      throw new Error('Dialog history integration outputs are missing')
+NestedAndForwardNavigation.test('proves nested and forward navigation history cleanup', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const route = canvasElement.querySelector<HTMLOutputElement>('[data-dialog-history-route]')
+  const parent = canvasElement.querySelector<HTMLOutputElement>('[data-dialog-history-parent]')
+  const child = canvasElement.querySelector<HTMLOutputElement>('[data-dialog-history-child]')
+  const listeners = canvasElement.querySelector<HTMLOutputElement>('[data-dialog-history-listeners]')
 
-    await waitFor(() => expect(route).toHaveTextContent('/:none'))
-    await userEvent.click(canvas.getByRole('button', { name: 'Open history parent' }))
-    await waitFor(() => expect(route.textContent?.startsWith('/:dialog-')).toBe(true))
-    const parentMarker = route.textContent
+  if (!route || !parent || !child || !listeners)
+    throw new Error('Dialog history integration outputs are missing')
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open history child' }))
-    await waitFor(() => expect(route.textContent).not.toBe(parentMarker))
-    await expect(canvasElement.querySelectorAll('dialog[open]')).toHaveLength(2)
-    await expect(parent).toHaveTextContent('idle')
+  await waitFor(() => expect(route).toHaveTextContent('/:none'))
+  await userEvent.click(canvas.getByRole('button', { name: 'Open history parent' }))
+  await waitFor(() => expect(route.textContent?.startsWith('/:dialog-')).toBe(true))
+  const parentMarker = route.textContent
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Back route' }))
-    await waitFor(() => expect(child).toHaveTextContent('programmatic'))
-    await waitFor(() => expect(route).toHaveTextContent(parentMarker ?? ''))
-    await expect(canvasElement.querySelectorAll('dialog[open]')).toHaveLength(1)
-    await expect(parent).toHaveTextContent('idle')
+  await userEvent.click(canvas.getByRole('button', { name: 'Open history child' }))
+  await waitFor(() => expect(route.textContent).not.toBe(parentMarker))
+  await expect(canvasElement.querySelectorAll('dialog[open]')).toHaveLength(2)
+  await expect(parent).toHaveTextContent('idle')
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Back route' }))
-    await waitFor(() => expect(parent).toHaveTextContent('programmatic'))
-    await waitFor(() => expect(listeners).toHaveTextContent('0'))
+  await userEvent.click(canvas.getByRole('button', { name: 'Back route' }))
+  await waitFor(() => expect(child).toHaveTextContent('programmatic'))
+  await waitFor(() => expect(route).toHaveTextContent(parentMarker ?? ''))
+  await expect(canvasElement.querySelectorAll('dialog[open]')).toHaveLength(1)
+  await expect(parent).toHaveTextContent('idle')
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open history parent' }))
-    await waitFor(() => expect(route.textContent?.startsWith('/:dialog-')).toBe(true))
-    const staleMarker = route.textContent
+  await userEvent.click(canvas.getByRole('button', { name: 'Back route' }))
+  await waitFor(() => expect(parent).toHaveTextContent('programmatic'))
+  await waitFor(() => expect(listeners).toHaveTextContent('0'))
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Navigate to tags' }))
-    await waitFor(() => expect(route).toHaveTextContent('/tags:none'))
-    await waitFor(() => expect(parent).toHaveTextContent('programmatic'))
-    await expect(listeners).toHaveTextContent('0')
+  await userEvent.click(canvas.getByRole('button', { name: 'Open history parent' }))
+  await waitFor(() => expect(route.textContent?.startsWith('/:dialog-')).toBe(true))
+  const staleMarker = route.textContent
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Back route' }))
-    await waitFor(() => expect(route).toHaveTextContent(staleMarker ?? ''))
-    await expect(canvasElement.querySelectorAll('dialog[open]')).toHaveLength(0)
-    await expect(listeners).toHaveTextContent('0')
-  },
-}
+  await userEvent.click(canvas.getByRole('button', { name: 'Navigate to tags' }))
+  await waitFor(() => expect(route).toHaveTextContent('/tags:none'))
+  await waitFor(() => expect(parent).toHaveTextContent('programmatic'))
+  await expect(listeners).toHaveTextContent('0')
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Back route' }))
+  await waitFor(() => expect(route).toHaveTextContent(staleMarker ?? ''))
+  await expect(canvasElement.querySelectorAll('dialog[open]')).toHaveLength(0)
+  await expect(listeners).toHaveTextContent('0')
+})

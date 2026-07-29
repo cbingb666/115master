@@ -1,0 +1,61 @@
+{
+  "name": "Monkey Storybook",
+  "stories": [
+    {
+      "id": "integrations-application-styles--theme-composition",
+      "docs": "integrations-application-styles--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "integrations-application-styles--theme-composition:executes-the-application-save-contract"
+      ],
+      "ready": "[data-app-style-saves]",
+      "outcomes": [
+        {
+          "selector": "[data-app-style-saves]",
+          "text": "已保存 0 次"
+        }
+      ]
+    },
+    {
+      "id": "app-dialog-history-adapter--nested-and-forward-navigation",
+      "docs": "app-dialog-history-adapter--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "app-dialog-history-adapter--nested-and-forward-navigation:proves-nested-and-forward-navigation-history-cleanup"
+      ],
+      "ready": "[data-dialog-history-route]",
+      "outcomes": [
+        {
+          "selector": "[data-dialog-history-route]",
+          "text": "/:none"
+        },
+        {
+          "selector": "[data-dialog-history-parent]",
+          "text": "idle"
+        },
+        {
+          "selector": "[data-dialog-history-child]",
+          "text": "idle"
+        },
+        {
+          "selector": "[data-dialog-history-listeners]",
+          "text": "0"
+        },
+        {
+          "selector": "[data-dialog-history-error]",
+          "text": "none"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    }
+  ]
+}

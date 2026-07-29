@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Button, Pill } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
 import { ref } from 'vue'
+import preview from '../../.storybook/preview'
 
-const meta = {
+const meta = preview.meta({
   title: 'Integrations/Application Styles',
   parameters: {
     docs: {
@@ -14,12 +14,9 @@ const meta = {
     },
   },
   tags: ['autodocs', 'test'],
-} satisfies Meta
+})
 
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const ThemeComposition: Story = {
+export const ThemeComposition = meta.story({
   name: '应用样式组合',
   render: () => ({
     components: { Button, Pill },
@@ -78,20 +75,21 @@ export const ThemeComposition: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const saves = canvasElement.querySelector<HTMLOutputElement>('[data-app-style-saves]')
+})
 
-    if (!saves)
-      throw new Error('Application styles story did not render its save outcome')
+ThemeComposition.test('executes the application save contract', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const saves = canvasElement.querySelector<HTMLOutputElement>('[data-app-style-saves]')
 
-    const save = canvas.getByRole('button', { name: '保存' })
+  if (!saves)
+    throw new Error('Application styles story did not render its save outcome')
 
-    await userEvent.click(save)
-    await expect(saves).toHaveTextContent('已保存 1 次')
-    save.focus()
-    await expect(save).toHaveFocus()
-    await userEvent.keyboard('{Enter}')
-    await expect(saves).toHaveTextContent('已保存 2 次')
-  },
-}
+  const save = canvas.getByRole('button', { name: '保存' })
+
+  await userEvent.click(save)
+  await expect(saves).toHaveTextContent('已保存 1 次')
+  save.focus()
+  await expect(save).toHaveFocus()
+  await userEvent.keyboard('{Enter}')
+  await expect(saves).toHaveTextContent('已保存 2 次')
+})
