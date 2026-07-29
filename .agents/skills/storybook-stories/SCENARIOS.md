@@ -9,7 +9,7 @@ Apply this checklist after routing the Story with [SKILL.md](SKILL.md). A UI Fou
 - Icon-only actions have an accessible name; choice controls expose the appropriate role and state.
 - Dialog, menu, popover, Tooltip, and other transient UI cover their supported open, primary action, close, and focus-return paths.
 
-For public UI contracts, express the path in a play function and let the UI Storybook a11y check report violations as errors. Do not replace these checks with a visual snapshot.
+For public UI contracts, attach the path to the parent Story with `.test()` and let the UI Storybook a11y check report violations as errors. The parent Canvas must keep the same observable initial state until a person interacts with it. Do not replace these checks with a visual snapshot.
 
 ## Async and stateful scenarios
 

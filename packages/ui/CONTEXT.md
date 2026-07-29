@@ -32,6 +32,18 @@ _Avoid_: 玻璃工具类、透明背景
 在 UI Storybook 中独立证明公共 token、材质或组件契约的 hermetic 场景。
 _Avoid_: 应用 Story、集成演示
 
+**父 Canvas**：
+父 Story 在 Storybook 中供浏览和人工操作的初始场景；拥有唯一的 render、args 与 fixture，不自动执行会点击、输入、提交、移动焦点或改变可观察状态的交互。
+_Avoid_: 测试后 Canvas、自动演示
+
+**显式 Story 测试**：
+以 `<Story>.test()` 附着到父 Story、只从 Manager 或包级浏览器测试入口运行的交互契约；与父 Canvas 共享场景，通过公开可观察结果证明行为。
+_Avoid_: 状态改变型 play、平行测试 Story
+
+**Storybook 测试矩阵**：
+按所有权区分的真实浏览器门；UI CLI／CI 覆盖 light、dark、reduced-motion 与 mobile，UI Manager 的 light-only 是版本兼容入口，Monkey 只运行应用默认 Theme 项目。
+_Avoid_: Manager 完整矩阵、Monkey 基础矩阵
+
 **集成 Story**：
 在应用 Storybook 中证明 UI 基础与应用组件、状态或运行环境正确组合的场景。
 _Avoid_: 组件基础 Story、重复 Story
