@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Status: resolved
 
 # Storybook Canvas 与显式交互测试分离
 
