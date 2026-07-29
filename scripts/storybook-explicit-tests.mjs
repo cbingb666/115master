@@ -20,6 +20,7 @@ const signals = [
   'keydown',
   'input',
   'change',
+  'scroll',
   'submit',
   'focusin',
 ]
@@ -141,6 +142,14 @@ async function inspect(page, story, visit, errors) {
       return
     }
 
+    if (typeof outcome.scrollTop === 'number') {
+      const scrollTop = await target.evaluate(element => element.scrollTop)
+
+      if (scrollTop !== outcome.scrollTop)
+        throw new Error(`${story.id} expected ${outcome.selector} scrollTop to equal ${outcome.scrollTop} on ${visit}, received ${scrollTop}`)
+      return
+    }
+
     const text = await target.textContent()
 
     if (text?.trim() !== outcome.text)
@@ -148,7 +157,7 @@ async function inspect(page, story, visit, errors) {
   }))
 }
 
-async function observe(browser, base, story) {
+async function observe(browser, base, story, next) {
   const page = await browser.newPage()
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
@@ -160,7 +169,10 @@ async function observe(browser, base, story) {
 
     types.forEach((type) => {
       document.addEventListener(type, (event) => {
-        const target = event.target instanceof Element ? event.target.closest(selector) : null
+        if (!(event.target instanceof Element))
+          return
+
+        const target = type === 'scroll' ? event.target : event.target.closest(selector)
 
         if (!target)
           return
@@ -179,11 +191,23 @@ async function observe(browser, base, story) {
     })
     await inspect(page, story, 'initial entry', errors)
 
-    if (story.reload) {
-      errors.length = 0
-      await page.reload({ waitUntil: 'domcontentloaded' })
-      await inspect(page, story, 'reload', errors)
-    }
+    errors.length = 0
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await inspect(page, story, 'reload', errors)
+
+    await page.goto(`${base}/iframe.html?id=${encodeURIComponent(next.id)}&viewMode=story`, {
+      waitUntil: 'domcontentloaded',
+    })
+    await page.locator(next.ready).waitFor({ state: 'visible' })
+
+    if (errors.length)
+      throw new Error(`${story.id} raised page errors while switching to ${next.id}: ${errors.join('; ')}`)
+
+    errors.length = 0
+    await page.goto(`${base}/iframe.html?id=${encodeURIComponent(story.id)}&viewMode=story`, {
+      waitUntil: 'domcontentloaded',
+    })
+    await inspect(page, story, `re-entry after ${next.id}`, errors)
   }
   finally {
     await page.close()
@@ -219,13 +243,17 @@ async function inertness(require, base, index, config) {
 
   try {
     validate(index, config)
+    const checks = config.stories.map((story, index) => ({
+      next: config.stories[(index + 1) % config.stories.length],
+      story,
+    }))
     const batches = Array.from(
-      { length: Math.ceil(config.stories.length / 4) },
-      (_, index) => config.stories.slice(index * 4, index * 4 + 4),
+      { length: Math.ceil(checks.length / 4) },
+      (_, index) => checks.slice(index * 4, index * 4 + 4),
     )
 
     await batches.reduce(
-      (run, batch) => run.then(() => Promise.all(batch.map(story => observe(browser, base, story)))),
+      (run, batch) => run.then(() => Promise.all(batch.map(check => observe(browser, base, check.story, check.next)))),
       Promise.resolve(),
     )
     console.log(`✓ ${config.name}: ${config.stories.length} parent Canvas remained inert`)

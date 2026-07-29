@@ -64,7 +64,7 @@ export default mergeConfig(vite, defineConfig({
       },
       storybook('light'),
       // addon-vitest 10.5.5 rewrites Manager projects from their shared configDir.
-      ...(process.env.VITEST_STORYBOOK
+      ...(process.env.VITEST_STORYBOOK === 'true'
         ? []
         : [
             storybook('dark'),

@@ -13,7 +13,6 @@
         "ui-button--contract:executes-the-public-interaction-contract"
       ],
       "ready": "[data-ui-button-actions]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-button-actions]",
@@ -37,7 +36,6 @@
         "ui-overlayhost--theme-scoped-target:proves-theme-scoped-target-ownership"
       ],
       "ready": "[data-ui-overlay-host]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
@@ -57,7 +55,6 @@
         "ui-tooltip--interaction:proves-pointer-keyboard-and-aria-behavior"
       ],
       "ready": "button:has-text(\"说明触发器\")",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
@@ -77,7 +74,6 @@
         "ui-tooltip--content-slots-and-empty-content:proves-slot-and-empty-content-behavior"
       ],
       "ready": "button:text-is(\"slot 内容\")",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
@@ -97,7 +93,6 @@
         "ui-tooltip--placements:proves-the-four-preferred-placements"
       ],
       "ready": "button:has-text(\"top\")",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
@@ -117,11 +112,14 @@
         "ui-tooltip--edge-and-scroll:proves-edge-collision-and-scroll-tracking"
       ],
       "ready": "button:has-text(\"边缘触发器\")",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
           "count": 0
+        },
+        {
+          "selector": "[data-ui-tooltip-scroll]",
+          "scrollTop": 0
         }
       ]
     },
@@ -137,7 +135,6 @@
         "ui-tooltip--overlay-targets:proves-overlay-host-and-target-ownership"
       ],
       "ready": "button:has-text(\"Host 触发器\")",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
@@ -157,7 +154,6 @@
         "ui-pill--containers:proves-container-semantics"
       ],
       "ready": ".ui-pill:has-text(\"已选 5 项\")",
-      "reload": true,
       "outcomes": []
     },
     {
@@ -172,7 +168,6 @@
         "ui-pill--link:proves-navigation-semantics-and-focus"
       ],
       "ready": "a[href=\"#library\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "a[href=\"#library\"]",
@@ -192,7 +187,6 @@
         "ui-pill--sizes:proves-the-public-size-scale"
       ],
       "ready": ".ui-pill-xs",
-      "reload": true,
       "outcomes": []
     },
     {
@@ -207,7 +201,6 @@
         "ui-pill--variants:proves-plain-and-glass-variants"
       ],
       "ready": ".ui-pill:has-text(\"Plain\")",
-      "reload": true,
       "outcomes": []
     },
     {
@@ -221,7 +214,6 @@
         "foundations-theme-token-and-glass--tracer:proves-theme-glass-and-semantic-action-contracts"
       ],
       "ready": "[data-ui-theme-actions]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-theme-actions]",
@@ -241,7 +233,6 @@
         "ui-dialog--controlled:proves-controlled-state-lifecycle-and-focus-behavior"
       ],
       "ready": "main[aria-label=\"Controlled Dialog\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-dialog-phase]",
@@ -265,7 +256,6 @@
         "ui-dialog--label-only:proves-the-label-only-accessible-name"
       ],
       "ready": "main[aria-label=\"Label-only Dialog\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "dialog[open]",
@@ -285,7 +275,6 @@
         "ui-dialog--unmounting:restores-focus-when-the-dialog-unmounts"
       ],
       "ready": "main[aria-label=\"Unmounting Dialog\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "dialog[open]",
@@ -305,7 +294,6 @@
         "ui-dialog--close-policies:proves-escape-and-backdrop-close-policies"
       ],
       "ready": "main[aria-label=\"Dialog close policies\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-dialog-reason]",
@@ -329,7 +317,6 @@
         "ui-dialog--sizes-and-responsive-presentation:proves-sizes-and-responsive-presentation"
       ],
       "ready": "main[aria-label=\"Dialog sizes\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "dialog[open]",
@@ -349,7 +336,6 @@
         "ui-dialog--reduced-motion:proves-reduced-motion-lifecycle-settlement"
       ],
       "ready": "main[aria-label=\"Reduced motion Dialog\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-dialog-reduced-phase]",
@@ -372,7 +358,6 @@
         "ui-dialog-service--factory-isolation-and-injection:proves-factory-isolation-injection-and-missing-host-failure"
       ],
       "ready": "main[aria-label=\"Dialog service isolation\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-dialog-host-error]",
@@ -395,7 +380,6 @@
         "ui-dialog-service--outcomes-and-close-reasons:proves-api-outcomes-and-structured-close-reasons"
       ],
       "ready": "main[aria-label=\"Dialog service outcomes\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-dialog-outcome]",
@@ -418,7 +402,6 @@
         "ui-dialog-service--errors-and-async-confirmation:proves-render-and-confirmation-errors-plus-pending-protection"
       ],
       "ready": "main[aria-label=\"Dialog service failures\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-dialog-error]",
@@ -445,7 +428,6 @@
         "ui-dialog-service--prompt-keyboard-and-validation:proves-prompt-keyboard-paths-validation-and-submitted-snapshots"
       ],
       "ready": "main[aria-label=\"Prompt behavior\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-dialog-prompt]",
@@ -468,7 +450,6 @@
         "ui-dialog-service--stack-and-close-all:proves-stack-focus-restoration-and-closeall-lifo"
       ],
       "ready": "main[aria-label=\"Dialog service Stack\"]",
-      "reload": true,
       "outcomes": [
         {
           "selector": "[data-ui-dialog-order]",

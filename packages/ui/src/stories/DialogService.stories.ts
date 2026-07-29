@@ -1,7 +1,7 @@
 import type { DialogHandle, DialogServiceMessages } from '@115master/ui'
 import { Button, createDialogService, DialogHost, useDialog } from '@115master/ui'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, onBeforeUnmount, ref } from 'vue'
 import preview from '../../.storybook/preview'
 
 const messages: DialogServiceMessages = {
@@ -20,6 +20,22 @@ function service() {
   })
 }
 
+function useMountedPromise() {
+  const mounted = ref(true)
+  onBeforeUnmount(() => mounted.value = false)
+
+  return <T>(promise: Promise<T>, apply: (value: T) => void) => promise.then(
+    (value) => {
+      if (mounted.value)
+        apply(value)
+    },
+    (cause) => {
+      if (mounted.value)
+        throw cause
+    },
+  )
+}
+
 const Consumer = defineComponent({
   name: 'DialogServiceConsumer',
 
@@ -32,12 +48,16 @@ const Consumer = defineComponent({
 
   setup(props) {
     const dialog = useDialog()
+    const settle = useMountedPromise()
 
     return () => h(Button, {
-      onClick: () => dialog.alert({
-        title: `${props.name} service`,
-        content: `Opened from ${props.name}.`,
-      }),
+      onClick: () => settle(
+        dialog.alert({
+          title: `${props.name} service`,
+          content: `Opened from ${props.name}.`,
+        }),
+        () => undefined,
+      ),
     }, () => `Open ${props.name}`)
   },
 })
@@ -125,30 +145,33 @@ export const OutcomesAndCloseReasons = meta.story({
       const result = ref('idle')
       const active = ref<DialogHandle>()
       const settlements = ref(0)
+      const settle = useMountedPromise()
 
-      const alert = async () => {
-        await dialog.alert({
+      const alert = () => settle(
+        dialog.alert({
           title: 'Alert outcome',
           content: 'Alert resolves without a value.',
           confirmText: 'Acknowledge alert',
-        })
-        result.value = 'alert:void'
-      }
-      const confirm = async () => {
-        result.value = `confirm:${await dialog.confirm({
+        }),
+        () => result.value = 'alert:void',
+      )
+      const confirm = () => settle(
+        dialog.confirm({
           title: 'Confirm outcome',
           content: 'Choose a boolean outcome.',
           confirmText: 'Accept choice',
           cancelText: 'Decline choice',
-        })}`
-      }
-      const prompt = async () => {
-        result.value = `prompt:${await dialog.prompt({
+        }),
+        value => result.value = `confirm:${value}`,
+      )
+      const prompt = () => settle(
+        dialog.prompt({
           title: 'Prompt outcome',
           inputLabel: 'Project name',
           defaultValue: 'Foundation',
-        }) ?? 'null'}`
-      }
+        }),
+        value => result.value = `prompt:${value ?? 'null'}`,
+      )
       const custom = (title: string) => {
         settlements.value = 0
         const handle = dialog.create({
@@ -156,7 +179,7 @@ export const OutcomesAndCloseReasons = meta.story({
           content: 'Observe the structured close reason.',
         })
         active.value = handle
-        void handle.closed.then((outcome) => {
+        return settle(handle.closed, (outcome) => {
           settlements.value += 1
           result.value = `${outcome.reason}:${settlements.value}`
         })
@@ -168,7 +191,7 @@ export const OutcomesAndCloseReasons = meta.story({
         })
 
         handle.close()
-        void handle.closed.then((outcome) => {
+        return settle(handle.closed, (outcome) => {
           result.value = `synchronous:${outcome.reason}`
         })
       }
@@ -270,6 +293,7 @@ export const ErrorsAndAsyncConfirmation = meta.story({
       const result = ref('idle')
       const calls = ref(0)
       const active = ref<DialogHandle>()
+      const settle = useMountedPromise()
       let release: ((value: false) => void) | undefined
       const dialog = createDialogService({
         messages,
@@ -318,7 +342,7 @@ export const ErrorsAndAsyncConfirmation = meta.story({
           },
         })
         active.value = handle
-        void handle.closed.then((outcome) => {
+        return settle(handle.closed, (outcome) => {
           result.value = outcome.reason
         })
       }
@@ -439,33 +463,37 @@ export const PromptKeyboardAndValidation = meta.story({
     setup() {
       const dialog = service()
       const result = ref('idle')
+      const settle = useMountedPromise()
       let release: (() => void) | undefined
-      const text = async () => {
-        result.value = `text:${await dialog.prompt({
+      const text = () => settle(
+        dialog.prompt({
           title: 'Required text',
           inputLabel: 'File name',
           required: true,
           requiredError: 'Enter a file name.',
-        }) ?? 'null'}`
-      }
-      const multiline = async () => {
-        result.value = `multiline:${await dialog.prompt({
+        }),
+        value => result.value = `text:${value ?? 'null'}`,
+      )
+      const multiline = () => settle(
+        dialog.prompt({
           title: 'Multiline text',
           inputLabel: 'Notes',
           multiline: true,
           rows: 4,
-        }) ?? 'null'}`
-      }
-      const asyncPrompt = async () => {
-        result.value = `snapshot:${await dialog.prompt({
+        }),
+        value => result.value = `multiline:${value ?? 'null'}`,
+      )
+      const asyncPrompt = () => settle(
+        dialog.prompt({
           title: 'Async Prompt snapshot',
           inputLabel: 'Submitted value',
           defaultValue: 'A',
           onConfirm: () => new Promise<void>((resolve) => {
             release = resolve
           }),
-        }) ?? 'null'}`
-      }
+        }),
+        value => result.value = `snapshot:${value ?? 'null'}`,
+      )
       const releasePrompt = () => release?.()
 
       return { asyncPrompt, dialog, multiline, releasePrompt, result, text }
@@ -527,6 +555,7 @@ export const StackAndCloseAll = meta.story({
     setup() {
       const dialog = service()
       const order = ref<string[]>([])
+      const settle = useMountedPromise()
 
       const nested = () => {
         dialog.create({
@@ -550,7 +579,7 @@ export const StackAndCloseAll = meta.story({
             title: `${name} stacked Dialog`,
             content: `${name} outcome`,
           })
-          void handle.closed.then((outcome) => {
+          void settle(handle.closed, (outcome) => {
             order.value.push(`${name}:${outcome.reason}`)
           })
         })
