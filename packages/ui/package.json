@@ -36,7 +36,9 @@
   },
   "scripts": {
     "build": "vite build && vue-tsc -p tsconfig.build.json && pnpm verify:exports",
-    "dev": "vite build --watch",
+    "dev": "pnpm --filter . run --parallel \"/^dev:(bundle|types)$/\"",
+    "dev:bundle": "vite build --watch --emptyOutDir=false",
+    "dev:types": "vue-tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "type-check": "vue-tsc -p tsconfig.json --noEmit && vue-tsc -p tsconfig.stories.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",

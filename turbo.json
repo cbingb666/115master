@@ -21,6 +21,11 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$"]
     },
+    "@115master/monkey#type-check": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$"],
+      "cache": false
+    },
     "@115master/ui#type-check": {
       "dependsOn": ["build"],
       "inputs": ["$TURBO_DEFAULT$"]
@@ -47,6 +52,11 @@
     },
     "dev": {
       "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "@115master/ui#dev": {
+      "dependsOn": ["build"],
       "cache": false,
       "persistent": true
     },
