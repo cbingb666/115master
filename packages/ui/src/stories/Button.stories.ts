@@ -3,8 +3,6 @@ import { expect, userEvent, within } from 'storybook/test'
 import { ref } from 'vue'
 import preview from '../../.storybook/preview'
 
-// PROTOTYPE — Can CSF Next keep this story inert in Canvas while .test() preserves its browser contract?
-
 const colors = [
   'default',
   'neutral',

@@ -14,7 +14,7 @@
     },
     "@115master/ui#build-storybook": {
       "dependsOn": ["build"],
-      "inputs": ["$TURBO_DEFAULT$"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/scripts/storybook-explicit-tests.mjs"],
       "outputs": ["storybook-static/**"]
     },
     "type-check": {
@@ -36,7 +36,10 @@
     },
     "@115master/ui#test": {
       "dependsOn": ["build"],
-      "inputs": ["$TURBO_DEFAULT$"]
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/scripts/storybook-explicit-tests.mjs"]
+    },
+    "@115master/ui#lint": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/scripts/storybook-explicit-tests.mjs"]
     },
     "test:coverage": {
       "dependsOn": ["^build"],

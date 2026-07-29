@@ -1,0 +1,29 @@
+{
+  "name": "UI Storybook",
+  "stories": [
+    {
+      "id": "ui-button--contract",
+      "docs": "ui-button--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-button--contract:executes-the-public-interaction-contract"
+      ],
+      "ready": "[data-ui-button-actions]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-button-actions]",
+          "text": "0"
+        },
+        {
+          "selector": "[data-ui-button-submits]",
+          "text": "0"
+        }
+      ]
+    }
+  ]
+}
