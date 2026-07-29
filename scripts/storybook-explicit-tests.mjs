@@ -7,7 +7,15 @@ import process from 'node:process'
 
 const signals = [
   'click',
+  'gotpointercapture',
+  'lostpointercapture',
+  'pointercancel',
   'pointerdown',
+  'pointerenter',
+  'pointerleave',
+  'pointermove',
+  'pointerout',
+  'pointerover',
   'pointerup',
   'keydown',
   'input',
@@ -18,7 +26,7 @@ const signals = [
 
 const sleep = delay => new Promise(resolve => setTimeout(resolve, delay))
 
-async function reserve() {
+async function findPort() {
   return new Promise((resolve, reject) => {
     const server = createServer()
     server.on('error', reject)
@@ -37,7 +45,7 @@ async function reserve() {
 }
 
 async function stop(child, closed) {
-  if (child.exitCode !== null || child.signalCode)
+  if (!running(child))
     return
 
   const kill = (signal) => {
@@ -57,14 +65,18 @@ async function stop(child, closed) {
   kill('SIGTERM')
   await Promise.race([closed, sleep(5_000)])
 
-  if (child.exitCode === null && !child.signalCode)
+  if (running(child))
     kill('SIGKILL')
 
   await closed
 }
 
+function running(child) {
+  return child.exitCode === null && !child.signalCode
+}
+
 function validate(index, config) {
-  for (const story of config.stories) {
+  config.stories.forEach((story) => {
     const parent = index.entries[story.id]
 
     if (!parent || parent.type !== 'story' || parent.subtype !== 'story')
@@ -73,12 +85,12 @@ function validate(index, config) {
     if (story.component && !parent.componentPath)
       throw new Error(`${story.id} does not expose its component metadata`)
 
-    for (const tag of story.tags ?? []) {
+    story.tags?.forEach((tag) => {
       if (!parent.tags?.includes(tag))
         throw new Error(`${story.id} does not include the ${tag} tag`)
-    }
+    })
 
-    for (const id of story.tests) {
+    story.tests.forEach((id) => {
       const test = index.entries[id]
 
       if (!test || test.subtype !== 'test' || test.parent !== story.id)
@@ -86,16 +98,16 @@ function validate(index, config) {
 
       if (test.importPath !== parent.importPath)
         throw new Error(`${id} does not share ${story.id}'s story module`)
-    }
+    })
 
     if (!story.docs)
-      continue
+      return
 
     const docs = index.entries[story.docs]
 
     if (!docs || docs.type !== 'docs' || docs.importPath !== parent.importPath)
       throw new Error(`${story.docs} is not the docs entry for ${story.id}`)
-  }
+  })
 }
 
 async function inspect(page, story, visit, errors) {
@@ -110,12 +122,12 @@ async function inspect(page, story, visit, errors) {
   if (events.length)
     throw new Error(`${story.id} emitted input events on ${visit}: ${JSON.stringify(events)}`)
 
-  for (const outcome of story.outcomes) {
+  await Promise.all(story.outcomes.map(async (outcome) => {
     const text = await page.locator(outcome.selector).textContent()
 
     if (text?.trim() !== outcome.text)
       throw new Error(`${story.id} expected ${outcome.selector} to equal "${outcome.text}" on ${visit}, received "${text?.trim()}"`)
-  }
+  }))
 }
 
 async function observe(browser, base, story) {
@@ -126,13 +138,13 @@ async function observe(browser, base, story) {
   await page.addInitScript((types) => {
     globalThis.__storybookInertEvents = []
 
-    const selector = 'button, a[href], input, select, textarea, [contenteditable="true"], [tabindex]:not([tabindex="-1"])'
+    const selector = 'button, a[href], form, input, select, textarea, [contenteditable="true"], [tabindex]:not([tabindex="-1"])'
 
-    for (const type of types) {
+    types.forEach((type) => {
       document.addEventListener(type, (event) => {
         const target = event.target instanceof Element ? event.target.closest(selector) : null
 
-        if (type === 'focusin' && !target)
+        if (!target)
           return
 
         globalThis.__storybookInertEvents.push({
@@ -140,7 +152,7 @@ async function observe(browser, base, story) {
           target: target?.getAttribute('aria-label') || target?.textContent?.trim().slice(0, 80) || event.target?.nodeName,
         })
       }, true)
-    }
+    })
   }, signals)
 
   try {
@@ -157,6 +169,43 @@ async function observe(browser, base, story) {
   }
   finally {
     await page.close()
+  }
+}
+
+async function wait(base, child, logs) {
+  const deadline = Date.now() + 60_000
+
+  while (Date.now() < deadline) {
+    if (!running(child))
+      throw new Error(`Storybook exited before becoming ready\n${logs.join('')}`)
+
+    try {
+      const response = await fetch(`${base}/index.json`)
+
+      if (response.ok)
+        return response.json()
+    }
+    catch {
+      // Storybook is still starting.
+    }
+
+    await sleep(250)
+  }
+
+  throw new Error(`Storybook did not become ready within 60 seconds\n${logs.join('')}`)
+}
+
+async function inertness(require, base, index, config) {
+  const playwright = require('playwright')
+  const browser = await playwright.chromium.launch({ headless: true })
+
+  try {
+    validate(index, config)
+    await Promise.all(config.stories.map(story => observe(browser, base, story)))
+    console.log(`✓ ${config.name}: ${config.stories.length} parent Canvas remained inert`)
+  }
+  finally {
+    await browser.close()
   }
 }
 
@@ -184,8 +233,7 @@ async function main() {
   const require = createRequire(resolve(root, 'package.json'))
   const manifest = JSON.parse(await readFile(require.resolve('storybook/package.json'), 'utf8'))
   const bin = resolve(dirname(require.resolve('storybook/package.json')), manifest.bin)
-  const { chromium } = require('playwright')
-  const port = await reserve()
+  const port = await findPort()
   const base = `http://127.0.0.1:${port}`
   const logs = []
   const child = spawn(process.execPath, [
@@ -211,41 +259,10 @@ async function main() {
   child.stdout.on('data', data => logs.push(data.toString()))
   child.stderr.on('data', data => logs.push(data.toString()))
 
-  let browser
-
   try {
-    const deadline = Date.now() + 60_000
-    let index
-
-    while (Date.now() < deadline) {
-      if (child.exitCode !== null || child.signalCode)
-        throw new Error(`Storybook exited before becoming ready\n${logs.join('')}`)
-
-      try {
-        const response = await fetch(`${base}/index.json`)
-
-        if (response.ok) {
-          index = await response.json()
-          break
-        }
-      }
-      catch {
-        // Storybook is still starting.
-      }
-
-      await sleep(250)
-    }
-
-    if (!index)
-      throw new Error(`Storybook did not become ready within 60 seconds\n${logs.join('')}`)
-
-    validate(index, config)
-    browser = await chromium.launch({ headless: true })
-    await Promise.all(config.stories.map(story => observe(browser, base, story)))
-    console.log(`✓ ${config.name}: ${config.stories.length} parent Canvas remained inert`)
+    await inertness(require, base, await wait(base, child, logs), config)
   }
   finally {
-    await browser?.close()
     await stop(child, closed)
   }
 }
