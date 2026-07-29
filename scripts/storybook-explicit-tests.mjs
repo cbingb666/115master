@@ -123,7 +123,25 @@ async function inspect(page, story, visit, errors) {
     throw new Error(`${story.id} emitted input events on ${visit}: ${JSON.stringify(events)}`)
 
   await Promise.all(story.outcomes.map(async (outcome) => {
-    const text = await page.locator(outcome.selector).textContent()
+    const target = page.locator(outcome.selector)
+
+    if (typeof outcome.count === 'number') {
+      const count = await target.count()
+
+      if (count !== outcome.count)
+        throw new Error(`${story.id} expected ${outcome.selector} count to equal ${outcome.count} on ${visit}, received ${count}`)
+      return
+    }
+
+    if (typeof outcome.focused === 'boolean') {
+      const focused = await target.evaluate(element => element === document.activeElement)
+
+      if (focused !== outcome.focused)
+        throw new Error(`${story.id} expected ${outcome.selector} focused state to equal ${outcome.focused} on ${visit}, received ${focused}`)
+      return
+    }
+
+    const text = await target.textContent()
 
     if (text?.trim() !== outcome.text)
       throw new Error(`${story.id} expected ${outcome.selector} to equal "${outcome.text}" on ${visit}, received "${text?.trim()}"`)
@@ -201,7 +219,15 @@ async function inertness(require, base, index, config) {
 
   try {
     validate(index, config)
-    await Promise.all(config.stories.map(story => observe(browser, base, story)))
+    const batches = Array.from(
+      { length: Math.ceil(config.stories.length / 4) },
+      (_, index) => config.stories.slice(index * 4, index * 4 + 4),
+    )
+
+    await batches.reduce(
+      (run, batch) => run.then(() => Promise.all(batch.map(story => observe(browser, base, story)))),
+      Promise.resolve(),
+    )
     console.log(`✓ ${config.name}: ${config.stories.length} parent Canvas remained inert`)
   }
   finally {

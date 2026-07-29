@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { OverlayHost, Tooltip } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
+import preview from '../../../.storybook/preview'
 
-const meta = {
+const meta = preview.meta({
   title: 'UI/OverlayHost',
   component: OverlayHost,
   parameters: {
@@ -13,12 +13,9 @@ const meta = {
     },
   },
   tags: ['autodocs', 'test'],
-} satisfies Meta<typeof OverlayHost>
+})
 
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const ThemeScopedTarget: Story = {
+export const ThemeScopedTarget = meta.story({
   name: 'Theme 范围内的目标',
   render: () => ({
     components: { OverlayHost, Tooltip },
@@ -32,15 +29,16 @@ export const ThemeScopedTarget: Story = {
       </OverlayHost>
     `,
   }),
-  play: async ({ canvasElement, globals }) => {
-    const canvas = within(canvasElement)
-    const host = canvasElement.querySelector<HTMLElement>('[data-ui-overlay-host]')
-    if (!host)
-      throw new Error('Overlay Host did not render')
+})
 
-    await userEvent.click(canvas.getByRole('button', { name: '打开说明' }))
-    const tooltip = canvas.getByRole('tooltip')
-    await expect(tooltip.parentElement).toBe(host)
-    await expect(host.closest('[data-theme]')).toHaveAttribute('data-theme', globals.theme === 'dark' ? 'dark' : 'light')
-  },
-}
+ThemeScopedTarget.test('proves Theme-scoped target ownership', async ({ canvasElement, globals }) => {
+  const canvas = within(canvasElement)
+  const host = canvasElement.querySelector<HTMLElement>('[data-ui-overlay-host]')
+  if (!host)
+    throw new Error('Overlay Host did not render')
+
+  await userEvent.click(canvas.getByRole('button', { name: '打开说明' }))
+  const tooltip = canvas.getByRole('tooltip')
+  await expect(tooltip.parentElement).toBe(host)
+  await expect(host.closest('[data-theme]')).toHaveAttribute('data-theme', globals.theme === 'dark' ? 'dark' : 'light')
+})

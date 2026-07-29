@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Pill } from '@115master/ui'
 import { expect, within } from 'storybook/test'
+import preview from '../../.storybook/preview'
 
-const meta = {
+const meta = preview.meta({
   title: 'UI/Pill',
   component: Pill,
   parameters: {
@@ -14,12 +14,9 @@ const meta = {
     },
   },
   tags: ['autodocs', 'test'],
-} satisfies Meta<typeof Pill>
+})
 
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const Containers: Story = {
+export const Containers = meta.story({
   name: '容器语义',
   render: () => ({
     components: { Pill },
@@ -33,38 +30,40 @@ export const Containers: Story = {
       </div>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const span = canvas.getByText('已选 5 项')
-    const div = canvas.getByText(/组合布局容器/)
+})
 
-    await expect(span.tagName).toBe('SPAN')
-    await expect(span).not.toHaveAttribute('role')
-    await expect(div.tagName).toBe('DIV')
-    await expect(div).not.toHaveAttribute('role', 'button')
-  },
-}
+Containers.test('proves container semantics', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const span = canvas.getByText('已选 5 项')
+  const div = canvas.getByText(/组合布局容器/)
 
-export const Link: Story = {
+  await expect(span.tagName).toBe('SPAN')
+  await expect(span).not.toHaveAttribute('role')
+  await expect(div.tagName).toBe('DIV')
+  await expect(div).not.toHaveAttribute('role', 'button')
+})
+
+export const Link = meta.story({
   name: '导航链接',
   render: () => ({
     components: { Pill },
     template: '<Pill as="a" href="#library" aria-current="page">媒体库</Pill>',
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const link = canvas.getByRole('link', { name: '媒体库' })
+})
 
-    link.focus()
+Link.test('proves navigation semantics and focus', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const link = canvas.getByRole('link', { name: '媒体库' })
 
-    await expect(link).toHaveAttribute('href', '#library')
-    await expect(link).toHaveAttribute('aria-current', 'page')
-    await expect(link).toHaveFocus()
-    await expect(link).not.toHaveAttribute('role', 'button')
-  },
-}
+  link.focus()
 
-export const Sizes: Story = {
+  await expect(link).toHaveAttribute('href', '#library')
+  await expect(link).toHaveAttribute('aria-current', 'page')
+  await expect(link).toHaveFocus()
+  await expect(link).not.toHaveAttribute('role', 'button')
+})
+
+export const Sizes = meta.story({
   name: '尺寸',
   render: () => ({
     components: { Pill },
@@ -78,27 +77,28 @@ export const Sizes: Story = {
       </div>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const xs = canvas.getByText('XS')
-    const sm = canvas.getByText('SM')
-    const md = canvas.getByText('MD')
-    const lg = canvas.getByText('LG')
-    const xl = canvas.getByText('XL')
+})
 
-    await expect(xs).toBeVisible()
-    await expect(sm).toBeVisible()
-    await expect(md).toBeVisible()
-    await expect(lg).toBeVisible()
-    await expect(xl).toBeVisible()
-    await expect(sm.getBoundingClientRect().height).toBeGreaterThan(xs.getBoundingClientRect().height)
-    await expect(md.getBoundingClientRect().height).toBeGreaterThan(sm.getBoundingClientRect().height)
-    await expect(lg.getBoundingClientRect().height).toBeGreaterThan(md.getBoundingClientRect().height)
-    await expect(xl.getBoundingClientRect().height).toBeGreaterThan(lg.getBoundingClientRect().height)
-  },
-}
+Sizes.test('proves the public size scale', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const xs = canvas.getByText('XS')
+  const sm = canvas.getByText('SM')
+  const md = canvas.getByText('MD')
+  const lg = canvas.getByText('LG')
+  const xl = canvas.getByText('XL')
 
-export const Variants: Story = {
+  await expect(xs).toBeVisible()
+  await expect(sm).toBeVisible()
+  await expect(md).toBeVisible()
+  await expect(lg).toBeVisible()
+  await expect(xl).toBeVisible()
+  await expect(sm.getBoundingClientRect().height).toBeGreaterThan(xs.getBoundingClientRect().height)
+  await expect(md.getBoundingClientRect().height).toBeGreaterThan(sm.getBoundingClientRect().height)
+  await expect(lg.getBoundingClientRect().height).toBeGreaterThan(md.getBoundingClientRect().height)
+  await expect(xl.getBoundingClientRect().height).toBeGreaterThan(lg.getBoundingClientRect().height)
+})
+
+export const Variants = meta.story({
   name: 'Plain 与 Glass',
   render: () => ({
     components: { Pill },
@@ -113,12 +113,13 @@ export const Variants: Story = {
       </div>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+})
 
-    await expect(canvas.getByText('Plain')).toBeVisible()
-    await expect(canvas.getByText('Surface')).toBeVisible()
-    await expect(canvas.getByText('Floating')).toBeVisible()
-    await expect(canvas.getByText('Overlay')).toBeVisible()
-  },
-}
+Variants.test('proves Plain and Glass variants', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+
+  await expect(canvas.getByText('Plain')).toBeVisible()
+  await expect(canvas.getByText('Surface')).toBeVisible()
+  await expect(canvas.getByText('Floating')).toBeVisible()
+  await expect(canvas.getByText('Overlay')).toBeVisible()
+})

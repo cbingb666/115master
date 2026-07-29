@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Button, Pill } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
 import { ref } from 'vue'
+import preview from '../../.storybook/preview'
 import './foundation.css'
 
-const meta = {
+const meta = preview.meta({
   title: 'Foundations/Theme, Token and Glass',
   parameters: {
     docs: {
@@ -14,12 +14,9 @@ const meta = {
     },
   },
   tags: ['autodocs', 'test'],
-} satisfies Meta
+})
 
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const Tracer: Story = {
+export const Tracer = meta.story({
   name: '主题、Token 与材质 tracer',
   render: () => ({
     components: { Button, Pill },
@@ -84,47 +81,48 @@ export const Tracer: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement, globals }) => {
-    const canvas = within(canvasElement)
-    const root = canvasElement.querySelector<HTMLElement>('[data-ui-storybook-root]')
-    const tracer = canvasElement.querySelector<HTMLElement>('[data-ui-theme-tracer]')
-    const owner = canvasElement.querySelector<HTMLElement>('[data-ui-filter-owner]')
-    const pill = canvasElement.querySelector<HTMLElement>('[data-ui-filter-pill]')
-    const button = canvasElement.querySelector<HTMLElement>('[data-ui-filter-button]')
-    const alert = canvasElement.querySelector<HTMLElement>('[data-ui-semantic-alert]')
-    const success = canvasElement.querySelector<HTMLElement>('[data-ui-success-content]')
-    const actions = canvasElement.querySelector<HTMLOutputElement>('[data-ui-theme-actions]')
+})
 
-    if (!root || !tracer || !owner || !pill || !button || !alert || !success || !actions)
-      throw new Error('Theme and Glass tracer did not render its public surfaces')
+Tracer.test('proves Theme, Glass, and semantic action contracts', async ({ canvasElement, globals }) => {
+  const canvas = within(canvasElement)
+  const root = canvasElement.querySelector<HTMLElement>('[data-ui-storybook-root]')
+  const tracer = canvasElement.querySelector<HTMLElement>('[data-ui-theme-tracer]')
+  const owner = canvasElement.querySelector<HTMLElement>('[data-ui-filter-owner]')
+  const pill = canvasElement.querySelector<HTMLElement>('[data-ui-filter-pill]')
+  const button = canvasElement.querySelector<HTMLElement>('[data-ui-filter-button]')
+  const alert = canvasElement.querySelector<HTMLElement>('[data-ui-semantic-alert]')
+  const success = canvasElement.querySelector<HTMLElement>('[data-ui-success-content]')
+  const actions = canvasElement.querySelector<HTMLOutputElement>('[data-ui-theme-actions]')
 
-    const theme = globals.theme === 'dark' ? 'dark' : 'light'
-    const style = getComputedStyle(tracer)
+  if (!root || !tracer || !owner || !pill || !button || !alert || !success || !actions)
+    throw new Error('Theme and Glass tracer did not render its public surfaces')
 
-    const daisyAction = canvas.getByRole('button', { name: 'daisyUI action' })
-    const nestedAction = canvas.getByRole('button', { name: 'Nested Button stays filter-free' })
+  const theme = globals.theme === 'dark' ? 'dark' : 'light'
+  const style = getComputedStyle(tracer)
 
-    await userEvent.click(daisyAction)
-    await expect(actions).toHaveTextContent('1')
-    nestedAction.focus()
-    await expect(nestedAction).toHaveFocus()
-    await userEvent.keyboard('{Enter}')
-    await expect(actions).toHaveTextContent('2')
-    await userEvent.click(nestedAction)
-    await expect(actions).toHaveTextContent('3')
-    await expect(root).toHaveAttribute('data-theme', theme)
-    await expect(style.colorScheme).toBe(theme)
-    await expect([
-      '--color-base-100',
-      '--ui-glass-blur-none',
-      '--ui-glass-blur-standard',
-      '--ui-glass-blur-strong',
-      '--ui-glass-brightness',
-    ].every(token => style.getPropertyValue(token).trim())).toBe(true)
-    await expect(getComputedStyle(owner).backdropFilter).not.toBe('none')
-    await expect(getComputedStyle(pill).backdropFilter).toBe('none')
-    await expect(getComputedStyle(button).backdropFilter).toBe('none')
-    await expect(getComputedStyle(alert).backdropFilter).not.toBe('none')
-    await expect(getComputedStyle(alert).color).toBe(getComputedStyle(success).color)
-  },
-}
+  const daisyAction = canvas.getByRole('button', { name: 'daisyUI action' })
+  const nestedAction = canvas.getByRole('button', { name: 'Nested Button stays filter-free' })
+
+  await userEvent.click(daisyAction)
+  await expect(actions).toHaveTextContent('1')
+  nestedAction.focus()
+  await expect(nestedAction).toHaveFocus()
+  await userEvent.keyboard('{Enter}')
+  await expect(actions).toHaveTextContent('2')
+  await userEvent.click(nestedAction)
+  await expect(actions).toHaveTextContent('3')
+  await expect(root).toHaveAttribute('data-theme', theme)
+  await expect(style.colorScheme).toBe(theme)
+  await expect([
+    '--color-base-100',
+    '--ui-glass-blur-none',
+    '--ui-glass-blur-standard',
+    '--ui-glass-blur-strong',
+    '--ui-glass-brightness',
+  ].every(token => style.getPropertyValue(token).trim())).toBe(true)
+  await expect(getComputedStyle(owner).backdropFilter).not.toBe('none')
+  await expect(getComputedStyle(pill).backdropFilter).toBe('none')
+  await expect(getComputedStyle(button).backdropFilter).toBe('none')
+  await expect(getComputedStyle(alert).backdropFilter).not.toBe('none')
+  await expect(getComputedStyle(alert).color).toBe(getComputedStyle(success).color)
+})

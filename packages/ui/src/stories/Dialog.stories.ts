@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Button, Dialog } from '@115master/ui'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { ref } from 'vue'
+import preview from '../../.storybook/preview'
 
 const sizes = ['md', 'lg', 'xl', 'full'] as const
 
-const meta = {
+const meta = preview.meta({
   title: 'UI/Dialog',
   component: Dialog,
   parameters: {
@@ -17,12 +17,9 @@ const meta = {
     },
   },
   tags: ['autodocs', 'test'],
-} satisfies Meta<typeof Dialog>
+})
 
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const Controlled: Story = {
+export const Controlled = meta.story({
   name: '受控状态与焦点',
   render: () => ({
     components: { Button, Dialog },
@@ -56,40 +53,41 @@ export const Controlled: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const trigger = canvas.getByRole('button', { name: 'Open file dialog' })
-    const phase = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-phase]')
+})
 
-    if (!phase)
-      throw new Error('Controlled Dialog story did not render its lifecycle output')
+Controlled.test('proves controlled state, lifecycle, and focus behavior', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const trigger = canvas.getByRole('button', { name: 'Open file dialog' })
+  const phase = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-phase]')
 
-    trigger.focus()
-    await userEvent.click(trigger)
+  if (!phase)
+    throw new Error('Controlled Dialog story did not render its lifecycle output')
 
-    const dialog = canvas.getByRole('dialog', { name: 'Move selected files?' })
-    const title = canvas.getByRole('heading', { name: 'Move selected files?' })
-    const description = canvas.getByText('The selected files will remain available in the recycle bin.')
-    const confirm = canvas.getByRole('button', { name: 'Move to recycle bin' })
+  trigger.focus()
+  await userEvent.click(trigger)
 
-    await expect(dialog).toHaveAttribute('open')
-    await expect(dialog).toHaveAttribute('aria-modal', 'true')
-    await expect(dialog).toHaveAttribute('aria-labelledby', title.id)
-    await expect(dialog).toHaveAttribute('aria-describedby', description.id)
-    await expect(dialog.matches(':modal')).toBe(true)
-    await waitFor(() => expect(confirm).toHaveFocus())
+  const dialog = canvas.getByRole('dialog', { name: 'Move selected files?' })
+  const title = canvas.getByRole('heading', { name: 'Move selected files?' })
+  const description = canvas.getByText('The selected files will remain available in the recycle bin.')
+  const confirm = canvas.getByRole('button', { name: 'Move to recycle bin' })
 
-    trigger.focus()
-    await expect(dialog.contains(document.activeElement)).toBe(true)
+  await expect(dialog).toHaveAttribute('open')
+  await expect(dialog).toHaveAttribute('aria-modal', 'true')
+  await expect(dialog).toHaveAttribute('aria-labelledby', title.id)
+  await expect(dialog).toHaveAttribute('aria-describedby', description.id)
+  await expect(dialog.matches(':modal')).toBe(true)
+  await waitFor(() => expect(confirm).toHaveFocus())
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Cancel move' }))
-    await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
-    await expect(trigger).toHaveFocus()
-    await expect(phase).toHaveTextContent('closed')
-  },
-}
+  trigger.focus()
+  await expect(dialog.contains(document.activeElement)).toBe(true)
 
-export const LabelOnly: Story = {
+  await userEvent.click(canvas.getByRole('button', { name: 'Cancel move' }))
+  await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
+  await expect(trigger).toHaveFocus()
+  await expect(phase).toHaveTextContent('closed')
+})
+
+export const LabelOnly = meta.story({
   name: '仅 label 的可访问名称',
   render: () => ({
     components: { Button, Dialog },
@@ -120,21 +118,22 @@ export const LabelOnly: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+})
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open labelled dialog' }))
-    const dialog = canvas.getByRole('dialog', { name: 'Archive options' })
+LabelOnly.test('proves the label-only accessible name', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
 
-    await expect(dialog).toHaveAttribute('aria-label', 'Archive options')
-    await expect(dialog).not.toHaveAttribute('aria-labelledby')
+  await userEvent.click(canvas.getByRole('button', { name: 'Open labelled dialog' }))
+  const dialog = canvas.getByRole('dialog', { name: 'Archive options' })
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Close labelled dialog' }))
-    await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
-  },
-}
+  await expect(dialog).toHaveAttribute('aria-label', 'Archive options')
+  await expect(dialog).not.toHaveAttribute('aria-labelledby')
 
-export const Unmounting: Story = {
+  await userEvent.click(canvas.getByRole('button', { name: 'Close labelled dialog' }))
+  await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
+})
+
+export const Unmounting = meta.story({
   name: '卸载时恢复焦点',
   render: () => ({
     components: { Button, Dialog },
@@ -166,20 +165,21 @@ export const Unmounting: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const trigger = canvas.getByRole('button', { name: 'Open unmounting dialog' })
+})
 
-    trigger.focus()
-    await userEvent.click(trigger)
-    await userEvent.click(canvas.getByRole('button', { name: 'Unmount dialog' }))
+Unmounting.test('restores focus when the Dialog unmounts', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const trigger = canvas.getByRole('button', { name: 'Open unmounting dialog' })
 
-    await waitFor(() => expect(canvas.queryByRole('dialog')).not.toBeInTheDocument())
-    await expect(trigger).toHaveFocus()
-  },
-}
+  trigger.focus()
+  await userEvent.click(trigger)
+  await userEvent.click(canvas.getByRole('button', { name: 'Unmount dialog' }))
 
-export const ClosePolicies: Story = {
+  await waitFor(() => expect(canvas.queryByRole('dialog')).not.toBeInTheDocument())
+  await expect(trigger).toHaveFocus()
+})
+
+export const ClosePolicies = meta.story({
   name: 'Escape 与蒙层策略',
   render: () => ({
     components: { Button, Dialog },
@@ -240,44 +240,45 @@ export const ClosePolicies: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const reason = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-reason]')
+})
 
-    if (!reason)
-      throw new Error('Dialog close policy story did not render its close reason')
+ClosePolicies.test('proves Escape and backdrop close policies', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const reason = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-reason]')
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open default policy' }))
-    let dialog = canvas.getByRole('dialog', { name: 'Default close policy' })
-    await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(reason).toHaveTextContent('escape'))
-    await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
+  if (!reason)
+    throw new Error('Dialog close policy story did not render its close reason')
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open default policy' }))
-    dialog = canvas.getByRole('dialog', { name: 'Default close policy' })
-    await userEvent.click(dialog)
-    await waitFor(() => expect(reason).toHaveTextContent('backdrop'))
-    await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
+  await userEvent.click(canvas.getByRole('button', { name: 'Open default policy' }))
+  let dialog = canvas.getByRole('dialog', { name: 'Default close policy' })
+  await userEvent.keyboard('{Escape}')
+  await waitFor(() => expect(reason).toHaveTextContent('escape'))
+  await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open Escape-protected' }))
-    dialog = canvas.getByRole('dialog', { name: 'Escape-protected policy' })
-    await userEvent.keyboard('{Escape}')
-    await expect(dialog).toHaveAttribute('open')
-    await expect(reason).toHaveTextContent('none')
-    await userEvent.click(canvas.getByRole('button', { name: 'Close Escape-protected' }))
-    await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
+  await userEvent.click(canvas.getByRole('button', { name: 'Open default policy' }))
+  dialog = canvas.getByRole('dialog', { name: 'Default close policy' })
+  await userEvent.click(dialog)
+  await waitFor(() => expect(reason).toHaveTextContent('backdrop'))
+  await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open backdrop-protected' }))
-    dialog = canvas.getByRole('dialog', { name: 'Backdrop-protected policy' })
-    await userEvent.click(dialog)
-    await expect(dialog).toHaveAttribute('open')
-    await expect(reason).toHaveTextContent('none')
-    await userEvent.click(canvas.getByRole('button', { name: 'Close backdrop-protected' }))
-    await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
-  },
-}
+  await userEvent.click(canvas.getByRole('button', { name: 'Open Escape-protected' }))
+  dialog = canvas.getByRole('dialog', { name: 'Escape-protected policy' })
+  await userEvent.keyboard('{Escape}')
+  await expect(dialog).toHaveAttribute('open')
+  await expect(reason).toHaveTextContent('none')
+  await userEvent.click(canvas.getByRole('button', { name: 'Close Escape-protected' }))
+  await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
 
-export const SizesAndResponsivePresentation: Story = {
+  await userEvent.click(canvas.getByRole('button', { name: 'Open backdrop-protected' }))
+  dialog = canvas.getByRole('dialog', { name: 'Backdrop-protected policy' })
+  await userEvent.click(dialog)
+  await expect(dialog).toHaveAttribute('open')
+  await expect(reason).toHaveTextContent('none')
+  await userEvent.click(canvas.getByRole('button', { name: 'Close backdrop-protected' }))
+  await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
+})
+
+export const SizesAndResponsivePresentation = meta.story({
   name: '尺寸与响应式呈现',
   render: () => ({
     components: { Button, Dialog },
@@ -308,24 +309,25 @@ export const SizesAndResponsivePresentation: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const desktop = window.matchMedia('(min-width: 40rem)').matches
+})
 
-    for (const size of sizes) {
-      await userEvent.click(canvas.getByRole('button', { name: `Open ${size}` }))
-      const dialog = canvas.getByRole('dialog', { name: `${size.toUpperCase()} dialog` })
+SizesAndResponsivePresentation.test('proves sizes and responsive presentation', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const desktop = window.matchMedia('(min-width: 40rem)').matches
 
-      await expect(dialog).toHaveAttribute('data-ui-dialog-size', size)
-      await expect(getComputedStyle(dialog).alignItems).toBe(desktop ? 'center' : 'flex-end')
+  for (const size of sizes) {
+    await userEvent.click(canvas.getByRole('button', { name: `Open ${size}` }))
+    const dialog = canvas.getByRole('dialog', { name: `${size.toUpperCase()} dialog` })
 
-      await userEvent.click(canvas.getByRole('button', { name: `Close ${size}` }))
-      await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
-    }
-  },
-}
+    await expect(dialog).toHaveAttribute('data-ui-dialog-size', size)
+    await expect(getComputedStyle(dialog).alignItems).toBe(desktop ? 'center' : 'flex-end')
 
-export const ReducedMotion: Story = {
+    await userEvent.click(canvas.getByRole('button', { name: `Close ${size}` }))
+    await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
+  }
+})
+
+export const ReducedMotion = meta.story({
   name: '减少动态效果',
   render: () => ({
     components: { Button, Dialog },
@@ -355,24 +357,25 @@ export const ReducedMotion: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const phase = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-reduced-phase]')
+})
 
-    if (!phase)
-      throw new Error('Reduced motion Dialog story did not render its lifecycle output')
+ReducedMotion.test('proves reduced-motion lifecycle settlement', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const phase = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-reduced-phase]')
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open reduced motion dialog' }))
-    const dialog = canvas.getByRole('dialog', { name: 'Reduced motion dialog' })
+  if (!phase)
+    throw new Error('Reduced motion Dialog story did not render its lifecycle output')
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-      await expect(phase).toHaveTextContent('opened')
-    else await waitFor(() => expect(phase).toHaveTextContent('opened'))
+  await userEvent.click(canvas.getByRole('button', { name: 'Open reduced motion dialog' }))
+  const dialog = canvas.getByRole('dialog', { name: 'Reduced motion dialog' })
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Close reduced motion dialog' }))
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-      await expect(phase).toHaveTextContent('closed')
-    else await waitFor(() => expect(phase).toHaveTextContent('closed'))
-    await expect(dialog).not.toHaveAttribute('open')
-  },
-}
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    await expect(phase).toHaveTextContent('opened')
+  else await waitFor(() => expect(phase).toHaveTextContent('opened'))
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Close reduced motion dialog' }))
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    await expect(phase).toHaveTextContent('closed')
+  else await waitFor(() => expect(phase).toHaveTextContent('closed'))
+  await expect(dialog).not.toHaveAttribute('open')
+})

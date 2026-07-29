@@ -24,6 +24,461 @@
           "text": "0"
         }
       ]
+    },
+    {
+      "id": "ui-overlayhost--theme-scoped-target",
+      "docs": "ui-overlayhost--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-overlayhost--theme-scoped-target:proves-theme-scoped-target-ownership"
+      ],
+      "ready": "[data-ui-overlay-host]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-tooltip--interaction",
+      "docs": "ui-tooltip--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-tooltip--interaction:proves-pointer-keyboard-and-aria-behavior"
+      ],
+      "ready": "button:has-text(\"说明触发器\")",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-tooltip--content-slots-and-empty-content",
+      "docs": "ui-tooltip--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-tooltip--content-slots-and-empty-content:proves-slot-and-empty-content-behavior"
+      ],
+      "ready": "button:text-is(\"slot 内容\")",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-tooltip--placements",
+      "docs": "ui-tooltip--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-tooltip--placements:proves-the-four-preferred-placements"
+      ],
+      "ready": "button:has-text(\"top\")",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-tooltip--edge-and-scroll",
+      "docs": "ui-tooltip--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-tooltip--edge-and-scroll:proves-edge-collision-and-scroll-tracking"
+      ],
+      "ready": "button:has-text(\"边缘触发器\")",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-tooltip--overlay-targets",
+      "docs": "ui-tooltip--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-tooltip--overlay-targets:proves-overlay-host-and-target-ownership"
+      ],
+      "ready": "button:has-text(\"Host 触发器\")",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-pill--containers",
+      "docs": "ui-pill--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-pill--containers:proves-container-semantics"
+      ],
+      "ready": ".ui-pill:has-text(\"已选 5 项\")",
+      "reload": true,
+      "outcomes": []
+    },
+    {
+      "id": "ui-pill--link",
+      "docs": "ui-pill--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-pill--link:proves-navigation-semantics-and-focus"
+      ],
+      "ready": "a[href=\"#library\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "a[href=\"#library\"]",
+          "focused": false
+        }
+      ]
+    },
+    {
+      "id": "ui-pill--sizes",
+      "docs": "ui-pill--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-pill--sizes:proves-the-public-size-scale"
+      ],
+      "ready": ".ui-pill-xs",
+      "reload": true,
+      "outcomes": []
+    },
+    {
+      "id": "ui-pill--variants",
+      "docs": "ui-pill--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-pill--variants:proves-plain-and-glass-variants"
+      ],
+      "ready": ".ui-pill:has-text(\"Plain\")",
+      "reload": true,
+      "outcomes": []
+    },
+    {
+      "id": "foundations-theme-token-and-glass--tracer",
+      "docs": "foundations-theme-token-and-glass--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "foundations-theme-token-and-glass--tracer:proves-theme-glass-and-semantic-action-contracts"
+      ],
+      "ready": "[data-ui-theme-actions]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-theme-actions]",
+          "text": "0"
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog--controlled",
+      "docs": "ui-dialog--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog--controlled:proves-controlled-state-lifecycle-and-focus-behavior"
+      ],
+      "ready": "main[aria-label=\"Controlled Dialog\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-phase]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog--label-only",
+      "docs": "ui-dialog--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog--label-only:proves-the-label-only-accessible-name"
+      ],
+      "ready": "main[aria-label=\"Label-only Dialog\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog--unmounting",
+      "docs": "ui-dialog--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog--unmounting:restores-focus-when-the-dialog-unmounts"
+      ],
+      "ready": "main[aria-label=\"Unmounting Dialog\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog--close-policies",
+      "docs": "ui-dialog--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog--close-policies:proves-escape-and-backdrop-close-policies"
+      ],
+      "ready": "main[aria-label=\"Dialog close policies\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-reason]",
+          "text": "none"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog--sizes-and-responsive-presentation",
+      "docs": "ui-dialog--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog--sizes-and-responsive-presentation:proves-sizes-and-responsive-presentation"
+      ],
+      "ready": "main[aria-label=\"Dialog sizes\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog--reduced-motion",
+      "docs": "ui-dialog--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog--reduced-motion:proves-reduced-motion-lifecycle-settlement"
+      ],
+      "ready": "main[aria-label=\"Reduced motion Dialog\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-reduced-phase]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--factory-isolation-and-injection",
+      "docs": "ui-dialog-service--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--factory-isolation-and-injection:proves-factory-isolation-injection-and-missing-host-failure"
+      ],
+      "ready": "main[aria-label=\"Dialog service isolation\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-host-error]",
+          "text": "none"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--outcomes-and-close-reasons",
+      "docs": "ui-dialog-service--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--outcomes-and-close-reasons:proves-api-outcomes-and-structured-close-reasons"
+      ],
+      "ready": "main[aria-label=\"Dialog service outcomes\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-outcome]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--errors-and-async-confirmation",
+      "docs": "ui-dialog-service--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--errors-and-async-confirmation:proves-render-and-confirmation-errors-plus-pending-protection"
+      ],
+      "ready": "main[aria-label=\"Dialog service failures\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-error]",
+          "text": "none:0"
+        },
+        {
+          "selector": "[data-ui-dialog-async]",
+          "text": "idle:0"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--prompt-keyboard-and-validation",
+      "docs": "ui-dialog-service--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--prompt-keyboard-and-validation:proves-prompt-keyboard-paths-validation-and-submitted-snapshots"
+      ],
+      "ready": "main[aria-label=\"Prompt behavior\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-prompt]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--stack-and-close-all",
+      "docs": "ui-dialog-service--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--stack-and-close-all:proves-stack-focus-restoration-and-closeall-lifo"
+      ],
+      "ready": "main[aria-label=\"Dialog service Stack\"]",
+      "reload": true,
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-order]",
+          "text": ""
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
     }
   ]
 }
