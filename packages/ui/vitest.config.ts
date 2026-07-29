@@ -1,4 +1,5 @@
 import { dirname, resolve } from 'node:path'
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import { playwright } from '@vitest/browser-playwright'
@@ -44,6 +45,13 @@ function storybook(theme: 'light' | 'dark', mode: 'default' | 'reduced-motion' |
 }
 
 export default mergeConfig(vite, defineConfig({
+  optimizeDeps: {
+    include: [
+      '@storybook/addon-a11y',
+      '@storybook/addon-vitest',
+      '@storybook/vue3-vite',
+    ],
+  },
   test: {
     projects: [
       {
@@ -55,9 +63,13 @@ export default mergeConfig(vite, defineConfig({
         },
       },
       storybook('light'),
-      storybook('dark'),
-      storybook('light', 'reduced-motion'),
-      storybook('light', 'mobile'),
+      ...(process.env.VITEST_STORYBOOK
+        ? []
+        : [
+            storybook('dark'),
+            storybook('light', 'reduced-motion'),
+            storybook('light', 'mobile'),
+          ]),
     ],
   },
 }))

@@ -1,7 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Button } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
 import { ref } from 'vue'
+import preview from '../../.storybook/preview'
+
+// PROTOTYPE — Can CSF Next keep this story inert in Canvas while .test() preserves its browser contract?
 
 const colors = [
   'default',
@@ -30,7 +32,7 @@ const variants = [
 
 const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const
 
-const meta = {
+const meta = preview.meta({
   title: 'UI/Button',
   component: Button,
   args: {
@@ -51,12 +53,9 @@ const meta = {
     },
   },
   tags: ['autodocs', 'test'],
-} satisfies Meta<typeof Button>
+})
 
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const Contract: Story = {
+export const Contract = meta.story({
   name: '公共契约',
   render: args => ({
     components: { Button },
@@ -115,43 +114,44 @@ export const Contract: Story = {
       </main>
     `,
   }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const actions = canvasElement.querySelector<HTMLOutputElement>('[data-ui-button-actions]')
-    const submits = canvasElement.querySelector<HTMLOutputElement>('[data-ui-button-submits]')
+})
 
-    if (!actions || !submits)
-      throw new Error('Button contract story did not render its observable outcomes')
+Contract.test('executes the public interaction contract', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const actions = canvasElement.querySelector<HTMLOutputElement>('[data-ui-button-actions]')
+  const submits = canvasElement.querySelector<HTMLOutputElement>('[data-ui-button-submits]')
 
-    const save = canvas.getByRole('button', { name: 'Save changes' })
-    const disabled = canvas.getByRole('button', { name: 'Disabled action' })
-    const loading = canvas.getByRole('button', { name: 'Loading action' })
-    const formButton = canvas.getByRole('button', { name: 'Does not submit' })
+  if (!actions || !submits)
+    throw new Error('Button contract story did not render its observable outcomes')
 
-    await expect(save).toHaveAttribute('type', 'button')
-    await expect(save).toHaveAttribute('title', 'Save the current changes')
-    await expect(save).toHaveAttribute('tabindex', '0')
-    await expect(save).toBeEnabled()
-    await expect(canvas.getByRole('button', { name: 'Settings icon action' })).toBeVisible()
-    await expect(disabled).toBeDisabled()
-    await expect(loading).toBeDisabled()
-    await expect(loading).toHaveAttribute('aria-busy', 'true')
+  const save = canvas.getByRole('button', { name: 'Save changes' })
+  const disabled = canvas.getByRole('button', { name: 'Disabled action' })
+  const loading = canvas.getByRole('button', { name: 'Loading action' })
+  const formButton = canvas.getByRole('button', { name: 'Does not submit' })
 
-    save.focus()
-    await expect(save).toHaveFocus()
-    await userEvent.keyboard('{Enter}')
-    await expect(actions).toHaveTextContent('1')
+  await expect(save).toHaveAttribute('type', 'button')
+  await expect(save).toHaveAttribute('title', 'Save the current changes')
+  await expect(save).toHaveAttribute('tabindex', '0')
+  await expect(save).toBeEnabled()
+  await expect(canvas.getByRole('button', { name: 'Settings icon action' })).toBeVisible()
+  await expect(disabled).toBeDisabled()
+  await expect(loading).toBeDisabled()
+  await expect(loading).toHaveAttribute('aria-busy', 'true')
 
-    await userEvent.click(save)
-    await expect(actions).toHaveTextContent('2')
+  save.focus()
+  await expect(save).toHaveFocus()
+  await userEvent.keyboard('{Enter}')
+  await expect(actions).toHaveTextContent('1')
 
-    await expect(actions).toHaveTextContent('2')
+  await userEvent.click(save)
+  await expect(actions).toHaveTextContent('2')
 
-    await expect(formButton).toHaveAttribute('type', 'button')
-    await userEvent.click(formButton)
-    await expect(submits).toHaveTextContent('0')
+  await expect(actions).toHaveTextContent('2')
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Native submit' }))
-    await expect(submits).toHaveTextContent('1')
-  },
-}
+  await expect(formButton).toHaveAttribute('type', 'button')
+  await userEvent.click(formButton)
+  await expect(submits).toHaveTextContent('0')
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Native submit' }))
+  await expect(submits).toHaveTextContent('1')
+})

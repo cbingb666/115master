@@ -1,8 +1,16 @@
-import type { Preview } from '@storybook/vue3-vite'
+import addonA11y from '@storybook/addon-a11y'
+import addonDocs from '@storybook/addon-docs'
+import addonVitest from '@storybook/addon-vitest'
+import { definePreview } from '@storybook/vue3-vite'
 import { computed } from 'vue'
 import '@115master/ui/styles.css'
 
-const preview: Preview = {
+const preview = definePreview({
+  addons: [
+    addonDocs(),
+    addonA11y(),
+    addonVitest(),
+  ],
   parameters: {
     layout: 'fullscreen',
     backgrounds: {
@@ -39,6 +47,6 @@ const preview: Preview = {
       template: '<div :data-theme="theme" data-ui-storybook-root><story /></div>',
     }),
   ],
-}
+})
 
 export default preview
