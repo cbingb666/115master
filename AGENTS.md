@@ -56,10 +56,6 @@ drive115 / subtitle-source → shared, utils
 
 - 默认保持线性历史：合并走 fast-forward / rebase，不产生 merge commit，除非用户明确要求。
 
-## Icons
-
-- 任何 `apps/monkey` 图标工作都调用 `icons` skill。
-
 ## Packages
 
 ### @packages/shared
@@ -105,7 +101,7 @@ drive115 / subtitle-source → shared, utils
 
 简介：115网盘用户脚本（Tampermonkey），基于 Vue 3 + Vite + vite-plugin-monkey 构建。
 
-技术栈：Vue 3.5 + Vite 6 + Tailwind CSS v4 + daisyUI v5 + Pinia 3 + vue-router 4；视频播放 `@libmedia/avplayer` + `hls.js` + `m3u8-parser`；图标 `@iconify/vue`（见 Icons 章节）。
+技术栈：Vue 3.5 + Vite 6 + Tailwind CSS v4 + daisyUI v5 + Pinia 3 + vue-router 4；视频播放 `@libmedia/avplayer` + `hls.js` + `m3u8-parser`；图标 `@iconify/vue`。
 指令：@apps/monkey/AGENTS.md
 
 ## Agent skills
@@ -121,7 +117,3 @@ Issues 以 markdown 文件形式存放在 `.scratch/<feature>/` 下。详见 `do
 ### Domain docs
 
 Multi-context —— 根目录 `CONTEXT-MAP.md` 指向各 package/app 的 `CONTEXT.md`。详见 `docs/agents/domain.md`。
-
-### UI/UX
-
-通用 UI/UX 设计、修改或审查调用 `ui-ux` skill。新增或重构 Button、Pill、Popup、播放器控制组、媒体浮层、侧栏或 Sheet 的 Glass 材质时，调用其子 skill `glass-ui`。
