@@ -207,7 +207,7 @@ const styles = clsx({
   // 侧边栏样式
   sidebar: {
     overlay: [
-      'fixed inset-0 z-10',
+      'ui-z-scrim fixed inset-0',
       'bg-black/40',
       'cursor-pointer',
       'transition-opacity duration-300 ease-[var(--app-ease-in-out-sine)]',
@@ -216,7 +216,7 @@ const styles = clsx({
       'data-[visible=true]:pointer-events-auto',
     ],
     content: [
-      'fixed inset-y-0 right-0 z-20',
+      'ui-z-sheet fixed inset-y-0 right-0',
       'w-(--app-playlist-width)',
       'h-screen',
       'transition-transform duration-300 ease-[var(--app-ease-out-cubic)]',

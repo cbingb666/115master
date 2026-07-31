@@ -28,7 +28,7 @@ const MobileSider = defineComponent({
           size="lg"
           shape="circle"
           aria-label="打开菜单"
-          class="fixed right-4 bottom-4 z-110 shadow-lg sm:hidden"
+          class="ui-z-fab fixed right-4 bottom-4 shadow-lg sm:hidden"
           onClick={open}
         >
           <Icon name={I.MENU} class="text-xl" />
@@ -38,8 +38,8 @@ const MobileSider = defineComponent({
         {isOpen.value && (
           <div
             class="
-              fixed
-              inset-0 z-120 bg-black/50
+              ui-z-scrim
+              fixed inset-0 bg-black/50
               transition-opacity
               duration-300 sm:hidden
             "
@@ -52,9 +52,9 @@ const MobileSider = defineComponent({
         <div
           class="
             ui-glass-panel
-            fixed
-            inset-x-0 bottom-0
-            z-130 flex
+            ui-z-sheet
+            fixed inset-x-0
+            bottom-0 flex
             max-h-[80dvh]
             flex-col
             overflow-y-auto

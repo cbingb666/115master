@@ -125,7 +125,7 @@ export const Toast = defineComponent({
         cursor-pointer
         rounded-3xl
         px-4 py-3
-        relative z-50
+        relative ui-z-raised
         pointer-events-auto
         ${getTypeClass(props.type)}
         ${props.className}
@@ -173,7 +173,7 @@ export const Toast = defineComponent({
         {props.closable && (
           <div
             class="
-              relative z-10
+              ui-z-raised relative
               ml-3
               flex-none
               shrink-0

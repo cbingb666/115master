@@ -190,7 +190,7 @@ const FileBroswer = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        <div class="sticky top-0 z-10 flex justify-end px-6 pt-3">
+        <div class="ui-z-elevated sticky top-0 flex justify-end px-6 pt-3">
           <div class="flex w-full items-center gap-2 sm:w-auto">
             {showSearchBox.value && (
               <label
@@ -254,7 +254,7 @@ const FileBroswer = defineComponent({
             )}
 
             {showActions.value && (
-              <FileMenu class="relative z-10 shrink-0">
+              <FileMenu class="ui-z-elevated relative shrink-0">
                 <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
                 <FilePageSizeSelector
                   currentPageSize={explorer.size.value}
@@ -276,7 +276,7 @@ const FileBroswer = defineComponent({
         </div>
 
         {/* header */}
-        <div class={['border-base-content/10 sticky top-0 z-10 min-w-0 border-b px-6 py-2', viewType.value === 'card' && 'mb-5']}>
+        <div class={['border-base-content/10 ui-z-elevated sticky top-0 min-w-0 border-b px-6 py-2', viewType.value === 'card' && 'mb-5']}>
           <div class="mt-1 flex min-w-0 items-center gap-3">
             <div class="min-w-0 flex-1 overflow-hidden">
               <FilePath
@@ -328,7 +328,7 @@ const FileBroswer = defineComponent({
           </FileList>
 
           {explorer.pageCount.value > 1 && (
-            <div class="fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 justify-center">
+            <div class="ui-z-elevated fixed bottom-4 left-1/2 flex -translate-x-1/2 justify-center">
               <Pagination
                 surface="floating"
                 currentPage={explorer.page.value}

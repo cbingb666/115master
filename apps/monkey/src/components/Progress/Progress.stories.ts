@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          '顶部 indeterminate 进度条：`active=true` 启动无限循环扫光动画；`active=false` 播放退出动画后消失。固定定位在页面顶部（z-9999），不影响布局。',
+          '顶部 indeterminate 进度条：`active=true` 启动无限循环扫光动画；`active=false` 播放退出动画后消失。固定定位在页面顶部（ui-z-progress），不影响布局。',
       },
     },
   },

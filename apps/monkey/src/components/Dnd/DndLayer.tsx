@@ -17,7 +17,7 @@ const DndLayer = defineComponent({
       if (!s)
         return undefined
       const lift = s.pointerType === 'touch' ? TOUCH_LIFT : 0
-      return `position:fixed;left:${s.x - s.offset.x}px;top:${s.y - s.offset.y - lift}px;pointer-events:none;z-index:9999`
+      return `position:fixed;left:${s.x - s.offset.x}px;top:${s.y - s.offset.y - lift}px;pointer-events:none;z-index:var(--ui-z-dnd)`
     })
     return () => {
       const s = dnd.session.value

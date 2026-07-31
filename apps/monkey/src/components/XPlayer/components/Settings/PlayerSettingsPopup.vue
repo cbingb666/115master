@@ -96,7 +96,7 @@ const styles = clsx({
 
   // ===== 头部区域 =====
   header: [
-    'sticky top-0 z-1 flex items-center justify-between',
+    'ui-z-raised sticky top-0 flex items-center justify-between',
     'bg-base-100/90 px-6 pt-4',
     'rounded-t-2xl',
   ],

@@ -286,6 +286,6 @@ const onAfterLeave: BaseTransitionProps['onAfterLeave'] = () => {
 <style scoped>
 .x-popup > * {
   position: relative;
-  z-index: 1;
+  z-index: var(--ui-z-raised);
 }
 </style>

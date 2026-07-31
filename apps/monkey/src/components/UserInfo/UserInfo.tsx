@@ -85,7 +85,7 @@ export const UserInfo = defineComponent({
           {/* 移动端下拉菜单 */}
           {showDropdown.value && (
             <div
-              class="animate-in slide-in-from-top-2 absolute top-full right-0 z-50 mt-2 duration-200 sm:hidden"
+              class="animate-in slide-in-from-top-2 ui-z-dropdown absolute top-full right-0 mt-2 duration-200 sm:hidden"
               onClick={(e: Event) => e.stopPropagation()}
             >
               <div class="ui-glass-floating min-w-64 rounded-lg p-4">

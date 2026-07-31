@@ -120,10 +120,10 @@ const Dropdown = defineComponent({
               class="
                 menu
                 ui-glass-floating
+                ui-z-menu
                 fixed
                 top-0
                 left-0
-                z-10000
                 rounded-3xl
               "
               style={{ left: `${pos.value.x}px`, top: `${pos.value.y}px` }}

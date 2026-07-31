@@ -14,9 +14,9 @@ const DesktopSider = defineComponent({
       <div
         class="
           ui-glass-panel
-          fixed
-          top-2 bottom-2
-          left-2 z-100
+          ui-z-header
+          fixed top-2
+          bottom-2 left-2
           flex
           w-[calc(var(--sider-width)-var(--spacing)*4)]
           flex-col

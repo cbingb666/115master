@@ -286,7 +286,7 @@ const Tags = defineComponent({
             <ListHeader />
             <ListArea />
             {multi.selectMode.value && store.selectedCount > 0 && (
-              <div class="pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
+              <div class="ui-z-elevated pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
                 <ActionBar groups={batchActions.value} />
               </div>
             )}

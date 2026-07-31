@@ -134,7 +134,7 @@ const styles = clsx({
   error:
     'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform',
   resumeContainer:
-    'absolute inset-0 z-2 flex items-center justify-center bg-black/90',
+    'ui-z-cover absolute inset-0 flex items-center justify-center bg-black/90',
   resumeButton: '',
 })
 

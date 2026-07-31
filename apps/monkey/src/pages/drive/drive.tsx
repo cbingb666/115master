@@ -363,7 +363,7 @@ const Drive = defineComponent({
     function FixedBottom() {
       if (!store.loading && store.pageCount > 1) {
         return (
-          <div class="fixed right-0 bottom-0 left-(--sider-width) flex justify-center">
+          <div class="ui-z-elevated fixed right-0 bottom-0 left-(--sider-width) flex justify-center">
             <div class="from-base-100/50 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent"></div>
             <Pagination
               key="pagination"
@@ -422,7 +422,7 @@ const Drive = defineComponent({
                 {List(active)}
                 <FixedBottom />
                 {selectMode.value && store.selection.count > 0 && (
-                  <div class="pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
+                  <div class="ui-z-elevated pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
                     <ActionBar groups={actionConfig.value} />
                   </div>
                 )}

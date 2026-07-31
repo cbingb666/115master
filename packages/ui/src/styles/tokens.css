@@ -3,4 +3,99 @@
   --ui-glass-blur-standard: 20px;
   --ui-glass-blur-strong: 32px;
   --ui-glass-brightness: 100%;
+
+  /*
+   * 层叠尺度：组件内 → 页面 → 全局浮层，新层级按角色命名插入，禁止裸数值。
+   * Dialog 走原生 top layer，不参与本尺度。
+   */
+  /* 衬底伪元素（置于自身组件内容之下） */
+  --ui-z-under: -1;
+  /* 组件内抬升（内部吸附头部、框选框等） */
+  --ui-z-raised: 1;
+  /* 组件内全覆盖遮罩 */
+  --ui-z-cover: 2;
+  /* 页面浮动条（吸附工具栏、分页、操作栏） */
+  --ui-z-elevated: 10;
+  /* 局部下拉浮层 */
+  --ui-z-dropdown: 50;
+  /* 页面吸附头部 / 侧栏 */
+  --ui-z-header: 100;
+  /* 浮动操作按钮 */
+  --ui-z-fab: 110;
+  /* 页面遮罩 */
+  --ui-z-scrim: 120;
+  /* 页面抽屉 */
+  --ui-z-sheet: 130;
+  /* 宿主 115 页面注入 */
+  --ui-z-host: 1000;
+  /* 全局进度条（顶缘细条，有意低于浮层） */
+  --ui-z-progress: 9999;
+  /* 全局菜单浮层 */
+  --ui-z-menu: 10000;
+  /* 全局通知（压菜单） */
+  --ui-z-toast: 10100;
+  /* 全局提示（压 header/菜单） */
+  --ui-z-tooltip: 10200;
+  /* 拖拽幽灵层（最高，top layer 除外） */
+  --ui-z-dnd: 10300;
+}
+
+@utility ui-z-under {
+  z-index: var(--ui-z-under);
+}
+
+@utility ui-z-raised {
+  z-index: var(--ui-z-raised);
+}
+
+@utility ui-z-cover {
+  z-index: var(--ui-z-cover);
+}
+
+@utility ui-z-elevated {
+  z-index: var(--ui-z-elevated);
+}
+
+@utility ui-z-dropdown {
+  z-index: var(--ui-z-dropdown);
+}
+
+@utility ui-z-header {
+  z-index: var(--ui-z-header);
+}
+
+@utility ui-z-fab {
+  z-index: var(--ui-z-fab);
+}
+
+@utility ui-z-scrim {
+  z-index: var(--ui-z-scrim);
+}
+
+@utility ui-z-sheet {
+  z-index: var(--ui-z-sheet);
+}
+
+@utility ui-z-host {
+  z-index: var(--ui-z-host);
+}
+
+@utility ui-z-progress {
+  z-index: var(--ui-z-progress);
+}
+
+@utility ui-z-menu {
+  z-index: var(--ui-z-menu);
+}
+
+@utility ui-z-toast {
+  z-index: var(--ui-z-toast);
+}
+
+@utility ui-z-tooltip {
+  z-index: var(--ui-z-tooltip);
+}
+
+@utility ui-z-dnd {
+  z-index: var(--ui-z-dnd);
 }

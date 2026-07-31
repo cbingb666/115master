@@ -136,7 +136,7 @@ export class FileItemModExtMenu extends FileItemModBase {
     link.style.cssText = `
       pointer-events: all;
       position: relative;
-      z-index: 1000;
+      z-index: var(--ui-z-host);
       display: flex;
       align-items: center;
       gap: 4px;

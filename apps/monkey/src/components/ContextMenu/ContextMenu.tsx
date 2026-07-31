@@ -110,7 +110,7 @@ const ContextMenu = defineComponent({
         <Teleport to="#my-app">
           {props.show && (
             <div
-              class="fixed inset-0 z-10000 cursor-pointer"
+              class="ui-z-menu fixed inset-0 cursor-pointer"
               onClick={withModifiers(() => props.onClose?.(), ['self', 'stop'])}
               onContextmenu={withModifiers(() => props.onClose?.(), ['prevent'])}
             />
@@ -129,10 +129,10 @@ const ContextMenu = defineComponent({
                 class="
                   menu
                   ui-glass-floating
+                  ui-z-menu
                   fixed
                   top-0
                   left-0
-                  z-10000
                   min-w-44
                   rounded-2xl
                   p-1.5

@@ -84,7 +84,7 @@ const styles = clsx({
     ],
     header: {
       root: [
-        'absolute inset-x-0 top-0 z-1',
+        'ui-z-raised absolute inset-x-0 top-0',
         'flex flex-shrink-0 items-center justify-between',
         'h-(--app-playlist-header-height)',
         'px-(--app-playlist-space) py-4',
@@ -155,7 +155,7 @@ watch(
 .app-playlist-header-fade::before {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--ui-z-under);
   background: linear-gradient(
     to bottom,
     var(--color-base-100) 0%,

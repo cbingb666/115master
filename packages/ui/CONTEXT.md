@@ -24,6 +24,10 @@ _Avoid_: 公共变量、主题 Token
 当局部视觉值出现第二个真实消费者或形成跨组件语义时，将其提升为公共 Token。
 _Avoid_: 预设 Token、完整 Token 表
 
+**层叠尺度**：
+由 `--ui-z-*` 公共 Token 与同名 `ui-z-*` 工具类承载的全局 z-index 语义序列，分组件内（under/raised/cover）、页面（elevated/dropdown/header/fab/scrim/sheet）、全局浮层（host/progress/menu/toast/tooltip/dnd）三段；progress 有意低于浮层，Dialog 走原生 top layer 不参与本尺度。
+_Avoid_: 裸数值 z-index、组件私自定义层级
+
 **Glass 材质**：
 由承载场景选择的半透明表面语义，统一负责前景、背景、边框、高光、阴影与背景滤镜。
 _Avoid_: 玻璃工具类、透明背景

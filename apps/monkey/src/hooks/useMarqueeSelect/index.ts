@@ -162,7 +162,7 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
       border: 2px solid var(--color-primary);
       background-color: color-mix(in oklab, var(--color-primary) 10%, transparent);
       pointer-events: none;
-      z-index: 1;
+      z-index: var(--ui-z-raised);
       display: none;
     `
     return box

@@ -136,7 +136,7 @@ const Image = defineComponent({
           aria-busy={state.value === 'loading' ? 'true' : undefined}
         >
           {state.value === 'loading' && (
-            <div aria-hidden="true" class="skeleton absolute inset-0 z-10 h-full w-full" />
+            <div aria-hidden="true" class="skeleton ui-z-cover absolute inset-0 h-full w-full" />
           )}
           {state.value === 'error'
             ? <div class="h-full w-full">{resolveFallback()}</div>

@@ -41,9 +41,9 @@ const FileItemCheckbox = defineComponent({
 
     return () => (
       <label class="
-        cursor-pointer
-        group-data-[view-type=card]:absolute group-data-[view-type=card]:top-3
-        group-data-[view-type=card]:left-3 group-data-[view-type=card]:z-10
+        group-data-[view-type=card]:ui-z-cover
+        cursor-pointer group-data-[view-type=card]:absolute
+        group-data-[view-type=card]:top-3 group-data-[view-type=card]:left-3
         group-data-[view-type=card]:flex group-data-[view-type=card]:items-center
         group-data-[view-type=list]:flex group-data-[view-type=list]:cursor-pointer
         group-data-[view-type=list]:items-center group-data-[view-type=list]:px-1

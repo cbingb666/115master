@@ -281,7 +281,7 @@ export const Tooltip = defineComponent({
                   'tooltip',
                   'tooltip-open',
                   'pointer-events-none',
-                  'z-50',
+                  'ui-z-tooltip',
                   placementClasses[actual],
                 ]}
                 data-ui-placement={placement.value}

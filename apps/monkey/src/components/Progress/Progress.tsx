@@ -84,7 +84,7 @@ export const Progress = defineComponent({
         return null
 
       return (
-        <div class="bg-base-300/35 pointer-events-none fixed inset-x-0 top-0 z-9999 h-0.5 overflow-hidden">
+        <div class="bg-base-300/35 ui-z-progress pointer-events-none fixed inset-x-0 top-0 h-0.5 overflow-hidden">
           <div
             ref={bar}
             class="h-full w-1/3 rounded-full will-change-transform"
