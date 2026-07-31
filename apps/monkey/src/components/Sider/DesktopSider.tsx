@@ -18,7 +18,7 @@ const DesktopSider = defineComponent({
           fixed top-2
           bottom-2 left-2
           flex
-          w-[calc(var(--sider-width)-var(--spacing)*4)]
+          w-[calc(var(--sider-width)-var(--spacing)*2)]
           flex-col
           rounded-2xl
           px-4

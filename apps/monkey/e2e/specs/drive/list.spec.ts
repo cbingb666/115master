@@ -32,6 +32,29 @@ test.describe('列表渲染', () => {
     expect(errors).toEqual([])
   })
 
+  test('桌面布局：主内容与侧栏之间没有缝隙', async ({ page }) => {
+    const errors = watch(page)
+    await boot(page)
+
+    const geometry = await page.locator('.header-sticky-effect').evaluate((header) => {
+      const main = header.parentElement?.parentElement
+      const width = Number.parseFloat(getComputedStyle(main!).marginLeft)
+      return {
+        mainLeft: main!.getBoundingClientRect().left,
+        siderRight: document
+          .querySelector<HTMLButtonElement>('button[title="偏好设置"]')!
+          .closest<HTMLElement>('.fixed')!
+          .getBoundingClientRect()
+          .right,
+        width,
+      }
+    })
+
+    expect(geometry.width).toBeGreaterThan(0)
+    expect(geometry.mainLeft).toBe(geometry.siderRight)
+    expect(errors).toEqual([])
+  })
+
   test('切换视图：card → list，偏好写入 localStorage', async ({ page }) => {
     const errors = watch(page)
     await boot(page)
