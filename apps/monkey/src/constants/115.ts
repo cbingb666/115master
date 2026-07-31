@@ -6,6 +6,7 @@ export const VOD_HOST_155 = '115vod.com'
 export const APS_HOST_155 = 'aps.115.com'
 export const DL_HOST_155 = 'dl.115cdn.net'
 export const CDN_FILE_HOST_155 = 'cdnfhnfile.115cdn.net'
+export const UPLOAD_HOST_155 = 'uplb.115.com'
 
 export const NORMAL_URL_115 = `https://${NORMAL_HOST_155}`
 export const WEB_API_URL_115 = `https://${WEB_API_HOST_155}`
@@ -15,3 +16,4 @@ export const VOD_URL_115 = `https://${VOD_HOST_155}`
 export const APS_URL_115 = `https://${APS_HOST_155}`
 export const DL_URL_115 = `https://${DL_HOST_155}`
 export const CDN_FILE_URL_115 = `https://${CDN_FILE_HOST_155}`
+export const UPLOAD_URL_115 = `https://${UPLOAD_HOST_155}`

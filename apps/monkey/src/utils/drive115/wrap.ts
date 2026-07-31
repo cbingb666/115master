@@ -1,7 +1,9 @@
 import type { WebApi } from './api'
 import type { DownloadResult } from './core'
+import type { UploadResult } from './upload'
 import { appLogger } from '@/utils/logger'
 import { Drive115Core } from './core'
+import { uploadFileSample } from './upload'
 
 /** 115驱动的包装 */
 export class Drive115Wrap extends Drive115Core {
@@ -57,6 +59,20 @@ export class Drive115Wrap extends Drive115Core {
     const url = this.getM3u8Url(pickcode)
     const m3u8List = await this.getM3u8Info(url, pickcode)
     return m3u8List
+  }
+
+  /**
+   * 上传文件到指定目录
+   * @param blob 文件数据
+   * @param filename 文件名
+   * @param targetCid 目标目录 id
+   */
+  async uploadToDir(
+    blob: Blob,
+    filename: string,
+    targetCid: string,
+  ): Promise<UploadResult> {
+    return uploadFileSample(blob, filename, targetCid)
   }
 
   /** 获取下载地址 */

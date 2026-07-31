@@ -5,6 +5,9 @@ import { FileListType, IvType } from '@/pages/home/types'
 import { drive115 } from '@/utils/drive115'
 import { isMac } from '@/utils/platform'
 import { goToPlayer } from '@/utils/route'
+import { removeFileExtension } from '@/utils/string'
+import { showToast } from '@/utils/toast'
+import { generateVideoMontage } from '@/utils/videoMontage'
 import { webLinkIINA } from '@/utils/weblink'
 import { FileItemModBase } from './base'
 
@@ -30,9 +33,21 @@ interface ButtonConfig {
  * FileItemMod 扩展菜单
  */
 export class FileItemModExtMenu extends FileItemModBase {
+  /** 是否正在保存封面 */
+  private savingCover = false
+
   /** 按钮配置 */
   get buttonConfig(): ButtonConfig[] {
     return [
+      {
+        class: 'save-cover',
+        title: '生成视频九宫格封面并上传到当前目录（便于非浏览器客户端查看）',
+        text: '🖼️ 保存封面',
+        visible: this.itemInfo.attributes.iv === IvType.Yes,
+        click: () => {
+          this.saveCover()
+        },
+      },
       {
         class: '115-player',
         title: '使用【115官方播放器】',
@@ -107,6 +122,54 @@ export class FileItemModExtMenu extends FileItemModBase {
 
   /** 销毁 */
   onDestroy() {}
+
+  /**
+   * 生成视频九宫格封面并上传到当前目录
+   * @description 采集视频 9 帧拼成 3x3 合图，以「视频同名 + .jpg」上传到视频所在目录，
+   * 方便通过非浏览器客户端查看网盘内视频的缩略图
+   */
+  private async saveCover(): Promise<void> {
+    if (this.savingCover) {
+      return
+    }
+    this.savingCover = true
+
+    const { title, cid, pick_code: pickCode } = this.itemInfo.attributes
+    const baseName = removeFileExtension(title || 'cover')
+    const filename = `${baseName}.jpg`
+
+    const toast = showToast('正在生成九宫格封面…', 'loading')
+
+    try {
+      /** 生成九宫格合图 */
+      const blob = await generateVideoMontage({
+        pickCode,
+        duration: this.itemInfo.duration,
+        title,
+        onProgress: (progress) => {
+          toast.update(
+            `正在生成九宫格封面… ${Math.round(progress * 100)}%`,
+            'loading',
+          )
+        },
+      })
+
+      /** 上传到视频所在目录 */
+      toast.update('正在上传到当前目录…', 'loading')
+      await drive115.uploadToDir(blob, filename, cid)
+
+      toast.update(`封面已保存：${filename}`, 'success')
+      toast.close(4000)
+    }
+    catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      toast.update(`保存封面失败：${message}`, 'error')
+      toast.close(6000)
+    }
+    finally {
+      this.savingCover = false
+    }
+  }
 
   /** 创建文件操作菜单按钮 */
   private createButtons(): void {

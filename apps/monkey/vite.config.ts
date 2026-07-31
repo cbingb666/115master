@@ -89,6 +89,8 @@ export default defineConfig({
           'aps.115.com',
           'webapi.115.com',
           'proapi.115.com',
+          'uplb.115.com',
+          'aliyuncs.com',
           'cpats01.115.com',
           'dl.115cdn.net',
           'cdnfhnfile.115cdn.net',
