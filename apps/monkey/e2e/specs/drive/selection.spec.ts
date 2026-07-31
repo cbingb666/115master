@@ -17,6 +17,20 @@ test.describe('选择与操作', () => {
     const exit = page.getByTitle('退出多选')
     await expect(exit).toBeVisible()
     await expect(exit).toContainText('1 项')
+    const geometry = await exit.evaluate((button) => {
+      const style = getComputedStyle(button)
+      return {
+        height: button.getBoundingClientRect().height,
+        radii: [
+          style.borderTopLeftRadius,
+          style.borderTopRightRadius,
+          style.borderBottomRightRadius,
+          style.borderBottomLeftRadius,
+        ].map(Number.parseFloat),
+      }
+    })
+    for (const radius of geometry.radii)
+      expect(radius).toBeGreaterThanOrEqual(geometry.height / 2)
     await expect(row(page, '演示视频 01.mp4')).toHaveAttribute('data-checked', 'true')
 
     /** ActionBar 出现：置顶/星标/打标签/移动/重命名/删除（根目录无「提到上级」） */

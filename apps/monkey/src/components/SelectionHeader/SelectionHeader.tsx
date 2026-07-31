@@ -44,6 +44,7 @@ const SelectionHeader = defineComponent({
       <Header>
         <HeaderStart>
           <Button
+            class="rounded-full"
             variant="glass-floating"
             title="退出多选"
             onClick={() => props.onExit()}
