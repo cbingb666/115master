@@ -364,7 +364,6 @@ const Drive = defineComponent({
       if (!store.loading && store.pageCount > 1) {
         return (
           <div class="ui-z-elevated fixed right-0 bottom-0 left-(--sider-width) flex justify-center">
-            <div class="from-base-100/50 pointer-events-none absolute inset-0 bg-linear-to-t to-transparent"></div>
             <Pagination
               key="pagination"
               surface="floating"

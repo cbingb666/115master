@@ -167,7 +167,7 @@ const Pagination = defineComponent({
         class="h-auto items-center px-3 py-1.5"
       >
         {/* Mobile: simplified pagination — prev, current page, jump input, next */}
-        <div class="flex items-center gap-1 md:hidden">
+        <div class="drop-shadow-base-200/50 flex items-center gap-1 drop-shadow-sm md:hidden">
           <Button
             variant="ghost"
             size="md"
@@ -214,7 +214,7 @@ const Pagination = defineComponent({
         </div>
 
         {/* Desktop: full pagination — prev, page buttons, jump input, next */}
-        <div class="hidden items-center gap-1 md:flex">
+        <div class="drop-shadow-base-200/50 hidden items-center gap-1 drop-shadow-sm md:flex">
           <Button
             variant="ghost"
             size="md"
