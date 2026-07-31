@@ -1,0 +1,12 @@
+# Worktrunk 项目配置（随仓库提交，团队共享）
+# 文档: https://worktrunk.dev/config/  https://worktrunk.dev/hook/
+
+# 新建 worktree 时自动安装依赖（阻塞式：失败会中止后续 post-start）
+[pre-start]
+install = "pnpm install"
+
+# wt merge 时的验证门禁：rebase 之后、合并进目标分支之前运行，失败则中止合并
+# 全量闸门是 pnpm verify（含 e2e + 视觉回归，较慢），这里用快速子集
+[pre-merge]
+type-check = "pnpm type-check"
+test = "pnpm test"
