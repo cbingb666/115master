@@ -45,3 +45,7 @@ coverage
 .playwright-mcp/
 .playwright-cli/
 storybook-static
+test-results
+playwright-report
+blob-report
+__diffs__

@@ -18,6 +18,11 @@ pnpm storybook            # 并行启动 UI Foundation (6006) 与 Monkey 集成 
 pnpm storybook:ui         # 仅启动 UI Foundation Storybook
 pnpm storybook:monkey     # 仅启动 Monkey 集成 Storybook
 pnpm build-storybook      # 构建两套静态 Storybook
+pnpm test:e2e             # 业务 E2E：离线 harness (含 userscript 构建)
+pnpm test:e2e:run         # E2E 跳过构建 (纯跑全量；分片/过滤用法见下方说明)
+pnpm test:visual          # 视觉回归：storybook × 双主题截图 (需先 build-storybook)
+pnpm test:visual:update   # 更新视觉基线 (写共享基线，须串行)
+pnpm verify               # 总闸门：type-check && test && test:e2e && build-storybook && test:visual
 pnpm changeset            # 新建 changeset (仅用户执行)
 pnpm clean:cache          # 清理 Turbo / Vite / Rollup / TypeScript 构建缓存
 pnpm clean                # 清理所有 dist、构建缓存及根目录 node_modules
@@ -26,6 +31,8 @@ pnpm clean                # 清理所有 dist、构建缓存及根目录 node_mo
 > **Plus 版**：`dev:plus` / `build:plus` 设置 `VITE_PLUS_VERSION=true`，用于 monkey 的实验性 plus 分支（功能差异由 `@apps/monkey` 内 `import.meta.env.VITE_PLUS_VERSION` 决定）。
 >
 > **Pre-commit hook**：`simple-git-hooks` 在每次 `git commit` 前自动跑 `pnpm type-check && pnpm lint-staged`。lint-staged 仅对暂存文件跑 `eslint --fix`。
+>
+> **E2E 分片/过滤**：`pnpm test:e2e` 含构建（共享产物，不可并行）；跳过构建用 `pnpm --filter @115master/monkey test:e2e:run`——分片追加 `--shard=i/n`，按目录过滤追加 `specs/<子目录>`（参数直接追加在脚本名后，不能加 `--` 分隔符，否则被 Playwright 吞掉跑全量；根 `pnpm test:e2e:run` 不转发参数，仅纯跑全量）。验证平台与并行规约详见 `docs/agents/verification.md`。
 
 ## Monorepo 拓扑
 
@@ -117,3 +124,7 @@ Issues 以 markdown 文件形式存放在 `.scratch/<feature>/` 下。详见 `do
 ### Domain docs
 
 Multi-context —— 根目录 `CONTEXT-MAP.md` 指向各 package/app 的 `CONTEXT.md`。详见 `docs/agents/domain.md`。
+
+### Verification
+
+离线验证平台（单测/Storybook、业务 E2E、视觉回归）的命令、并行 agent 规约与扩展指南。详见 `docs/agents/verification.md`。

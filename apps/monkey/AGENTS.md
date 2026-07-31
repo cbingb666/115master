@@ -144,7 +144,7 @@ new Drive115({
 - HTTPS dev 由 `vite-plugin-mkcert` 提供（115 要求 https）。
 - `dev:plus` / `build:plus` — 设 `VITE_PLUS_VERSION=true`，实验功能用 `import.meta.env.VITE_PLUS_VERSION` 判断（也等价于 `constants` 里的 `PLUS_VERSION`）。
 - type-check：`vue-tsc`，依赖 `@libmedia/*` 的 ESM 子路径 alias（见 `tsconfig.app.json`）。
-- 测试：vitest，`environment: node`，匹配 `**/__tests__/**/*.test.ts`。单测：`pnpm test <file>` 或 `pnpm vitest run <pattern>`。
+- 测试：`pnpm test`（inertness 检查 + vitest projects：unit / storybook-dark / storybook-light）；单测过滤 `pnpm vitest run <pattern>`。业务 E2E：`pnpm test:e2e`（含构建）/ `pnpm test:e2e:run`（跳过构建，离线 harness，可 `--shard=i/n` 分片）——命令与并行规约详见 `docs/agents/verification.md`。
 
 ## 约定
 

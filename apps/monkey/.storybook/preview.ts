@@ -1,6 +1,7 @@
 import { createDialogService, DialogHost, OverlayHost } from '@115master/ui'
 import { icons } from '@iconify-json/ion'
 import { addCollection } from '@iconify/vue'
+import addonA11y from '@storybook/addon-a11y'
 import addonDocs from '@storybook/addon-docs'
 import addonVitest from '@storybook/addon-vitest'
 import { definePreview } from '@storybook/vue3-vite'
@@ -25,12 +26,17 @@ if (typeof document !== 'undefined' && !document.getElementById('my-app')) {
 const preview = definePreview({
   addons: [
     addonDocs(),
+    addonA11y(),
     addonVitest(),
   ],
   parameters: {
     layout: 'fullscreen',
     backgrounds: {
       disable: true,
+    },
+    a11y: {
+      /** 存量 story 尚有违规（见测试报告），先用 todo 记录，修复后切回 error */
+      test: 'todo',
     },
   },
   globalTypes: {

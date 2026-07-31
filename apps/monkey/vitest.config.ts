@@ -8,6 +8,7 @@ import vite from './.storybook/vite.config'
 export default mergeConfig(vite, defineConfig({
   optimizeDeps: {
     include: [
+      '@storybook/addon-a11y',
       '@storybook/addon-vitest',
       '@storybook/vue3-vite',
     ],
@@ -36,6 +37,24 @@ export default mergeConfig(vite, defineConfig({
         ],
         test: {
           name: 'storybook-dark',
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            headless: true,
+            instances: [{ browser: 'chromium' }],
+          },
+        },
+      },
+      {
+        extends: true,
+        plugins: [
+          storybookTest({
+            configDir: resolve(dirname(fileURLToPath(import.meta.url)), '.storybook'),
+            initialGlobals: { theme: 'light' },
+          }),
+        ],
+        test: {
+          name: 'storybook-light',
           browser: {
             enabled: true,
             provider: playwright(),
