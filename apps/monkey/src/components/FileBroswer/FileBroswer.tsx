@@ -278,7 +278,8 @@ const FileBroswer = defineComponent({
         {/* header */}
         <div class={['border-base-content/10 ui-z-elevated sticky top-0 min-w-0 border-b px-6 py-2', viewType.value === 'card' && 'mb-5']}>
           <div class="mt-1 flex min-w-0 items-center gap-3">
-            <div class="min-w-0 flex-1 overflow-hidden">
+            {/* -my-3 + py-3：overflow-hidden 会裁掉 FilePath 的玻璃阴影，padding 给阴影留出渲染空间，负 margin 保持布局不变 */}
+            <div class="-my-3 min-w-0 flex-1 overflow-hidden py-3">
               <FilePath
                 path={explorer.path.value ?? []}
                 onPathClick={handleClickPath}

@@ -55,7 +55,8 @@ const FilePath = defineComponent({
 
       if (breakpoints.greater('sm').value || props.pathSelect || path.length <= 1) {
         return (
-          <div class="breadcrumbs rounded-full py-0">
+          // -m-3 + p-3：breadcrumbs 的 overflow-x 会裁掉玻璃阴影，padding 给阴影留出渲染空间，负 margin 保持布局不变
+          <div class="breadcrumbs -m-3 rounded-full p-3">
             <ul>
               {path.map((p, i) => (
                 last(i)
