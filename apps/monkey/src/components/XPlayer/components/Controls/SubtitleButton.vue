@@ -51,6 +51,7 @@
               :subtitle-index="item.index"
               :total="subtitles.total.value"
               :show-actions="true"
+              :active="item.value?.id === subtitles.current.value?.id"
               @view="viewSubtitle(item.value!)"
               @download="downloadSubtitle(item.value!)"
             />
@@ -92,7 +93,7 @@ const styles = clsx({
       'hover:bg-base-content/10',
       'transition-colors',
     ],
-    label: 'text-base-content line-clamp-1 text-sm font-medium',
+    label: 'line-clamp-1 text-sm font-medium',
   },
   btn: controlStyles.btn,
 })
