@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Button, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useEventListener, useStorage, useTitle } from '@vueuse/core'
-import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, Transition, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
@@ -37,6 +37,7 @@ import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
 import { openFilesItem } from '@/utils/openFilesItem'
+import './drive.css'
 
 const Drive = defineComponent({
   name: 'Drive',
@@ -360,25 +361,50 @@ const Drive = defineComponent({
       )
     }
 
+    const bottomMode = computed<'actions' | 'pagination' | null>(() => {
+      if (selectMode.value && store.selection.count > 0)
+        return 'actions'
+      if (!store.loading && store.pageCount > 1)
+        return 'pagination'
+      return null
+    })
+
     function FixedBottom() {
-      if (!store.loading && store.pageCount > 1) {
-        return (
-          <div class="ui-z-elevated fixed right-0 bottom-0 left-(--sider-width) flex justify-center">
-            <Pagination
-              key="pagination"
-              surface="floating"
-              class="relative mb-2"
-              currentPage={store.query.page}
-              currentPageSize={store.query.size}
-              showSizeChanger={false}
-              total={store.total}
-              onCurrentPageChange={store.changePage}
-              onPageSizeChange={store.changeSize}
-            />
-          </div>
-        )
-      }
-      return <></>
+      return (
+        <div class="drive-bottom-dock ui-z-elevated pointer-events-none fixed right-0 bottom-[var(--drive-bottom-gap)] left-(--sider-width) flex justify-center">
+          <Transition
+            mode="out-in"
+            enterActiveClass="motion-reduce:transition-none transition-[transform,opacity] duration-[180ms] ease-out"
+            enterFromClass="translate-y-4 opacity-0"
+            enterToClass="translate-y-0 opacity-100"
+            leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-[transform,opacity] duration-[140ms] ease-in"
+            leaveFromClass="translate-y-0 opacity-100"
+            leaveToClass="translate-y-4 opacity-0"
+          >
+            {bottomMode.value === 'actions'
+              ? (
+                  <div key="actions" class="pointer-events-auto">
+                    <ActionBar groups={actionConfig.value} />
+                  </div>
+                )
+              : bottomMode.value === 'pagination'
+                ? (
+                    <div key="pagination" class="pointer-events-auto">
+                      <Pagination
+                        surface="floating"
+                        currentPage={store.query.page}
+                        currentPageSize={store.query.size}
+                        showSizeChanger={false}
+                        total={store.total}
+                        onCurrentPageChange={store.changePage}
+                        onPageSizeChange={store.changeSize}
+                      />
+                    </div>
+                  )
+                : null}
+          </Transition>
+        </div>
+      )
     }
 
     // cid 变化时退出选择模式（清空选中 + 复位 Shift 锚点）
@@ -411,7 +437,14 @@ const Drive = defineComponent({
     return () => (
       <DndMonitor>
         {{ default: ({ active }: { active: boolean }) => (
-          <div class="flex h-full flex-col">
+          <div
+            class="flex h-full flex-col"
+            style={{
+              '--drive-floating-gap': 'calc(var(--spacing) * 2)',
+              '--drive-floating-content-gap': 'calc(var(--drive-floating-gap) + var(--spacing) * 3)',
+              '--drive-bottom-gap': 'calc(env(safe-area-inset-bottom) + var(--drive-floating-content-gap))',
+            }}
+          >
             <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
               <Sider>
                 <SiderContent />
@@ -420,11 +453,6 @@ const Drive = defineComponent({
                 {ListHeader(active)}
                 {List(active)}
                 <FixedBottom />
-                {selectMode.value && store.selection.count > 0 && (
-                  <div class="ui-z-elevated pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
-                    <ActionBar groups={actionConfig.value} />
-                  </div>
-                )}
               </Main>
             </Layout>
           </div>

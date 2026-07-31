@@ -17,7 +17,7 @@ const Header = defineComponent({
     return () => (
       <div
         class={[
-          'ui-z-header sticky top-2 px-2 pb-4',
+          'ui-z-header sticky top-[var(--drive-floating-gap,calc(var(--spacing)*2))] px-2 pb-4',
           props.class,
         ]}
       >

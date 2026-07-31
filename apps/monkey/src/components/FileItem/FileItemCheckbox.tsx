@@ -46,18 +46,27 @@ const FileItemCheckbox = defineComponent({
         group-data-[view-type=card]:top-3 group-data-[view-type=card]:left-3
         group-data-[view-type=card]:flex group-data-[view-type=card]:items-center
         group-data-[view-type=list]:flex group-data-[view-type=list]:cursor-pointer
-        group-data-[view-type=list]:items-center group-data-[view-type=list]:px-1
+        group-data-[view-type=list]:items-center group-data-[view-type=list]:pr-3
+        group-data-[view-type=list]:pl-1
       "
       >
         <input
-          class="
-            checkbox checkbox-sm
-            checked:bg-primary checked:text-primary-content
-            checked:border-primary opacity-0
-            transition-all group-hover:opacity-100
-            group-data-[select-mode=true]:opacity-100
-            checked:opacity-100
-          "
+          class={[
+            `
+              checkbox checkbox-sm
+              checked:bg-primary checked:text-primary-content
+              checked:border-primary opacity-0
+              transition-all group-hover:opacity-100
+              group-data-[select-mode=true]:opacity-100
+              checked:opacity-100 focus-visible:opacity-100
+            `,
+            !props.checked && `
+              group-data-[view-type=card]:border-black/25
+              group-data-[view-type=card]:bg-white/85
+              group-data-[view-type=card]:shadow-sm
+              group-data-[view-type=card]:backdrop-blur-sm
+            `,
+          ]}
           v-show={!props.pathSelect}
           checked={props.checked}
           tabindex="0"

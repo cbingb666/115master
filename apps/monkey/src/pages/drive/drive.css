@@ -1,0 +1,18 @@
+.drive-bottom-dock {
+  /* 沉浸式底栏：控件保持悬浮，底层向列表方向羽化过渡 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: calc(-1 * var(--spacing) * 12);
+    right: 0;
+    bottom: calc(-1 * var(--drive-bottom-gap));
+    left: 0;
+    z-index: var(--ui-z-under);
+    pointer-events: none;
+    background: linear-gradient(to top, oklch(15% 0.01 260 / 0.3), transparent);
+  }
+}
+
+[data-theme='light'] .drive-bottom-dock::before {
+  background: linear-gradient(to top, oklch(100% 0 0 / 0.6), transparent);
+}

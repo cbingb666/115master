@@ -115,6 +115,31 @@ describe('fileItem', () => {
     expect(root.querySelector('[data-selection-key="pick-a"]')).not.toBeNull()
   })
 
+  it('列表视图在勾选框与缩略图之间保留足够间距', () => {
+    const root = mountItem()
+    const label = root.querySelector('label')!
+
+    expect(label.classList).toContain('group-data-[view-type=list]:pl-1')
+    expect(label.classList).toContain('group-data-[view-type=list]:pr-3')
+  })
+
+  it('卡片视图为未选中勾选框提供暗色封面上的对比底色', () => {
+    const root = mountItem()
+    const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+
+    expect(checkbox.classList).toContain('group-data-[view-type=card]:bg-white/85')
+    expect(checkbox.classList).toContain('group-data-[view-type=card]:border-black/25')
+    expect(checkbox.classList).toContain('focus-visible:opacity-100')
+  })
+
+  it('卡片视图的选中勾选框只使用 primary 反馈', () => {
+    const root = mountItem({ checked: true })
+    const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+
+    expect(checkbox.classList).not.toContain('group-data-[view-type=card]:bg-white/85')
+    expect(checkbox.classList).toContain('checked:bg-primary')
+  })
+
   it('跨 realm 的移动端文件项长按会进入多选', async () => {
     vi.useFakeTimers()
     const frame = document.createElement('iframe')
