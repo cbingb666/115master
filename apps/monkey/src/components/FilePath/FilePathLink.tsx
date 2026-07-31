@@ -34,7 +34,7 @@ const FilePathLink = defineComponent({
           <li ref={targetProps.ref}>
             <Pill
               as="a"
-              variant="glass-surface"
+              variant="glass-floating"
               class="
             data-[drop-zone=true]:bg-primary/10
             data-[drop-zone=true]:ring-primary

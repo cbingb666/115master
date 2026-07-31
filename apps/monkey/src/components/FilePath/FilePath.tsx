@@ -63,7 +63,7 @@ const FilePath = defineComponent({
                       <li key={p.cid}>
                         <Pill
                           aria-current="page"
-                          variant="glass-surface"
+                          variant="glass-floating"
                           class="
                             text-base-content/70
                             cursor-default
