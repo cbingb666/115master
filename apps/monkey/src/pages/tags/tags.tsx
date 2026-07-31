@@ -2,7 +2,7 @@ import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
 import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
-import { Button } from '@115master/ui'
+import { Button, Pill } from '@115master/ui'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
@@ -124,6 +124,12 @@ const Tags = defineComponent({
       const ids = store.selectedIds
       if (ids.length === 0)
         return
+      // 单选走单个删除的文案（标题/内容带标签名）
+      if (ids.length === 1) {
+        const tag = store.tags.find(t => t.id === ids[0])
+        if (tag)
+          return deleteTag(tag)
+      }
       const confirmed = await dialog.confirm({
         title: '批量删除标签',
         content: `将删除 ${ids.length} 个标签，并从所有关联文件移除，且不可恢复。`,
@@ -163,8 +169,19 @@ const Tags = defineComponent({
       }],
     ])
 
-    /** 底部操作栏：批量删除 */
+    /** 底部操作栏：编辑（仅单选）/ 批量删除 */
     const batchActions = computed<Action[][]>(() => [[
+      {
+        name: 'edit',
+        label: '编辑',
+        icon: I.RENAME,
+        show: () => store.selectedCount === 1,
+        onClick: () => {
+          const tag = store.filtered.find(t => store.isSelected(t.id))
+          if (tag)
+            openTagForm(tag)
+        },
+      },
       {
         name: 'delete',
         label: '批量删除',
@@ -176,8 +193,8 @@ const Tags = defineComponent({
 
     function SearchInput() {
       return (
-        <div class="bg-base-content/10 flex h-8 items-center gap-2 rounded-full px-3 sm:w-64">
-          <Icon name={I.SEARCH} size="sm" class="text-base-content/50 flex-none" />
+        <div class="ui-glass-floating flex h-10 items-center gap-2 rounded-full px-4 sm:w-64">
+          <Icon name={I.SEARCH} class="text-base-content/50 flex-none text-lg" />
           <input
             class="h-full w-full bg-transparent text-sm outline-none"
             value={keyword.value}
@@ -214,19 +231,24 @@ const Tags = defineComponent({
       return (
         <Header>
           <HeaderStart>
-            <Icon name={I.TAG} class="text-xl" />
-            <span class="truncate text-lg font-medium">标签管理</span>
-            <span class="text-base-content/50 flex-none text-sm">{store.tags.length}</span>
+            <Pill
+              variant="glass-floating"
+              class="text-base-content/70 cursor-default text-shadow-2xs"
+            >
+              <Icon name={I.TAG} class="text-base" />
+              <span class="truncate">标签</span>
+              <span class="text-base-content/50 flex-none text-xs font-normal">{store.tags.length}</span>
+            </Pill>
           </HeaderStart>
           <HeaderEnd>
             <SearchInput />
             <Button
+              variant="glass-floating"
               color="primary"
-              size="sm"
               class="gap-1"
               onClick={() => openTagForm()}
             >
-              <Icon name={I.PLUS} size="sm" />
+              <Icon name={I.PLUS} />
               <span class="hidden sm:inline">新建标签</span>
             </Button>
           </HeaderEnd>
@@ -278,7 +300,7 @@ const Tags = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        <Layout>
+        <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
           <Sider>
             <SiderContent />
           </Sider>

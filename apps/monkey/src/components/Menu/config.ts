@@ -33,7 +33,7 @@ export const MENU_CONFIG: MenuItem[] = [
   },
   {
     icon: I.TAG,
-    name: '标签管理',
+    name: '标签',
     to: '/tags',
     activeMatch: {
       name: 'tags',

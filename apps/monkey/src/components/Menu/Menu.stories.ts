@@ -69,7 +69,7 @@ export const StarActive: Story = {
 }
 
 export const TagsActive: Story = {
-  name: '标签管理页高亮',
+  name: '标签页高亮',
   render: () => ({
     components: { Menu },
     setup() {

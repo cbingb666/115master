@@ -78,27 +78,26 @@ const TagItem = defineComponent({
             {props.tag.name}
           </span>
 
-          <div class="flex flex-none items-center gap-0.5">
+          {/* 操作按钮：移动端常显；桌面端 hover/focus 时显现（opacity 保持布局稳定） */}
+          <div class="flex flex-none items-center gap-0.5 transition-all sm:pointer-events-none sm:opacity-0 sm:group-focus-within:pointer-events-auto sm:group-focus-within:opacity-100 sm:group-hover:pointer-events-auto sm:group-hover:opacity-100">
             <Button
               variant="ghost"
               size="sm"
-              class="gap-1"
+              shape="circle"
               title="编辑"
               onClick={() => props.onEdit()}
             >
               <Icon name={I.RENAME} size="sm" />
-              <span class="hidden sm:inline">编辑</span>
             </Button>
             <Button
               color="error"
               variant="ghost"
               size="sm"
-              class="gap-1"
+              shape="circle"
               title="删除"
               onClick={() => props.onDelete()}
             >
               <Icon name={I.DELETE} size="sm" />
-              <span class="hidden sm:inline">删除</span>
             </Button>
           </div>
         </li>
