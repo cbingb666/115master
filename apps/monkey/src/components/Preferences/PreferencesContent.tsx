@@ -65,7 +65,7 @@ const PreferencesContent = defineComponent({
       const showMenu = active.value === null
 
       return (
-        <div class="flex flex-col gap-4 pt-4 pb-4 sm:flex-row">
+        <div class="flex flex-col gap-4 pt-4 pb-4 sm:min-h-[28rem] sm:flex-row">
           {/* 桌面端:始终显示左侧菜单,移动端:仅在 menu 层级显示 */}
           <nav
             class={[

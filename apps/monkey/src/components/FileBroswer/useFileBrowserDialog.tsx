@@ -11,7 +11,7 @@ export interface FileBrowserDialogOptions {
   title: string
   /** 默认目录 ID */
   defaultCid: string
-  /** 尺寸档位，默认 'full' */
+  /** 尺寸档位，默认 'xl' */
   size?: DialogSize
   /** 是否需要返回路径 */
   returnPath?: boolean
@@ -42,9 +42,9 @@ export function useFileBrowserDialog() {
       instance = dialog.create({
         title: options.title,
         closeOnBackdrop: true,
-        size: options.size ?? 'full',
+        size: options.size ?? 'xl',
         content: () => (
-          <div class="-m-5 h-[calc(100%+2.5rem)]">
+          <div class="-m-5 h-[min(50rem,calc(100dvh-11rem))]">
             <FileBroswer
               cid={cid}
               keyword={keyword}

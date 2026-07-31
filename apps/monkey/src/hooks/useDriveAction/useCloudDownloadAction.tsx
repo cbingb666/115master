@@ -27,7 +27,6 @@ export function useCloudDownloadAction() {
     const result = await fileBrowser.open({
       title: '选择保存目录',
       defaultCid: pid ?? '0',
-      size: 'xl',
       returnPath: true,
     })
 

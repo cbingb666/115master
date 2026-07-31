@@ -140,6 +140,7 @@ export function useTagAction() {
 
     dialog.create({
       title: '打标签',
+      size: 'lg',
       closeOnBackdrop: true,
       history: true,
       confirmText: '应用',

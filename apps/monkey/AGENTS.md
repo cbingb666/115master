@@ -148,6 +148,12 @@ new Drive115({
 
 ## 约定
 
+- **Dialog 尺寸（size）**：统一走 `@115master/ui` Dialog 的 `size` 档位，按弹窗类型选择，不自定义宽度：
+  - `md`（32rem，默认）— 确认框、提示（alert/confirm/prompt）、≤2 个字段的小表单；默认即此档，无需显式传。
+  - `lg`（48rem）— 搜索+列表（如全局搜索、打标签）、设置面板、多字段表单（如离线下载）。
+  - `xl`（72rem）— 文件浏览器等宽幅列表/树（`useFileBrowserDialog` 默认）。
+  - `full` — 仅沉浸式场景，目前无业务使用。
+  - 注意：size 仅在 ≥640px 断点生效，移动端各档渲染一致（底部抽屉）。
 - **TSX + SFC 混用**：App 骨架、drive 页用 `.tsx`（`defineComponent` + JSX）；UI 组件多用 `.vue` SFC。
 - **路径别名**：`@/` → `src/`。
 - **错误处理**：业务异常经 `drive115` 的 `onError` 回调收敛为 `action`，UI 据 `action` 决定行为，不识别具体错误码。

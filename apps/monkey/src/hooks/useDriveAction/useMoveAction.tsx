@@ -16,7 +16,6 @@ export function useMoveAction() {
     const result = await fileBrowser.open({
       title: '移动到',
       defaultCid: defaultpid ?? '0',
-      size: 'xl',
     })
     return result ? result.cid : false
   }
