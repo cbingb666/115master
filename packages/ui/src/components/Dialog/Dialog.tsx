@@ -112,6 +112,7 @@ export const Dialog = defineComponent({
   emits: {
     'update:open': (_open: boolean) => true,
     'close': (_reason: DialogDismissReason) => true,
+    'keydown': (_event: KeyboardEvent) => true,
     'opened': () => true,
     'closed': () => true,
   },
@@ -344,6 +345,8 @@ export const Dialog = defineComponent({
     }
 
     function keydown(event: KeyboardEvent) {
+      emit('keydown', event)
+
       if (event.key !== 'Escape')
         return
       event.preventDefault()

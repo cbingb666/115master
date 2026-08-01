@@ -120,6 +120,10 @@ _Avoid_: 取消异常、关闭 reject
 描述自定义 Dialog 结束路径的结构化原因，用于应用适配和可观察生命周期；Escape 与蒙层关闭分别记录为 escape 与 backdrop，且在 pending 期间不响应。
 _Avoid_: 关闭布尔值、DOM 事件猜测
 
+**Dialog Enter Confirmation**：
+命令式 Dialog 默认将弹窗内的 Enter 解释为确认，即使焦点位于取消按钮；单次调用可通过 `confirmOnEnter: false` 关闭。输入法组合输入不触发确认，多行文本与可编辑区域保留 Enter 编辑语义。
+_Avoid_: 页面级 Enter 监听、取消按钮抢占默认确认
+
 **Dialog Transition**：
 由 CSS 状态驱动的打开与关闭过程；opened 和 closed 在真实过渡结束后结算，并以计算样式时长作安全兜底，减少动态效果偏好下立即完成。
 _Avoid_: 固定延时销毁、动画猜时
@@ -129,7 +133,7 @@ _Avoid_: 固定延时销毁、动画猜时
 _Avoid_: Component 特判、任意 content
 
 **Prompt Dialog**：
-Dialog 服务提供的单字段文本输入流程；输入具备可见或辅助技术可读的标签与必填错误，单行 Enter 提交，多行 Enter 换行且 Ctrl/Cmd+Enter 提交。首批契约只支持原生输入约束，复杂校验与多字段表单使用自定义 Dialog。
+Dialog 服务提供的单字段文本输入流程；输入具备可见或辅助技术可读的标签与必填错误。启用 `confirmOnEnter` 时，单行 Enter 提交，多行 Enter 换行且 Ctrl/Cmd+Enter 提交；关闭后仅保留按钮确认。首批契约只支持原生输入约束，复杂校验与多字段表单使用自定义 Dialog。
 _Avoid_: 静默校验、通用表单引擎
 
 **Button**：

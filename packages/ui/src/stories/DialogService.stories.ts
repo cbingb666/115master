@@ -245,7 +245,8 @@ OutcomesAndCloseReasons.test('proves API outcomes and structured close reasons',
   await waitFor(() => expect(result).toHaveTextContent('confirm:false'))
 
   await userEvent.click(canvas.getByRole('button', { name: 'Run confirm' }))
-  await userEvent.click(canvas.getByRole('button', { name: 'Accept choice' }))
+  await waitFor(() => expect(canvas.getByRole('button', { name: 'Decline choice' })).toHaveFocus())
+  await userEvent.keyboard('{Enter}')
   await waitFor(() => expect(result).toHaveTextContent('confirm:true'))
 
   await userEvent.click(canvas.getByRole('button', { name: 'Run prompt' }))
@@ -446,6 +447,7 @@ ErrorsAndAsyncConfirmation.test('proves render and confirmation errors plus pend
   await userEvent.click(submit)
   await expect(submit).toHaveAttribute('aria-busy', 'true')
   await expect(cancel).toBeDisabled()
+  await userEvent.keyboard('{Enter}')
   await userEvent.keyboard('{Escape}')
   await userEvent.click(pending)
   await expect(pending).toHaveAttribute('open')
@@ -483,6 +485,14 @@ export const PromptKeyboardAndValidation = meta.story({
         }),
         value => result.value = `multiline:${value ?? 'null'}`,
       )
+      const disabled = () => settle(
+        dialog.prompt({
+          title: 'Enter-disabled text',
+          inputLabel: 'Disabled value',
+          confirmOnEnter: false,
+        }),
+        value => result.value = `disabled:${value ?? 'null'}`,
+      )
       const asyncPrompt = () => settle(
         dialog.prompt({
           title: 'Async Prompt snapshot',
@@ -496,13 +506,14 @@ export const PromptKeyboardAndValidation = meta.story({
       )
       const releasePrompt = () => release?.()
 
-      return { asyncPrompt, dialog, multiline, releasePrompt, result, text }
+      return { asyncPrompt, dialog, disabled, multiline, releasePrompt, result, text }
     },
     template: `
       <DialogHost :service="dialog">
         <main aria-label="Prompt behavior" class="flex flex-wrap gap-3 p-6">
           <button type="button" class="btn" @click="text">Open required Prompt</button>
           <button type="button" class="btn" @click="multiline">Open multiline Prompt</button>
+          <button type="button" class="btn" @click="disabled">Open Enter-disabled Prompt</button>
           <button type="button" class="btn" @click="asyncPrompt">Open async Prompt</button>
           <button type="button" class="btn" @click="releasePrompt">Release async Prompt</button>
           <output aria-live="polite" data-ui-dialog-prompt>{{ result }}</output>
@@ -534,6 +545,14 @@ PromptKeyboardAndValidation.test('proves Prompt keyboard paths, validation, and 
   await userEvent.keyboard('{Control>}{Enter}{/Control}')
   await waitFor(() => expect(result).toHaveTextContent('multiline:line one'))
   await expect(result).toHaveTextContent('line two')
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Open Enter-disabled Prompt' }))
+  const disabled = canvas.getByRole('textbox', { name: 'Disabled value' })
+  await userEvent.type(disabled, 'stay open{Enter}')
+  await userEvent.keyboard('{Control>}{Enter}{/Control}')
+  await expect(canvas.getByRole('dialog', { name: 'Enter-disabled text' })).toHaveAttribute('open')
+  await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
+  await waitFor(() => expect(result).toHaveTextContent('disabled:stay open'))
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open required Prompt' }))
   await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }))

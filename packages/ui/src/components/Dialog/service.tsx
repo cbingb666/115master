@@ -49,6 +49,7 @@ export interface DialogOptions {
   messages?: Partial<DialogServiceMessages>
   showConfirm?: boolean
   showCancel?: boolean
+  confirmOnEnter?: boolean
   size?: DialogSize
   closeOnEscape?: boolean
   closeOnBackdrop?: boolean
@@ -482,6 +483,35 @@ async function confirm(runtime: DialogRuntime, entry: DialogEntry) {
   }
 }
 
+function enter(
+  runtime: DialogRuntime,
+  entry: DialogEntry,
+  showConfirm: boolean,
+  top: boolean,
+  event: KeyboardEvent,
+) {
+  if (
+    event.key !== 'Enter'
+    || event.defaultPrevented
+    || event.isComposing
+    || !top
+    || entry.pending
+    || !showConfirm
+    || entry.options.confirmOnEnter === false
+  ) {
+    return
+  }
+
+  const target = event.target
+
+  if (target instanceof HTMLElement && (target.matches('textarea') || target.isContentEditable))
+    return
+
+  event.preventDefault()
+  event.stopPropagation()
+  void confirm(runtime, entry)
+}
+
 /**
  * Provides and renders one service instance. It owns the service's Dialog Stack
  * but does not create a global instance or mount itself into document.body.
@@ -601,6 +631,7 @@ export const DialogHost = defineComponent({
               initialFocus={prompt ? `#${inputId}` : entry.options.initialFocus}
               inert={!top || entry.closing}
               onClose={reason => cancel(runtime, entry, reason)}
+              onKeydown={event => enter(runtime, entry, showConfirm, top, event)}
               onOpened={() => {
                 entry.opened = true
                 try {
@@ -649,9 +680,17 @@ export const DialogHost = defineComponent({
                                   entry.invalid = false
                                 }}
                                 onKeydown={(event) => {
-                                  if (event.key !== 'Enter' || (!event.ctrlKey && !event.metaKey))
+                                  if (
+                                    event.key !== 'Enter'
+                                    || event.isComposing
+                                    || (!event.ctrlKey && !event.metaKey)
+                                    || !showConfirm
+                                    || entry.options.confirmOnEnter === false
+                                  ) {
                                     return
+                                  }
                                   event.preventDefault()
+                                  event.stopPropagation()
                                   void confirm(runtime, entry)
                                 }}
                               />
@@ -670,12 +709,6 @@ export const DialogHost = defineComponent({
                                 onInput={(event) => {
                                   entry.value = (event.currentTarget as HTMLInputElement).value
                                   entry.invalid = false
-                                }}
-                                onKeydown={(event) => {
-                                  if (event.key !== 'Enter')
-                                    return
-                                  event.preventDefault()
-                                  void confirm(runtime, entry)
                                 }}
                               />
                             )}
