@@ -119,7 +119,12 @@ Tracer.test('proves Theme, Glass, and semantic action contracts', async ({ canva
     '--ui-glass-blur-standard',
     '--ui-glass-blur-strong',
     '--ui-glass-brightness',
+    '--ui-z-dnd',
+    '--ui-z-watermark',
   ].every(token => style.getPropertyValue(token).trim())).toBe(true)
+  await expect(Number(style.getPropertyValue('--ui-z-watermark'))).toBeGreaterThan(
+    Number(style.getPropertyValue('--ui-z-dnd')),
+  )
   await expect(getComputedStyle(owner).backdropFilter).not.toBe('none')
   await expect(getComputedStyle(pill).backdropFilter).toBe('none')
   await expect(getComputedStyle(button).backdropFilter).toBe('none')

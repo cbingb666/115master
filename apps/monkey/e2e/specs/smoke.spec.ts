@@ -8,6 +8,7 @@ test.describe('smoke', () => {
     await page.goto(MASTER_URL)
 
     await expect(page.locator('#my-app')).toBeAttached()
+    await expect(page.locator('[data-ui-watermark]')).toHaveCount(0)
     const first = dirs['0'].items.find(i => i.fc === 1)!
     await expect(page.getByText(first.n).first()).toBeVisible()
     expect(errors).toEqual([])

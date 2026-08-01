@@ -1,4 +1,5 @@
-import { DialogHost, OverlayHost } from '@115master/ui'
+import { DialogHost, OverlayHost, Watermark } from '@115master/ui'
+import { GM_info } from 'vite-plugin-monkey/dist/client'
 import { defineComponent, KeepAlive, onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
 import { appDialog } from '@/app/dialog'
@@ -25,8 +26,8 @@ const App = defineComponent({
       return false
     })
 
-    return () => (
-      <OverlayHost>
+    return () => {
+      const content = (
         <DndRoot>
           <DialogHost service={appDialog}>
             <Boot />
@@ -46,8 +47,20 @@ const App = defineComponent({
             </ToastContainer>
           </DialogHost>
         </DndRoot>
-      </OverlayHost>
-    )
+      )
+
+      return (
+        <OverlayHost>
+          {content}
+          {import.meta.env.DEV && (
+            <Watermark
+              content={GM_info.script.name}
+              class="ui-z-watermark pointer-events-none fixed inset-0"
+            />
+          )}
+        </OverlayHost>
+      )
+    }
   },
 })
 

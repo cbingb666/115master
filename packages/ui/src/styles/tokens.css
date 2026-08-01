@@ -36,8 +36,10 @@
   --ui-z-toast: 10100;
   /* 全局提示（压 header/菜单） */
   --ui-z-tooltip: 10200;
-  /* 拖拽幽灵层（最高，top layer 除外） */
+  /* 拖拽幽灵层 */
   --ui-z-dnd: 10300;
+  /* 全局非交互水印（普通文档最高层，top layer 除外） */
+  --ui-z-watermark: 10400;
 }
 
 @utility ui-z-under {
@@ -98,4 +100,8 @@
 
 @utility ui-z-dnd {
   z-index: var(--ui-z-dnd);
+}
+
+@utility ui-z-watermark {
+  z-index: var(--ui-z-watermark);
 }
