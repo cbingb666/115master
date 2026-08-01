@@ -54,6 +54,7 @@ function pointer(type: string, pointerType = 'touch', x = 20) {
 
 function mountItem(options: {
   checked?: boolean
+  dragPayload?: () => Share.Entity.FilesItem[]
   onChecked?: (checked: boolean) => void
   selectMode?: boolean
 } = {}) {
@@ -115,19 +116,39 @@ describe('fileItem', () => {
     expect(root.querySelector('[data-selection-key="pick-a"]')).not.toBeNull()
   })
 
-  it('列表视图在勾选框与缩略图之间保留足够间距', () => {
+  it('列表视图普通模式不显示也不占位 checkbox', () => {
     const root = mountItem()
     const label = root.querySelector('label')!
+    const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
+    expect(label.classList).toContain('group-data-[view-type=list]:w-0')
+    expect(label.classList).toContain('pointer-events-none')
+    expect(label.classList).toContain('group-data-[view-type=list]:transition-[width]')
     expect(label.classList).toContain('group-data-[view-type=list]:pl-1')
     expect(label.classList).toContain('group-data-[view-type=list]:pr-3')
+    expect(checkbox.tabIndex).toBe(-1)
+  })
+
+  it('列表视图进入多选模式后展开 checkbox', () => {
+    const root = mountItem({ selectMode: true })
+    const label = root.querySelector('label')!
+    const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+
+    expect(label.classList).toContain('group-data-[view-type=list]:w-9')
+    expect(label.classList).not.toContain('group-data-[view-type=list]:w-0')
+    expect(checkbox.tabIndex).toBe(0)
   })
 
   it('多选态文件主体使用 pointer 光标', () => {
     const root = mountItem({ selectMode: true })
     const link = root.querySelector('a')!
+    const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
     expect(link.classList).toContain('group-data-[select-mode=true]:cursor-pointer')
+    expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
+    expect(checkbox.classList).toContain('transition-opacity')
+    expect(checkbox.classList).toContain('duration-300')
+    expect(checkbox.classList).not.toContain('group-hover:opacity-100')
   })
 
   it('卡片视图为未选中勾选框提供暗色封面上的对比底色', () => {
@@ -136,7 +157,6 @@ describe('fileItem', () => {
 
     expect(checkbox.classList).toContain('group-data-[view-type=card]:bg-white/85')
     expect(checkbox.classList).toContain('group-data-[view-type=card]:border-black/25')
-    expect(checkbox.classList).toContain('focus-visible:opacity-100')
   })
 
   it('卡片视图的选中勾选框只使用 primary 反馈', () => {
@@ -163,6 +183,33 @@ describe('fileItem', () => {
     await vi.advanceTimersByTimeAsync(1)
 
     expect(checked).toHaveBeenCalledWith(true)
+  })
+
+  it('pc 端鼠标左键长按会进入多选', async () => {
+    vi.useFakeTimers()
+    const checked = vi.fn()
+    const root = mountItem({ onChecked: checked })
+    await nextTick()
+
+    root.querySelector('#thumbnail')!.dispatchEvent(pointer('pointerdown', 'mouse'))
+    await vi.advanceTimersByTimeAsync(200)
+
+    expect(checked).toHaveBeenCalledWith(true)
+  })
+
+  it('pc 端达到拖拽阈值时取消长按计时', async () => {
+    vi.useFakeTimers()
+    const checked = vi.fn()
+    const payload = vi.fn(() => [])
+    const root = mountItem({ dragPayload: payload, onChecked: checked })
+    await nextTick()
+
+    root.querySelector('#thumbnail')!.dispatchEvent(pointer('pointerdown', 'mouse'))
+    document.dispatchEvent(pointer('pointermove', 'mouse', 26))
+    await vi.advanceTimersByTimeAsync(300)
+
+    expect(payload).toHaveBeenCalledOnce()
+    expect(checked).not.toHaveBeenCalled()
   })
 
   it('多选态不再启动长按计时器', async () => {

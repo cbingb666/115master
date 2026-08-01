@@ -12,6 +12,10 @@ const FileItemCheckbox = defineComponent({
       type: Boolean,
       required: true,
     },
+    selectMode: {
+      type: Boolean,
+      required: true,
+    },
     onChecked: {
       type: Function as PropType<(checked: boolean) => void>,
       default: () => {},
@@ -40,15 +44,22 @@ const FileItemCheckbox = defineComponent({
     }
 
     return () => (
-      <label class="
-        group-data-[view-type=card]:ui-z-cover
-        cursor-pointer group-data-[view-type=card]:absolute
-        group-data-[view-type=card]:top-3 group-data-[view-type=card]:left-3
-        group-data-[view-type=card]:flex group-data-[view-type=card]:items-center
-        group-data-[view-type=list]:flex group-data-[view-type=list]:cursor-pointer
-        group-data-[view-type=list]:items-center group-data-[view-type=list]:pr-3
-        group-data-[view-type=list]:pl-1
-      "
+      <label class={[
+        `
+          group-data-[view-type=card]:ui-z-cover
+          cursor-pointer group-data-[view-type=card]:absolute
+          group-data-[view-type=card]:top-3 group-data-[view-type=card]:left-3
+          group-data-[view-type=card]:flex group-data-[view-type=card]:items-center
+          group-data-[view-type=list]:flex group-data-[view-type=list]:flex-none
+          group-data-[view-type=list]:cursor-pointer group-data-[view-type=list]:items-center
+          group-data-[view-type=list]:overflow-hidden
+          group-data-[view-type=list]:pr-3 group-data-[view-type=list]:pl-1
+          group-data-[view-type=list]:transition-[width] group-data-[view-type=list]:duration-300
+        `,
+        props.selectMode
+          ? 'group-data-[view-type=list]:w-9'
+          : 'pointer-events-none group-data-[view-type=list]:w-0',
+      ]}
       >
         <input
           class={[
@@ -56,9 +67,8 @@ const FileItemCheckbox = defineComponent({
               checkbox checkbox-sm
               checked:bg-primary checked:text-primary-content
               checked:border-primary opacity-0
-              transition-all group-hover:opacity-100
+              transition-opacity duration-300
               group-data-[select-mode=true]:opacity-100
-              checked:opacity-100 focus-visible:opacity-100
             `,
             !props.checked && `
               group-data-[view-type=card]:border-black/25
@@ -69,7 +79,7 @@ const FileItemCheckbox = defineComponent({
           ]}
           v-show={!props.pathSelect}
           checked={props.checked}
-          tabindex="0"
+          tabindex={props.selectMode ? 0 : -1}
           type="checkbox"
           onInput={(e) => {
             props.onChecked?.((e.target as HTMLInputElement).checked)

@@ -107,9 +107,10 @@ const FileItem = defineComponent({
       onPreview: props.onPreview,
     })
 
-    /** 移动端长按：200ms 选中该项；多选态交给点击与拖拽处理。 */
+    /** 长按：200ms 选中该项；多选态交给点击与拖拽处理。 */
     const longPressFired = useLongPress(itemRef, {
       disabled: () => props.pathSelect || props.selectMode,
+      moveTolerance: e => e.pointerType === 'mouse' ? 6 : 10,
       threshold: 200,
       onTrigger: () => {
         if (!props.checked)
@@ -204,6 +205,7 @@ const FileItem = defineComponent({
             <FileItemCheckbox
               checked={props.checked}
               pathSelect={props.pathSelect}
+              selectMode={props.selectMode}
               onChecked={props.onChecked}
               onEnter={open}
             />

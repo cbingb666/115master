@@ -6,7 +6,7 @@ export interface UseLongPressOptions {
   /** 触发阈值（ms），默认 350 */
   threshold?: number
   /** 位移容忍（px），达到即判定为滚动而取消，默认 10 */
-  moveTolerance?: number
+  moveTolerance?: number | ((e: PointerEvent) => number)
   /** 当前状态是否禁用长按 */
   disabled?: (e: PointerEvent) => boolean
   /** 触发回调 */
@@ -14,8 +14,8 @@ export interface UseLongPressOptions {
 }
 
 /**
- * 长按手势：触屏/笔按下并保持 threshold 触发；移动达到容忍或抬起则取消。
- * 鼠标不触发（避免桌面鼠标长按歧义）。
+ * 长按手势：触屏/笔/鼠标左键按下并保持 threshold 触发；
+ * 移动达到容忍或抬起则取消。
  * 返回 fired 标志——触发后置 true，调用方据此吞掉随后合成的 click。
  */
 export function useLongPress(target: Ref<HTMLElement | undefined>, options: UseLongPressOptions) {
@@ -24,6 +24,7 @@ export function useLongPress(target: Ref<HTMLElement | undefined>, options: UseL
   let timer: ReturnType<typeof setTimeout> | undefined
   let startX = 0
   let startY = 0
+  let tolerance = 0
 
   function clear() {
     if (timer) {
@@ -38,7 +39,7 @@ export function useLongPress(target: Ref<HTMLElement | undefined>, options: UseL
   function onMove(e: PointerEvent) {
     if (!timer)
       return
-    if (Math.hypot(e.clientX - startX, e.clientY - startY) >= moveTolerance)
+    if (Math.hypot(e.clientX - startX, e.clientY - startY) >= tolerance)
       clear()
   }
 
@@ -47,10 +48,11 @@ export function useLongPress(target: Ref<HTMLElement | undefined>, options: UseL
   }
 
   function onDown(e: PointerEvent) {
-    if (e.pointerType === 'mouse' || disabled(e))
+    if ((e.pointerType === 'mouse' && e.button !== 0) || disabled(e))
       return
     startX = e.clientX
     startY = e.clientY
+    tolerance = typeof moveTolerance === 'function' ? moveTolerance(e) : moveTolerance
     timer = setTimeout(() => {
       if (disabled(e)) {
         clear()

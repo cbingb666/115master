@@ -2,7 +2,8 @@ import type { PropType } from 'vue'
 import type { Tag } from '@/store/tagList'
 import { Api } from '@115master/drive115'
 import { Button } from '@115master/ui'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { useLongPress } from '@/hooks/useLongPress'
 import { I, Icon } from '@/icons'
 
 const { LabelColor } = Api.TagApi.Req
@@ -15,6 +16,10 @@ const TagItem = defineComponent({
       required: true,
     },
     selected: {
+      type: Boolean,
+      default: false,
+    },
+    selectMode: {
       type: Boolean,
       default: false,
     },
@@ -40,32 +45,62 @@ const TagItem = defineComponent({
     },
   },
   setup(props) {
+    const itemRef = ref<HTMLElement>()
+    const fired = useLongPress(itemRef, {
+      disabled: e => props.selectMode || Boolean((e.target as HTMLElement).closest('button, input, label')),
+      threshold: 200,
+      onTrigger: () => {
+        if (!props.selected)
+          props.onToggle(true)
+      },
+    })
+
+    function click(e: MouseEvent) {
+      if (fired.value) {
+        fired.value = false
+        return
+      }
+      props.onClick(e)
+    }
+
     return () => {
       const blank = props.tag.color === LabelColor.Blank
 
       return (
         <li
+          ref={itemRef}
           class={[
-            'group flex cursor-pointer items-center gap-3 rounded-lg px-3 py-3 transition-colors sm:rounded-md sm:px-3 sm:py-2',
+            'group flex cursor-pointer items-center rounded-lg px-3 py-3 transition-colors sm:rounded-md sm:px-3 sm:py-2',
             // 选中：primary 高亮（含 hover）；未选中：卡片灰底 / 行 hover 灰底
             props.selected
               ? 'bg-primary/10 sm:bg-primary/10'
               : 'bg-base-content/5 sm:hover:bg-base-content/5 sm:bg-transparent',
           ]}
-          onClick={props.onClick}
+          onClick={click}
           onContextmenu={props.onContextmenu}
         >
-          <input
-            type="checkbox"
-            class="checkbox checkbox-sm checkbox-primary flex-none"
-            checked={props.selected}
-            onChange={e => props.onToggle((e.target as HTMLInputElement).checked)}
-          />
+          <span
+            data-checkbox-slot
+            class={[
+              'flex flex-none items-center overflow-hidden transition-[width,opacity] duration-300',
+              props.selectMode
+                ? 'w-8 opacity-100'
+                : 'pointer-events-none w-0 opacity-0',
+            ]}
+          >
+            <input
+              type="checkbox"
+              class="checkbox checkbox-sm checkbox-primary flex-none"
+              checked={props.selected}
+              tabindex={props.selectMode ? 0 : -1}
+              onChange={e => props.onToggle((e.target as HTMLInputElement).checked)}
+            />
+          </span>
 
           {/* 色块：无色用描边圈，有色用 color-mix 填充 */}
           <span
             class={[
-              'size-4 flex-none rounded-full',
+              'mr-3 size-4 flex-none rounded-full',
               blank ? 'border-base-content/30 bg-base-content/5 border' : '',
             ]}
             style={blank ? undefined : { backgroundColor: props.tag.color }}
@@ -79,7 +114,7 @@ const TagItem = defineComponent({
           </span>
 
           {/* 操作按钮：移动端常显；桌面端 hover/focus 时显现（opacity 保持布局稳定） */}
-          <div class="flex flex-none items-center gap-0.5 transition-all sm:pointer-events-none sm:opacity-0 sm:group-focus-within:pointer-events-auto sm:group-focus-within:opacity-100 sm:group-hover:pointer-events-auto sm:group-hover:opacity-100">
+          <div class="ml-3 flex flex-none items-center gap-0.5 transition-all sm:pointer-events-none sm:opacity-0 sm:group-focus-within:pointer-events-auto sm:group-focus-within:opacity-100 sm:group-hover:pointer-events-auto sm:group-hover:opacity-100">
             <Button
               variant="ghost"
               size="sm"

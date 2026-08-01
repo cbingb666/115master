@@ -286,6 +286,7 @@ const Tags = defineComponent({
                   key={tag.id}
                   tag={tag}
                   selected={store.isSelected(tag.id)}
+                  selectMode={multi.selectMode.value}
                   {...multi.itemProps(tag)}
                   onToggle={on => store.toggle(tag.id, on)}
                   onEdit={() => openTagForm(tag)}
