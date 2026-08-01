@@ -1,0 +1,18 @@
+@layer components {
+  .ui-watermark {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .ui-watermark__mark {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: var(--ui-watermark-image);
+    background-position: var(--ui-watermark-offset-x, 0) var(--ui-watermark-offset-y, 0);
+    background-repeat: repeat;
+    background-size: var(--ui-watermark-size);
+    pointer-events: none;
+    user-select: none;
+  }
+}

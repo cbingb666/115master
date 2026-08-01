@@ -45,3 +45,10 @@ export type {
   TooltipProps,
   TooltipTarget,
 } from './components/Tooltip/Tooltip'
+export { Watermark } from './components/Watermark/Watermark'
+export type {
+  WatermarkContent,
+  WatermarkGap,
+  WatermarkOffset,
+  WatermarkProps,
+} from './components/Watermark/Watermark'

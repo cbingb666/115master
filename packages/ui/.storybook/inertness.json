@@ -2,6 +2,25 @@
   "name": "UI Storybook",
   "stories": [
     {
+      "id": "ui-watermark--contract",
+      "docs": "ui-watermark--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-watermark--contract:proves-repeated-decoration-and-content-interaction"
+      ],
+      "ready": "[data-ui-watermark-actions]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-watermark-actions]",
+          "text": "0"
+        }
+      ]
+    },
+    {
       "id": "ui-button--contract",
       "docs": "ui-button--docs",
       "component": true,

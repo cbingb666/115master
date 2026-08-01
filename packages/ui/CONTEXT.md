@@ -61,7 +61,7 @@ _Avoid_: Popover、菜单、可点击提示
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、服务与类型集合；首批组件固定为 Button、Pill、Tooltip、Dialog、DialogHost 与 OverlayHost，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、服务与类型集合；组件包括 Button、Pill、Tooltip、Watermark、Dialog、DialogHost 与 OverlayHost，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：
@@ -143,3 +143,7 @@ _Avoid_: 链接按钮、router button
 **Pill**：
 呈现胶囊几何的信息、组合布局或导航容器；不执行按钮动作。
 _Avoid_: 胶囊按钮、Badge
+
+**Watermark**：
+在内容区域上方重复铺陈文本身份标记的装饰性组件；不拦截内容交互或进入无障碍树，只用于降低随意传播意愿，不构成数据保护边界。
+_Avoid_: 权限控制、数字版权管理、可交互遮罩

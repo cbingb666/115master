@@ -16,6 +16,7 @@ const assets = [
   ['button.css', 'button.css'],
   ['dialog.css', 'dialog.css'],
   ['pill.css', 'pill.css'],
+  ['watermark.css', 'watermark.css'],
   ['../components/Tooltip/Tooltip.css', 'tooltip.css'],
 ] as const
 
