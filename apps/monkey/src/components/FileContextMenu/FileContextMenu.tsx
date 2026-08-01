@@ -65,10 +65,13 @@ const FileContextMenu = defineComponent({
                   {
                     items.map((item, index) => (
                       <li key={index}>
-                        <a onClick={() => {
-                          item.onClick?.(item)
-                          props.onClose?.()
-                        }}
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            item.onClick?.(item)
+                            props.onClose?.()
+                          }}
                         >
                           <Icon
                             class={[
@@ -85,7 +88,7 @@ const FileContextMenu = defineComponent({
                           {toValue(item.active) && item.activeLabel
                             ? item.activeLabel
                             : item.label}
-                        </a>
+                        </button>
                       </li>
                     ))
                   }

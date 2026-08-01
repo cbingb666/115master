@@ -1,5 +1,6 @@
 import type { MaybeElement } from '@vueuse/core'
 import type { PropType } from 'vue'
+import { useEventListener } from '@vueuse/core'
 import {
   defineComponent,
   nextTick,
@@ -10,6 +11,10 @@ import {
   watch,
   withModifiers,
 } from 'vue'
+
+/** 可聚焦菜单项选择器 */
+const MENU_ITEM_SELECTOR
+  = 'li > :is(a, button, [role="menuitem"]):not(:disabled):not([aria-disabled="true"])'
 
 function findScrollParent(x: number, y: number): HTMLElement {
   const el = document.elementFromPoint(x, y)
@@ -46,6 +51,7 @@ const ContextMenu = defineComponent({
     const adjustedPosition = shallowRef({ x: 0, y: 0 })
     let lockedEl: HTMLElement | null = null
     let prevOverflow = ''
+    let prevFocus: HTMLElement | null = null
 
     function lockScroll() {
       lockedEl = findScrollParent(props.position.x, props.position.y)
@@ -63,6 +69,63 @@ const ContextMenu = defineComponent({
     }
 
     onBeforeUnmount(unlockScroll)
+
+    function getMenuItems(): HTMLElement[] {
+      const el = menuRef.value as HTMLElement | undefined
+      if (!el)
+        return []
+      return Array.from(el.querySelectorAll<HTMLElement>(MENU_ITEM_SELECTOR))
+    }
+
+    /** 方向键 / Tab 在菜单项间循环聚焦 */
+    function focusItem(delta: number) {
+      const items = getMenuItems()
+      if (items.length === 0)
+        return
+      const index = items.indexOf(document.activeElement as HTMLElement)
+      const next = index === -1
+        ? (delta > 0 ? 0 : items.length - 1)
+        : (index + delta + items.length) % items.length
+      items[next].focus()
+    }
+
+    function onMenuKeydown(event: KeyboardEvent) {
+      switch (event.key) {
+        case 'ArrowDown':
+          event.preventDefault()
+          focusItem(1)
+          break
+        case 'ArrowUp':
+          event.preventDefault()
+          focusItem(-1)
+          break
+        case 'Home':
+          event.preventDefault()
+          getMenuItems()[0]?.focus()
+          break
+        case 'End':
+          event.preventDefault()
+          getMenuItems().slice(-1)[0]?.focus()
+          break
+        case 'Tab':
+          // 菜单开启期间焦点保持在菜单内循环
+          event.preventDefault()
+          focusItem(event.shiftKey ? -1 : 1)
+          break
+      }
+    }
+
+    /**
+     * Esc 关闭：capture 阶段拦截并阻止传播，
+     * 避免穿透到页面级监听（如 useListSelection 的清空选中）
+     */
+    useEventListener(window, 'keydown', (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !props.show)
+        return
+      event.preventDefault()
+      event.stopPropagation()
+      props.onClose?.()
+    }, { capture: true })
 
     const calculatePosition = async () => {
       if (!menuRef.value)
@@ -89,12 +152,22 @@ const ContextMenu = defineComponent({
 
     watch(() => props.show, (value) => {
       if (value) {
+        prevFocus = document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null
         lockScroll()
         adjustedPosition.value = { x: props.position.x, y: props.position.y }
-        nextTick(() => calculatePosition())
+        nextTick(() => {
+          calculatePosition()
+          // 焦点移入菜单，保证 Esc / 方向键立即可用
+          ;(menuRef.value as HTMLElement | undefined)?.focus()
+        })
       }
       else {
         unlockScroll()
+        if (prevFocus && document.contains(prevFocus))
+          prevFocus.focus()
+        prevFocus = null
       }
     })
 
@@ -126,6 +199,9 @@ const ContextMenu = defineComponent({
             {props.show && (
               <div
                 ref={menuRef}
+                role="menu"
+                tabindex={-1}
+                onKeydown={onMenuKeydown}
                 class="
                   menu
                   ui-glass-floating
@@ -136,6 +212,7 @@ const ContextMenu = defineComponent({
                   min-w-44
                   rounded-2xl
                   p-1.5
+                  outline-none
                 "
                 style={{ left: `${adjustedPosition.value.x}px`, top: `${adjustedPosition.value.y}px` }}
               >

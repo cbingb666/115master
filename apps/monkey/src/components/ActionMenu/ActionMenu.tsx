@@ -47,7 +47,9 @@ const ActionMenu = defineComponent({
               <ul>
                 {items.map(item => (
                   <li key={item.name}>
-                    <a
+                    <button
+                      type="button"
+                      role="menuitem"
                       onClick={() => {
                         item.onClick?.(item)
                         props.onClose?.()
@@ -64,7 +66,7 @@ const ActionMenu = defineComponent({
                       {toValue(item.active) && item.activeLabel
                         ? item.activeLabel
                         : item.label}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>

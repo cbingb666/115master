@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import type { MaybeElement } from '@vueuse/core'
 import type { BaseTransitionProps } from 'vue'
-import { onClickOutside, unrefElement, useElementBounding, useVModel } from '@vueuse/core'
+import { onClickOutside, unrefElement, useElementBounding, useEventListener, useVModel } from '@vueuse/core'
 import {
   computed,
   onMounted,
@@ -92,7 +92,7 @@ interface Props {
 }
 
 const { container } = usePortal()
-const { popupManager } = usePlayerContext()
+const { popupManager, shortcuts } = usePlayerContext()
 
 /** 是否显示 */
 const visibleModel = useVModel(props, 'visible', emit)
@@ -274,6 +274,21 @@ onClickOutside(popupRef, (event) => {
     visibleModel.value = false
   }
 })
+
+/**
+ * Esc 关闭：capture 阶段拦截并阻止传播，
+ * 避免穿透到播放器快捷键监听与页面级全局监听（如清空文件选中集）。
+ * 快捷键录制中的 Esc 放行（由 KeyRecorder 用于结束录制）。
+ */
+useEventListener(window, 'keydown', (event: KeyboardEvent) => {
+  if (event.key !== 'Escape' || !visibleModel.value)
+    return
+  if (shortcuts?.recordState.isRecording.value)
+    return
+  event.preventDefault()
+  event.stopPropagation()
+  visibleModel.value = false
+}, { capture: true })
 
 /**
  * 离开
