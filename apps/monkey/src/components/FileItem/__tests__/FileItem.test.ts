@@ -123,6 +123,13 @@ describe('fileItem', () => {
     expect(label.classList).toContain('group-data-[view-type=list]:pr-3')
   })
 
+  it('多选态文件主体使用 pointer 光标', () => {
+    const root = mountItem({ selectMode: true })
+    const link = root.querySelector('a')!
+
+    expect(link.classList).toContain('group-data-[select-mode=true]:cursor-pointer')
+  })
+
   it('卡片视图为未选中勾选框提供暗色封面上的对比底色', () => {
     const root = mountItem()
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!

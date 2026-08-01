@@ -23,7 +23,16 @@ const DndLayer = defineComponent({
       const s = dnd.session.value
       if (!s)
         return null
-      return <div style={style.value}>{s.ghost()}</div>
+      return (
+        <>
+          <div
+            class="fixed inset-0 cursor-grabbing"
+            data-dnd-cursor
+            style="z-index:var(--ui-z-dnd)"
+          />
+          <div style={style.value}>{s.ghost()}</div>
+        </>
+      )
     }
   },
 })

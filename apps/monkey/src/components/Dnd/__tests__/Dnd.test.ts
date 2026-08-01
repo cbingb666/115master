@@ -111,6 +111,19 @@ describe('dndSource', () => {
     expect(root.querySelector('#monitor')?.getAttribute('data-active')).toBe('false')
   })
 
+  it('拖拽激活期间使用 grabbing 光标', async () => {
+    const root = mount()
+    start(root)
+    document.dispatchEvent(pointer('pointermove', 60, 50))
+    await nextTick()
+
+    expect(root.querySelector('[data-dnd-cursor]')?.classList).toContain('cursor-grabbing')
+
+    document.dispatchEvent(pointer('pointerup', 60, 50))
+    await nextTick()
+    expect(root.querySelector('[data-dnd-cursor]')).toBeNull()
+  })
+
   it('触摸阈值为 10px', async () => {
     const root = mount()
     start(root, 100, 100, 'touch')

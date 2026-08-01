@@ -212,6 +212,7 @@ const FileItem = defineComponent({
             <Link
               class="
             cursor-default
+            group-data-[select-mode=true]:cursor-pointer
             group-data-[view-type=card]:flex group-data-[view-type=card]:min-w-0
             group-data-[view-type=card]:flex-1 group-data-[view-type=card]:flex-col
             group-data-[view-type=list]:flex group-data-[view-type=list]:min-w-0
