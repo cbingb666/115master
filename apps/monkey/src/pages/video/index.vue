@@ -670,7 +670,7 @@ async function playNext(ctx: PlayerContext) {
 /** 处理视频播放结束 */
 async function handleVideoEnded(ctx: PlayerContext) {
   /** 自动播放下一集 */
-  if (hasPrevious.value) {
+  if (hasNext.value) {
     await playNext(ctx)
   }
 }
