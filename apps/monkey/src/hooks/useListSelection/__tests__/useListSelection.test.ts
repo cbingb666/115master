@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import type { Ref } from 'vue'
 import type { SelectionAdapter } from '@/hooks/useListSelection'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -200,6 +201,27 @@ describe('useListSelection', () => {
 
     expect(selectAll).toHaveBeenCalledOnce()
     expect(toggle).not.toHaveBeenCalled()
+    scope.stop()
+  })
+
+  it('焦点在输入框时 Cmd/Ctrl+A → 不触发全选（放行原生文本全选）', async () => {
+    const toggle = vi.fn()
+    const list = [{ id: 'a' }, { id: 'b' }]
+    const { scope } = setup({ has: () => false, toggle, clear: vi.fn() }, list)
+
+    const input = document.createElement('input')
+    document.body.appendChild(input)
+    input.focus()
+
+    keys['Meta+A'].value = true
+    await nextTick()
+    keys['Meta+A'].value = false
+    keys['Ctrl+A'].value = true
+    await nextTick()
+
+    expect(toggle).not.toHaveBeenCalled()
+
+    input.remove()
     scope.stop()
   })
 

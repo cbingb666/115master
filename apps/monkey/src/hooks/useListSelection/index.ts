@@ -2,6 +2,16 @@ import { useMagicKeys } from '@vueuse/core'
 import { ref, watch } from 'vue'
 import { useMarqueeSelect } from '@/hooks/useMarqueeSelect'
 
+/** 目标元素是否为可编辑（输入框/文本域/下拉/contentEditable），是则全选快捷键放行给原生行为 */
+function isEditable(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement))
+    return false
+  if (target.isContentEditable)
+    return true
+  const tag = target.tagName.toLowerCase()
+  return tag === 'input' || tag === 'textarea' || tag === 'select'
+}
+
 /** 选中状态原语。状态归属调用方 store，本 composable 只通过这组闭包读写。 */
 export interface SelectionAdapter<T> {
   has: (item: T) => boolean
@@ -50,10 +60,10 @@ export function useListSelection<T>(options: UseListSelectionOptions<T>): ListSe
 
   useMarqueeSelect({ container, disabled })
 
-  /** 仅拦截 Cmd/Ctrl+A，避免触发浏览器原生全选；其余按键放行（不影响输入框） */
+  /** 仅拦截 Cmd/Ctrl+A，避免触发浏览器原生全选；焦点在可编辑元素上时放行原生全选 */
   const keys = useMagicKeys({
     onEventFired: (e) => {
-      if (e.key === 'a' && (e.metaKey || e.ctrlKey))
+      if (e.key === 'a' && (e.metaKey || e.ctrlKey) && !isEditable(e.target))
         e.preventDefault()
     },
   })
@@ -117,11 +127,11 @@ export function useListSelection<T>(options: UseListSelectionOptions<T>): ListSe
     }
   })
   watch(keys['Meta+A'], (v) => {
-    if (v)
+    if (v && !isEditable(document.activeElement))
       selectAll()
   })
   watch(keys['Ctrl+A'], (v) => {
-    if (v)
+    if (v && !isEditable(document.activeElement))
       selectAll()
   })
 
