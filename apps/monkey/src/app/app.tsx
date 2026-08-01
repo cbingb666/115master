@@ -9,6 +9,7 @@ import {
   useSponsorBoot,
 } from '@/components'
 import { DndRoot } from '@/components/Dnd'
+import { PreferencesDialog } from '@/components/Preferences'
 import { appLogger } from '@/utils/logger'
 
 const Boot = defineComponent({
@@ -33,6 +34,7 @@ const App = defineComponent({
             <Boot />
             <ToastContainer>
               <GlobalSearchModal />
+              <PreferencesDialog />
               <RouterView>
                 {{
                   default: ({ Component, route }: any) => {

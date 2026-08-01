@@ -15,6 +15,7 @@ const assets = [
   ['components.css', 'components.css'],
   ['button.css', 'button.css'],
   ['dialog.css', 'dialog.css'],
+  ['navigation-surface.css', 'navigation-surface.css'],
   ['pill.css', 'pill.css'],
   ['watermark.css', 'watermark.css'],
   ['../components/Tooltip/Tooltip.css', 'tooltip.css'],

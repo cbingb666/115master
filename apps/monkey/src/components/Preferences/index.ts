@@ -1,2 +1,3 @@
 export { default as PreferencesContent } from './PreferencesContent'
-export { usePreferencesDialog } from './usePreferencesDialog'
+export type { PreferenceSection } from './PreferencesContent'
+export { PreferencesDialog, usePreferencesDialog } from './PreferencesDialog'

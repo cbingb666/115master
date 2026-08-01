@@ -54,6 +54,12 @@ vi.mock('@/components', async () => {
     useSponsorBoot: () => {},
   }
 })
+vi.mock('@/components/Preferences', async () => {
+  const { defineComponent } = await import('vue')
+  return {
+    PreferencesDialog: defineComponent({ setup: () => () => null }),
+  }
+})
 vi.mock('@/components/Dnd', async () => {
   const { defineComponent } = await import('vue')
   return {

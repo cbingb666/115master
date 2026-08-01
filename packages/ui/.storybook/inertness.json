@@ -2,6 +2,29 @@
   "name": "UI Storybook",
   "stories": [
     {
+      "id": "ui-navigationsurface--navigation",
+      "docs": "ui-navigationsurface--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-navigationsurface--navigation:proves-navigation-dismissal-focus-and-responsive-presentation"
+      ],
+      "ready": "main[aria-label=\"Navigation Surface\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-navigation-dismiss]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
       "id": "ui-watermark--contract",
       "docs": "ui-watermark--docs",
       "component": true,

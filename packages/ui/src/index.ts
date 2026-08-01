@@ -38,6 +38,11 @@ export type {
   DialogServiceMessages,
   DialogServiceOptions,
 } from './components/Dialog/service'
+export { NavigationSurface } from './components/NavigationSurface/NavigationSurface'
+export type {
+  NavigationSurfaceDismissReason,
+  NavigationSurfaceProps,
+} from './components/NavigationSurface/NavigationSurface'
 export { OverlayHost } from './components/OverlayHost/OverlayHost'
 export { Pill } from './components/Pill/Pill'
 export type {

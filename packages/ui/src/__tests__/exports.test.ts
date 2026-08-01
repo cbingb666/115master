@@ -6,6 +6,7 @@ it('imports the narrow runtime contract without browser globals', async () => {
     'ContextMenu',
     'Dialog',
     'DialogHost',
+    'NavigationSurface',
     'OverlayHost',
     'Pill',
     'Tooltip',

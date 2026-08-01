@@ -1,0 +1,120 @@
+@layer components {
+  .ui-navigation-surface-dialog {
+    padding: 0;
+  }
+
+  .ui-navigation-surface-dialog > .ui-dialog__panel {
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .ui-navigation-surface-dialog .ui-dialog__content {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .ui-navigation-surface {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .ui-navigation-surface__header {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: 3rem minmax(0, 1fr) 3rem;
+    align-items: center;
+    min-height: calc(3.5rem + env(safe-area-inset-top));
+    padding-block-start: env(safe-area-inset-top);
+    padding-inline: max(0.5rem, env(safe-area-inset-left)) max(0.5rem, env(safe-area-inset-right));
+    border-bottom: var(--border) solid var(--ui-glass-border);
+  }
+
+  .ui-navigation-surface__leading {
+    display: grid;
+    place-items: center;
+  }
+
+  .ui-navigation-surface__header .ui-button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .ui-navigation-surface__header svg {
+    width: 1.375rem;
+    height: 1.375rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ui-navigation-surface__title {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-navigation-surface__content {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 1.25rem max(1.25rem, env(safe-area-inset-right)) max(1.25rem, env(safe-area-inset-bottom))
+      max(1.25rem, env(safe-area-inset-left));
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .ui-navigation-surface__actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 1rem max(1.25rem, env(safe-area-inset-right)) max(1.25rem, env(safe-area-inset-bottom))
+      max(1.25rem, env(safe-area-inset-left));
+    border-top: var(--border) solid var(--ui-glass-border);
+  }
+
+  @media (width >= 40rem) {
+    .ui-navigation-surface-dialog {
+      padding: 1.5rem;
+    }
+
+    .ui-navigation-surface-dialog > .ui-dialog__panel {
+      width: 100%;
+      height: auto;
+      max-height: 100%;
+      border: var(--border) solid var(--ui-glass-border);
+      border-radius: var(--radius-box);
+      box-shadow:
+        var(--ui-glass-highlight) inset,
+        var(--ui-glass-shadow);
+    }
+
+    .ui-navigation-surface__header {
+      min-height: 4rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .ui-navigation-surface__actions > .ui-button {
+      flex: 0 0 auto;
+    }
+  }
+}

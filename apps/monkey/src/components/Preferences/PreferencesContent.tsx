@@ -1,20 +1,20 @@
+import type { PropType } from 'vue'
 import type { IconValue } from '@/icons'
 import { GM_info } from '$'
-import { Button } from '@115master/ui'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PKG from '@/../package.json'
 import ThemeToggle from '@/components/ThemeToggle'
 import { I, Icon } from '@/icons'
 
-type SectionId = 'appearance' | 'about'
+export type PreferenceSection = 'appearance' | 'about'
 
 interface SectionItem {
-  id: SectionId
+  id: PreferenceSection
   label: string
   icon: IconValue
 }
 
-const SECTIONS: SectionItem[] = [
+export const PREFERENCE_SECTIONS: SectionItem[] = [
   { id: 'appearance', label: '外观', icon: I.THEME_LIGHT },
   { id: 'about', label: '关于', icon: I.ABOUT },
 ]
@@ -23,8 +23,19 @@ const DESKTOP_MQ = '(min-width: 640px)'
 
 const PreferencesContent = defineComponent({
   name: 'PreferencesContent',
-  setup() {
-    const active = ref<SectionId | null>(null)
+
+  props: {
+    section: {
+      type: String as PropType<PreferenceSection | null>,
+      default: null,
+    },
+  },
+
+  emits: {
+    'update:section': (_section: PreferenceSection) => true,
+  },
+
+  setup(props, { emit }) {
     const isDesktop = ref(false)
     let mql: MediaQueryList | undefined
 
@@ -43,29 +54,21 @@ const PreferencesContent = defineComponent({
     }
 
     /** 桌面端无选中时回退到第一项,移动端保持 null 表示一级菜单 */
-    const displayActive = computed<SectionId | null>(() => {
-      if (active.value)
-        return active.value
-      return isDesktop.value ? SECTIONS[0].id : null
+    const display = computed<PreferenceSection | null>(() => {
+      if (props.section)
+        return props.section
+      return isDesktop.value ? PREFERENCE_SECTIONS[0].id : null
     })
 
-    function pick(id: SectionId) {
-      active.value = id
-    }
-
-    function back() {
-      active.value = null
-    }
-
-    function currentLabel() {
-      return SECTIONS.find(s => s.id === active.value)?.label ?? ''
+    function pick(section: PreferenceSection) {
+      emit('update:section', section)
     }
 
     return () => {
-      const showMenu = active.value === null
+      const showMenu = props.section === null
 
       return (
-        <div class="flex flex-col gap-4 pt-4 pb-4 sm:min-h-[28rem] sm:flex-row">
+        <div class="flex flex-col gap-4 sm:min-h-[28rem] sm:flex-row">
           {/* 桌面端:始终显示左侧菜单,移动端:仅在 menu 层级显示 */}
           <nav
             class={[
@@ -75,13 +78,13 @@ const PreferencesContent = defineComponent({
                 : 'hidden sm:flex',
             ]}
           >
-            {SECTIONS.map(section => (
+            {PREFERENCE_SECTIONS.map(section => (
               <button
                 key={section.id}
                 type="button"
                 class={[
                   'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
-                  displayActive.value === section.id
+                  display.value === section.id
                     ? 'bg-base-content/10 text-base-content font-medium'
                     : 'text-base-content/60 hover:bg-base-content/5 hover:text-base-content',
                 ]}
@@ -101,23 +104,7 @@ const PreferencesContent = defineComponent({
               showMenu ? 'hidden sm:block' : 'block',
             ]}
           >
-            {/* 移动端二级:返回按钮 + 标题 */}
-            <div class="flex items-center gap-2 pb-3 sm:hidden">
-              <Button
-                variant="ghost"
-                size="sm"
-                class="gap-1"
-                onClick={back}
-              >
-                <Icon name={I.LEFT} class="text-base" />
-                <span>返回</span>
-              </Button>
-              <span class="text-base-content/80 text-sm font-medium">
-                {currentLabel()}
-              </span>
-            </div>
-
-            {displayActive.value === 'appearance' && (
+            {display.value === 'appearance' && (
               <div class="flex flex-col gap-4">
                 <div>
                   <h3 class="text-base-content text-sm font-medium">主题</h3>
@@ -127,7 +114,7 @@ const PreferencesContent = defineComponent({
               </div>
             )}
 
-            {displayActive.value === 'about' && (
+            {display.value === 'about' && (
               <div class="flex flex-col gap-4 text-sm">
                 <div>
                   <h3 class="text-base-content font-medium">{GM_info.script.name}</h3>

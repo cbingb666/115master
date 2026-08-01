@@ -59,4 +59,32 @@ test.describe('主题与设置', () => {
     await expect(page.locator('#my-app')).toHaveAttribute('data-theme', 'dark')
     expect(errors).toEqual([])
   })
+
+  test('移动端偏好设置使用全屏导航表面', async ({ page }) => {
+    const errors = watch(page)
+    await page.setViewportSize({ width: 390, height: 844 })
+    await setupVideo(page, { gmValues: { USER_SETTINGS: { theme: 'light' } } })
+    await page.goto(MASTER_URL)
+
+    const trigger = page.locator('button[title="偏好设置"]:visible')
+    await trigger.click()
+
+    const dialog = page.getByRole('dialog', { name: '偏好设置' })
+    const surface = dialog.locator('[data-ui-navigation-surface]')
+    await expect(dialog.getByRole('heading', { name: '偏好设置' })).toBeVisible()
+    await expect(surface).toHaveCSS('width', '390px')
+    await expect(surface).toHaveCSS('height', '844px')
+
+    await dialog.getByRole('button', { name: '外观' }).click()
+    await expect(page.getByRole('dialog', { name: '外观' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: '外观' })).toBeVisible()
+
+    await page.getByRole('button', { name: '返回偏好设置' }).click()
+    await expect(page.getByRole('dialog', { name: '偏好设置' })).toBeVisible()
+
+    await page.getByRole('button', { name: '关闭偏好设置' }).click()
+    await expect(dialog).toBeHidden()
+    await expect(trigger).toBeFocused()
+    expect(errors).toEqual([])
+  })
 })
