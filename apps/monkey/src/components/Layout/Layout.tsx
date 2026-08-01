@@ -10,7 +10,7 @@ const Layout = defineComponent({
     return () => (
       <div
         class="
-          app-bg-mesh min-h-screen
+          min-h-screen
           [--sider-width:0]
           sm:[--sider-width:calc(var(--spacing)*64)]
         "

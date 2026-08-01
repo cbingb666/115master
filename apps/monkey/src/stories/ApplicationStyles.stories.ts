@@ -9,7 +9,7 @@ const meta = preview.meta({
     docs: {
       description: {
         component:
-          'Monkey 只在公共 UI 样式之后追加应用背景，以及 range、skeleton、input 与 textarea 的应用级 daisyUI overrides。',
+          'Monkey 在公共 UI 样式之后追加 range、skeleton、input 与 textarea 的应用级 daisyUI overrides。',
       },
     },
   },
@@ -27,7 +27,7 @@ export const ThemeComposition = meta.story({
       return { saves, save }
     },
     template: `
-      <main class="app-bg-mesh bg-base-100 text-base-content min-h-screen p-6 sm:p-10">
+      <main class="bg-base-100 text-base-content min-h-screen p-6 sm:p-10">
         <section class="ui-glass-panel mx-auto grid max-w-3xl gap-6 rounded-3xl p-6 sm:p-8">
           <header>
             <p class="text-base-content/60 text-sm">Monkey integration</p>

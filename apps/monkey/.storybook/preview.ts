@@ -78,7 +78,7 @@ const preview = definePreview({
         return { dialog, theme }
       },
       template: `
-        <div :data-theme="theme" class="app-bg-mesh bg-base-100 text-base-content min-h-screen p-8">
+        <div :data-theme="theme" class="bg-base-100 text-base-content min-h-screen p-8">
           <OverlayHost>
             <DialogHost :service="dialog">
               <story />
