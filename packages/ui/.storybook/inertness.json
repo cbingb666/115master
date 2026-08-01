@@ -2,17 +2,17 @@
   "name": "UI Storybook",
   "stories": [
     {
-      "id": "ui-navigationsurface--navigation",
-      "docs": "ui-navigationsurface--docs",
+      "id": "ui-navigationstack--navigation",
+      "docs": "ui-navigationstack--docs",
       "component": true,
       "tags": [
         "autodocs",
         "test"
       ],
       "tests": [
-        "ui-navigationsurface--navigation:proves-navigation-dismissal-focus-and-responsive-presentation"
+        "ui-navigationstack--navigation:proves-navigation-dismissal-focus-and-responsive-presentation"
       ],
-      "ready": "main[aria-label=\"Navigation Surface\"]",
+      "ready": "main[aria-label=\"Navigation Stack\"]",
       "outcomes": [
         {
           "selector": "[data-ui-navigation-dismiss]",

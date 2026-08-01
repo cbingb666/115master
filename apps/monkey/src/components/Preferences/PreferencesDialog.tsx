@@ -1,5 +1,5 @@
 import type { PreferenceSection } from './PreferencesContent'
-import { NavigationSurface } from '@115master/ui'
+import { NavigationStack } from '@115master/ui'
 import { useMediaQuery } from '@vueuse/core'
 import { computed, defineComponent, ref } from 'vue'
 import PreferencesContent, { PREFERENCE_SECTIONS } from './PreferencesContent'
@@ -25,6 +25,8 @@ export const PreferencesDialog = defineComponent({
       return PREFERENCE_SECTIONS.find(item => item.id === section.value)?.label ?? '偏好设置'
     })
     const canGoBack = computed(() => !desktop.value && section.value !== null)
+    const pageKey = computed(() => section.value ?? (desktop.value ? PREFERENCE_SECTIONS[0].id : 'root'))
+    const depth = computed(() => !desktop.value && section.value !== null ? 1 : 0)
 
     function update(value: boolean) {
       open.value = value
@@ -34,9 +36,11 @@ export const PreferencesDialog = defineComponent({
     }
 
     return () => (
-      <NavigationSurface
+      <NavigationStack
         open={open.value}
         title={title.value}
+        pageKey={pageKey.value}
+        depth={depth.value}
         canGoBack={canGoBack.value}
         backLabel="返回偏好设置"
         closeLabel="关闭偏好设置"
@@ -48,7 +52,7 @@ export const PreferencesDialog = defineComponent({
           section={section.value}
           onUpdate:section={value => section.value = value}
         />
-      </NavigationSurface>
+      </NavigationStack>
     )
   },
 })

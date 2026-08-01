@@ -1,16 +1,16 @@
-import { Button, NavigationSurface } from '@115master/ui'
+import { Button, NavigationStack } from '@115master/ui'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { computed, ref } from 'vue'
 import preview from '../../.storybook/preview'
 
 const meta = preview.meta({
-  title: 'UI/NavigationSurface',
-  component: NavigationSurface,
+  title: 'UI/NavigationStack',
+  component: NavigationStack,
   parameters: {
     docs: {
       description: {
         component:
-          '受控的临时导航表面。移动端呈现为全屏页面，桌面端呈现为 Dialog；调用方拥有页面状态、内容和本地化文案。',
+          '受控的临时导航栈。移动端呈现为全屏页面，桌面端呈现为 Dialog，并依据页面标识与层级自动生成方向感知转场。',
       },
     },
   },
@@ -20,7 +20,7 @@ const meta = preview.meta({
 export const Navigation = meta.story({
   name: '导航与自适应呈现',
   render: () => ({
-    components: { Button, NavigationSurface },
+    components: { Button, NavigationStack },
     setup() {
       const open = ref(false)
       const page = ref<'library' | 'details'>('library')
@@ -36,16 +36,18 @@ export const Navigation = meta.story({
       return { open, page, reason, show, title }
     },
     template: `
-      <main aria-label="Navigation Surface" class="p-6">
-        <Button @click="show">打开导航表面</Button>
+      <main aria-label="Navigation Stack" class="p-6">
+        <Button @click="show">打开导航栈</Button>
         <output class="sr-only" aria-live="polite" data-ui-navigation-dismiss>{{ reason }}</output>
 
-        <NavigationSurface
+        <NavigationStack
           :open="open"
           :title="title"
+          :page-key="page"
+          :depth="page === 'details' ? 1 : 0"
           :can-go-back="page === 'details'"
           back-label="返回媒体库"
-          close-label="关闭导航表面"
+          close-label="关闭导航栈"
           @update:open="open = $event"
           @back="page = 'library'"
           @dismiss="reason = $event"
@@ -57,7 +59,7 @@ export const Navigation = meta.story({
             </div>
             <p v-else>详情页通过统一导航栏返回，不自行绘制返回按钮。</p>
           </div>
-        </NavigationSurface>
+        </NavigationStack>
       </main>
     `,
   }),
@@ -65,37 +67,40 @@ export const Navigation = meta.story({
 
 Navigation.test('proves navigation, dismissal, focus, and responsive presentation', async ({ canvasElement }) => {
   const canvas = within(canvasElement)
-  const trigger = canvas.getByRole('button', { name: '打开导航表面' })
+  const trigger = canvas.getByRole('button', { name: '打开导航栈' })
 
   trigger.focus()
   await userEvent.click(trigger)
 
   let dialog = canvas.getByRole('dialog', { name: '媒体库' })
-  const surface = dialog.querySelector<HTMLElement>('[data-ui-navigation-surface]')
+  const stack = dialog.querySelector<HTMLElement>('[data-ui-navigation-stack]')
 
-  if (!surface)
-    throw new Error('NavigationSurface did not render its public surface marker.')
+  if (!stack)
+    throw new Error('NavigationStack did not render its public stack marker.')
 
   await waitFor(() => expect(canvas.getByRole('heading', { name: '媒体库' })).toBeVisible())
 
   if (window.matchMedia('(width < 40rem)').matches) {
-    const rect = surface.getBoundingClientRect()
+    const rect = stack.getBoundingClientRect()
 
     expect(rect.width).toBeGreaterThanOrEqual(window.innerWidth - 1)
     expect(rect.height).toBeGreaterThanOrEqual(window.innerHeight - 1)
   }
   else {
-    expect(surface.getBoundingClientRect().width).toBeLessThan(window.innerWidth)
+    expect(stack.getBoundingClientRect().width).toBeLessThan(window.innerWidth)
   }
 
   await userEvent.click(canvas.getByRole('button', { name: '打开项目详情' }))
 
   dialog = canvas.getByRole('dialog', { name: '项目详情' })
-  await expect(within(dialog).getByRole('heading', { name: '项目详情' })).toBeVisible()
+  await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'forward')
+  await waitFor(() => expect(within(dialog).getByRole('heading', { name: '项目详情' })).toBeVisible())
   await userEvent.click(within(dialog).getByRole('button', { name: '返回媒体库' }))
-  await expect(canvas.getByRole('dialog', { name: '媒体库' })).toBeVisible()
+  await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'back')
+  dialog = canvas.getByRole('dialog', { name: '媒体库' })
+  await waitFor(() => expect(within(dialog).getByRole('heading', { name: '媒体库' })).toBeVisible())
 
-  await userEvent.click(canvas.getByRole('button', { name: '关闭导航表面' }))
+  await userEvent.click(canvas.getByRole('button', { name: '关闭导航栈' }))
   await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
   await expect(trigger).toHaveFocus()
   await expect(canvasElement.querySelector('[data-ui-navigation-dismiss]')).toHaveTextContent('button')
