@@ -129,6 +129,47 @@ describe('image', () => {
     expect(view.host.querySelector('img')?.getAttribute('src')).toBe('loaded')
   })
 
+  it('waits for visibility when a lazy loader is attached later', async () => {
+    let show: IntersectionObserverCallback = () => {}
+    vi.stubGlobal('IntersectionObserver', class {
+      constructor(callback: IntersectionObserverCallback) {
+        show = callback
+      }
+
+      observe() {}
+      disconnect() {}
+    })
+    const loader: ImageLoader = {
+      key: 'remote',
+      load: vi.fn(async () => resource('loaded')),
+    }
+    const view = mount({ src: 'remote', lazy: true })
+    await flush()
+    view.props.loader = loader
+    await flush()
+
+    expect(loader.load).not.toHaveBeenCalled()
+
+    show([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
+    await flush()
+    expect(loader.load).toHaveBeenCalledOnce()
+    expect(view.host.querySelector('img')?.getAttribute('src')).toBe('loaded')
+  })
+
+  it('shows the fallback when a loader returns an empty source', async () => {
+    const dispose = vi.fn()
+    const loader: ImageLoader = {
+      key: 'empty',
+      load: vi.fn(async () => resource('', dispose)),
+    }
+    const view = mount({ src: 'remote', loader })
+    await flush()
+
+    expect(dispose).toHaveBeenCalledOnce()
+    expect(view.host.firstElementChild?.getAttribute('aria-busy')).toBeNull()
+    expect(view.host.querySelector('[data-loading-error]')).not.toBeNull()
+  })
+
   it('reloads the same src when the loader key changes', async () => {
     const first: ImageLoader = {
       key: 'first',
@@ -183,5 +224,22 @@ describe('image', () => {
     view.app.unmount()
     apps.splice(apps.indexOf(view.app), 1)
     expect(second).toHaveBeenCalledOnce()
+  })
+
+  it('continues loading when resource disposal throws', async () => {
+    const dispose = vi.fn()
+      .mockImplementationOnce(() => { throw new Error('dispose failed') })
+    const loader: ImageLoader = {
+      key: 'remote',
+      load: vi.fn(async src => resource(`${src}-result`, dispose)),
+    }
+    const view = mount({ src: 'first', loader })
+    view.app.config.errorHandler = () => {}
+    await flush()
+    view.props.src = 'second'
+    await flush()
+
+    expect(loader.load).toHaveBeenCalledTimes(2)
+    expect(view.host.querySelector('img')?.getAttribute('src')).toBe('second-result')
   })
 })

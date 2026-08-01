@@ -29,7 +29,7 @@ const Image = defineComponent({
     const root = ref<HTMLElement>()
     const state = ref<LoadState>('loading')
     const displaySrc = ref('')
-    const visible = ref(!props.lazy || !props.loader || typeof IntersectionObserver === 'undefined')
+    const visible = ref(!props.lazy || typeof IntersectionObserver === 'undefined')
     let controller: AbortController | undefined
     let observer: IntersectionObserver | undefined
     let current: ImageResource | undefined
@@ -40,11 +40,20 @@ const Image = defineComponent({
       Object.fromEntries(Object.entries(attrs).filter(([k]) => k !== 'class' && k !== 'style')),
     )
 
+    function dispose(resource?: ImageResource) {
+      try {
+        resource?.dispose?.()
+      }
+      catch {
+        // 资源清理失败不应阻断图片状态转换
+      }
+    }
+
     function clear() {
       version += 1
       controller?.abort()
       controller = undefined
-      current?.dispose?.()
+      dispose(current)
       current = undefined
       displaySrc.value = ''
     }
@@ -67,7 +76,12 @@ const Image = defineComponent({
           ? await props.loader.load(url, controller.signal)
           : { src: url }
         if (id !== version || controller.signal.aborted) {
-          result.dispose?.()
+          dispose(result)
+          return
+        }
+        if (!result.src) {
+          dispose(result)
+          state.value = 'error'
           return
         }
         current = result
@@ -83,12 +97,12 @@ const Image = defineComponent({
     function observe() {
       observer?.disconnect()
       observer = undefined
-      if (!props.lazy || !props.loader || typeof IntersectionObserver === 'undefined') {
+      if (!props.lazy || typeof IntersectionObserver === 'undefined') {
         visible.value = true
         return
       }
       visible.value = false
-      if (!root.value)
+      if (!props.loader || !root.value)
         return
       observer = new IntersectionObserver((entries) => {
         if (!entries.some(entry => entry.isIntersecting))
@@ -153,7 +167,7 @@ const Image = defineComponent({
                 decoding="async"
                 onLoad={() => { state.value = 'success' }}
                 onError={() => {
-                  current?.dispose?.()
+                  dispose(current)
                   current = undefined
                   displaySrc.value = ''
                   state.value = 'error'
