@@ -105,6 +105,19 @@ describe('image', () => {
     expect(view.host.querySelector('.skeleton')).not.toBeNull()
   })
 
+  it('lets the root container control the loading radius', async () => {
+    const pending = deferred<ImageResource>()
+    const loader: ImageLoader = {
+      key: 'pending',
+      load: vi.fn(() => pending.promise),
+    }
+    const view = mount({ src: 'image', loader, class: 'rounded-none' })
+    await flush()
+
+    expect(view.host.firstElementChild?.classList).toContain('rounded-none')
+    expect(view.host.querySelector('.skeleton')?.classList).toContain('rounded-[inherit]')
+  })
+
   it('waits for visibility before invoking a lazy loader', async () => {
     let show: IntersectionObserverCallback = () => {}
     vi.stubGlobal('IntersectionObserver', class {

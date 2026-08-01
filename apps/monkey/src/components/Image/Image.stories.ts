@@ -44,12 +44,13 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Cover: Story = {
-  name: 'Cover（方形 / 圆形）',
+  name: 'Cover（无圆角 / 圆角 / 圆形）',
   render: args => ({
     components: { Image },
     setup: () => ({ args }),
     template: `
       <div class="flex items-center gap-4">
+        <Image v-bind="args" class="h-24 w-32" fit="cover" />
         <Image v-bind="args" class="h-24 w-32 rounded-lg" fit="cover" />
         <Image v-bind="args" class="size-20 rounded-full border-2 border-primary" fit="cover" />
       </div>
