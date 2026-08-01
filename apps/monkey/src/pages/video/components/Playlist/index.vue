@@ -68,11 +68,11 @@ const emit = defineEmits<{
 /** 样式常量定义 */
 const styles = clsx({
   box: [
-    '[--space:calc(var(--spacing)*4)]',
+    '[--space:calc(var(--spacing)*2)]',
     'relative',
     'h-[calc(100%-var(--space)*2)] w-[calc(100%-var(--space)*2)]',
     'mx-auto mt-[var(--space)]',
-    'rounded-3xl',
+    'rounded-2xl',
     'overflow-hidden',
     'ui-glass-panel',
   ],

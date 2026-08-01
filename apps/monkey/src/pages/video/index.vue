@@ -142,7 +142,7 @@ import type XPlayerInstance from '@/components/XPlayer/index.vue'
 import type { Subtitle, ThumbnailRequest } from '@/components/XPlayer/types'
 import { Button } from '@115master/ui'
 import { format } from '@115master/utils'
-import { useTitle } from '@vueuse/core'
+import { useEventListener, useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
 import { computed, h, nextTick, onMounted, ref, shallowRef, toValue, watch } from 'vue'
 import iinaIcon from '@/assets/icons/iina-icon.png'
@@ -504,6 +504,16 @@ function handleSeek(ctx: PlayerContext) {
 function handleClosePlaylist() {
   preferences.value.showPlaylist = false
 }
+
+/**
+ * Esc 关闭播放列表：冒泡阶段监听，
+ * XPlayer 弹窗（Popup）在 capture 阶段拦截 Esc 并阻止传播，优先级更高。
+ */
+useEventListener(window, 'keydown', (event: KeyboardEvent) => {
+  if (event.key !== 'Escape' || !preferences.value.showPlaylist)
+    return
+  handleClosePlaylist()
+})
 
 /** 切换播放列表 */
 function togglePlaylist() {
