@@ -37,11 +37,11 @@ const props = {
   },
   openDelay: {
     type: Number,
-    default: 400,
+    default: 150,
   },
   closeDelay: {
     type: Number,
-    default: 100,
+    default: 50,
   },
   to: {
     type: [String, Object] as PropType<TooltipTarget>,
