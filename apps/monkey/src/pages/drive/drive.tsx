@@ -1,7 +1,7 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
-import { Button, Tooltip } from '@115master/ui'
-import { breakpointsTailwind, useBreakpoints, useEventListener, useStorage, useTitle } from '@vueuse/core'
+import { Button, Pill, Tooltip } from '@115master/ui'
+import { breakpointsTailwind, useBreakpoints, useEventListener, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, Transition, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { useAppDialog } from '@/app/dialog'
@@ -369,39 +369,70 @@ const Drive = defineComponent({
       return null
     })
 
+    const bottomRef = ref<HTMLElement>()
+    const bottomSize = ref<{ height: number, width: number }>()
+    useResizeObserver(bottomRef, ([entry]) => {
+      const item = entry.target as HTMLElement
+      bottomSize.value = { height: item.offsetHeight, width: item.offsetWidth }
+    })
+    const bottomStyle = computed(() => bottomSize.value
+      ? {
+          height: `${bottomSize.value.height}px`,
+          width: `${bottomSize.value.width}px`,
+        }
+      : undefined)
+
     function FixedBottom() {
       return (
-        <div class="drive-bottom-dock ui-z-elevated pointer-events-none fixed right-0 bottom-[var(--drive-bottom-gap)] left-(--sider-width) flex justify-center">
+        <div class="drive-bottom-dock ui-z-elevated pointer-events-none fixed right-0 bottom-[var(--drive-bottom-gap)] left-(--sider-width) grid grid-cols-1">
           <Transition
-            mode="out-in"
             enterActiveClass="motion-reduce:transition-none transition-[transform,opacity] duration-[180ms] ease-out"
-            enterFromClass="translate-y-4 opacity-0"
-            enterToClass="translate-y-0 opacity-100"
+            enterFromClass="scale-[0.98] opacity-0"
+            enterToClass="scale-100 opacity-100"
             leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-[transform,opacity] duration-[140ms] ease-in"
-            leaveFromClass="translate-y-0 opacity-100"
-            leaveToClass="translate-y-4 opacity-0"
+            leaveFromClass="scale-100 opacity-100"
+            leaveToClass="scale-[0.98] opacity-0"
           >
-            {bottomMode.value === 'actions'
-              ? (
-                  <div key="actions" class="pointer-events-auto">
-                    <ActionBar groups={actionConfig.value} />
-                  </div>
-                )
-              : bottomMode.value === 'pagination'
-                ? (
-                    <div key="pagination" class="pointer-events-auto">
-                      <Pagination
-                        surface="floating"
-                        currentPage={store.query.page}
-                        currentPageSize={store.query.size}
-                        showSizeChanger={false}
-                        total={store.total}
-                        onCurrentPageChange={store.changePage}
-                        onPageSizeChange={store.changeSize}
-                      />
-                    </div>
-                  )
-                : null}
+            {bottomMode.value && (
+              <Pill
+                key="surface"
+                as="div"
+                variant="glass-floating"
+                size="md"
+                class="drive-bottom-surface pointer-events-auto col-start-1 row-start-1 box-content grid min-h-0 grid-cols-1 justify-self-center overflow-hidden p-0 transition-[width,height] duration-[180ms] ease-out motion-reduce:transition-none"
+                style={bottomStyle.value}
+              >
+                <Transition
+                  enterActiveClass="motion-reduce:transition-none transition-opacity duration-[180ms] ease-out"
+                  enterFromClass="opacity-0"
+                  enterToClass="opacity-100"
+                  leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-opacity duration-[140ms] ease-in"
+                  leaveFromClass="opacity-100"
+                  leaveToClass="opacity-0"
+                >
+                  {bottomMode.value === 'actions'
+                    ? (
+                        <div ref={bottomRef} key="actions" class="pointer-events-auto col-start-1 row-start-1 justify-self-center">
+                          <ActionBar embedded groups={actionConfig.value} />
+                        </div>
+                      )
+                    : (
+                        <div ref={bottomRef} key="pagination" class="pointer-events-auto col-start-1 row-start-1 justify-self-center">
+                          <Pagination
+                            embedded
+                            surface="floating"
+                            currentPage={store.query.page}
+                            currentPageSize={store.query.size}
+                            showSizeChanger={false}
+                            total={store.total}
+                            onCurrentPageChange={store.changePage}
+                            onPageSizeChange={store.changeSize}
+                          />
+                        </div>
+                      )}
+                </Transition>
+              </Pill>
+            )}
           </Transition>
         </div>
       )

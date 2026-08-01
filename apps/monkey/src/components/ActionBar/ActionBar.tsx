@@ -14,6 +14,11 @@ const ActionBar = defineComponent({
       type: Array as PropType<Action[][]>,
       required: true,
     },
+    /** Glass 材质由外层容器承载 */
+    embedded: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup: (props) => {
     const loading = ref(new Set<string>())
@@ -48,9 +53,12 @@ const ActionBar = defineComponent({
       return (
         <Pill
           as="div"
-          variant="glass-floating"
-          size="xl"
-          class="pointer-events-auto justify-center p-1.5"
+          variant={props.embedded ? 'plain' : 'glass-floating'}
+          size={props.embedded ? 'md' : 'xl'}
+          class={[
+            'pointer-events-auto justify-center',
+            props.embedded ? 'p-1' : 'p-1.5',
+          ]}
         >
           {groups.map((group, groupIndex) => (
             <Fragment key={group.map(item => item.name).join(':')}>

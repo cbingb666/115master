@@ -26,6 +26,20 @@ describe('actionBar', () => {
     expect(surface?.classList).toContain('ui-pill-xl')
   })
 
+  it('leaves Glass ownership to an embedding surface', () => {
+    const host = document.createElement('div')
+    const app = createApp({
+      setup: () => () => h(ActionBar, { embedded: true, groups: [] }),
+    })
+    app.mount(host)
+    apps.push(app)
+
+    const surface = host.querySelector('.ui-pill')
+
+    expect(surface?.classList).not.toContain('ui-glass-floating')
+    expect(surface?.classList).toContain('ui-pill-md')
+  })
+
   it('uses the shared Tooltip for action labels', async () => {
     const host = document.createElement('div')
     const app = createApp({

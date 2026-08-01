@@ -8,6 +8,74 @@ async function check(page: Page, name: string) {
 }
 
 test.describe('选择与操作', () => {
+  test('分页器与 ActionBar 交叉切换时保持视觉连续', async ({ page }) => {
+    const errors = watch(page)
+    await boot(page, { storage: { '115Master_pageSize': '30' } })
+    await expect(page.getByRole('button', { name: '下一页' })).toBeVisible()
+    await expect.poll(() => page.locator('.drive-bottom-dock').evaluate((dock) => {
+      const surface = dock.querySelector<HTMLElement>('.drive-bottom-surface') ?? dock
+      return Number.parseFloat(getComputedStyle(surface.firstElementChild!).opacity)
+    })).toBe(1)
+
+    async function sample(selector: string) {
+      return page.evaluate(async (selector) => {
+        const dock = document.querySelector<HTMLElement>('.drive-bottom-dock')!
+        const surface = dock.querySelector<HTMLElement>('.drive-bottom-surface') ?? dock
+        const source = surface.firstElementChild as HTMLElement
+        source.dataset.transitionSource = ''
+        document.querySelector<HTMLElement>(selector)!.click()
+
+        const start = performance.now()
+        const frames: { count: number, glass: number, offset: number, opacity: number, time: number, travel: number, width: number }[] = []
+        while (performance.now() - start < 500) {
+          await new Promise(requestAnimationFrame)
+          const items = [...surface.children] as HTMLElement[]
+          const bounds = surface.getBoundingClientRect()
+          frames.push({
+            count: items.length,
+            glass: dock.querySelectorAll('.ui-glass-floating').length,
+            offset: Math.max(...items.map((item) => {
+              const box = item.getBoundingClientRect()
+              return Math.abs(box.left + box.width / 2 - (bounds.left + bounds.width / 2))
+            })),
+            opacity: items.reduce((sum, item) => sum + Number.parseFloat(getComputedStyle(item).opacity), 0),
+            time: performance.now() - start,
+            travel: Math.max(...items.map((item) => {
+              const box = item.getBoundingClientRect()
+              return Math.abs(box.top + box.height / 2 - (bounds.top + bounds.height / 2))
+            })),
+            width: bounds.width,
+          })
+
+          if (
+            frames.at(-1)!.time > 100
+            && !surface.querySelector('[data-transition-source]')
+            && items.length === 1
+            && frames.at(-1)!.opacity > 0.99
+          ) {
+            break
+          }
+        }
+        return frames
+      }, selector)
+    }
+
+    const traces = [await sample('[data-selection-key] input[type="checkbox"]')]
+    await expect(page.getByRole('button', { name: '置顶', exact: true })).toBeVisible()
+    traces.push(await sample('[title="退出多选"]'))
+    await expect(page.getByRole('button', { name: '下一页' })).toBeVisible()
+
+    for (const trace of traces) {
+      expect(Math.min(...trace.map(frame => frame.opacity))).toBeGreaterThan(0.7)
+      expect(trace.some(frame => frame.count === 2)).toBe(true)
+      expect(trace.every(frame => frame.glass === 1)).toBe(true)
+      expect(Math.max(...trace.filter(frame => frame.count === 2).map(frame => frame.offset))).toBeLessThan(1)
+      expect(Math.max(...trace.map(frame => frame.travel))).toBeLessThan(1)
+      expect(new Set(trace.map(frame => Math.round(frame.width))).size).toBeGreaterThan(2)
+    }
+    expect(errors).toEqual([])
+  })
+
   test('单选/多选：SelectionHeader 计数与 ActionBar 状态', async ({ page }) => {
     const errors = watch(page)
     await boot(page)

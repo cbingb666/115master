@@ -27,6 +27,11 @@ const Pagination = defineComponent({
       type: String as PropType<PaginationSurface>,
       default: 'plain',
     },
+    /** Glass 材质由外层容器承载 */
+    embedded: {
+      type: Boolean,
+      default: false,
+    },
     /**
      * 当前页码
      */
@@ -162,7 +167,7 @@ const Pagination = defineComponent({
     return () => (
       <Pill
         as="div"
-        variant={SURFACES[props.surface]}
+        variant={props.embedded ? 'plain' : SURFACES[props.surface]}
         size="md"
         class="h-auto items-center px-3 py-1.5"
       >

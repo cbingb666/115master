@@ -6,11 +6,12 @@ import Pagination from '../Pagination'
 
 const apps: ReturnType<typeof createApp>[] = []
 
-function mount(surface: 'plain' | 'floating' = 'plain') {
+function mount(surface: 'plain' | 'floating' = 'plain', embedded = false) {
   const host = document.createElement('div')
   const app = createApp({
     setup: () => () => h(Pagination, {
       surface,
+      embedded,
       currentPage: 1,
       currentPageSize: 30,
       total: 90,
@@ -50,5 +51,12 @@ describe('pagination surface', () => {
     expect(root.querySelector('button.ui-glass-surface')).toBeNull()
     expect(root.querySelector('button.ui-glass-floating')).toBeNull()
     expect(root.querySelector('.btn-active')).toBeNull()
+  })
+
+  it('keeps the floating selection lens while embedded in another Glass surface', () => {
+    const root = mount('floating', true).firstElementChild!
+
+    expect(root.classList).not.toContain('ui-glass-floating')
+    expect(root.querySelector('[aria-current="page"]')?.classList).toContain('ui-glass-inset')
   })
 })
