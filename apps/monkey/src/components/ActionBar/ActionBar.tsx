@@ -1,6 +1,6 @@
 import type { PropType } from 'vue'
 import type { Action } from '@/types/action'
-import { Button, Pill } from '@115master/ui'
+import { Button, Pill, Tooltip } from '@115master/ui'
 import { defineComponent, Fragment, ref, toValue, triggerRef } from 'vue'
 import { Icon } from '@/icons'
 
@@ -69,33 +69,36 @@ const ActionBar = defineComponent({
                     : item.iconColor
 
                   return (
-                    <Button
-                      aria-label={label}
+                    <Tooltip
                       key={item.name}
-                      variant="ghost"
-                      shape="circle"
-                      class="tooltip tooltip-top relative h-11 w-11"
-                      data-tip={label}
-                      title={label}
-                      onClick={() => handleClick(item)}
+                      content={label}
+                      placement="top"
                     >
-                      <span
-                        class={[
-                          'loading loading-spinner loading-md',
-                          'absolute inset-0 m-auto',
-                          'transition-all',
-                          isLoading ? 'opacity-100' : 'opacity-0',
-                        ]}
-                      />
-                      <Icon
-                        class={[
-                          'drop-shadow-base-200/50 size-6 drop-shadow-sm',
-                          isLoading ? 'opacity-20' : '',
-                          iconColor,
-                        ]}
-                        name={icon}
-                      />
-                    </Button>
+                      <Button
+                        aria-label={label}
+                        variant="ghost"
+                        shape="circle"
+                        class="relative h-11 w-11"
+                        onClick={() => handleClick(item)}
+                      >
+                        <span
+                          class={[
+                            'loading loading-spinner loading-md',
+                            'absolute inset-0 m-auto',
+                            'transition-all',
+                            isLoading ? 'opacity-100' : 'opacity-0',
+                          ]}
+                        />
+                        <Icon
+                          class={[
+                            'drop-shadow-base-200/50 size-6 drop-shadow-sm',
+                            isLoading ? 'opacity-20' : '',
+                            iconColor,
+                          ]}
+                          name={icon}
+                        />
+                      </Button>
+                    </Tooltip>
                   )
                 })}
               </div>
