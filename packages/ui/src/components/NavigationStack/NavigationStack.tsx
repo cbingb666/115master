@@ -9,15 +9,17 @@ import type {
   DialogInitialFocus,
   DialogSize,
 } from '../Dialog/Dialog'
-import { defineComponent, shallowRef, Transition, watch } from 'vue'
+import { defineComponent, onBeforeUnmount, shallowRef, Transition, watch } from 'vue'
 import { Button } from '../Button/Button'
 import { Dialog } from '../Dialog/Dialog'
 
 export type NavigationStackDismissReason
   = | 'button'
+    | 'swipe'
     | Extract<DialogCloseReason, 'escape' | 'backdrop'>
 export type NavigationStackPageKey = string | number
 export type NavigationStackDirection = 'forward' | 'back' | 'replace'
+export type NavigationStackMobilePresentation = 'fullscreen' | 'sheet'
 
 const props = {
   open: {
@@ -36,6 +38,10 @@ const props = {
     type: Number,
     default: 0,
     validator: (value: number) => Number.isInteger(value) && value >= 0,
+  },
+  mobilePresentation: {
+    type: String as PropType<NavigationStackMobilePresentation>,
+    default: 'fullscreen',
   },
   canGoBack: {
     type: Boolean,
@@ -108,6 +114,117 @@ export const NavigationStack = defineComponent({
 
   setup(props, { emit, slots }) {
     const direction = shallowRef<NavigationStackDirection>('replace')
+    const content = shallowRef<HTMLElement>()
+    let height: number | undefined
+    let frame: number | undefined
+    let settle: number | undefined
+    let pointer: number | undefined
+    let origin = 0
+    let started = 0
+    let panel: HTMLElement | undefined
+
+    function sheet() {
+      return props.mobilePresentation === 'sheet'
+        && typeof window !== 'undefined'
+        && window.matchMedia('(width < 40rem)').matches
+    }
+
+    function resized() {
+      if (frame !== undefined) {
+        cancelAnimationFrame(frame)
+        frame = undefined
+      }
+      content.value?.style.removeProperty('height')
+      height = undefined
+    }
+
+    function resize(element: Element) {
+      const container = content.value
+
+      if (!container || height === undefined || !sheet())
+        return
+
+      container.style.height = `${Math.ceil(height)}px`
+      container.getBoundingClientRect()
+      frame = requestAnimationFrame(() => {
+        frame = undefined
+
+        if (content.value !== container)
+          return
+        container.style.height = `${Math.ceil((element as HTMLElement).scrollHeight)}px`
+      })
+    }
+
+    function reset() {
+      if (settle !== undefined) {
+        cancelAnimationFrame(settle)
+        settle = undefined
+      }
+      pointer = undefined
+      panel?.style.removeProperty('transition')
+      panel?.style.removeProperty('transform')
+      panel = undefined
+    }
+
+    function down(event: PointerEvent) {
+      if (!sheet() || !event.isPrimary || event.button !== 0)
+        return
+      if (!(event.currentTarget instanceof HTMLElement))
+        return
+
+      const element = event.currentTarget.closest<HTMLElement>('[data-ui-dialog-panel]')
+
+      if (!element)
+        return
+
+      pointer = event.pointerId
+      origin = event.clientY
+      started = event.timeStamp
+      panel = element
+      element.style.transition = 'none'
+      event.currentTarget.setPointerCapture(event.pointerId)
+      event.preventDefault()
+    }
+
+    function move(event: PointerEvent) {
+      if (pointer !== event.pointerId || !panel)
+        return
+
+      panel.style.transform = `translate3d(0, ${Math.max(0, event.clientY - origin)}px, 0)`
+      event.preventDefault()
+    }
+
+    function up(event: PointerEvent) {
+      if (pointer !== event.pointerId || !panel)
+        return
+
+      const target = event.currentTarget
+      const element = panel
+      const distance = Math.max(0, event.clientY - origin)
+      const velocity = distance / Math.max(1, event.timeStamp - started)
+      const dismiss = distance > Math.min(96, element.offsetHeight * 0.25)
+        || (distance > 24 && velocity > 0.65)
+
+      if (target instanceof HTMLElement && target.hasPointerCapture(event.pointerId))
+        target.releasePointerCapture(event.pointerId)
+
+      pointer = undefined
+      element.style.removeProperty('transition')
+      element.getBoundingClientRect()
+      settle = requestAnimationFrame(() => {
+        settle = undefined
+
+        if (!dismiss) {
+          element.style.removeProperty('transform')
+          panel = undefined
+          return
+        }
+
+        element.style.transform = `translate3d(0, ${element.offsetHeight + 32}px, 0)`
+        emit('dismiss', 'swipe')
+        emit('update:open', false)
+      })
+    }
 
     watch(
       () => [props.pageKey, props.depth] as const,
@@ -115,6 +232,7 @@ export const NavigationStack = defineComponent({
         if (Object.is(pageKey, previousPageKey) && depth === previousDepth)
           return
 
+        height = sheet() ? content.value?.getBoundingClientRect().height : undefined
         direction.value = depth > previousDepth
           ? 'forward'
           : depth < previousDepth
@@ -123,6 +241,16 @@ export const NavigationStack = defineComponent({
       },
       { flush: 'sync' },
     )
+
+    watch(() => props.open, (open) => {
+      if (open)
+        reset()
+    })
+
+    onBeforeUnmount(() => {
+      resized()
+      reset()
+    })
 
     function dismiss() {
       emit('dismiss', 'button')
@@ -149,7 +277,10 @@ export const NavigationStack = defineComponent({
           closeOnEscape={props.closeOnEscape}
           closeOnBackdrop={props.closeOnBackdrop}
           initialFocus={props.initialFocus}
-          class="ui-navigation-stack-dialog"
+          class={[
+            'ui-navigation-stack-dialog',
+            `ui-navigation-stack-dialog--mobile-${props.mobilePresentation}`,
+          ]}
           onUpdate:open={open => emit('update:open', open)}
           onClose={reason => emit('dismiss', reason)}
         >
@@ -157,7 +288,20 @@ export const NavigationStack = defineComponent({
             class="ui-navigation-stack"
             data-ui-navigation-stack=""
             data-ui-navigation-direction={direction.value}
+            data-ui-navigation-mobile-presentation={props.mobilePresentation}
           >
+            {props.mobilePresentation === 'sheet' && (
+              <div
+                class="ui-navigation-stack__handle"
+                aria-hidden="true"
+                data-ui-navigation-drag-handle=""
+                onPointerdown={down}
+                onPointermove={move}
+                onPointerup={up}
+                onPointercancel={up}
+              />
+            )}
+
             <header class="ui-navigation-stack__header">
               <div class="ui-navigation-stack__leading">
                 <Transition name="ui-navigation-stack-back">
@@ -194,8 +338,13 @@ export const NavigationStack = defineComponent({
             </header>
 
             {slots.default && (
-              <div class="ui-navigation-stack__content">
-                <Transition name={`ui-navigation-stack-page-${direction.value}`}>
+              <div ref={content} class="ui-navigation-stack__content">
+                <Transition
+                  name={`ui-navigation-stack-page-${direction.value}`}
+                  onBeforeEnter={resize}
+                  onAfterEnter={resized}
+                  onEnterCancelled={resized}
+                >
                   <div key={props.pageKey} class="ui-navigation-stack__page">
                     {slots.default()}
                   </div>

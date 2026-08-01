@@ -1,6 +1,6 @@
 import type { SlotsType } from 'vue'
 import { Button } from '@115master/ui'
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { I, Icon } from '@/icons'
 import SiderMenuButton from './SiderMenuButton'
@@ -14,8 +14,39 @@ const MobileSider = defineComponent({
   }>,
   setup(_, { slots }) {
     const isOpen = ref(false)
+    const panel = shallowRef<HTMLElement>()
     const open = () => isOpen.value = true
     const close = () => isOpen.value = false
+
+    function settled(element: HTMLElement) {
+      return new Promise<void>((resolve) => {
+        let timer: ReturnType<typeof setTimeout>
+
+        function finish() {
+          clearTimeout(timer)
+          element.removeEventListener('transitionend', transitioned)
+          resolve()
+        }
+
+        function transitioned(event: TransitionEvent) {
+          if (event.target !== element || event.propertyName !== 'transform')
+            return
+
+          finish()
+        }
+
+        element.addEventListener('transitionend', transitioned)
+        timer = setTimeout(finish, 350)
+      })
+    }
+
+    async function prepare() {
+      const element = panel.value
+      const transition = element ? settled(element) : Promise.resolve()
+      close()
+      await transition
+      document.querySelector<HTMLElement>('[data-ui-mobile-sider-trigger]')?.focus({ preventScroll: true })
+    }
 
     const route = useRoute()
     watch(() => route.fullPath, close)
@@ -28,6 +59,7 @@ const MobileSider = defineComponent({
           size="lg"
           shape="circle"
           aria-label="打开菜单"
+          data-ui-mobile-sider-trigger
           class="ui-z-fab fixed right-4 bottom-4 shadow-lg sm:hidden"
           onClick={open}
         >
@@ -50,6 +82,8 @@ const MobileSider = defineComponent({
 
         {/* 底部弹出层 */}
         <div
+          ref={panel}
+          data-ui-mobile-sider
           class="
             ui-glass-panel
             ui-z-sheet
@@ -72,7 +106,7 @@ const MobileSider = defineComponent({
           {slots.default?.()}
           <div class="mt-auto flex flex-col gap-4">
             {slots.left?.()}
-            <SiderMenuButton />
+            <SiderMenuButton beforeOpen={prepare} />
           </div>
         </div>
       </>

@@ -41,10 +41,12 @@ export const PreferencesDialog = defineComponent({
         title={title.value}
         pageKey={pageKey.value}
         depth={depth.value}
+        mobilePresentation="sheet"
         canGoBack={canGoBack.value}
         backLabel="返回偏好设置"
         closeLabel="关闭偏好设置"
         size="lg"
+        class="app-preferences-dialog"
         onUpdate:open={update}
         onBack={() => section.value = null}
       >

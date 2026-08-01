@@ -42,6 +42,7 @@ export { NavigationStack } from './components/NavigationStack/NavigationStack'
 export type {
   NavigationStackDirection,
   NavigationStackDismissReason,
+  NavigationStackMobilePresentation,
   NavigationStackPageKey,
   NavigationStackProps,
 } from './components/NavigationStack/NavigationStack'

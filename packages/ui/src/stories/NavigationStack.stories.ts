@@ -10,7 +10,7 @@ const meta = preview.meta({
     docs: {
       description: {
         component:
-          '受控的临时导航栈。移动端呈现为全屏页面，桌面端呈现为 Dialog，并依据页面标识与层级自动生成方向感知转场。',
+          '受控的临时导航栈。移动端可呈现为全屏页面或沿用 Dialog 外观的内容高度 Sheet，桌面端呈现为 Dialog，并依据页面标识与层级自动生成方向感知转场。',
       },
     },
   },
@@ -45,6 +45,7 @@ export const Navigation = meta.story({
           :title="title"
           :page-key="page"
           :depth="page === 'details' ? 1 : 0"
+          mobile-presentation="sheet"
           :can-go-back="page === 'details'"
           back-label="返回媒体库"
           close-label="关闭导航栈"
@@ -52,12 +53,12 @@ export const Navigation = meta.story({
           @back="page = 'library'"
           @dismiss="reason = $event"
         >
-          <div class="min-h-72">
-            <div v-if="page === 'library'" class="space-y-4">
+          <div>
+            <div v-if="page === 'library'" class="min-h-48 space-y-4">
               <p>从列表进入临时工作流的下一层。</p>
               <Button color="primary" @click="page = 'details'">打开项目详情</Button>
             </div>
-            <p v-else>详情页通过统一导航栏返回，不自行绘制返回按钮。</p>
+            <p v-else class="min-h-72">详情页通过统一导航栏返回，不自行绘制返回按钮。</p>
           </div>
         </NavigationStack>
       </main>
@@ -83,8 +84,10 @@ Navigation.test('proves navigation, dismissal, focus, and responsive presentatio
   if (window.matchMedia('(width < 40rem)').matches) {
     const rect = stack.getBoundingClientRect()
 
-    expect(rect.width).toBeGreaterThanOrEqual(window.innerWidth - 1)
-    expect(rect.height).toBeGreaterThanOrEqual(window.innerHeight - 1)
+    expect(stack).toHaveAttribute('data-ui-navigation-mobile-presentation', 'sheet')
+    expect(rect.width).toBeLessThan(window.innerWidth)
+    expect(rect.height).toBeLessThan(window.innerHeight)
+    await expect(dialog.querySelector('[data-ui-navigation-drag-handle]')).toBeVisible()
   }
   else {
     expect(stack.getBoundingClientRect().width).toBeLessThan(window.innerWidth)
@@ -95,6 +98,10 @@ Navigation.test('proves navigation, dismissal, focus, and responsive presentatio
   dialog = canvas.getByRole('dialog', { name: '项目详情' })
   await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'forward')
   await waitFor(() => expect(within(dialog).getByRole('heading', { name: '项目详情' })).toBeVisible())
+
+  if (window.matchMedia('(width < 40rem)').matches)
+    await waitFor(() => expect(stack.getBoundingClientRect().height).toBeGreaterThan(360))
+
   await userEvent.click(within(dialog).getByRole('button', { name: '返回媒体库' }))
   await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'back')
   dialog = canvas.getByRole('dialog', { name: '媒体库' })

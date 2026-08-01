@@ -74,7 +74,7 @@ const PreferencesContent = defineComponent({
             class={[
               'border-base-content/10 flex shrink-0 flex-col gap-1 self-start sm:w-40 sm:border-r sm:pr-3',
               showMenu
-                ? 'w-full border-b pb-2 sm:border-b-0 sm:pb-0'
+                ? 'w-full'
                 : 'hidden sm:flex',
             ]}
           >

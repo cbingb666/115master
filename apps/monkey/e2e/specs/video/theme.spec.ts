@@ -60,20 +60,38 @@ test.describe('主题与设置', () => {
     expect(errors).toEqual([])
   })
 
-  test('移动端偏好设置使用全屏导航栈', async ({ page }) => {
+  test('移动端偏好设置使用 Dialog 式导航 Sheet', async ({ page }) => {
     const errors = watch(page)
     await page.setViewportSize({ width: 390, height: 844 })
     await setupVideo(page, { gmValues: { USER_SETTINGS: { theme: 'light' } } })
     await page.goto(MASTER_URL)
 
+    const menu = page.getByRole('button', { name: '打开菜单' })
+    const sider = page.locator('[data-ui-mobile-sider]')
+    await menu.click()
     const trigger = page.locator('button[title="偏好设置"]:visible')
     await trigger.click()
 
-    const dialog = page.getByRole('dialog', { name: '偏好设置' })
+    const dialog = page.locator('.ui-navigation-stack-dialog')
+    const panel = dialog.locator('[data-ui-dialog-panel]')
     const stack = dialog.locator('[data-ui-navigation-stack]')
+    const handle = dialog.locator('[data-ui-navigation-drag-handle]')
     await expect(dialog.getByRole('heading', { name: '偏好设置' })).toBeVisible()
-    await expect(stack).toHaveCSS('width', '390px')
-    await expect(stack).toHaveCSS('height', '844px')
+    await expect(stack).toHaveAttribute('data-ui-navigation-mobile-presentation', 'sheet')
+    await expect(handle).toBeVisible()
+    await expect(sider).not.toBeInViewport()
+    await expect(panel).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
+
+    const bounds = await panel.boundingBox()
+
+    if (!bounds)
+      throw new Error('Navigation Sheet did not expose measurable bounds.')
+    expect(bounds.x).toBe(0)
+    expect(bounds.width).toBe(390)
+    expect(bounds.y + bounds.height).toBe(844)
+    expect(bounds.height).toBe(633)
+    await expect(panel).toHaveCSS('border-top-left-radius', '32px')
+    await expect(panel).toHaveCSS('border-bottom-left-radius', '0px')
 
     await dialog.getByRole('button', { name: '外观' }).click()
     await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'forward')
@@ -84,9 +102,16 @@ test.describe('主题与设置', () => {
     await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'back')
     await expect(page.getByRole('dialog', { name: '偏好设置' })).toBeVisible()
 
-    await page.getByRole('button', { name: '关闭偏好设置' }).click()
+    const grip = await handle.boundingBox()
+
+    if (!grip)
+      throw new Error('Navigation Sheet drag handle did not expose measurable bounds.')
+    await page.mouse.move(grip.x + grip.width / 2, grip.y + grip.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(grip.x + grip.width / 2, grip.y + grip.height / 2 + 160, { steps: 5 })
+    await page.mouse.up()
     await expect(dialog).toBeHidden()
-    await expect(trigger).toBeFocused()
+    await expect(menu).toBeFocused()
     expect(errors).toEqual([])
   })
 })
