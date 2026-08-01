@@ -1,9 +1,8 @@
-import type { MaybeElement } from '@vueuse/core'
 import type { PropType } from 'vue'
 import type { Action } from '@/types/action'
-import { defineComponent, shallowRef, toValue } from 'vue'
+import { ContextMenu } from '@115master/ui'
+import { defineComponent, toValue } from 'vue'
 import { Icon } from '@/icons'
-import { ContextMenu } from '../ContextMenu'
 
 /**
  * 文件上下文菜单
@@ -41,13 +40,10 @@ const FileContextMenu = defineComponent({
     },
   },
   setup: (props) => {
-    const contextmenuRef = shallowRef<MaybeElement>()
-
     return () => (
       <ContextMenu
-        ref={contextmenuRef}
+        open={props.show}
         position={props.position}
-        show={props.show}
         onClose={() => {
           props.onClose?.()
         }}
@@ -61,10 +57,10 @@ const FileContextMenu = defineComponent({
               return null
             return (
               <>
-                <ul key={index}>
+                <ul key={index} role="group">
                   {
                     items.map((item, index) => (
-                      <li key={index}>
+                      <li key={index} role="none">
                         <button
                           type="button"
                           role="menuitem"
@@ -94,7 +90,7 @@ const FileContextMenu = defineComponent({
                   }
                 </ul>
                 {index < props.actionConfig.length - 1 && (
-                  <hr class="border-base-content/10 mx-2 my-1" />
+                  <hr class="border-base-content/10 mx-2 my-1" role="separator" />
                 )}
               </>
             )

@@ -143,7 +143,7 @@ test.describe('选择与操作', () => {
     await expect(page.getByTitle('退出多选')).toContainText('1 项')
 
     /** 菜单项与 actionConfig 一致（根目录无「提到上级」） */
-    const items = menu(page).locator('li a')
+    const items = menu(page).getByRole('menuitem')
     await expect(items).toHaveText(['置顶', '星标', '打标签', '移动', '重命名', '删除'])
 
     expect(errors).toEqual([])
@@ -157,7 +157,7 @@ test.describe('选择与操作', () => {
     await expect(rows(page)).toHaveCount(12)
 
     await row(page, '动漫 第01话.mp4').click({ button: 'right' })
-    const items = menu(page).locator('li a')
+    const items = menu(page).getByRole('menuitem')
     await expect(items).toHaveText(['置顶', '星标', '打标签', '移动', '提到上级', '重命名', '删除'])
 
     expect(errors).toEqual([])

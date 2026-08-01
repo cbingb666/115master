@@ -63,6 +63,29 @@
       ]
     },
     {
+      "id": "ui-contextmenu--contract",
+      "docs": "ui-contextmenu--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-contextmenu--contract:proves-positioning-focus-host-ownership-and-dismissal"
+      ],
+      "ready": "button:has-text(\"右键打开菜单\")",
+      "outcomes": [
+        {
+          "selector": "[data-ui-context-menu-result]",
+          "text": "idle"
+        },
+        {
+          "selector": "[role=\"menu\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
       "id": "ui-tooltip--interaction",
       "docs": "ui-tooltip--docs",
       "component": true,

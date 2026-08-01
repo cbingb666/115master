@@ -1,8 +1,8 @@
 import type { PropType } from 'vue'
 import type { Action } from '@/types/action'
+import { ContextMenu } from '@115master/ui'
 import { defineComponent, Fragment, toValue } from 'vue'
 import { Icon } from '@/icons'
-import { ContextMenu } from '../ContextMenu'
 
 /**
  * 通用上下文菜单：ContextMenu 壳 + `Action[][]` 数据驱动渲染。
@@ -32,8 +32,8 @@ const ActionMenu = defineComponent({
   setup: (props) => {
     return () => (
       <ContextMenu
+        open={props.show}
         position={props.position}
-        show={props.show}
         onClose={() => props.onClose?.()}
       >
         {props.actionConfig.map((group, index) => {
@@ -44,9 +44,9 @@ const ActionMenu = defineComponent({
             return null
           return (
             <Fragment key={group.map(item => item.name).join(':')}>
-              <ul>
+              <ul role="group">
                 {items.map(item => (
-                  <li key={item.name}>
+                  <li key={item.name} role="none">
                     <button
                       type="button"
                       role="menuitem"
@@ -71,7 +71,7 @@ const ActionMenu = defineComponent({
                 ))}
               </ul>
               {index < props.actionConfig.length - 1 && (
-                <hr class="border-base-content/10 mx-2 my-1" />
+                <hr class="border-base-content/10 mx-2 my-1" role="separator" />
               )}
             </Fragment>
           )

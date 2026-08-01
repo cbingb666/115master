@@ -60,12 +60,16 @@ _Avoid_: 组件基础 Story、重复 Story
 在锚点获得悬停或键盘焦点时显示的非交互补充说明；内容不能承载完成任务所必需的信息或操作。
 _Avoid_: Popover、菜单、可点击提示
 
+**Context Menu**：
+由坐标与受控 open 状态驱动的临时操作表面；统一负责 Overlay Host、视口避让、滚动锁定、焦点循环与关闭语义，菜单项内容由应用通过 slot 提供。
+_Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
+
 **Overlay Host**：
 位于当前主题作用域内、供临时浮层脱离裁切上下文渲染的共享宿主。
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、服务与类型集合；组件包括 Button、Pill、Tooltip、Watermark、Dialog、DialogHost 与 OverlayHost，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、服务与类型集合；组件包括 Button、Pill、Tooltip、ContextMenu、Watermark、Dialog、DialogHost 与 OverlayHost，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：

@@ -7,6 +7,13 @@ export type {
   ButtonType,
   ButtonVariant,
 } from './components/Button/Button'
+export { ContextMenu } from './components/ContextMenu/ContextMenu'
+export type {
+  ContextMenuCloseReason,
+  ContextMenuPosition,
+  ContextMenuProps,
+  ContextMenuTarget,
+} from './components/ContextMenu/ContextMenu'
 export { Dialog } from './components/Dialog/Dialog'
 export type {
   DialogCloseReason,
