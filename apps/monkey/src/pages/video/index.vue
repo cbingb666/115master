@@ -152,11 +152,12 @@ import XPlayer from '@/components/XPlayer/index.vue'
 import { controlStyles } from '@/components/XPlayer/styles/common'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { PLUS_VERSION } from '@/constants'
+import { useMoveAction } from '@/hooks/useDriveAction/useMoveAction'
 import { useLockFn } from '@/hooks/useLockFn'
 import { I, Icon } from '@/icons'
+import { useDriveStore } from '@/store/driveList'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { clsx } from '@/utils/clsx'
-import { core115 } from '@/utils/core115'
 import { drive115 } from '@/utils/drive115Instance'
 import { getAvNumber } from '@/utils/getNumber'
 import { appLogger } from '@/utils/logger'
@@ -255,6 +256,10 @@ const DataPlaylist = useDataPlaylist()
 const DataHistory = useDataHistory()
 /** 收藏 */
 const DataMark = useMark(DataFileInfo)
+/** 移动操作 */
+const moveAction = useMoveAction()
+/** drive 列表 store（移动后最小化刷新缓存用） */
+const driveStore = useDriveStore()
 /** 是否正在切换视频 */
 const changeing = shallowRef(false)
 /** 视频尺寸 */
@@ -318,60 +323,53 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
         return
       }
 
-      // 确保已加载 SDK
-      await core115.load()
-
-      // 检查 Core SDK 是否可用
-      if (!core115.global.Core?.TreeDG) {
-        logger.error('Core SDK not available')
-        return
-      }
-
-      // 设置 Core.FileConfig，确保移动操作能正确执行
-      if (core115.global.Core.FileConfig) {
-        core115.global.Core.FileConfig.aid = Number(DataFileInfo.state.parent_id) || 0
-        core115.global.Core.FileConfig.cid = params.cid.value || DataFileInfo.state.parent_id || '0'
-      }
-
-      /** 创建模拟 jQuery 对象 */
-      const fileObject = core115.createMockjQueryObject({
-        file_type: '1', // 1=文件, 0=目录
-        file_id: DataFileInfo.state.file_id,
-        cate_id: DataFileInfo.state.parent_id || '',
-        area_id: '0', // 默认 area
-      })
-
       logger.info('Starting file move operation:', {
         fileId: DataFileInfo.state.file_id,
         fileName: DataFileInfo.state.file_name,
         parentId: DataFileInfo.state.parent_id,
       })
 
-      // 调用 115 官方 SDK 的移动功能
-      core115.global.Core.TreeDG.Show({
-        list: [fileObject],
-        type: 'move',
-        has_dir: false,
-        callback: async (result?: any) => {
-          logger.info('File move callback triggered', result)
+      /** 当前文件项（移动 API 与列表缓存增量操作用） */
+      const fileItem = { fc: 1, fid: DataFileInfo.state.file_id } as Share.Entity.FilesItem
+      /** 源目录（移动后 DataFileInfo 会刷新，需提前捕获） */
+      const sourceCid = params.cid.value || DataFileInfo.state.parent_id || '0'
 
-          /** 刷新文件信息，获取新的 parent_id */
-          await DataFileInfo.execute(0, params.pickCode.value ?? '')
+      /** 复用 masterapp 的移动功能（文件浏览器对话框 + 移动 API） */
+      const { success, pid } = await moveAction.moveBatch(sourceCid, [fileItem])
+      if (!success) {
+        return
+      }
 
-          /** 使用新的 parent_id 刷新播放列表，获取新路径 */
-          const newParentId = DataFileInfo.state.parent_id
-          if (newParentId) {
-            await DataPlaylist.execute(0, newParentId)
-            /** 更新 cid */
-            params.cid.value = newParentId
-          }
+      /**
+       * 最小化刷新 drive 列表：
+       * 离开 drive 页后 nav 冻结在进入时的目录，与源目录一致则增量移除缓存页中的该项（目标目录失效）；
+       * 不一致（如直接打开播放页）则失效源/目标目录缓存，返回列表时重拉
+       */
+      if (driveStore.nav.cid === sourceCid) {
+        driveStore.applyRemoveMutation([fileItem], pid)
+      }
+      else {
+        driveStore.invalidate('all', sourceCid)
+        driveStore.invalidate('star', sourceCid)
+        driveStore.invalidate('all', pid)
+        driveStore.invalidate('star', pid)
+      }
 
-          /** 显示成功提示 */
-          ctx.hud?.show({
-            title: '移动成功',
-            icon: I.MOVE,
-          })
-        },
+      /** 刷新文件信息，获取新的 parent_id */
+      await DataFileInfo.execute(0, params.pickCode.value ?? '')
+
+      /** 使用新的 parent_id 刷新播放列表，获取新路径 */
+      const newParentId = DataFileInfo.state.parent_id
+      if (newParentId) {
+        await DataPlaylist.execute(0, newParentId)
+        /** 更新 cid */
+        params.cid.value = newParentId
+      }
+
+      /** 显示成功提示 */
+      ctx.hud?.show({
+        title: '移动成功',
+        icon: I.MOVE,
       })
     },
   },
