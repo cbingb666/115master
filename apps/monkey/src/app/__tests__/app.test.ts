@@ -26,10 +26,17 @@ vi.mock('@115master/ui', async () => {
           type: String,
           required: true,
         },
+        opacity: {
+          type: Number,
+          default: 0.18,
+        },
       },
       setup: (props, { slots }) => () => h(
         'div',
-        { 'data-watermark-content': props.content },
+        {
+          'data-watermark-content': props.content,
+          'data-watermark-opacity': props.opacity,
+        },
         slots.default?.(),
       ),
     }),
@@ -80,6 +87,7 @@ it('shows the userscript name as the MASTER development watermark', () => {
 
   expect(import.meta.env.DEV).toBe(true)
   expect(watermark?.dataset.watermarkContent).toBe('115Master-dev-test')
+  expect(watermark?.dataset.watermarkOpacity).toBe('0.09')
   expect(watermark?.classList).toContain('fixed')
   expect(watermark?.classList).toContain('inset-0')
   expect(watermark?.classList).toContain('pointer-events-none')

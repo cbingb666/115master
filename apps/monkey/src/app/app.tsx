@@ -55,6 +55,7 @@ const App = defineComponent({
           {import.meta.env.DEV && (
             <Watermark
               content={GM_info.script.name}
+              opacity={0.09}
               class="ui-z-watermark pointer-events-none fixed inset-0"
             />
           )}

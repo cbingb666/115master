@@ -95,7 +95,15 @@ Contract.test('proves repeated decoration and content interaction', async ({ can
     backgroundRepeat: 'repeat',
     pointerEvents: 'none',
   })
-  await expect(marks[0].style.getPropertyValue('--ui-watermark-image')).toContain('data:image/svg+xml')
+  const image = decodeURIComponent(marks[0].style.getPropertyValue('--ui-watermark-image'))
+  await expect(image).toContain('data:image/svg+xml')
+  await expect(image.match(/<g transform=/g)).toHaveLength(3)
+  const tileWidth = Number(image.match(/viewBox="0 0 ([\d.]+)/)?.[1])
+  const textXs = [...image.matchAll(/<text x="([\d.]+)"/g)].map(match => Number(match[1]))
+  await expect(textXs).toHaveLength(3)
+  await expect(textXs[0] * 2).toBeCloseTo(tileWidth)
+  await expect(textXs[1]).toBeCloseTo(tileWidth)
+  await expect(textXs[2]).toBe(0)
   await expect(marks[1].style.getPropertyValue('--ui-watermark-image')).not.toEqual(
     marks[0].style.getPropertyValue('--ui-watermark-image'),
   )

@@ -102,13 +102,30 @@ export const Watermark = defineComponent({
       const leading = size * 1.4
       const width = Math.max(...lines.value.map(line => measure(line, size))) + size * 2
       const height = lines.value.length * leading
-      const tileWidth = width + Math.max(0, finite(props.gap[0], 96))
-      const tileHeight = height + Math.max(0, finite(props.gap[1], 72))
-      const center = tileHeight / 2 - (lines.value.length - 1) * leading / 2
-      const text = lines.value.map((line, index) => (
-        `<text x="${tileWidth / 2}" y="${center + index * leading}">${escape(line)}</text>`
-      )).join('')
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${tileWidth}" height="${tileHeight}" viewBox="0 0 ${tileWidth} ${tileHeight}"><g transform="rotate(${finite(props.rotate, -22)} ${tileWidth / 2} ${tileHeight / 2})" fill="${escape(props.color)}" fill-opacity="${clamp(finite(props.opacity, 0.18), 0, 1)}" font-family="${escape(props.fontFamily)}" font-size="${size}" font-weight="${escape(String(props.fontWeight))}" text-anchor="middle" dominant-baseline="middle">${text}</g></svg>`
+      const angle = finite(props.rotate, -22)
+      const radians = angle * Math.PI / 180
+      const sine = Math.abs(Math.sin(radians))
+      const cosine = Math.abs(Math.cos(radians))
+      const rotatedWidth = width * cosine + height * sine
+      const rotatedHeight = width * sine + height * cosine
+      const cellWidth = rotatedWidth + Math.max(0, finite(props.gap[0], 96))
+      const cellHeight = rotatedHeight + Math.max(0, finite(props.gap[1], 72))
+      const tileWidth = cellWidth
+      const tileHeight = cellHeight * 2
+      const centers = [
+        [cellWidth / 2, cellHeight / 2],
+        [cellWidth, cellHeight * 1.5],
+        [0, cellHeight * 1.5],
+      ]
+      const text = centers.map((center) => {
+        const top = center[1] - (lines.value.length - 1) * leading / 2
+        const content = lines.value.map((line, index) => (
+          `<text x="${center[0]}" y="${top + index * leading}">${escape(line)}</text>`
+        )).join('')
+
+        return `<g transform="rotate(${angle} ${center[0]} ${center[1]})">${content}</g>`
+      }).join('')
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${tileWidth}" height="${tileHeight}" viewBox="0 0 ${tileWidth} ${tileHeight}"><g fill="${escape(props.color)}" fill-opacity="${clamp(finite(props.opacity, 0.18), 0, 1)}" font-family="${escape(props.fontFamily)}" font-size="${size}" font-weight="${escape(String(props.fontWeight))}" text-anchor="middle" dominant-baseline="middle">${text}</g></svg>`
 
       return {
         image: `url("data:image/svg+xml,${encodeURIComponent(svg)}")`,
