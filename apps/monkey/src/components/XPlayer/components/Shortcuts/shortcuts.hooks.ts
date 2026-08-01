@@ -81,6 +81,14 @@ export function useShortcutsActionListener(
     if (recordState.isRecording.value)
       return
 
+    // 弹窗打开时不处理快捷键，避免吞掉弹窗内的交互（如 Space 激活按钮）
+    if (ctx.popupManager.hasOpenPopup.value)
+      return
+
+    // 事件发生在原生模态弹窗内时不处理快捷键（如全局搜索 Dialog）
+    if (event.target instanceof Element && event.target.closest('dialog[open]'))
+      return
+
     // 如果目标是可编辑元素，不处理快捷键
     if (isEditableElement(event.target))
       return
@@ -101,6 +109,14 @@ export function useShortcutsActionListener(
 
   function handleKeyup(event: KeyboardEvent) {
     if (recordState.isRecording.value)
+      return
+
+    // 弹窗打开时不处理快捷键，避免吞掉弹窗内的交互（如 Space 激活按钮）
+    if (ctx.popupManager.hasOpenPopup.value)
+      return
+
+    // 事件发生在原生模态弹窗内时不处理快捷键（如全局搜索 Dialog）
+    if (event.target instanceof Element && event.target.closest('dialog[open]'))
       return
 
     // 如果目标是可编辑元素，不处理快捷键
