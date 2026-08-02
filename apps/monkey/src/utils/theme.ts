@@ -34,8 +34,13 @@ function applyToDOM(theme: ResolvedTheme) {
   const root = document.getElementById(APP_ROOT_ID)
   if (!root)
     return
+
+  const background = APP_BG[theme]
   root.setAttribute('data-theme', theme)
-  root.style.backgroundColor = APP_BG[theme]
+  document.documentElement.style.colorScheme = theme
+  document.documentElement.style.backgroundColor = background
+  document.body.style.backgroundColor = background
+  root.style.backgroundColor = background
 }
 
 /** 同步当前主题到 DOM（不修改主题模式） */

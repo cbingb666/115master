@@ -19,6 +19,15 @@ test.describe('主题与设置', () => {
     await page.goto(videoUrl(EPISODES[0].pc))
 
     await expect(page.locator('#my-app')).toHaveAttribute('data-theme', 'dark')
+    await expect.poll(() => page.evaluate(() => ({
+      app: getComputedStyle(document.querySelector('#my-app')!).backgroundColor,
+      body: getComputedStyle(document.body).backgroundColor,
+      html: getComputedStyle(document.documentElement).backgroundColor,
+    }))).toEqual({
+      app: 'rgb(0, 0, 0)',
+      body: 'rgb(0, 0, 0)',
+      html: 'rgb(0, 0, 0)',
+    })
     expect(errors).toEqual([])
   })
 
