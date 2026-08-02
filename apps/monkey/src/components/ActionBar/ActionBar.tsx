@@ -93,7 +93,7 @@ const ActionBar = defineComponent({
                           class={[
                             'loading loading-spinner loading-md',
                             'absolute inset-0 m-auto',
-                            'transition-all',
+                            'transition-all ease-[var(--ui-ease-standard)]',
                             isLoading ? 'opacity-100' : 'opacity-0',
                           ]}
                         />

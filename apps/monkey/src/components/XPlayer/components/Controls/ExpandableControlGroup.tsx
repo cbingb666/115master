@@ -32,14 +32,14 @@ const ExpandableControlGroup = defineComponent({
         props.direction === 'left' ? 'justify-start' : 'justify-end',
         'w-10',
         'group/control',
-        'transition-[width] duration-300 ease-[var(--app-ease-in-out-expo)]',
+        'transition-[width] duration-300 ease-[var(--ui-ease-move)]',
       ],
       expandedContent: [
         'flex items-center gap-1',
         'overflow-hidden',
         'opacity-0',
         'w-0',
-        'transition-[opacity,width,margin] duration-300 ease-[var(--app-ease-in-out-expo)]',
+        'transition-[opacity,width,margin] duration-300 ease-[var(--ui-ease-move)]',
         'group-data-[expanded="true"]/control:opacity-100',
       ],
       defaultContent: [

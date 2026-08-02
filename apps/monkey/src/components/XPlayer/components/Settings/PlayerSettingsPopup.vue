@@ -105,7 +105,7 @@ const styles = clsx({
     'text-lg font-bold',
   ],
   close: [
-    'transition-colors',
+    'transition-colors ease-[var(--ui-ease-standard)]',
   ],
 
   // ===== 标签栏 =====

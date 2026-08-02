@@ -26,7 +26,7 @@ const styles = clsx({
   content: [
     'absolute bottom-[3%] left-1/2 mx-auto max-w-[80%] px-6',
     'bg-black/60 text-center whitespace-pre-wrap text-white',
-    'transition-transform duration-200 ease-in-out',
+    'transition-transform duration-200 ease-[var(--ui-ease-move)]',
     'rounded-xl',
   ],
 })

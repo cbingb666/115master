@@ -91,7 +91,7 @@ const styles = clsx({
       'w-full gap-2',
       'px-3 py-2',
       'hover:bg-base-content/10',
-      'transition-colors',
+      'transition-colors ease-[var(--ui-ease-standard)]',
     ],
     label: 'line-clamp-1 text-sm font-medium',
   },

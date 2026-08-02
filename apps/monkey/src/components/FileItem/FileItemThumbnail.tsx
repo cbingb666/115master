@@ -86,7 +86,7 @@ const FileItemThumbnail = defineComponent({
         >
           <Image
             class="h-full w-full"
-            imgClass="transition-all duration-300 ease-[cubic-bezier(0.33_0_0.67_1)] group-data-[view-type=card]:group-hover:scale-105 group-data-[view-type=card]:data-[portrait=true]:object-contain"
+            imgClass="transition-all duration-300 ease-[var(--ui-ease-move)] group-data-[view-type=card]:group-hover:scale-105 group-data-[view-type=card]:data-[portrait=true]:object-contain"
             src={props.videoCover.img}
             fit="cover"
             draggable={false}
@@ -103,7 +103,7 @@ const FileItemThumbnail = defineComponent({
             group-data-[view-type=list]:ring-base-content/10 cursor-grab rounded-md
             group-data-[view-type=card]:relative
             group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[70%]
-            group-data-[view-type=card]:transition-all group-data-[view-type=list]:size-14
+            group-data-[view-type=card]:transition-all group-data-[view-type=card]:ease-[var(--ui-ease-move)] group-data-[view-type=list]:size-14
             group-data-[view-type=list]:ring-1
           "
           imgClass="group-data-[view-type=card]:object-contain"
@@ -121,7 +121,7 @@ const FileItemThumbnail = defineComponent({
         <Image
           class="
             relative cursor-grab
-            group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all
+            group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all group-data-[view-type=card]:ease-[var(--ui-ease-move)]
             group-data-[view-type=list]:size-14
           "
           src={iconUrl}
@@ -156,7 +156,7 @@ const FileItemThumbnail = defineComponent({
         <div
           class="
             relative cursor-grab object-contain
-            group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all
+            group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all group-data-[view-type=card]:ease-[var(--ui-ease-move)]
             group-data-[view-type=list]:size-14
           "
           onMousedown={props.onMouseDown}

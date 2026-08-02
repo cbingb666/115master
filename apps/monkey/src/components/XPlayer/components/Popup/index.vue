@@ -1,8 +1,8 @@
 <template>
   <Teleport :to="portalContainer" :disabled="!portalContainer">
     <Transition
-      enter-active-class="transition-opacity duration-200"
-      leave-active-class="transition-opacity duration-200"
+      enter-active-class="transition-opacity duration-200 ease-[var(--ui-ease-enter)]"
+      leave-active-class="transition-opacity duration-200 ease-[var(--ui-ease-exit)]"
       enter-from-class="opacity-0"
       leave-to-class="opacity-0"
       @enter="onEnter"

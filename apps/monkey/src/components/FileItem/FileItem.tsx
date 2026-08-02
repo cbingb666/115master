@@ -180,7 +180,7 @@ const FileItem = defineComponent({
             flex
             min-w-0
             rounded-xs
-            transition
+            transition ease-[var(--ui-ease-standard)]
             data-[checked=true]:bg-linear-to-br
             data-[dragging=true]:opacity-30
             data-[dropzone=true]:ring-2

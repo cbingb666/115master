@@ -33,7 +33,7 @@ async function handleCopy() {
 
 /** 样式常量定义 */
 const styles = clsx({
-  button: 'transition-colors duration-200 ease-in-out',
+  button: 'transition-colors duration-200 ease-[var(--ui-ease-standard)]',
   text: 'text-xs whitespace-nowrap',
 })
 </script>

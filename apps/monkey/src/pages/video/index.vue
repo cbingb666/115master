@@ -199,7 +199,7 @@ const styles = clsx({
   // 播放器样式
   player: {
     container:
-      ['relative flex h-screen w-full transform-gpu items-center justify-center transition-all duration-200 ease-[var(--app-ease-in-out-cubic)] will-change-contents'],
+      ['relative flex h-screen w-full transform-gpu items-center justify-center transition-all duration-200 ease-[var(--ui-ease-move)] will-change-contents'],
     containerFold: [
       'w-(--app-xplayer-width)!',
     ],
@@ -211,7 +211,7 @@ const styles = clsx({
       'ui-z-scrim fixed inset-0',
       'bg-black/40',
       'cursor-pointer',
-      'transition-opacity duration-300 ease-[var(--app-ease-in-out-sine)]',
+      'transition-opacity duration-300 ease-[var(--ui-ease-standard)]',
       'pointer-events-none opacity-0',
       'data-[visible=true]:opacity-100',
       'data-[visible=true]:pointer-events-auto',
@@ -220,7 +220,7 @@ const styles = clsx({
       'ui-z-sheet fixed inset-y-0 right-0',
       'w-(--app-playlist-width)',
       'h-screen',
-      'transition-transform duration-300 ease-[var(--app-ease-out-cubic)]',
+      'transition-transform duration-300 ease-[var(--ui-ease-move)]',
       'translate-x-full',
       'data-[visible=true]:translate-x-0',
     ],

@@ -12,6 +12,10 @@ _Avoid_: Monkey 组件仓库、共享组件堆
 为视觉决策命名的语义值，是主题、组件与材质共享视觉语言的最小单位。
 _Avoid_: 魔法数、样式常量
 
+**Motion Token**：
+由 `--ui-ease-*` 公共 Token 承载的动效意图；standard 处理轻量状态变化，enter / exit 处理进入与退出，move 处理结构性几何变化，settle 处理快速抵达终点的反馈，snap 处理轻微越界回弹的吸附落位，linear 处理匀速过程。调用方按交互语义选择，不依赖数学曲线族、硬编码 timing function 或局部别名。
+_Avoid_: Sine / Quint / Expo 命名、裸 cubic-bezier、应用曲线表、Token 适配层
+
 **公共 Token**：
 供应用、组件与材质共同消费的稳定语义值；已有语义直接沿用 daisyUI，只为缺失概念扩展 UI 命名空间。
 _Avoid_: Token 别名、重复语义变量

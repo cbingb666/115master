@@ -60,7 +60,7 @@ const TagFormContent = defineComponent({
                 title={c === LabelColor.Blank ? '无色' : c}
                 aria-label={c === LabelColor.Blank ? '无色' : c}
                 class={[
-                  'size-7 border-2 transition-transform',
+                  'size-7 border-2 transition-transform ease-[var(--ui-ease-move)]',
                   props.form.color === c
                     ? 'border-primary ring-primary/30 scale-110 ring-2'
                     : 'border-base-content/10 hover:border-base-content/30',

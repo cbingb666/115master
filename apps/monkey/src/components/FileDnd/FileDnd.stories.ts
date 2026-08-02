@@ -118,7 +118,7 @@ export const FileDrop: Story = {
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FileDndTarget cid="archive" @drop="drop('归档文件夹', $event)">
             <template #default="{ targetProps, hovering }">
-              <div v-bind="targetProps" :data-drop-zone="hovering" class="card card-sm card-border data-[drop-zone=true]:border-primary data-[drop-zone=true]:bg-primary/10 min-h-24 transition-colors">
+              <div v-bind="targetProps" :data-drop-zone="hovering" class="card card-sm card-border data-[drop-zone=true]:border-primary data-[drop-zone=true]:bg-primary/10 min-h-24 transition-colors ease-[var(--ui-ease-standard)]">
                 <div class="card-body items-center justify-center">
                   <span class="font-medium">归档文件夹</span>
                   <span class="text-base-content/50 text-xs">文件夹目标</span>

@@ -113,7 +113,7 @@ export const LoadingError = defineComponent({
       text-base-content/70 flex flex-col items-center justify-center
       ${containerGapClasses[props.size]}
       ${!props.noPadding && props.size !== 'mini' ? 'p-2' : ''}
-      animate-in fade-in duration-300
+      animate-in fade-in duration-300 [animation-timing-function:var(--ui-ease-enter)]
     `.replace(/\s+/g, ' ').trim())
 
     const iconClass = computed(() => `

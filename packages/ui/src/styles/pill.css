@@ -51,10 +51,10 @@
     cursor: pointer;
     outline-offset: 2px;
     transition:
-      color 150ms ease,
-      background-color 150ms ease,
-      border-color 150ms ease,
-      box-shadow 150ms ease;
+      color 150ms var(--ui-ease-standard),
+      background-color 150ms var(--ui-ease-standard),
+      border-color 150ms var(--ui-ease-standard),
+      box-shadow 150ms var(--ui-ease-standard);
   }
 
   a.ui-pill:focus-visible {

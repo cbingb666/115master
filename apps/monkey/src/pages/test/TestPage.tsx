@@ -41,7 +41,7 @@ export default defineComponent({
                 {tests.map(t => (
                   <div
                     key={t.key}
-                    class="bg-base-200/50 hover:bg-base-200 cursor-pointer rounded-xl p-6 transition-colors"
+                    class="bg-base-200/50 hover:bg-base-200 cursor-pointer rounded-xl p-6 transition-colors ease-[var(--ui-ease-standard)]"
                     onClick={() => active.value = t.key}
                   >
                     <Icon name={t.icon} class="text-primary mb-3 text-3xl" />

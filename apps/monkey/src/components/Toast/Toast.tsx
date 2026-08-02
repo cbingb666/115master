@@ -119,7 +119,7 @@ export const Toast = defineComponent({
       const baseClass = `
         alert ui-glass-floating mb-3
         app-animate-slide-in-right
-        transition-all duration-300
+        transition-all duration-300 ease-[var(--ui-ease-standard)]
         flex items-center
         min-w-80 max-w-md
         cursor-pointer
@@ -178,8 +178,8 @@ export const Toast = defineComponent({
               flex-none
               shrink-0
               cursor-pointer
-              rounded-lg transition-all
-              duration-200
+              rounded-lg transition-all duration-200
+              ease-[var(--ui-ease-standard)]
               hover:scale-110 hover:bg-black/10
             "
             onClick={(e: Event) => {

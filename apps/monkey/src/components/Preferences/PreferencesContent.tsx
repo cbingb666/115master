@@ -83,7 +83,7 @@ const PreferencesContent = defineComponent({
                 key={section.id}
                 type="button"
                 class={[
-                  'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
+                  'flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ease-[var(--ui-ease-standard)]',
                   display.value === section.id
                     ? 'bg-base-content/10 text-base-content font-medium'
                     : 'text-base-content/60 hover:bg-base-content/5 hover:text-base-content',

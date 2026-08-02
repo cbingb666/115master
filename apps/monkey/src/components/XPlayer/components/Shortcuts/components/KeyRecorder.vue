@@ -67,7 +67,7 @@ const styles = clsx({
     'bg-base-200',
     'border-base-content/20 border-1',
     'tooltip tooltip-bottom tooltip-error',
-    'transition-all',
+    'transition-all ease-[var(--ui-ease-standard)]',
     'hover:border-base-content/50',
     'data-[recording="true"]:border-primary/70',
     'data-[recording="true"]:ring-3',

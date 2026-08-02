@@ -70,7 +70,7 @@ const TagItem = defineComponent({
         <li
           ref={itemRef}
           class={[
-            'group flex cursor-pointer items-center rounded-lg px-3 py-3 transition-colors sm:rounded-md sm:px-3 sm:py-2',
+            'group flex cursor-pointer items-center rounded-lg px-3 py-3 transition-colors ease-[var(--ui-ease-standard)] sm:rounded-md sm:px-3 sm:py-2',
             // 选中：primary 高亮（含 hover）；未选中：卡片灰底 / 行 hover 灰底
             props.selected
               ? 'bg-primary/10 sm:bg-primary/10'
@@ -82,7 +82,7 @@ const TagItem = defineComponent({
           <span
             data-checkbox-slot
             class={[
-              'flex flex-none items-center overflow-hidden transition-[width,opacity] duration-300',
+              'flex flex-none items-center overflow-hidden transition-[width,opacity] duration-300 ease-[var(--ui-ease-move)]',
               props.selectMode
                 ? 'w-8 opacity-100'
                 : 'pointer-events-none w-0 opacity-0',
@@ -114,7 +114,7 @@ const TagItem = defineComponent({
           </span>
 
           {/* 操作按钮：移动端常显；桌面端 hover/focus 时显现（opacity 保持布局稳定） */}
-          <div class="ml-3 flex flex-none items-center gap-0.5 transition-all sm:pointer-events-none sm:opacity-0 sm:group-focus-within:pointer-events-auto sm:group-focus-within:opacity-100 sm:group-hover:pointer-events-auto sm:group-hover:opacity-100">
+          <div class="ml-3 flex flex-none items-center gap-0.5 transition-all ease-[var(--ui-ease-standard)] sm:pointer-events-none sm:opacity-0 sm:group-focus-within:pointer-events-auto sm:group-focus-within:opacity-100 sm:group-hover:pointer-events-auto sm:group-hover:opacity-100">
             <Button
               variant="ghost"
               size="sm"

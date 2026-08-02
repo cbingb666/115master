@@ -72,8 +72,8 @@ const MobileSider = defineComponent({
             class="
               ui-z-scrim
               fixed inset-0 bg-black/50
-              transition-opacity
-              duration-300 sm:hidden
+              transition-opacity duration-300
+              ease-[var(--ui-ease-standard)] sm:hidden
             "
             style={{ opacity: isOpen.value ? 1 : 0 }}
             onClick={close}
@@ -95,7 +95,7 @@ const MobileSider = defineComponent({
             rounded-t-2xl
             px-4
             pb-4
-            transition-transform duration-300 ease-out
+            transition-transform duration-300 ease-[var(--ui-ease-move)]
             sm:hidden
           "
           style={{

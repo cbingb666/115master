@@ -73,7 +73,7 @@ const styles = clsx({
         'relative',
         'transition-[height]',
         'duration-100',
-        'ease-linear',
+        'ease-[var(--ui-ease-linear)]',
         'rounded-full',
         'overflow-hidden',
         'bg-white/25',
@@ -82,7 +82,7 @@ const styles = clsx({
   },
   thumb: {
     current:
-      'absolute h-full w-full origin-left bg-white/95 transition-transform duration-100',
+      'absolute h-full w-full origin-left bg-white/95 transition-transform duration-100 ease-[var(--ui-ease-settle)]',
     dragging: 'transition-none',
     hover: 'pointer-events-none absolute h-full w-full origin-left bg-white/15',
   },

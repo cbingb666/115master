@@ -10,7 +10,6 @@
   .ui-navigation-stack {
     --ui-navigation-stack-page-duration: 220ms;
     --ui-navigation-stack-header-duration: 180ms;
-    --ui-navigation-stack-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
 
     display: flex;
     flex: 1 1 auto;
@@ -81,7 +80,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
-    transition: height var(--ui-navigation-stack-page-duration) var(--ui-navigation-stack-easing);
+    transition: height var(--ui-navigation-stack-page-duration) var(--ui-ease-move);
   }
 
   .ui-navigation-stack__page {
@@ -99,8 +98,8 @@
     .ui-navigation-stack-page-replace-leave-active
   ) {
     transition:
-      opacity var(--ui-navigation-stack-page-duration) var(--ui-navigation-stack-easing),
-      transform var(--ui-navigation-stack-page-duration) var(--ui-navigation-stack-easing);
+      opacity var(--ui-navigation-stack-page-duration) var(--ui-ease-move),
+      transform var(--ui-navigation-stack-page-duration) var(--ui-ease-move);
     will-change: opacity, transform;
   }
 
@@ -152,8 +151,8 @@
     .ui-navigation-stack-back-leave-active
   ) {
     transition:
-      opacity var(--ui-navigation-stack-header-duration) var(--ui-navigation-stack-easing),
-      transform var(--ui-navigation-stack-header-duration) var(--ui-navigation-stack-easing);
+      opacity var(--ui-navigation-stack-header-duration) var(--ui-ease-move),
+      transform var(--ui-navigation-stack-header-duration) var(--ui-ease-move);
     will-change: opacity, transform;
   }
 

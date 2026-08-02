@@ -31,7 +31,7 @@ const shouldAnimate = shallowRef(false)
 /** 计算动画类名 */
 const animationClass = computed(() => {
   if (shouldAnimate.value) {
-    return 'animate-[fadeOut_350ms_linear_forwards]'
+    return 'animate-[fadeOut_350ms_var(--ui-ease-linear)_forwards]'
   }
   return ''
 })

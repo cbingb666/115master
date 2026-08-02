@@ -74,7 +74,7 @@ const SortOptions = defineComponent({
             <li key={option.order} class="sm:w-42">
               <div
                 class={{
-                  'flex items-center gap-1 px-3 py-2 transition-colors': true,
+                  'flex items-center gap-1 px-3 py-2 transition-colors ease-[var(--ui-ease-standard)]': true,
                   'bg-primary/15 active:bg-primary/25': on,
                   'active:bg-primary/10': !on,
                 }}

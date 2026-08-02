@@ -12,7 +12,7 @@
     pointer-events: none;
     opacity: 0;
     background: linear-gradient(to bottom, oklch(15% 0.01 260 / 0.3), transparent);
-    animation: header-sticky-gradient linear both;
+    animation: header-sticky-gradient var(--ui-ease-linear) both;
     animation-timeline: scroll(root);
     animation-range: 0 15vh;
   }

@@ -2,6 +2,42 @@
   "name": "UI Storybook",
   "stories": [
     {
+      "id": "foundations-motion--comparison",
+      "docs": "foundations-motion--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "foundations-motion--comparison:plays-the-semantic-motion-comparison"
+      ],
+      "ready": "main[aria-label=\"Motion Token 曲线对比\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-motion-plays]",
+          "text": "0"
+        }
+      ]
+    },
+    {
+      "id": "foundations-motion--magnetic-snap",
+      "docs": "foundations-motion--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "foundations-motion--magnetic-snap:plays-the-magnetic-snap-example"
+      ],
+      "ready": "main[aria-label=\"磁贴吸附 Motion Token\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-motion-snap-plays]",
+          "text": "0"
+        }
+      ]
+    },
+    {
       "id": "ui-navigationstack--navigation",
       "docs": "ui-navigationstack--docs",
       "component": true,

@@ -17,7 +17,7 @@
     border: 0;
     background: transparent;
     opacity: 0;
-    transition: opacity var(--ui-dialog-duration) ease-out;
+    transition: opacity var(--ui-dialog-duration) var(--ui-ease-enter);
   }
 
   .ui-dialog:not([open]) {
@@ -36,10 +36,16 @@
     pointer-events: none;
   }
 
+  .ui-dialog[data-ui-dialog-state='closing'],
+  .ui-dialog[data-ui-dialog-state='closing']::backdrop,
+  .ui-dialog[data-ui-dialog-state='closing'] .ui-dialog__panel {
+    transition-timing-function: var(--ui-ease-exit);
+  }
+
   .ui-dialog::backdrop {
     background: color-mix(in oklab, var(--color-neutral) 42%, transparent);
     opacity: 0;
-    transition: opacity var(--ui-dialog-duration) ease-out;
+    transition: opacity var(--ui-dialog-duration) var(--ui-ease-enter);
   }
 
   .ui-dialog[data-ui-dialog-state='open']::backdrop {
@@ -55,7 +61,7 @@
     border-start-start-radius: var(--radius-box);
     border-start-end-radius: var(--radius-box);
     transform: translateY(1.25rem);
-    transition: transform var(--ui-dialog-duration) ease-out;
+    transition: transform var(--ui-dialog-duration) var(--ui-ease-enter);
   }
 
   .ui-dialog[data-ui-dialog-state='open'] .ui-dialog__panel {

@@ -48,7 +48,7 @@ const Menu = defineComponent({
             <li key={menu.name}>
               <RouterLink
                 class={[
-                  'hover:bg-base-content/5 flex h-10 w-full items-center justify-start gap-3 rounded-full border border-transparent px-4 font-normal transition-colors',
+                  'hover:bg-base-content/5 flex h-10 w-full items-center justify-start gap-3 rounded-full border border-transparent px-4 font-normal transition-colors ease-[var(--ui-ease-standard)]',
                   isActive(menu) && 'bg-base-content/5 border-base-content/5',
                 ]}
                 to={menu.to}

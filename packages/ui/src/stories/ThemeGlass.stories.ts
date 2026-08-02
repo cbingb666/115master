@@ -119,6 +119,13 @@ Tracer.test('proves Theme, Glass, and semantic action contracts', async ({ canva
     '--ui-glass-blur-standard',
     '--ui-glass-blur-strong',
     '--ui-glass-brightness',
+    '--ui-ease-standard',
+    '--ui-ease-enter',
+    '--ui-ease-exit',
+    '--ui-ease-move',
+    '--ui-ease-settle',
+    '--ui-ease-snap',
+    '--ui-ease-linear',
     '--ui-z-dnd',
     '--ui-z-watermark',
   ].every(token => style.getPropertyValue(token).trim())).toBe(true)

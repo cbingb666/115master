@@ -22,8 +22,8 @@
       />
 
       <transition
-        enter-active-class="transition-opacity duration-300 ease-out"
-        leave-active-class="transition-opacity duration-60 ease-out"
+        enter-active-class="transition-opacity duration-300 ease-[var(--ui-ease-enter)]"
+        leave-active-class="transition-opacity duration-60 ease-[var(--ui-ease-exit)]"
         enter-from-class="opacity-0"
         leave-to-class="opacity-0"
       >
@@ -34,8 +34,8 @@
       </transition>
 
       <transition
-        enter-active-class="transition-all duration-300 ease-out"
-        leave-active-class="transition-all duration-60 ease-out"
+        enter-active-class="transition-all duration-300 ease-[var(--ui-ease-enter)]"
+        leave-active-class="transition-all duration-60 ease-[var(--ui-ease-exit)]"
         enter-from-class="opacity-0 scale-0"
         leave-to-class="opacity-0 scale-0"
       >

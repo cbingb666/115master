@@ -56,7 +56,7 @@ const ThemeToggle = defineComponent({
                 btn: [
                   'flex-1 cursor-pointer rounded-lg px-2 py-1.5',
                   'flex items-center justify-center gap-1',
-                  'text-xs transition-colors',
+                  'text-xs transition-colors ease-[var(--ui-ease-standard)]',
                   active
                     ? 'bg-base-100 text-base-content shadow-sm'
                     : 'text-base-content/60 hover:text-base-content',

@@ -54,7 +54,7 @@ const { playerCore } = usePlayerContext()
 
 /* Loading动画基础类 */
 .loading-dot-bounce {
-  animation: loading-bounce 1.4s infinite ease-in-out both;
+  animation: loading-bounce 1.4s infinite var(--ui-ease-standard) both;
 }
 
 /* 延迟动画类 */

@@ -54,7 +54,7 @@ const FileItemCheckbox = defineComponent({
           group-data-[view-type=list]:cursor-pointer group-data-[view-type=list]:items-center
           group-data-[view-type=list]:overflow-hidden
           group-data-[view-type=list]:pr-3 group-data-[view-type=list]:pl-1
-          group-data-[view-type=list]:transition-[width] group-data-[view-type=list]:duration-300
+          group-data-[view-type=list]:transition-[width] group-data-[view-type=list]:duration-300 group-data-[view-type=list]:ease-[var(--ui-ease-move)]
         `,
         props.selectMode
           ? 'group-data-[view-type=list]:w-9'
@@ -67,7 +67,7 @@ const FileItemCheckbox = defineComponent({
               checkbox checkbox-sm
               checked:bg-primary checked:text-primary-content
               checked:border-primary opacity-0
-              transition-opacity duration-300
+              transition-opacity duration-300 ease-[var(--ui-ease-standard)]
               group-data-[select-mode=true]:opacity-100
             `,
             !props.checked && `

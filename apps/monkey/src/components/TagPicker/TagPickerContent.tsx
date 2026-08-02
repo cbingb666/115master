@@ -140,7 +140,7 @@ const TagPickerContent = defineComponent({
                               <li key={tag.id}>
                                 <label
                                   class={[
-                                    'flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition-colors',
+                                    'flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition-colors ease-[var(--ui-ease-standard)]',
                                     'hover:bg-base-content/5',
                                   ]}
                                 >

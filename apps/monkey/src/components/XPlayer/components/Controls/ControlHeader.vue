@@ -1,7 +1,7 @@
 <template>
   <transition
-    enter-active-class="transition-all duration-300 ease-[var(--ease-in-cubic)]"
-    leave-active-class="transition-all duration-300 ease-[var(--ease-in-cubic)]"
+    enter-active-class="transition-all duration-300 ease-[var(--ui-ease-enter)]"
+    leave-active-class="transition-all duration-300 ease-[var(--ui-ease-exit)]"
     enter-from-class="opacity-0"
     leave-to-class="opacity-0"
   >

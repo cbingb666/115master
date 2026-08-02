@@ -255,10 +255,10 @@ export const ContextMenu = defineComponent({
           />
         )}
         <Transition
-          enterActiveClass="duration-100 ease-out"
+          enterActiveClass="duration-100 ease-[var(--ui-ease-enter)]"
           enterFromClass="opacity-0 scale-95"
           enterToClass="opacity-100 scale-100"
-          leaveActiveClass="duration-150 ease-in"
+          leaveActiveClass="duration-150 ease-[var(--ui-ease-exit)]"
           leaveFromClass="opacity-100 scale-100"
           leaveToClass="opacity-0 scale-95"
         >

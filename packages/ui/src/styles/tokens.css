@@ -5,6 +5,23 @@
   --ui-glass-brightness: 100%;
 
   /*
+   * 动效曲线：调用方按交互意图选择，不暴露 Sine / Quint / Expo 等数学实现。
+   * standard 用于颜色、透明度及轻量状态变化。
+   * enter / exit 用于元素进入与退出。
+   * move 用于尺寸、位置及结构性几何变化。
+   * settle 用于进度、跟随值等快速抵达终点的反馈。
+   * snap 用于磁贴吸附等需要轻微越界回弹的落位反馈。
+   * linear 用于滚动时间线、旋转等匀速过程。
+   */
+  --ui-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ui-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --ui-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ui-ease-move: cubic-bezier(0.65, 0, 0.35, 1);
+  --ui-ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ui-ease-linear: linear;
+
+  /*
    * 层叠尺度：组件内 → 页面 → 全局浮层，新层级按角色命名插入，禁止裸数值。
    * Dialog 走原生 top layer，不参与本尺度。
    */

@@ -9,9 +9,9 @@
     @click="toggleVisible"
   >
     <Icon
-      class="transition-transform" :class="[styles.btn.icon, {
+      class="transition-transform ease-[var(--ui-ease-move)]" :class="[styles.btn.icon, {
         'rotate-90': menuVisible,
-        'motion-safe:animate-spin': source?.isSwitching?.value,
+        'motion-safe:animate-spin motion-safe:[animation-timing-function:var(--ui-ease-linear)]': source?.isSwitching?.value,
       }]" :name="I.PLAYER_CORE"
     />
   </Button>

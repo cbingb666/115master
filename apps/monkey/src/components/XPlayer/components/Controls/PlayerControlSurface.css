@@ -7,7 +7,7 @@
   background-color: transparent;
   border-color: transparent;
   box-shadow: none;
-  transition: opacity 150ms ease;
+  transition: opacity 150ms var(--ui-ease-standard);
 }
 
 @media (hover: hover) {

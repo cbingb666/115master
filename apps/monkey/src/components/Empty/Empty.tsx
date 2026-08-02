@@ -80,8 +80,8 @@ const Empty = defineComponent({
     return () => (
       <div
         class={`
-          text-base-content/70 animate-in fade-in flex flex-col
-          items-center justify-center duration-300
+          text-base-content/70 animate-in fade-in flex flex-col items-center
+          justify-center duration-300 [animation-timing-function:var(--ui-ease-enter)]
           ${paddingClasses[props.size]}
         `}
       >

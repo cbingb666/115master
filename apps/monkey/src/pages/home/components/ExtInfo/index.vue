@@ -184,7 +184,7 @@ const styles = clsx({
   // 标题样式
   title: {
     container: 'text-md text-base-content/70 ml-2',
-    link: 'hover:text-primary line-clamp-1 transition-colors hover:underline',
+    link: 'hover:text-primary line-clamp-1 transition-colors ease-[var(--ui-ease-standard)] hover:underline',
   },
   // 内容样式
   content: {
@@ -196,7 +196,7 @@ const styles = clsx({
     container: 'flex items-start gap-2 text-xs',
     label: 'text-base-content/70 h-5 w-8 shrink-0',
     value: 'text-base-content/70 line-clamp-1 flex flex-1 flex-wrap gap-2',
-    link: 'hover:text-primary transition-colors hover:underline',
+    link: 'hover:text-primary transition-colors ease-[var(--ui-ease-standard)] hover:underline',
     badge: 'bg-base-200 hover:bg-base-200 rounded px-1 py-[1px] text-xs',
   },
   // 次要信息样式

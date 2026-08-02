@@ -386,10 +386,10 @@ const Drive = defineComponent({
       return (
         <div class="drive-bottom-dock ui-z-elevated pointer-events-none fixed right-0 bottom-[var(--drive-bottom-gap)] left-(--sider-width) grid grid-cols-1">
           <Transition
-            enterActiveClass="motion-reduce:transition-none transition-[transform,opacity] duration-[180ms] ease-out"
+            enterActiveClass="motion-reduce:transition-none transition-[transform,opacity] duration-[180ms] ease-[var(--ui-ease-enter)]"
             enterFromClass="scale-[0.98] opacity-0"
             enterToClass="scale-100 opacity-100"
-            leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-[transform,opacity] duration-[140ms] ease-in"
+            leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-[transform,opacity] duration-[140ms] ease-[var(--ui-ease-exit)]"
             leaveFromClass="scale-100 opacity-100"
             leaveToClass="scale-[0.98] opacity-0"
           >
@@ -399,14 +399,14 @@ const Drive = defineComponent({
                 as="div"
                 variant="glass-floating"
                 size="md"
-                class="drive-bottom-surface pointer-events-auto col-start-1 row-start-1 box-content grid min-h-0 grid-cols-1 justify-self-center overflow-hidden p-0 transition-[width,height] duration-[180ms] ease-out motion-reduce:transition-none"
+                class="drive-bottom-surface pointer-events-auto col-start-1 row-start-1 box-content grid min-h-0 grid-cols-1 justify-self-center overflow-hidden p-0 transition-[width,height] duration-[180ms] ease-[var(--ui-ease-move)] motion-reduce:transition-none"
                 style={bottomStyle.value}
               >
                 <Transition
-                  enterActiveClass="motion-reduce:transition-none transition-opacity duration-[180ms] ease-out"
+                  enterActiveClass="motion-reduce:transition-none transition-opacity duration-[180ms] ease-[var(--ui-ease-enter)]"
                   enterFromClass="opacity-0"
                   enterToClass="opacity-100"
-                  leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-opacity duration-[140ms] ease-in"
+                  leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-opacity duration-[140ms] ease-[var(--ui-ease-exit)]"
                   leaveFromClass="opacity-100"
                   leaveToClass="opacity-0"
                 >

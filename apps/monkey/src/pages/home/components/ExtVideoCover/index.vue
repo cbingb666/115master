@@ -76,7 +76,7 @@ const styles = clsx({
       'aspect-video h-full',
       'overflow-hidden',
       'cursor-zoom-in no-underline',
-      'transition-opacity hover:opacity-90',
+      'transition-opacity ease-[var(--ui-ease-standard)] hover:opacity-90',
     ],
     thumbImage: ['h-full w-full object-contain object-center align-top'],
   },

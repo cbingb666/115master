@@ -39,7 +39,7 @@ const FilePathLink = defineComponent({
             data-[drop-zone=true]:bg-primary/10
             data-[drop-zone=true]:ring-primary
             no-underline!
-            transition
+            transition ease-[var(--ui-ease-standard)]
             text-shadow-2xs
             data-[drop-zone=true]:ring-2
             data-[drop-zone=true]:ring-inset

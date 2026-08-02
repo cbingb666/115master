@@ -111,7 +111,7 @@ const GlobalSearchModal = defineComponent({
               />
               {!isEmpty && (
                 <button
-                  class="bg-base-content/10 text-base-content/60 hover:bg-base-content/15 hover:text-base-content grid size-6 shrink-0 place-items-center rounded-full transition-colors"
+                  class="bg-base-content/10 text-base-content/60 hover:bg-base-content/15 hover:text-base-content grid size-6 shrink-0 place-items-center rounded-full transition-colors ease-[var(--ui-ease-standard)]"
                   type="button"
                   title="清除"
                   onClick={() => search.change('')}
@@ -127,7 +127,7 @@ const GlobalSearchModal = defineComponent({
                   <div class="flex items-baseline justify-between px-3 pt-2 pb-1 select-none">
                     <span class="text-base-content/45 text-xs font-medium">最近搜索</span>
                     <button
-                      class="text-base-content/45 hover:text-base-content text-xs transition-colors disabled:pointer-events-none disabled:opacity-40"
+                      class="text-base-content/45 hover:text-base-content text-xs transition-colors ease-[var(--ui-ease-standard)] disabled:pointer-events-none disabled:opacity-40"
                       type="button"
                       disabled={!search.history.value.length}
                       onClick={() => search.clearHistory()}
@@ -144,7 +144,7 @@ const GlobalSearchModal = defineComponent({
                     <div
                       key={`history-${item}-${i}`}
                       class={[
-                        'group flex items-center gap-1 rounded-xl px-1 transition-colors',
+                        'group flex items-center gap-1 rounded-xl px-1 transition-colors ease-[var(--ui-ease-standard)]',
                         search.idx.value === i ? 'bg-primary/15' : 'hover:bg-base-content/5',
                       ]}
                     >
@@ -158,7 +158,7 @@ const GlobalSearchModal = defineComponent({
                         <span class="line-clamp-1">{item}</span>
                       </button>
                       <button
-                        class="text-base-content/40 hover:bg-base-content/10 hover:text-base-content grid size-6 place-items-center rounded-full opacity-0 transition group-hover:opacity-100 max-sm:opacity-100"
+                        class="text-base-content/40 hover:bg-base-content/10 hover:text-base-content grid size-6 place-items-center rounded-full opacity-0 transition ease-[var(--ui-ease-standard)] group-hover:opacity-100 max-sm:opacity-100"
                         type="button"
                         title="删除"
                         onClick={(e) => {

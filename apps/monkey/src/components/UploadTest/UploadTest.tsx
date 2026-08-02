@@ -112,7 +112,7 @@ const UploadTest = defineComponent({
           <label class="text-base-content/60 text-sm font-medium">选择文件</label>
           <div
             class={[
-              'border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors',
+              'border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ease-[var(--ui-ease-standard)]',
               file.value ? 'border-primary/50 bg-primary/5' : 'border-base-content/20 hover:border-base-content/40',
             ].join(' ')}
             onClick={() => (document.querySelector('.upload-test-file-input') as HTMLInputElement)?.click()}

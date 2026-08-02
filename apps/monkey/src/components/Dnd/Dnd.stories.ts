@@ -58,7 +58,7 @@ export const Accepted: Story = {
               <div
                 v-bind="targetProps"
                 :data-hovering="hovering"
-                class="card card-sm card-dash border-base-content/25 data-[hovering=true]:border-primary data-[hovering=true]:bg-primary/10 min-h-28 transition-colors"
+                class="card card-sm card-dash border-base-content/25 data-[hovering=true]:border-primary data-[hovering=true]:bg-primary/10 min-h-28 transition-colors ease-[var(--ui-ease-standard)]"
               >
                 <div class="card-body items-center justify-center text-center">
                   <span class="font-medium">可接收目标</span>

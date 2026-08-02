@@ -50,7 +50,7 @@ export const UserInfo = defineComponent({
 
       return (
         <div
-          class="hover:bg-base-200/50 relative flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2 transition-colors sm:cursor-default"
+          class="hover:bg-base-200/50 relative flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2 transition-colors ease-[var(--ui-ease-standard)] sm:cursor-default"
           data-user-dropdown
           onClick={toggleDropdown}
         >
@@ -85,7 +85,7 @@ export const UserInfo = defineComponent({
           {/* 移动端下拉菜单 */}
           {showDropdown.value && (
             <div
-              class="animate-in slide-in-from-top-2 ui-z-dropdown absolute top-full right-0 mt-2 duration-200 sm:hidden"
+              class="animate-in slide-in-from-top-2 ui-z-dropdown absolute top-full right-0 mt-2 duration-200 [animation-timing-function:var(--ui-ease-enter)] sm:hidden"
               onClick={(e: Event) => e.stopPropagation()}
             >
               <div class="ui-glass-floating min-w-64 rounded-lg p-4">
