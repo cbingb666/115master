@@ -152,7 +152,7 @@ test.describe('选择与操作', () => {
 
     await page.mouse.move(x, y)
     await page.mouse.down()
-    await page.mouse.move(x, page.viewportSize()!.height - 2, { steps: 5 })
+    await page.mouse.move(x, page.viewportSize()!.height - 56, { steps: 5 })
 
     expect(await page.evaluate(() => document.documentElement.style.overflow)).not.toBe('hidden')
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300)

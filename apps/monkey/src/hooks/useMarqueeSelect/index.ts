@@ -1,7 +1,7 @@
 import { useEventListener, useMagicKeys, useThrottleFn } from '@vueuse/core'
 import { computed, onUnmounted, shallowRef, watchEffect } from 'vue'
 
-const EDGE = 48
+const EDGE = 80
 const SPEED = 12
 
 export interface UseMarqueeSelectOptions {

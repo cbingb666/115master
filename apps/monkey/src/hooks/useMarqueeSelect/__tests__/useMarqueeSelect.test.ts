@@ -124,8 +124,8 @@ describe('useMarqueeSelect', () => {
   })
 
   it.each([
-    { name: '顶部', offset: 200, start: 350, end: 105, direction: -1 },
-    { name: '底部', offset: 0, start: 150, end: 495, direction: 1 },
+    { name: '顶部', offset: 200, start: 350, end: 170, direction: -1 },
+    { name: '底部', offset: 0, start: 150, end: 430, direction: 1 },
   ])('框选到$name时持续滚动', async ({ offset, start, end, direction }) => {
     const view = fixture(offset)
     await mount(view.container, view.scroll)
