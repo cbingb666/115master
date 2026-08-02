@@ -209,6 +209,7 @@ const FileItem = defineComponent({
           >
             {/* 复选框 */}
             <FileItemCheckbox
+              key={props.viewType}
               checked={props.checked}
               animate={inViewport.value}
               pathSelect={props.pathSelect}

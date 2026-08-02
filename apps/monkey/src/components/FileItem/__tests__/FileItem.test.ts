@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import type { Share } from '@115master/drive115'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { computed, createApp, defineComponent, h, nextTick, shallowRef } from 'vue'
+import { computed, createApp, defineComponent, h, nextTick, ref, shallowRef } from 'vue'
 import DndRoot from '../../Dnd/DndRoot'
 import FileItem from '../FileItem'
 
@@ -187,6 +187,39 @@ describe('fileItem', () => {
     const link = root.querySelector('a')!
 
     expect(link.classList).not.toContain('pl-9')
+  })
+
+  it('切换列表视图时不复用带有旧 opacity 状态的 checkbox', async () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const viewType = ref<'card' | 'list'>('list')
+    const data = {
+      fc: 1,
+      fid: 'file-a',
+      iv: 0,
+      n: 'file-a.txt',
+      pc: 'pick-a',
+    } as Share.Entity.FilesItem
+    const app = createApp(defineComponent({
+      setup: () => () => h(DndRoot, null, {
+        default: () => h(FileItem, {
+          data,
+          viewType: viewType.value,
+        }),
+      }),
+    }))
+    app.mount(root)
+    apps.push(app)
+
+    const listCheckbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+    expect(listCheckbox.classList).toContain('group-data-[view-type=list]:opacity-100')
+
+    viewType.value = 'card'
+    await nextTick()
+
+    const cardCheckbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+    expect(cardCheckbox).not.toBe(listCheckbox)
+    expect(cardCheckbox.classList).toContain('group-data-[view-type=card]:opacity-0')
   })
 
   it('不可见列表项不挂载多选过渡，进入视口后恢复', async () => {
