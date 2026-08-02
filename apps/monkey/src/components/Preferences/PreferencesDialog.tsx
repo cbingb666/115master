@@ -30,7 +30,7 @@ export const PreferencesDialog = defineComponent({
       return PREFERENCE_SECTIONS.find(item => item.id === section.value)?.label ?? '偏好设置'
     })
     const canGoBack = computed(() => !desktop.value && section.value !== null)
-    const pageKey = computed(() => section.value ?? (desktop.value ? PREFERENCE_SECTIONS[0].id : 'root'))
+    const pageKey = computed(() => desktop.value ? 'desktop' : (section.value ?? 'root'))
     const depth = computed(() => !desktop.value && section.value !== null ? 1 : 0)
 
     function update(value: boolean) {

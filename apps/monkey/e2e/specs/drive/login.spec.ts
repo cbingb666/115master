@@ -109,7 +109,32 @@ test('设置中显示当前账号，确认后退出网页端登录', async ({ pa
 
   await page.locator('button[title="偏好设置"]:visible').click()
   const preferences = page.getByRole('dialog', { name: '偏好设置' })
-  await preferences.getByRole('button', { name: '账号' }).click()
+  const overflow = await preferences.locator('.ui-navigation-stack__content').evaluate(async (content) => {
+    const account = Array.from(content.querySelectorAll('button'))
+      .find(button => button.textContent?.trim() === '账号')
+
+    if (!(account instanceof HTMLButtonElement))
+      throw new Error('偏好设置缺少账号 Tab')
+
+    return await new Promise<number>((resolve) => {
+      const samples: number[] = []
+      const started = performance.now()
+
+      function sample() {
+        samples.push(content.scrollHeight - content.clientHeight)
+
+        if (performance.now() - started >= 300) {
+          resolve(Math.max(...samples))
+          return
+        }
+        requestAnimationFrame(sample)
+      }
+
+      account.click()
+      sample()
+    })
+  })
+  expect(overflow).toBe(0)
   await expect(preferences.getByText('e2e_user', { exact: true })).toBeVisible()
   await expect(preferences.getByText('100000001', { exact: true })).toBeVisible()
   await expect(preferences.getByText('永久会员', { exact: true })).toBeVisible()
