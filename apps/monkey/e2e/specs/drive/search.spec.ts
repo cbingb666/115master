@@ -13,6 +13,7 @@ test.describe('搜索', () => {
     await headerBtn(page, HEADER_BTN.search).click()
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()
+    await expect(dialog.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
     await dialog.getByPlaceholder('搜索文件，按 Enter 查看结果').fill('动漫')
     await page.keyboard.press('Enter')
 

@@ -1,6 +1,6 @@
 import type { PropType } from 'vue'
 import { Api } from '@115master/drive115'
-import { Button } from '@115master/ui'
+import { Button, scrollbar } from '@115master/ui'
 import { defineComponent } from 'vue'
 import { Empty, LoadingError } from '@/components'
 import { I, Icon } from '@/icons'
@@ -91,7 +91,7 @@ const TagPickerContent = defineComponent({
           )}
 
           {/* 列表区：加载 / 错误 / 空目录 / 无匹配 / 列表 */}
-          <div class="flex max-h-[45vh] flex-1 flex-col overflow-y-auto">
+          <div class={[...scrollbar(), 'flex max-h-[45vh] flex-1 flex-col overflow-y-auto']}>
             {store.error
               ? (
                   <div class="flex items-center justify-center py-10">

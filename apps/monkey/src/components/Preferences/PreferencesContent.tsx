@@ -1,6 +1,7 @@
 import type { PropType } from 'vue'
 import type { IconValue } from '@/icons'
 import { GM_info } from '$'
+import { scrollbar } from '@115master/ui'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PKG from '@/../package.json'
 import ThemeToggle from '@/components/ThemeToggle'
@@ -100,6 +101,7 @@ const PreferencesContent = defineComponent({
           {/* 移动端 menu 层级不可见、section 层级显示;桌面端反之 */}
           <div
             class={[
+              ...scrollbar(),
               'flex-1 overflow-y-auto sm:pr-1 sm:pl-3',
               showMenu ? 'hidden sm:block' : 'block',
             ]}

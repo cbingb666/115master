@@ -442,7 +442,7 @@ export const Dialog = defineComponent({
             </div>
           )}
 
-          {slots.default && <div class={['ui-dialog__content', ...scrollbar('sm')]}>{slots.default()}</div>}
+          {slots.default && <div class={['ui-dialog__content', ...scrollbar()]}>{slots.default()}</div>}
 
           {slots.actions && <footer class="ui-dialog__actions">{slots.actions()}</footer>}
         </div>

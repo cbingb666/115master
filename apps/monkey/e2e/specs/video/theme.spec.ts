@@ -80,6 +80,8 @@ test.describe('主题与设置', () => {
     const menu = page.getByRole('button', { name: '打开菜单' })
     const sider = page.locator('[data-ui-mobile-sider]')
     await menu.click()
+    await expect(sider).toHaveClass(/\bui-scrollbar\b/)
+    await expect(sider).toHaveClass(/\bui-scrollbar-md\b/)
     const trigger = page.locator('button[title="偏好设置"]:visible')
     await trigger.click()
 
@@ -108,6 +110,7 @@ test.describe('主题与设置', () => {
     await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'forward')
     await expect(page.getByRole('dialog', { name: '外观' })).toBeVisible()
     await expect(page.getByRole('heading', { name: '外观' })).toBeVisible()
+    await expect(dialog.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
 
     await page.getByRole('button', { name: '返回偏好设置' }).click()
     await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'back')

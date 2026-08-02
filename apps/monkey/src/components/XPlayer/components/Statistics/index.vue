@@ -154,7 +154,7 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@115master/ui'
+import { Button, scrollbar } from '@115master/ui'
 import { computed } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
@@ -175,7 +175,7 @@ const styles = clsx({
     header:
       'flex items-center justify-between rounded-t-xl px-4 py-4',
     headerTitle: 'text-base-content text-base font-medium',
-    content: 'flex-1 overflow-y-auto pb-5',
+    content: [...scrollbar(), 'flex-1 overflow-y-auto pb-5'],
     sectionsWrapper: 'space-y-6 text-sm',
   },
   // 章节样式

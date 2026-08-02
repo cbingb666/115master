@@ -1,5 +1,5 @@
 import type { SlotsType } from 'vue'
-import { Button } from '@115master/ui'
+import { Button, scrollbar } from '@115master/ui'
 import { defineComponent, ref, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { I, Icon } from '@/icons'
@@ -84,20 +84,21 @@ const MobileSider = defineComponent({
         <div
           ref={panel}
           data-ui-mobile-sider
-          class="
-            ui-glass-panel
-            ui-z-sheet
-            fixed inset-x-0
-            bottom-0 flex
-            max-h-[80dvh]
-            flex-col
-            overflow-y-auto
-            rounded-t-2xl
-            px-4
-            pb-4
-            transition-transform duration-300 ease-[var(--ui-ease-move)]
-            sm:hidden
-          "
+          class={[
+            ...scrollbar(),
+            `ui-glass-panel
+              ui-z-sheet
+              fixed inset-x-0
+              bottom-0 flex
+              max-h-[80dvh]
+              flex-col
+              overflow-y-auto
+              rounded-t-2xl
+              px-4
+              pb-4
+              transition-transform duration-300 ease-[var(--ui-ease-move)]
+              sm:hidden`,
+          ]}
           style={{
             transform: isOpen.value ? 'translateY(0)' : 'translateY(100%)',
           }}

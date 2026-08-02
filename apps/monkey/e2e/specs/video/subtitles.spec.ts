@@ -17,6 +17,7 @@ test.describe('字幕', () => {
     /** 菜单：关闭字幕 + 两条搜索结果（label 为去扩展名标题） */
     const menu = page.locator('.x-popup').filter({ has: page.getByText('关闭字幕') })
     await expect(menu.getByText('关闭字幕')).toBeVisible()
+    await expect(menu.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
     await expect(menu.locator('a[title="剧集 第01集.chs"]')).toBeVisible()
     await expect(menu.locator('a[title="剧集 第01集.eng"]')).toBeVisible()
 

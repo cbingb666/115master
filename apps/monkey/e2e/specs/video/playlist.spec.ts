@@ -12,6 +12,7 @@ test.describe('播放列表', () => {
     await expect(sider(page)).toHaveAttribute('data-visible', 'false')
     await page.locator('button[title^="播放列表"]').click()
     await expect(sider(page)).toHaveAttribute('data-visible', 'true')
+    await expect(sider(page).locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
 
     // 3 集全部渲染，计数正确
     await expect(sider(page).getByText('(3)')).toBeVisible()

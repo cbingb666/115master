@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import type { SettingsTab } from '@/components/XPlayer/hooks/useContextMenu'
 import type { IconValue } from '@/icons'
-import { Button } from '@115master/ui'
+import { Button, scrollbar } from '@115master/ui'
 import { ref, watch } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { I, Icon } from '@/icons'
@@ -86,6 +86,7 @@ defineEmits<{
 const styles = clsx({
   // ===== 弹窗容器 =====
   root: [
+    ...scrollbar(),
     'top-1/2! left-1/2! w-[42rem] max-w-[95vw] -translate-x-1/2! -translate-y-1/2! p-0!',
     '[--group-title-height:calc(var(--spacing)*10)]',
   ],

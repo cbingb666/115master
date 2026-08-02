@@ -72,6 +72,7 @@ test.describe('控制栏', () => {
       has: page.getByRole('heading', { name: '偏好设置' }),
     })
     await expect(settings).toBeVisible()
+    await expect(settings).toHaveClass(/\bui-scrollbar-md\b/)
     await expect(settings.getByRole('tab', { name: '播放' })).toBeVisible()
     await settings.getByRole('tab', { name: '快捷键' }).click()
     await expect(settings.getByText('播放/暂停', { exact: true })).toBeVisible()
@@ -86,6 +87,31 @@ test.describe('控制栏', () => {
     const stored = await page.evaluate(() =>
       JSON.parse(localStorage.getItem('x-player-preferences') ?? '{}'))
     expect(stored.autoPlay).toBe(false)
+    expect(errors).toEqual([])
+  })
+
+  test('播放器信息弹层使用沉浸式滚动条', async ({ page }) => {
+    const errors = watch(page)
+    await setupVideo(page)
+    await page.goto(videoUrl(EPISODES[0].pc))
+
+    await page.mouse.click(720, 450, { button: 'right' })
+    await page.locator('.x-popup:visible').getByText('Statistics', { exact: true }).click()
+    const statistics = page.locator('.x-popup').filter({
+      has: page.getByRole('heading', { name: 'Statistics' }),
+    })
+    await expect(statistics).toBeVisible()
+    await expect(statistics.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
+    await statistics.getByRole('button').click()
+    await expect(statistics).toBeHidden()
+
+    await page.mouse.click(720, 450, { button: 'right' })
+    await page.locator('.x-popup:visible').getByText('关于', { exact: true }).click()
+    const about = page.locator('.x-popup').filter({
+      has: page.getByRole('heading', { name: '关于' }),
+    })
+    await expect(about).toBeVisible()
+    await expect(about.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
     expect(errors).toEqual([])
   })
 

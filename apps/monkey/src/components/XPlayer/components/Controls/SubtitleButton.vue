@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import type { Subtitle } from '@/components/XPlayer/types'
-import { Button } from '@115master/ui'
+import { Button, scrollbar } from '@115master/ui'
 import { computed, shallowRef } from 'vue'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import SubtitleDisplay from '@/components/XPlayer/components/SubtitleDisplay.vue'
@@ -80,6 +80,7 @@ const styles = clsx({
   menu: {
     ...controlStyles.menu,
     root: [
+      ...scrollbar(),
       controlStyles.menu.root,
       'max-h-80 max-w-xl !flex-nowrap',
       'overflow-x-hidden overflow-y-auto',

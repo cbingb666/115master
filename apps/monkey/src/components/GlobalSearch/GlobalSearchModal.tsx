@@ -1,4 +1,4 @@
-import { Button, Dialog } from '@115master/ui'
+import { Button, Dialog, scrollbar } from '@115master/ui'
 import { useEventListener } from '@vueuse/core'
 import { defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
@@ -121,7 +121,7 @@ const GlobalSearchModal = defineComponent({
               )}
             </div>
 
-            <div class="max-h-[48vh] flex-1 overflow-y-auto p-2 max-sm:max-h-none">
+            <div class={[...scrollbar(), 'max-h-[48vh] flex-1 overflow-y-auto p-2 max-sm:max-h-none']}>
               {isEmpty && (
                 <>
                   <div class="flex items-baseline justify-between px-3 pt-2 pb-1 select-none">

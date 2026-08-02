@@ -40,7 +40,7 @@ export async function createMasterApp() {
  * 重置文档
  */
 function resetDocument() {
-  document.documentElement.classList.add(...scrollbar('sm'))
+  document.documentElement.classList.add(...scrollbar())
 
   // 替换页面 favicon 为 master logo
   document.querySelectorAll('link[rel*="icon"]').forEach(el => el.remove())

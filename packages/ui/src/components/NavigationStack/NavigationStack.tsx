@@ -339,7 +339,7 @@ export const NavigationStack = defineComponent({
             </header>
 
             {slots.default && (
-              <div ref={content} class={['ui-navigation-stack__content', ...scrollbar('sm')]}>
+              <div ref={content} class={['ui-navigation-stack__content', ...scrollbar()]}>
                 <Transition
                   name={`ui-navigation-stack-page-${direction.value}`}
                   onBeforeEnter={resize}

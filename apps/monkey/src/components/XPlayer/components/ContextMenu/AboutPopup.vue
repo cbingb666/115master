@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@115master/ui'
+import { Button, scrollbar } from '@115master/ui'
 import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
@@ -68,7 +68,7 @@ const styles = clsx({
     header:
       'flex items-center justify-between rounded-t-xl px-4 py-4',
     headerTitle: 'text-base-content text-base font-medium',
-    content: 'max-h-96 overflow-y-auto',
+    content: [...scrollbar(), 'max-h-96 overflow-y-auto'],
     sectionsWrapper: 'space-y-6 text-sm',
   },
   // 章节样式

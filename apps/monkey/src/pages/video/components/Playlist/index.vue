@@ -28,7 +28,7 @@
       </div>
       <div
         v-else
-        :class="[scrollbar('sm'), styles.playlist.content]"
+        :class="[scrollbar(), styles.playlist.content]"
       >
         <PlaylistItem
           v-for="item in playlist.state?.data"

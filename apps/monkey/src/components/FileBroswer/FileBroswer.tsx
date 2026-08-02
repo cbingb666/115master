@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
-import { Button, Tooltip } from '@115master/ui'
+import { Button, scrollbar, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import {
@@ -288,7 +288,10 @@ const FileBroswer = defineComponent({
           </div>
         </div>
 
-        <div ref={scrollRef} class="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <div
+          ref={scrollRef}
+          class={[...scrollbar(), 'relative flex min-h-0 flex-1 flex-col overflow-y-auto']}
+        >
           <FileList
             viewType={viewType.value}
             class="

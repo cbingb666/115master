@@ -1,6 +1,9 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
+import { json } from '../../support'
 import { boot, menu, row, rows, watch } from './helpers'
+
+const LABEL_RE = /^https:\/\/webapi\.115\.com\/label\/list/
 
 /** 勾选某行的复选框 */
 async function check(page: Page, name: string) {
@@ -130,6 +133,36 @@ test.describe('选择与操作', () => {
     await page.keyboard.press('Meta+a')
     await expect(page.getByTitle('退出多选')).toContainText('43 项')
 
+    expect(errors).toEqual([])
+  })
+
+  test('移动与打标签对话框使用沉浸式滚动条', async ({ page }) => {
+    const errors = watch(page)
+    await boot(page, {
+      mocks: api => api.override(LABEL_RE, ({ route }) => json(route, {
+        state: true,
+        data: {
+          total: 2,
+          list: [
+            { id: '1', name: '电影', color: '#FF4B30' },
+            { id: '2', name: '剧集', color: '#2670FC' },
+          ],
+        },
+      })),
+    })
+
+    await row(page, '演示视频 01.mp4').click({ button: 'right' })
+    await menu(page).getByRole('menuitem', { name: '移动' }).click()
+    const move = page.getByRole('dialog', { name: '移动到' })
+    await expect(move).toBeVisible()
+    await expect(move.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
+    await move.getByRole('button', { name: '取消' }).click()
+
+    await page.getByRole('button', { name: '打标签' }).click()
+    const tags = page.getByRole('dialog', { name: '打标签' })
+    await expect(tags).toBeVisible()
+    await expect(tags.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
+    await tags.getByRole('button', { name: '取消' }).click()
     expect(errors).toEqual([])
   })
 
