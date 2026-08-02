@@ -213,13 +213,14 @@ const FileItem = defineComponent({
             {/* 链接区域 */}
             <Link
               class="
+            focus-visible:outline-primary
             cursor-default
-            group-data-[select-mode=true]:cursor-pointer
-            group-data-[view-type=card]:flex group-data-[view-type=card]:min-w-0
-            group-data-[view-type=card]:flex-1 group-data-[view-type=card]:flex-col
-            group-data-[view-type=list]:flex group-data-[view-type=list]:min-w-0
-            group-data-[view-type=list]:flex-1 group-data-[view-type=list]:items-center
-            group-data-[view-type=list]:gap-3 group-data-[view-type=list]:py-1
+            group-data-[select-mode=true]:cursor-pointer group-data-[view-type=card]:flex
+            group-data-[view-type=card]:min-w-0 group-data-[view-type=card]:flex-1
+            group-data-[view-type=card]:flex-col group-data-[view-type=list]:flex
+            group-data-[view-type=list]:min-w-0 group-data-[view-type=list]:flex-1
+            group-data-[view-type=list]:items-center group-data-[view-type=list]:gap-3
+            group-data-[view-type=list]:py-1 focus:outline-none focus-visible:outline-2
           "
               {...link.value}
               draggable={false}

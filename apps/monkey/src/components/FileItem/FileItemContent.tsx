@@ -169,6 +169,7 @@ const FileItemContent = defineComponent({
             group-data-[view-type=card]:row-start-3
             group-data-[view-type=card]:text-xs
             group-data-[view-type=list]:w-36
+            group-data-[view-type=list]:text-right
             group-data-[view-type=list]:text-xs
             sm:group-data-[view-type=list]:text-sm
           "

@@ -53,8 +53,8 @@ const FileItemCheckbox = defineComponent({
           group-data-[view-type=list]:flex group-data-[view-type=list]:flex-none
           group-data-[view-type=list]:cursor-pointer group-data-[view-type=list]:items-center
           group-data-[view-type=list]:overflow-hidden
-          group-data-[view-type=list]:pr-3 group-data-[view-type=list]:pl-1
-          group-data-[view-type=list]:transition-[width] group-data-[view-type=list]:duration-300 group-data-[view-type=list]:ease-[var(--ui-ease-move)]
+          group-data-[view-type=list]:transition-[width] group-data-[view-type=list]:duration-300
+          group-data-[view-type=list]:ease-[var(--ui-ease-move)] motion-reduce:group-data-[view-type=list]:transition-none
         `,
         props.selectMode
           ? 'group-data-[view-type=list]:w-9'
@@ -69,6 +69,7 @@ const FileItemCheckbox = defineComponent({
               checked:border-primary opacity-0
               transition-opacity duration-300 ease-[var(--ui-ease-standard)]
               group-data-[select-mode=true]:opacity-100
+              motion-reduce:transition-none
             `,
             !props.checked && `
               group-data-[view-type=card]:border-black/25

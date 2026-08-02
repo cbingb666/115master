@@ -122,21 +122,29 @@ describe('fileItem', () => {
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
     expect(label.classList).toContain('group-data-[view-type=list]:w-0')
-    expect(label.classList).toContain('pointer-events-none')
     expect(label.classList).toContain('group-data-[view-type=list]:transition-[width]')
-    expect(label.classList).toContain('group-data-[view-type=list]:pl-1')
-    expect(label.classList).toContain('group-data-[view-type=list]:pr-3')
+    expect(label.classList).toContain('pointer-events-none')
+    expect(checkbox.classList).toContain('opacity-0')
     expect(checkbox.tabIndex).toBe(-1)
   })
 
-  it('列表视图进入多选模式后展开 checkbox', () => {
+  it('列表视图进入多选模式后展开 checkbox 并推开原内容', () => {
     const root = mountItem({ selectMode: true })
     const label = root.querySelector('label')!
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
     expect(label.classList).toContain('group-data-[view-type=list]:w-9')
-    expect(label.classList).not.toContain('group-data-[view-type=list]:w-0')
+    expect(label.classList).not.toContain('group-data-[view-type=list]:pr-4')
+    expect(label.classList).not.toContain('pointer-events-none')
+    expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
     expect(checkbox.tabIndex).toBe(0)
+  })
+
+  it('列表视图的末列时间向右边界对齐', () => {
+    const root = mountItem()
+    const time = root.querySelector<HTMLElement>('.app-font-time')!
+
+    expect(time.classList).toContain('group-data-[view-type=list]:text-right')
   })
 
   it('多选态文件主体使用 pointer 光标', () => {
@@ -145,6 +153,8 @@ describe('fileItem', () => {
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
     expect(link.classList).toContain('group-data-[select-mode=true]:cursor-pointer')
+    expect(link.classList).toContain('focus:outline-none')
+    expect(link.classList).toContain('focus-visible:outline-2')
     expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
     expect(checkbox.classList).toContain('transition-opacity')
     expect(checkbox.classList).toContain('duration-300')

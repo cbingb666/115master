@@ -300,7 +300,7 @@ const Tags = defineComponent({
     }
 
     return () => (
-      <div class="flex h-full flex-col">
+      <div class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] sm:[--main-content-gutter:calc(var(--spacing)*6)]">
         <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
           <Sider>
             <SiderContent />

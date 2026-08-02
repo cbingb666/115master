@@ -48,22 +48,20 @@ describe('tagItem', () => {
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
     expect(slot.classList).toContain('w-0')
-    expect(slot.classList).toContain('pointer-events-none')
     expect(slot.classList).toContain('transition-[width]')
-    expect(slot.classList).toContain('duration-300')
     expect(checkbox.classList).toContain('opacity-0')
     expect(checkbox.classList).toContain('transition-opacity')
-    expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
     expect(checkbox.tabIndex).toBe(-1)
   })
 
-  it('进入多选模式后显示 checkbox', () => {
+  it('进入多选模式后展开 checkbox 并推开色点与名称', () => {
     const root = mountItem({ selectMode: true })
     const slot = root.querySelector<HTMLElement>('[data-checkbox-slot]')!
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
     expect(slot.classList).toContain('w-9')
-    expect(slot.classList).not.toContain('w-0')
+    expect(slot.classList).not.toContain('pr-4')
+    expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
     expect(checkbox.tabIndex).toBe(0)
   })
 
@@ -76,6 +74,11 @@ describe('tagItem', () => {
     expect(item.classList).toContain('dark:even:bg-base-content/5')
     expect(item.classList).toContain('hover:bg-base-content/5')
     expect(item.classList).toContain('min-h-14')
+    expect(item.classList).toContain('px-(--main-content-gutter)')
+
+    const color = item.querySelector<HTMLElement>('[data-color-slot]')!
+    expect(color.classList).toContain('mr-3')
+    expect(color.classList).toContain('size-4')
   })
 
   it('pc 端鼠标左键长按进入多选并吞掉随后的 click', async () => {

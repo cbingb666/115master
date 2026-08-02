@@ -17,7 +17,7 @@ const Header = defineComponent({
     return () => (
       <div
         class={[
-          'ui-z-header sticky top-[var(--drive-floating-gap,calc(var(--spacing)*2))] px-2 pb-4',
+          'ui-z-header sticky top-[var(--drive-floating-gap,calc(var(--spacing)*2))] pb-4',
           props.class,
         ]}
       >
@@ -30,8 +30,8 @@ const Header = defineComponent({
             justify-between
             gap-2
             overflow-hidden
-            py-3 pr-2
-            pl-4
+            px-[var(--main-content-gutter,calc(var(--spacing)*6))]
+            py-3
           "
         >
           {slots.default?.()}

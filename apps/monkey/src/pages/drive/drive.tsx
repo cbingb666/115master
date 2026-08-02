@@ -340,7 +340,7 @@ const Drive = defineComponent({
         >
           {store.data?.data?.map((item: Share.Entity.FilesItem) => (
             <FileItem
-              class="data-[view-type=list]:px-3"
+              class="data-[view-type=list]:px-(--main-content-gutter)"
               key={item.pc}
               viewType={viewType.value}
               selectMode={selectMode.value}
@@ -469,7 +469,7 @@ const Drive = defineComponent({
       <DndMonitor>
         {{ default: ({ active }: { active: boolean }) => (
           <div
-            class="flex h-full flex-col"
+            class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] sm:[--main-content-gutter:calc(var(--spacing)*6)]"
             style={{
               '--drive-floating-gap': 'calc(var(--spacing) * 2)',
               '--drive-floating-content-gap': 'calc(var(--drive-floating-gap) + var(--spacing) * 3)',
