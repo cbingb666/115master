@@ -1,12 +1,15 @@
-import { useElementBounding, useEventListener, useMagicKeys, useScrollLock, useThrottleFn } from '@vueuse/core'
+import { useEventListener, useMagicKeys, useThrottleFn } from '@vueuse/core'
 import { computed, onUnmounted, shallowRef, watchEffect } from 'vue'
+
+const EDGE = 48
+const SPEED = 12
 
 export interface UseMarqueeSelectOptions {
   /** 容器元素 */
   container?: HTMLElement | (() => HTMLElement | undefined)
   /** 项目唯一标识 */
   itemKey?: string
-  /** 框选期间锁定的真实滚动容器，缺省使用容器元素 */
+  /** 框选边缘自动滚动使用的真实滚动容器，缺省使用容器元素 */
   scrollContainer?: HTMLElement | (() => HTMLElement | undefined)
   /** 是否禁用框选 */
   disabled?: boolean
@@ -19,15 +22,11 @@ export interface UseMarqueeSelectOptions {
 interface Item {
   node: HTMLElement
   checkbox: HTMLInputElement
-  checked: boolean
-  rect: DOMRect
 }
 
 interface Point {
   x: number
   y: number
-  top: number
-  left: number
 }
 
 export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
@@ -43,17 +42,14 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
   const THROTTLE_TIME = 1000 / 120
   const isSelecting = shallowRef(false)
   const pressed = shallowRef(false)
-  const startPoint = shallowRef<Point>({ x: 0, y: 0, top: 0, left: 0 })
-  const endPoint = shallowRef<Point>({ x: 0, y: 0, top: 0, left: 0 })
+  const startPoint = shallowRef<Point>({ x: 0, y: 0 })
+  const endPoint = shallowRef<Point>({ x: 0, y: 0 })
   const selectionBox = shallowRef<HTMLElement | null>(null)
   const containerElement = shallowRef<HTMLElement | null>(null)
   const scrollElement = shallowRef<HTMLElement | null>(null)
-  const containerRect = useElementBounding(containerElement)
   const originalUserSelect = shallowRef<string>('')
-  const items = shallowRef<Item[]>([])
-
-  /** 滚动锁定 */
-  const scrollLock = useScrollLock(scrollElement)
+  const pointer: Point = { x: 0, y: 0 }
+  let frame = 0
 
   /** 快捷键 */
   const { shift, meta } = useMagicKeys()
@@ -63,11 +59,11 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     const start = startPoint.value
     const end = endPoint.value
 
-    const left = Math.min(start.x - start.left, end.x - end.left)
-    const top = Math.min(start.y - start.top, end.y - end.top)
+    const left = Math.min(start.x, end.x)
+    const top = Math.min(start.y, end.y)
 
-    const width = Math.abs((end.x - end.left) - (start.x - start.left))
-    const height = Math.abs((end.y - end.top) - (start.y - start.top))
+    const width = Math.abs(end.x - start.x)
+    const height = Math.abs(end.y - start.y)
 
     return { left, top, width, height }
   })
@@ -86,6 +82,18 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     return scrollContainer || getContainer()
   }
 
+  /** 将视口坐标转换为框选容器的内容坐标 */
+  const getPoint = (x: number, y: number): Point => {
+    const containerEl = containerElement.value
+    if (!containerEl)
+      return { x, y }
+    const rect = containerEl.getBoundingClientRect()
+    return {
+      x: x - rect.left + containerEl.scrollLeft,
+      y: y - rect.top + containerEl.scrollTop,
+    }
+  }
+
   /** 检测元素是否与选择框相交 */
   const isElementIntersecting = (item: Item) => {
     const containerEl = containerElement.value
@@ -93,14 +101,15 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
       return false
 
     const elementRect = item.node.getBoundingClientRect()
+    const bounds = containerEl.getBoundingClientRect()
     const selection = selectionRect.value
 
     /** 将元素位置转换为相对于容器的坐标 */
     const elementRelative = {
-      left: elementRect.left - containerRect.left.value,
-      top: elementRect.top - containerRect.top.value,
-      right: elementRect.right - containerRect.left.value,
-      bottom: elementRect.bottom - containerRect.top.value,
+      left: elementRect.left - bounds.left + containerEl.scrollLeft,
+      top: elementRect.top - bounds.top + containerEl.scrollTop,
+      right: elementRect.right - bounds.left + containerEl.scrollLeft,
+      bottom: elementRect.bottom - bounds.top + containerEl.scrollTop,
     }
 
     // 检测相交
@@ -114,7 +123,7 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
 
   /** 设置项目复选框状态 */
   const setItemInputCheckbox = (item: Item, checked: boolean) => {
-    if (item.checkbox && item.checkbox.checked !== checked) {
+    if (item.checkbox.checked !== checked) {
       item.checkbox.click()
     }
   }
@@ -132,15 +141,9 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
       ),
     )
 
-    return nodes.map((node) => {
+    return nodes.flatMap((node) => {
       const checkbox = node.querySelector<HTMLInputElement>('input[type="checkbox"]')
-      const item: Item = {
-        node,
-        checkbox: checkbox!,
-        rect: node.getBoundingClientRect(),
-        checked: checkbox?.checked ?? false,
-      }
-      return item
+      return checkbox ? [{ node, checkbox }] : []
     })
   }
 
@@ -153,7 +156,7 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     if (!containerEl)
       return
 
-    items.value.forEach((item) => {
+    getSelectableItems().forEach((item) => {
       if (isElementIntersecting(item)) {
         setItemInputCheckbox(item, true)
       }
@@ -192,11 +195,8 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     }
 
     box.style.display = 'block'
-    const containerEl = containerElement.value
-    const scrollLeft = containerEl?.scrollLeft ?? 0
-    const scrollTop = containerEl?.scrollTop ?? 0
-    box.style.left = `${rect.left + scrollLeft}px`
-    box.style.top = `${rect.top + scrollTop}px`
+    box.style.left = `${rect.left}px`
+    box.style.top = `${rect.top}px`
     box.style.width = `${rect.width}px`
     box.style.height = `${rect.height}px`
   }
@@ -207,7 +207,8 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
       return
 
     isSelecting.value = false
-    scrollLock.value = false
+    cancelAnimationFrame(frame)
+    frame = 0
 
     // 恢复用户选择样式
     if (containerElement.value) {
@@ -226,6 +227,34 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
       return
     updateSelectionBox()
     updateSelectedItems()
+  }
+
+  /** 指针停在滚动容器边缘时逐帧滚动，并持续吸纳虚拟列表新挂载的项目 */
+  const scroll = () => {
+    if (!isSelecting.value)
+      return
+
+    const scrollEl = scrollElement.value
+    if (scrollEl) {
+      const root = scrollEl === document.documentElement || scrollEl === document.body
+      const rect = root ? null : scrollEl.getBoundingClientRect()
+      const top = root ? 0 : Math.max(0, rect!.top)
+      const bottom = root ? window.innerHeight : Math.min(window.innerHeight, rect!.bottom)
+      const above = pointer.y < top + EDGE
+      const below = pointer.y > bottom - EDGE
+
+      if (bottom > top && (above || below)) {
+        const ratio = above
+          ? (top + EDGE - pointer.y) / EDGE
+          : (pointer.y - bottom + EDGE) / EDGE
+        const distance = Math.ceil(SPEED * Math.min(1, Math.max(0, ratio)))
+        scrollEl.scrollBy({ behavior: 'auto', top: distance * (above ? -1 : 1) })
+        endPoint.value = getPoint(pointer.x, pointer.y)
+        updateSelection()
+      }
+    }
+
+    frame = requestAnimationFrame(scroll)
   }
 
   const onMouseDown = (event: MouseEvent) => {
@@ -249,11 +278,11 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
 
     const x = event.clientX
     const y = event.clientY
-    const top = containerRect.top.value ?? 0
-    const left = containerRect.left.value ?? 0
+    pointer.x = x
+    pointer.y = y
     pressed.value = true
-    startPoint.value = { x, y, top, left }
-    endPoint.value = { x, y, top, left }
+    startPoint.value = getPoint(x, y)
+    endPoint.value = startPoint.value
 
     // 保存原始用户选择样式
     if (containerElement.value) {
@@ -265,12 +294,9 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     if (!pressed.value)
       return
 
-    endPoint.value = {
-      x: event.clientX,
-      y: event.clientY,
-      top: containerRect.top.value ?? 0,
-      left: containerRect.left.value ?? 0,
-    }
+    pointer.x = event.clientX
+    pointer.y = event.clientY
+    endPoint.value = getPoint(pointer.x, pointer.y)
 
     if (
       Math.abs(startPoint.value.x - endPoint.value.x) < minDistance
@@ -281,8 +307,7 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
 
     if (!isSelecting.value) {
       isSelecting.value = true
-      scrollLock.value = true
-      items.value = getSelectableItems()
+      frame = requestAnimationFrame(scroll)
     }
 
     // 禁用用户选择
@@ -305,18 +330,10 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
     if (!isSelecting.value)
       return
 
-    endPoint.value = {
-      x: endPoint.value.x,
-      y: endPoint.value.y,
-      top: containerRect.top.value ?? 0,
-      left: containerRect.left.value ?? 0,
-    }
+    endPoint.value = getPoint(pointer.x, pointer.y)
 
     updateSelection()
   }, THROTTLE_TIME)
-
-  /** 清理函数 */
-  let cleanup: (() => void) | undefined
 
   watchEffect(() => {
     const containerEl = getContainer()
@@ -336,7 +353,9 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
   })
 
   onUnmounted(() => {
-    cleanup?.()
+    pressed.value = false
+    endSelection()
+    cancelAnimationFrame(frame)
     if (selectionBox.value && selectionBox.value.parentNode) {
       selectionBox.value.parentNode.removeChild(selectionBox.value)
     }
@@ -349,6 +368,7 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
   })
   useEventListener(document, 'mouseup', onMouseUp, {
   })
+  useEventListener(scrollElement, 'scroll', onScroll)
   useEventListener(document, 'scroll', onScroll)
 
   return {

@@ -17,7 +17,7 @@ export interface FileListInteractionProps {
   onDragMove?: (cid: string, items: Share.Entity.FilesItem[]) => void
   /** 框选容器，缺省取列表网格容器 */
   marqueeContainer?: () => HTMLElement | undefined
-  /** 框选期间锁定的真实滚动容器 */
+  /** 框选边缘自动滚动使用的真实滚动容器 */
   marqueeScrollContainer?: () => HTMLElement | undefined
 }
 

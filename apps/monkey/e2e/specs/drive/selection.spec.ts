@@ -136,6 +136,33 @@ test.describe('选择与操作', () => {
     expect(errors).toEqual([])
   })
 
+  test('框选到视口底部时自动滚动并选中虚拟长列表', async ({ page }) => {
+    const errors = watch(page)
+    await boot(page, {
+      storage: {
+        '115Master_drive_view_type': 'list',
+        '115Master_pageSize': '30',
+      },
+    })
+
+    const first = await rows(page).first().boundingBox()
+    expect(first).not.toBeNull()
+    const x = first!.x + first!.width * 0.7
+    const y = first!.y + first!.height / 2
+
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    await page.mouse.move(x, page.viewportSize()!.height - 2, { steps: 5 })
+
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).not.toBe('hidden')
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300)
+    await expect(page.getByTitle('退出多选')).toContainText('30 项')
+    await page.mouse.up()
+
+    await expect(row(page, '演示视频 28.mp4')).toHaveAttribute('data-checked', 'true')
+    expect(errors).toEqual([])
+  })
+
   test('移动与打标签对话框使用沉浸式滚动条', async ({ page }) => {
     const errors = watch(page)
     await boot(page, {
