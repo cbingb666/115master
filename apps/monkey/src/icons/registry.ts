@@ -17,6 +17,7 @@ export const I = {
   COPY: 'ion:copy',
   DOWNLOAD: 'ion:download',
   DELETE: 'ion:trash-outline',
+  BACKSPACE: 'ion:backspace-outline',
   CANCEL: 'ion:close-circle',
   TOP: 'ion:pin-outline',
   TOP_SOLID: 'ion:pin',

@@ -66,6 +66,7 @@
     "lodash": "^4.17.21",
     "m3u8-parser": "^7.2.0",
     "mitt": "^3.0.1",
+    "motion-v": "^2.3.0",
     "photoswipe": "^5.4.4",
     "pinia": "^3.0.3",
     "tailwindcss": "^4.1.7",

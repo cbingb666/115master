@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "motion-v": ["./src/types/motion-v"],
       "@libmedia/common/*": ["node_modules/@libmedia/common/dist/esm/*"],
       "@libmedia/cheap/*": ["node_modules/@libmedia/cheap/dist/esm/*"],
       "@libmedia/avcodec/*": ["node_modules/@libmedia/avcodec/dist/esm/*"],
