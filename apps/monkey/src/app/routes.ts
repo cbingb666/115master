@@ -26,6 +26,10 @@ export const routes: RouteRecordRaw[] = [
     name: 'login',
     path: '/login',
     component: () => import('../pages/login/LoginPage'),
+    beforeEnter: async (to) => {
+      const guest = await import('./guest')
+      return guest.guardLogin(to.query.redirect)
+    },
   },
 
   {

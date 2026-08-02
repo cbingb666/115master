@@ -15,6 +15,17 @@ const pixel = Buffer.from(
   'base64',
 )
 
+test('已登录时禁止访问登录页', async ({ page }) => {
+  const errors = watch(page)
+
+  await setupHarness(page)
+  await page.goto(`${MASTER_URL}#/login`)
+
+  await expect(page).toHaveURL(/#\/drive/)
+  await expect(page.locator('[data-login-page]')).toHaveCount(0)
+  expect(errors).toEqual([])
+})
+
 test('会话失效后跳转登录页并完成账号登录验证码分流', async ({ page }) => {
   const errors = watch(page)
   const posts: string[] = []

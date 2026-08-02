@@ -14,6 +14,11 @@ export function resolveLoginRedirect(value: LocationQueryValue | LocationQueryVa
   return target
 }
 
+/** 当前是否由应用主动发起重新登录导航。 */
+export function isLoginNavigation() {
+  return navigating
+}
+
 /** 并发会话失效收敛到同一个登录路由，并保留登录后的回跳位置。 */
 export async function showLogin(message = '登录状态已失效，请重新登录后继续使用。') {
   const current = router.currentRoute.value
