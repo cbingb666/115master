@@ -68,6 +68,8 @@ export const useDriveStore = defineStore('drive', () => {
       const keyword = query.keyword.value.trim()
       return [{ cid: '0', name: keyword ? `搜索: ${keyword}` : '搜索', aid: '0', pid: '', isp: '', iss: '', fv: '', fvs: '', p_cid: '' }]
     }
+    if (nav.area.value === 'star')
+      return [{ cid: '0', name: '星标', aid: '0', pid: '', isp: '', iss: '', fv: '', fvs: '', p_cid: '' }]
     const d = data.value
     if (d && 'path' in d)
       return d.path

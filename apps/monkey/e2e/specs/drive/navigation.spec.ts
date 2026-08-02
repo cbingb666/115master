@@ -3,6 +3,17 @@ import { FILES_RE } from '../../support'
 import { boot, record, row, watch } from './helpers'
 
 test.describe('目录导航', () => {
+  test('星标页：面包屑显示星标', async ({ page }) => {
+    const errors = watch(page)
+    await boot(page)
+
+    await page.getByRole('link', { name: '星标', exact: true }).click()
+
+    await expect(page).toHaveURL(/#\/drive\/star$/)
+    await expect(page.locator('.breadcrumbs [aria-current="page"]')).toHaveText('星标')
+    expect(errors).toEqual([])
+  })
+
   test('点文件夹进入子目录：hash 变化、按新 cid 请求、渲染子目录', async ({ page }) => {
     const errors = watch(page)
     const reqs = record(page, FILES_RE)

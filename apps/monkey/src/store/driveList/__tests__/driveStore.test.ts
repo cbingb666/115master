@@ -234,6 +234,24 @@ describe('driveStore 排序变更', () => {
 })
 
 describe('driveStore 星标跨目录', () => {
+  it('star 区 filepath 固定显示星标', async () => {
+    navArea.value = 'star'
+    vi.mocked(file.getFilesWithFallback).mockResolvedValue({
+      ...filesRes([item('a', { m: 1 })]),
+      path: [{ cid: '0', name: '根目录' } as Share.Entity.PathItem],
+    })
+    const store = useDriveStore()
+
+    await store.navigate(1)
+
+    expect(file.getFilesWithFallback).toHaveBeenCalledWith(
+      expect.objectContaining({ star: 1 }),
+    )
+    expect(store.path).toEqual([
+      expect.objectContaining({ cid: '0', name: '星标' }),
+    ])
+  })
+
   it('all 区星标 → 就地更新 m 字段，total 不变', async () => {
     const items = [item('a'), item('b')]
     vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes(items))
