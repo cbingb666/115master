@@ -1,5 +1,21 @@
 import type { z } from 'zod'
+import { URL_115 } from '../share/constant.ts'
 import { Drive115Error, Drive115ErrorCode } from './error.ts'
+
+const CAPTCHA_URL = new URL(
+  '/?ac=security_code&type=web',
+  URL_115.CAPTCHA_API,
+).href
+
+function captcha(data: Record<string, unknown>) {
+  const nested = data.data
+  const value = nested && typeof nested === 'object'
+    ? (nested as Record<string, unknown>).url
+    : undefined
+  const url = typeof value === 'string' && value.trim() ? value : data.url
+
+  return typeof url === 'string' && url.trim() ? url : CAPTCHA_URL
+}
 
 /**
  * 统一响应类型
@@ -30,13 +46,15 @@ export function normalizeResponse<T>(
 
   const data = raw as Record<string, unknown>
   const state = Boolean(data.state)
-  const code = Number(data.errNo ?? data.code ?? 0)
+  const code = Number(data.errNo ?? data.errcode ?? data.code ?? data.msg_code ?? 0)
   const message
     = typeof data.error === 'string' && data.error.length > 0
       ? data.error
       : typeof data.error_msg === 'string'
         ? data.error_msg
-        : ''
+        : typeof data.message === 'string'
+          ? data.message
+          : ''
 
   // 通用错误码检查
   if (code === Drive115ErrorCode.SessionExpired) {
@@ -47,6 +65,7 @@ export function normalizeResponse<T>(
     throw new Drive115Error(
       message || '操作过于频繁，请通过人机验证',
       Drive115ErrorCode.CaptchaRequired,
+      { details: { verifyUrl: captcha(data) } },
     )
   }
 

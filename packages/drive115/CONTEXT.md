@@ -29,6 +29,12 @@ UI 行动提示，四态：
 
 由 `decideAction(code, retryable)` 派生：code 优先映射，retryable 兜底。
 
+### WebCaptcha
+
+网页接口以 `errNo` / `errcode` / `code` / `msg_code = 911` 表示操作前需要完成安全验证。`normalizeResponse` 将其归一化为 `CaptchaRequired`，并把响应 `data.url`（兼容顶层 `url`）保留在 `details.verifyUrl` 作为原始诊断信息。Monkey 不嵌入该页面，而是通过 `AuthApiClient` 加载 sign、提示图和 10 个候选字，再将用户按顺序选中的四个序号提交到 `/user/captcha`。
+
+WebCaptcha 与登录流程共用四字点选挑战和 `Captcha` 票据结构，但验证成果的提交端点不同。
+
 ### retryable
 
 错误是否值得重试。网络层错误恒 `true`；业务层错误默认 `false`（其 action 由 code 决定时不依赖它）。

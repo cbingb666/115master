@@ -40,7 +40,15 @@ function field(data: Record<string, unknown>, ...keys: string[]) {
 }
 
 function code(data: Record<string, unknown>) {
-  return Number(data.err_code ?? data.errno ?? data.errNo ?? data.code ?? 0)
+  return Number(
+    data.err_code
+    ?? data.errno
+    ?? data.errNo
+    ?? data.errcode
+    ?? data.code
+    ?? data.msg_code
+    ?? 0,
+  )
 }
 
 function message(data: Record<string, unknown>) {
@@ -226,6 +234,23 @@ export class AuthApiClient extends BaseApiClient {
     }
     url.searchParams.set('_t', nonce.toString())
     return url.href
+  }
+
+  /** 提交网页接口 911 风控要求的四字点选验证。 */
+  async verifyCaptcha(params: Req.Captcha): Promise<Res.ApiResult> {
+    return this.call((async () => result(await json(await this.fetchRequest.post(
+      new URL('/user/captcha', URL_115.WEB_API).href,
+      {
+        data: {
+          code: params.code,
+          sign: params.sign,
+          ac: 'security_code',
+          type: 'web',
+          ctype: 'web',
+          client: 'web',
+        },
+      },
+    ))))())
   }
 
   async sendSms(params: Req.SendSms): Promise<Res.ApiResult> {

@@ -1,5 +1,18 @@
 import { describe, expect, it } from 'vitest'
+import { Drive115Error } from '../core/error.ts'
 import { normalizeResponse } from '../core/response.ts'
+
+function captchaError(raw: unknown) {
+  try {
+    normalizeResponse(raw)
+  }
+  catch (error) {
+    expect(error).toBeInstanceOf(Drive115Error)
+    return error as Drive115Error
+  }
+
+  throw new Error('Expected normalizeResponse to throw')
+}
 
 describe('normalizeResponse', () => {
   it('maps webApi shape to state/code/message', () => {
@@ -50,6 +63,24 @@ describe('normalizeResponse', () => {
     expect(() => normalizeResponse(raw)).toThrow('captcha')
   })
 
+  it('carries the response verification URL for CaptchaRequired', () => {
+    const error = captchaError({
+      state: false,
+      errcode: 911,
+      data: { url: 'https://captchaapi.115.com/custom?token=abc' },
+    })
+
+    expect(error.details?.verifyUrl).toBe('https://captchaapi.115.com/custom?token=abc')
+  })
+
+  it('uses the web captcha URL when CaptchaRequired has no URL', () => {
+    const error = captchaError({ state: false, msg_code: 911 })
+
+    expect(error.details?.verifyUrl).toBe(
+      'https://captchaapi.115.com/?ac=security_code&type=web',
+    )
+  })
+
   it('throws for CaptchaRequired code with empty error', () => {
     const raw = { state: false, errNo: 911, error: '' }
     expect(() => normalizeResponse(raw)).toThrow('操作过于频繁')
@@ -59,5 +90,12 @@ describe('normalizeResponse', () => {
     const raw = { state: false, errNo: 500, error: '服务器错误' }
     const res = normalizeResponse<typeof raw>(raw)
     expect(res.message).toBe('服务器错误')
+  })
+
+  it('uses message when legacy error fields are absent', () => {
+    const raw = { state: false, code: 500, message: '请稍后重试' }
+    const res = normalizeResponse<typeof raw>(raw)
+
+    expect(res.message).toBe('请稍后重试')
   })
 })

@@ -26,9 +26,12 @@ export interface Sorter {
 export type ApiResponseBase<T> = T & {
   state: boolean
   errNo?: number
+  errcode?: number
   code?: number
+  msg_code?: number
   error?: string
   error_msg?: string
+  message?: string
 }
 
 /** 播放中的视频信息 */

@@ -1,3 +1,4 @@
+import { Core } from '@115master/drive115'
 import { drive115 } from '@/utils/drive115Instance'
 import { is115Browser } from '@/utils/platform'
 import { FileItemModBase } from './base'
@@ -57,6 +58,14 @@ export class FileItemModDownload extends FileItemModBase {
           throw new Error('下载失败')
         }
         catch (error: unknown) {
+          // 911 已由全局拦截器打开原生验证弹窗，不再用 alert 遮挡它。
+          if (
+            error instanceof Core.Drive115Error
+            && error.code === Core.Drive115ErrorCode.CaptchaRequired
+          ) {
+            return
+          }
+
           if (error instanceof Error) {
             alert(error.message)
           }

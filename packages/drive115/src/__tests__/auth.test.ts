@@ -158,6 +158,37 @@ describe('网页登录协议', () => {
     expect(auth.isSmsCaptchaRequired(result)).toBe(true)
   })
 
+  it('通过网页端安全验证接口提交四字点选结果', async () => {
+    const post = vi.fn().mockImplementation(() => response({
+      state: false,
+      errcode: 911,
+      message: '验证未通过',
+    }))
+    const auth = client(request(vi.fn(), post))
+
+    await expect(auth.verifyCaptcha({
+      code: '1935',
+      sign: 'captcha-sign',
+    })).resolves.toMatchObject({
+      state: false,
+      code: 911,
+      message: '验证未通过',
+    })
+    expect(post).toHaveBeenCalledWith(
+      'https://webapi.115.com/user/captcha',
+      {
+        data: {
+          code: '1935',
+          sign: 'captcha-sign',
+          ac: 'security_code',
+          type: 'web',
+          ctype: 'web',
+          client: 'web',
+        },
+      },
+    )
+  })
+
   it('通过官方网页端接口退出当前登录态', async () => {
     const get = vi.fn().mockImplementation(() => response(''))
     const auth = client(request(get))

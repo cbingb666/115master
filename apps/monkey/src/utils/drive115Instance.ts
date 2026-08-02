@@ -1,16 +1,14 @@
 import { Crypto115, Drive115 } from '@115master/drive115'
 import { FetchRequest } from '@115master/shared'
-import { appDialog } from '@/app/dialog'
+import { showCaptcha } from '@/app/captcha'
 import { showLogin } from '@/app/login'
 import { appLogger } from '@/utils/logger'
 import { GMRequest } from '@/utils/request/gmRequest'
 
 const fetchRequest = new FetchRequest()
+let captchaApi: Parameters<typeof showCaptcha>[0] | undefined
 
-/** 登录过期由登录路由收敛；人机验证用会话级标记只提醒一次 */
-let verifyNotified = false
-
-export const drive115 = new Drive115({
+const instance = new Drive115({
   fetchRequest,
   proApiRequest: new GMRequest(),
   logger: appLogger,
@@ -20,17 +18,18 @@ export const drive115 = new Drive115({
       showLogin(result.message)
       return
     }
-    if (result.action === 'verify' && !verifyNotified) {
-      verifyNotified = true
+    if (result.action === 'verify' && captchaApi) {
       try {
-        void appDialog.alert({
-          title: '需要人机验证',
-          content: result.message,
-        }).catch(e => appLogger.error('[drive115] 人机验证提醒失败:', e))
+        void showCaptcha(captchaApi)
+          .catch(e => appLogger.error('[drive115] 人机验证弹窗失败:', e))
       }
       catch (e) {
-        appLogger.error('[drive115] 人机验证提醒失败:', e)
+        appLogger.error('[drive115] 人机验证弹窗失败:', e)
       }
     }
   },
 })
+
+captchaApi = instance.auth
+
+export const drive115 = instance
