@@ -1,4 +1,4 @@
-import { GM_addStyle } from '$'
+import { scrollbar } from '@115master/ui'
 import { createApp, defineAsyncComponent } from 'vue'
 import { router } from '@/app/router'
 import logoSvgUrl from '@/assets/logo.svg?url'
@@ -40,6 +40,8 @@ export async function createMasterApp() {
  * 重置文档
  */
 function resetDocument() {
+  document.documentElement.classList.add(...scrollbar('sm'))
+
   // 替换页面 favicon 为 master logo
   document.querySelectorAll('link[rel*="icon"]').forEach(el => el.remove())
   const icon = document.createElement('link')
@@ -60,38 +62,4 @@ function resetDocument() {
   // 设置根元素，初始 data-theme 与背景色由 initTheme() 写入
   document.body.innerHTML = `<div id="my-app" data-theme="dark" style="min-height:100vh"></div>`
   document.title = ''
-
-  // fix scrollbar 在主页下丢失，因为 vite-plugin-monkey 的 css 处理会造成全局污染
-  /** 滚动条颜色按主题区分：dark 用白色滑块，light 用黑色滑块，确保两边都可见 */
-  const isDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? true
-  const thumbColor = isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.25)'
-  const thumbHoverColor = isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.4)'
-  GM_addStyle(`
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-        /* display: none !important; */
-      }
-
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: ${thumbColor};
-        border-radius: 4px;
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: ${thumbHoverColor};
-      }
-
-      /* 隐藏滚动条 */
-      :fullscreen html::-webkit-scrollbar,
-      :fullscreen body::-webkit-scrollbar {
-        width: 0 !important;
-        height: 0 !important;
-        display: none !important
-      }
-    `)
 }

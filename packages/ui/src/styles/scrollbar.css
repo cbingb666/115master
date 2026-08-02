@@ -1,0 +1,72 @@
+@layer components {
+  .ui-scrollbar {
+    --ui-scrollbar-size: 8px;
+    --ui-scrollbar-track-inset-start: 1.5rem;
+    --ui-scrollbar-track-inset-end: 1.5rem;
+
+    scrollbar-gutter: auto;
+  }
+
+  .ui-scrollbar-xs {
+    --ui-scrollbar-size: 4px;
+  }
+
+  .ui-scrollbar-sm {
+    --ui-scrollbar-size: 6px;
+  }
+
+  .ui-scrollbar-md {
+    --ui-scrollbar-size: 8px;
+  }
+
+  .ui-scrollbar-lg {
+    --ui-scrollbar-size: 10px;
+  }
+
+  .ui-scrollbar-xl {
+    --ui-scrollbar-size: 12px;
+  }
+
+  :where(.ui-scrollbar, .ui-scrollbar *)::-webkit-scrollbar {
+    width: var(--ui-scrollbar-size);
+    height: var(--ui-scrollbar-size);
+  }
+
+  :where(.ui-scrollbar, .ui-scrollbar *)::-webkit-scrollbar-track {
+    background: transparent;
+    margin-block: var(--ui-scrollbar-track-inset-start) var(--ui-scrollbar-track-inset-end);
+  }
+
+  :where(.ui-scrollbar, .ui-scrollbar *)::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  :where(.ui-scrollbar, .ui-scrollbar *)::-webkit-scrollbar-track:horizontal {
+    margin-block: 0;
+    margin-inline: var(--ui-scrollbar-track-inset-start) var(--ui-scrollbar-track-inset-end);
+  }
+
+  :where(.ui-scrollbar, .ui-scrollbar *)::-webkit-scrollbar-thumb {
+    min-width: 36px;
+    min-height: 36px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background-color: color-mix(in oklab, var(--color-base-content) 18%, transparent);
+    background-clip: content-box;
+  }
+
+  :where(.ui-scrollbar, .ui-scrollbar *)::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklab, var(--color-base-content) 38%, transparent);
+  }
+
+  :where(.ui-scrollbar, .ui-scrollbar *)::-webkit-scrollbar-thumb:active {
+    background-color: color-mix(in oklab, var(--color-base-content) 52%, transparent);
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    :where(.ui-scrollbar, .ui-scrollbar *) {
+      scrollbar-color: color-mix(in oklab, var(--color-base-content) 30%, transparent) transparent;
+      scrollbar-width: thin;
+    }
+  }
+}

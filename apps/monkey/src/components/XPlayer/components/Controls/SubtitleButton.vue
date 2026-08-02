@@ -83,7 +83,6 @@ const styles = clsx({
       controlStyles.menu.root,
       'max-h-80 max-w-xl !flex-nowrap',
       'overflow-x-hidden overflow-y-auto',
-      '[&::-webkit-scrollbar-track]:my-6',
     ],
     a: [
       controlStyles.menu.a,

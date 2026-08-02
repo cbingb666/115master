@@ -147,7 +147,6 @@ const styles = clsx({
   container: [
     'px-2 py-8',
     'flex-1 overflow-y-auto',
-    '[&::-webkit-scrollbar-track]:my-6',
   ],
   // ===== 分组容器 =====
   groupWrapper: 'mb-8 last:mb-0',

@@ -16,6 +16,7 @@ import {
   watch,
 } from 'vue'
 import { filled } from '../content'
+import { scrollbar } from '../Scrollbar/Scrollbar'
 
 export type DialogSize = 'md' | 'lg' | 'xl' | 'full'
 export type DialogCloseReason
@@ -441,7 +442,7 @@ export const Dialog = defineComponent({
             </div>
           )}
 
-          {slots.default && <div class="ui-dialog__content">{slots.default()}</div>}
+          {slots.default && <div class={['ui-dialog__content', ...scrollbar('sm')]}>{slots.default()}</div>}
 
           {slots.actions && <footer class="ui-dialog__actions">{slots.actions()}</footer>}
         </div>

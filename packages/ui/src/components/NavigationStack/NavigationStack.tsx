@@ -12,6 +12,7 @@ import type {
 import { defineComponent, onBeforeUnmount, shallowRef, Transition, watch } from 'vue'
 import { Button } from '../Button/Button'
 import { Dialog } from '../Dialog/Dialog'
+import { scrollbar } from '../Scrollbar/Scrollbar'
 
 export type NavigationStackDismissReason
   = | 'button'
@@ -338,7 +339,7 @@ export const NavigationStack = defineComponent({
             </header>
 
             {slots.default && (
-              <div ref={content} class="ui-navigation-stack__content">
+              <div ref={content} class={['ui-navigation-stack__content', ...scrollbar('sm')]}>
                 <Transition
                   name={`ui-navigation-stack-page-${direction.value}`}
                   onBeforeEnter={resize}

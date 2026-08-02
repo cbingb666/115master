@@ -73,7 +73,7 @@ _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、服务与类型集合；组件包括 Button、Pill、Tooltip、ContextMenu、Watermark、Dialog、DialogHost、NavigationStack 与 OverlayHost，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Tooltip、ContextMenu、Watermark、Dialog、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：
@@ -163,3 +163,7 @@ _Avoid_: 胶囊按钮、Badge
 **Watermark**：
 在内容区域上方重复铺陈文本身份标记的装饰性组件；不拦截内容交互或进入无障碍树，只用于降低随意传播意愿，不构成数据保护边界。
 _Avoid_: 权限控制、数字版权管理、可交互遮罩
+
+**Scrollbar**：
+基于浏览器原生滚动行为的沉浸式滚动条样式模块；通过 `scrollbar(size)` 一次获得基础类与 `xs / sm / md / lg / xl` 尺寸类，可作用于单个滚动容器或整个子树；统一负责透明轨道、沿滚动轴的容器安全内缩、主题对比度与悬停／拖动状态，不改写原生滚动交互。默认轨道首尾各内缩 `1.5rem`，拥有悬浮头尾内容的容器可通过 `--ui-scrollbar-track-inset-start / end` 覆盖。
+_Avoid_: 业务包装容器、全局无选择器滚动条、自定义拖拽滚动实现

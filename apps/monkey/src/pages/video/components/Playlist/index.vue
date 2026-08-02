@@ -28,7 +28,7 @@
       </div>
       <div
         v-else
-        class="custom-scrollbar" :class="[styles.playlist.content]"
+        :class="[scrollbar('sm'), styles.playlist.content]"
       >
         <PlaylistItem
           v-for="item in playlist.state?.data"
@@ -48,7 +48,7 @@
 import type { Share } from '@115master/drive115'
 import type PlaylistItemVue from './item.vue'
 import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
-import { Button } from '@115master/ui'
+import { Button, scrollbar } from '@115master/ui'
 import { nextTick, useTemplateRef, watch } from 'vue'
 import { LoadingError } from '@/components'
 import { I, Icon } from '@/icons'
@@ -101,8 +101,7 @@ const styles = clsx({
       'h-[calc(100%-var(--app-playlist-header-height))]',
       'overflow-y-auto',
       'px-(--app-playlist-space) pt-[var(--app-playlist-header-height)]',
-      '[&::-webkit-scrollbar-track]:mt-(--app-playlist-header-height)',
-      '[&::-webkit-scrollbar-track]:mb-6',
+      '[--ui-scrollbar-track-inset-start:var(--app-playlist-header-height)]',
     ],
     divider: 'divider text-base-content/30 mx-auto w-1/3',
   },

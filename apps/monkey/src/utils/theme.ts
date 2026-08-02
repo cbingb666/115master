@@ -34,8 +34,8 @@ function applyToDOM(theme: ResolvedTheme) {
   const root = document.getElementById(APP_ROOT_ID)
   if (!root)
     return
-
   const background = APP_BG[theme]
+  document.documentElement.setAttribute('data-theme', theme)
   root.setAttribute('data-theme', theme)
   document.documentElement.style.colorScheme = theme
   document.documentElement.style.backgroundColor = background

@@ -54,6 +54,8 @@ export type {
   PillSize,
   PillVariant,
 } from './components/Pill/Pill'
+export { scrollbar } from './components/Scrollbar/Scrollbar'
+export type { ScrollbarSize } from './components/Scrollbar/Scrollbar'
 export { Tooltip } from './components/Tooltip/Tooltip'
 export type {
   TooltipPlacement,

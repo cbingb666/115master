@@ -9,6 +9,7 @@ test.describe('主题与设置', () => {
     await setupVideo(page, { gmValues: { USER_SETTINGS: { theme: 'light' } } })
     await page.goto(videoUrl(EPISODES[0].pc))
 
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
     await expect(page.locator('#my-app')).toHaveAttribute('data-theme', 'light')
     expect(errors).toEqual([])
   })
@@ -18,6 +19,7 @@ test.describe('主题与设置', () => {
     await setupVideo(page, { gmValues: { USER_SETTINGS: { theme: 'dark' } } })
     await page.goto(videoUrl(EPISODES[0].pc))
 
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
     await expect(page.locator('#my-app')).toHaveAttribute('data-theme', 'dark')
     await expect.poll(() => page.evaluate(() => ({
       app: getComputedStyle(document.querySelector('#my-app')!).backgroundColor,

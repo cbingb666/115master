@@ -12,6 +12,7 @@ it('imports the narrow runtime contract without browser globals', async () => {
     'Tooltip',
     'Watermark',
     'createDialogService',
+    'scrollbar',
     'useDialog',
   ])
 })

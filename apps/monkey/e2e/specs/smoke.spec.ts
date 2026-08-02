@@ -8,6 +8,9 @@ test.describe('smoke', () => {
     await page.goto(MASTER_URL)
 
     await expect(page.locator('#my-app')).toBeAttached()
+    await expect(page.locator('html')).toHaveClass(/\bui-scrollbar\b/)
+    await expect(page.locator('html')).toHaveClass(/\bui-scrollbar-sm\b/)
+    expect(await page.locator('html').evaluate(element => getComputedStyle(element, '::-webkit-scrollbar').width)).toBe('6px')
     await expect(page.locator('[data-ui-watermark]')).toHaveCount(0)
     const first = dirs['0'].items.find(i => i.fc === 1)!
     await expect(page.getByText(first.n).first()).toBeVisible()
