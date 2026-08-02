@@ -23,6 +23,12 @@ export const routes: RouteRecordRaw[] = [
   },
 
   {
+    name: 'login',
+    path: '/login',
+    component: () => import('../pages/login/LoginPage'),
+  },
+
+  {
     name: 'tags',
     path: '/tags',
     component: () => import('../pages/tags/tags'),

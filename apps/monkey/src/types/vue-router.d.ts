@@ -6,6 +6,13 @@
 import type { RouteRecordInfo } from 'vue-router'
 
 export interface RouteNamedMap {
+  /** 登录页 */
+  login: RouteRecordInfo<
+    'login',
+    '/login',
+    Record<never, never>,
+    Record<never, never>
+  >
   /** 网盘页 */
   drive: RouteRecordInfo<
     'drive',

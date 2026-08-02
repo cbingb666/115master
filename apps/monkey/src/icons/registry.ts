@@ -8,6 +8,8 @@ export const I = {
   // === 动作 / 导航 ===
   RESTART: 'ion:refresh',
   SETTINGS: 'ion:settings',
+  ACCOUNT: 'ion:person-circle-outline',
+  LOGOUT: 'ion:log-out-outline',
   CLOSE: 'ion:close',
   RIGHT: 'ion:chevron-forward',
   LEFT: 'ion:chevron-back',

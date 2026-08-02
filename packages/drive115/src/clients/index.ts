@@ -1,3 +1,5 @@
+export { AuthApiClient } from './auth/index.ts'
+export * as AuthApi from './auth/index.ts'
 export { BaseApiClient } from './base.ts'
 export { ExtractApiClient } from './extract/index.ts'
 export * as ExtractApi from './extract/index.ts'

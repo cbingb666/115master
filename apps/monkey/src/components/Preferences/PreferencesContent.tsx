@@ -6,8 +6,9 @@ import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PKG from '@/../package.json'
 import ThemeToggle from '@/components/ThemeToggle'
 import { I, Icon } from '@/icons'
+import AccountPreferences from './AccountPreferences'
 
-export type PreferenceSection = 'appearance' | 'about'
+export type PreferenceSection = 'appearance' | 'account' | 'about'
 
 interface SectionItem {
   id: PreferenceSection
@@ -17,6 +18,7 @@ interface SectionItem {
 
 export const PREFERENCE_SECTIONS: SectionItem[] = [
   { id: 'appearance', label: '外观', icon: I.THEME_LIGHT },
+  { id: 'account', label: '账号', icon: I.ACCOUNT },
   { id: 'about', label: '关于', icon: I.ABOUT },
 ]
 
@@ -34,6 +36,7 @@ const PreferencesContent = defineComponent({
 
   emits: {
     'update:section': (_section: PreferenceSection) => true,
+    'loggedOut': () => true,
   },
 
   setup(props, { emit }) {
@@ -114,6 +117,10 @@ const PreferencesContent = defineComponent({
                 </div>
                 <ThemeToggle />
               </div>
+            )}
+
+            {display.value === 'account' && (
+              <AccountPreferences onLoggedOut={() => emit('loggedOut')} />
             )}
 
             {display.value === 'about' && (

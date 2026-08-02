@@ -47,3 +47,17 @@ UI 行动提示，四态：
 转换函数：`toDrive115Error`（边界归一化）/ `fromInfra`（InfraError→NetworkError）/ `toResult`（投影）/ `decideAction`（action 决策）。
 
 历史：曾存在 `handleError`（外部调用方各自分类，3 处重复）与 `Drive115Error.NotFoundM3u8File` 嵌套子类，已在错误管道贯通后移除——职责被 `decideAction` / `fromInfra` / `toResult` 吸收，调用方改读 `e.code` / `e.action`。详见 `docs/adr/ADR-0001.md`。
+
+## 认证
+
+### AuthApiClient
+
+115 网页认证客户端，由 `Drive115.auth` 暴露。负责扫码登录、动态公钥账号登录、退出登录、中文点选验证码、登录短信码、二次验证、绑定手机跳转信息和撤销注销；认证挑战作为 `LoginOutcome` 返回，只有网络、解码等客户端失败才抛异常。
+
+### LoginOutcome
+
+登录响应的状态联合：`success` / `captcha` / `sms` / `two-factor` / `bind-mobile` / `cancel-close` / `locked` / `appeal` / `error`。UI 只按 `kind` 驱动流程，不直接识别 115 原始错误码。
+
+### Captcha
+
+中文点选验证码票据，由按序选择的候选编号 `code` 和验证码会话 `sign` 组成。账号登录使用 `login[code]` / `login[sid]`，短信发送前的人机验证使用 `code` / `sid`。

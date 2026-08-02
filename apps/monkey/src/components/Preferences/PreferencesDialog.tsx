@@ -14,6 +14,11 @@ export function usePreferencesDialog() {
   }
 }
 
+function closePreferencesDialog() {
+  open.value = false
+  section.value = null
+}
+
 export const PreferencesDialog = defineComponent({
   name: 'PreferencesDialog',
 
@@ -53,6 +58,7 @@ export const PreferencesDialog = defineComponent({
         <PreferencesContent
           section={section.value}
           onUpdate:section={value => section.value = value}
+          onLoggedOut={closePreferencesDialog}
         />
       </NavigationStack>
     )
