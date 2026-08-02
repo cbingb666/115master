@@ -271,7 +271,7 @@ const Tags = defineComponent({
       }
       const list = store.filtered
       return (
-        <div ref={listRef} class="relative flex-1 px-3 pb-24 sm:px-5">
+        <div ref={listRef} class="relative flex-1 pb-20">
           <Progress active={store.loading} />
           {!store.loading && list.length === 0 && (
             <div class="text-base-content/60 flex flex-col items-center justify-center gap-3 pt-24">
@@ -280,7 +280,7 @@ const Tags = defineComponent({
             </div>
           )}
           {!store.loading && list.length > 0 && (
-            <ul class="grid grid-cols-1 gap-1.5 pt-3 sm:gap-1">
+            <ul class="grid w-full grid-cols-1 gap-1 pt-5">
               {list.map(tag => (
                 <TagItem
                   key={tag.id}

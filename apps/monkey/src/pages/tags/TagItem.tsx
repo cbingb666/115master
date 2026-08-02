@@ -70,44 +70,55 @@ const TagItem = defineComponent({
         <li
           ref={itemRef}
           class={[
-            'group flex cursor-pointer items-center rounded-lg px-3 py-3 transition-colors ease-[var(--ui-ease-standard)] sm:rounded-md sm:px-3 sm:py-2',
-            // 选中：primary 高亮（含 hover）；未选中：卡片灰底 / 行 hover 灰底
-            props.selected
-              ? 'bg-primary/10 sm:bg-primary/10'
-              : 'bg-base-content/5 sm:hover:bg-base-content/5 sm:bg-transparent',
+            `
+              group data-[checked=true]:bg-primary/10!
+              data-[checked=true]:hover:bg-primary/15!
+              hover:bg-base-content/5
+              even:bg-base-content/[0.03]
+              dark:even:bg-base-content/5
+              dark:hover:bg-base-content/10
+              relative flex min-h-14 min-w-0 cursor-pointer items-center
+              rounded-xs px-3 transition ease-[var(--ui-ease-standard)]
+              data-[checked=true]:bg-linear-to-br
+              max-sm:select-none max-sm:[-webkit-touch-callout:none]
+            `,
           ]}
+          data-checked={props.selected}
+          data-select-mode={props.selectMode}
           onClick={click}
           onContextmenu={props.onContextmenu}
         >
           <span
             data-checkbox-slot
             class={[
-              'flex flex-none items-center overflow-hidden transition-[width,opacity] duration-300 ease-[var(--ui-ease-move)]',
+              'flex flex-none items-center overflow-hidden pr-3 pl-1 transition-[width] duration-300 ease-[var(--ui-ease-move)]',
               props.selectMode
-                ? 'w-8 opacity-100'
-                : 'pointer-events-none w-0 opacity-0',
+                ? 'w-9'
+                : 'pointer-events-none w-0',
             ]}
           >
             <input
               type="checkbox"
-              class="checkbox checkbox-sm checkbox-primary flex-none"
+              class="checkbox checkbox-sm checkbox-primary flex-none opacity-0 transition-opacity duration-300 ease-[var(--ui-ease-move)] group-data-[select-mode=true]:opacity-100"
               checked={props.selected}
               tabindex={props.selectMode ? 0 : -1}
               onChange={e => props.onToggle((e.target as HTMLInputElement).checked)}
             />
           </span>
 
-          {/* 色块：无色用描边圈，有色用 color-mix 填充 */}
-          <span
-            class={[
-              'mr-3 size-4 flex-none rounded-full',
-              blank ? 'border-base-content/30 bg-base-content/5 border' : '',
-            ]}
-            style={blank ? undefined : { backgroundColor: props.tag.color }}
-          />
+          {/* 固定图标列宽度，与 drive list view 的缩略图列对齐 */}
+          <span class="flex size-14 flex-none items-center justify-center">
+            <span
+              class={[
+                'size-4 flex-none rounded-full',
+                blank ? 'border-base-content/30 bg-base-content/5 border' : '',
+              ]}
+              style={blank ? undefined : { backgroundColor: props.tag.color }}
+            />
+          </span>
 
           <span
-            class="min-w-0 flex-1 truncate font-medium"
+            class="ml-3 min-w-0 flex-1 truncate"
             title={props.tag.name}
           >
             {props.tag.name}

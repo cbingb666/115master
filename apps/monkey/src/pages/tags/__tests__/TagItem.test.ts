@@ -48,10 +48,12 @@ describe('tagItem', () => {
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
     expect(slot.classList).toContain('w-0')
-    expect(slot.classList).toContain('opacity-0')
     expect(slot.classList).toContain('pointer-events-none')
-    expect(slot.classList).toContain('transition-[width,opacity]')
+    expect(slot.classList).toContain('transition-[width]')
     expect(slot.classList).toContain('duration-300')
+    expect(checkbox.classList).toContain('opacity-0')
+    expect(checkbox.classList).toContain('transition-opacity')
+    expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
     expect(checkbox.tabIndex).toBe(-1)
   })
 
@@ -60,10 +62,20 @@ describe('tagItem', () => {
     const slot = root.querySelector<HTMLElement>('[data-checkbox-slot]')!
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
-    expect(slot.classList).toContain('w-8')
-    expect(slot.classList).toContain('opacity-100')
+    expect(slot.classList).toContain('w-9')
     expect(slot.classList).not.toContain('w-0')
     expect(checkbox.tabIndex).toBe(0)
+  })
+
+  it('uses the drive list view row surface and spacing', () => {
+    const root = mountItem()
+    const item = root.querySelector('li')!
+
+    expect(item.classList).toContain('rounded-xs')
+    expect(item.classList).toContain('even:bg-base-content/[0.03]')
+    expect(item.classList).toContain('dark:even:bg-base-content/5')
+    expect(item.classList).toContain('hover:bg-base-content/5')
+    expect(item.classList).toContain('min-h-14')
   })
 
   it('pc 端鼠标左键长按进入多选并吞掉随后的 click', async () => {
