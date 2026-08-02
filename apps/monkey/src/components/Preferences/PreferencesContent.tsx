@@ -76,7 +76,7 @@ const PreferencesContent = defineComponent({
           {/* 桌面端:始终显示左侧菜单,移动端:仅在 menu 层级显示 */}
           <nav
             class={[
-              'border-base-content/10 flex shrink-0 flex-col gap-1 self-start sm:w-40 sm:border-r sm:pr-3',
+              'border-base-content/10 flex shrink-0 flex-col gap-1 sm:w-40 sm:border-r sm:pr-3',
               showMenu
                 ? 'w-full'
                 : 'hidden sm:flex',

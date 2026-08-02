@@ -116,6 +116,17 @@ test('设置中显示当前账号，确认后退出网页端登录', async ({ pa
   const uidLabel = await preferences.getByText('UID', { exact: true }).boundingBox()
   const expireLabel = await preferences.getByText('会员到期', { exact: true }).boundingBox()
   expect(Math.abs((uidLabel?.y ?? 0) - (expireLabel?.y ?? 0))).toBeLessThanOrEqual(2)
+  const content = preferences.locator('[data-account-preferences]').locator('..').locator('..')
+  const heights = await content.locator(':scope > nav').evaluate((menu) => {
+    if (!menu.parentElement)
+      throw new Error('偏好设置导航缺少内容容器')
+
+    return {
+      menu: menu.getBoundingClientRect().height,
+      container: menu.parentElement.getBoundingClientRect().height,
+    }
+  })
+  expect(Math.abs(heights.menu - heights.container)).toBeLessThanOrEqual(1)
 
   await preferences.getByRole('button', { name: '退出登录' }).click()
   let confirm = page.getByRole('dialog', { name: '退出登录' })
