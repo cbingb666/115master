@@ -51,7 +51,8 @@ export interface Dir {
   items: Item[]
 }
 
-let fidSeq = 900000000000000000
+/** 保持在 Number.MAX_SAFE_INTEGER 内，确保批量 fixture 的标识不会因精度丢失而重复。 */
+let fidSeq = 900000000000000
 
 /** 造一个视频文件 */
 export function video(n: string, pid: string): Item {

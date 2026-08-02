@@ -7,7 +7,7 @@ const LABEL_RE = /^https:\/\/webapi\.115\.com\/label\/list/
 
 /** 勾选某行的复选框 */
 async function check(page: Page, name: string) {
-  await row(page, name).locator('input[type="checkbox"]').click()
+  await row(page, name).locator('input[type="checkbox"]').evaluate(input => input.click())
 }
 
 test.describe('选择与操作', () => {

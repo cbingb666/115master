@@ -2,8 +2,8 @@ import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Button, Pill, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useEventListener, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
-import { computed, defineComponent, onActivated, onBeforeMount, onMounted, ref, Transition, watch } from 'vue'
-import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import { computed, defineComponent, onBeforeMount, ref, Transition, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
 import {
@@ -36,6 +36,7 @@ import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
+import { getFilesItemId } from '@/utils/filesItem'
 import { openFilesItem } from '@/utils/openFilesItem'
 import './drive.css'
 
@@ -45,12 +46,6 @@ const Drive = defineComponent({
     useTitle('115Master')
 
     const store = useDriveStore()
-
-    /** 离开 drive 路由：保存当前滚动位置（onBeforeRouteLeave 在卸载前触发，scrollY 仍准确） */
-    onBeforeRouteLeave(() => store.saveScroll())
-    /** 进入 drive：恢复滚动（onMounted 覆盖重挂载，onActivated 覆盖 keep-alive 复活） */
-    onMounted(() => store.restoreScroll())
-    onActivated(() => store.restoreScroll())
 
     const action = useDriveAction()
     const dialog = useAppDialog()
@@ -208,7 +203,21 @@ const Drive = defineComponent({
       onOpen: openItem,
       onDragMove: handleDragMove,
       marqueeContainer: () => mainRef.value?.el,
+      marqueeScrollContainer: () => document.documentElement,
     })
+
+    const positionKey = computed(() => [
+      store.nav.area || 'all',
+      store.nav.cid || '0',
+      store.query.page,
+      store.query.size,
+      store.query.keyword,
+      store.query.suffix,
+      store.query.type,
+      store.order ?? '',
+      store.asc ?? '',
+      store.fc_mix ?? '',
+    ].join(':'))
 
     /** 拖拽移动：乐观退出多选，避免等待 API 期间多选头部闪现 */
     async function handleDragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
@@ -332,31 +341,39 @@ const Drive = defineComponent({
             pb-20
             data-[view-type=card]:px-5!
           "
+          items={store.data?.data ?? []}
           containerRef={containerRef}
+          positionKey={positionKey.value}
           viewType={viewType.value}
           loading={store.loading}
           error={store.error ?? undefined}
           empty={!store.loading && store.total === 0}
         >
-          {store.data?.data?.map((item: Share.Entity.FilesItem) => (
-            <FileItem
-              class="data-[view-type=list]:px-(--main-content-gutter)"
-              key={item.pc}
-              viewType={viewType.value}
-              selectMode={selectMode.value}
-              cid={store.nav.cid}
-              order={store.order}
-              asc={store.asc}
-              {...itemProps(item, dragging)}
-              onPreview={() => preview(item)}
-            />
-          )) ?? []}
-          <FileContextMenu
-            actionConfig={actionConfig.value}
-            position={contextmenuPosition.value}
-            show={contextmenuShow.value}
-            onClose={() => contextmenuShow.value = false}
-          />
+          {{
+            item: ({ item, index }: { item: Share.Entity.FilesItem, index: number }) => (
+              <FileItem
+                class="data-[view-type=list]:px-(--main-content-gutter)"
+                key={getFilesItemId(item)}
+                index={index}
+                setsize={store.data?.data?.length ?? 0}
+                viewType={viewType.value}
+                selectMode={selectMode.value}
+                cid={store.nav.cid}
+                order={store.order}
+                asc={store.asc}
+                {...itemProps(item, dragging)}
+                onPreview={() => preview(item)}
+              />
+            ),
+            overlay: () => (
+              <FileContextMenu
+                actionConfig={actionConfig.value}
+                position={contextmenuPosition.value}
+                show={contextmenuShow.value}
+                onClose={() => contextmenuShow.value = false}
+              />
+            ),
+          }}
         </FileList>
       )
     }

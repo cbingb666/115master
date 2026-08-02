@@ -4,7 +4,7 @@ import { Core } from '@115master/drive115'
 import { useStorage } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
-import { computed, nextTick, shallowRef, watch } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { router } from '@/app/router'
 import { PAGINATION_DEFAULT_PAGE_SIZE } from '@/constants'
 import { usePathNav } from '@/hooks/useDriveNav'
@@ -16,9 +16,6 @@ import { cacheKey, PageCache, reorder } from './cache'
 
 /** 模块级 PageCache 单例：drive 页与 FileBroswer 共享，查询参数隔离 */
 export const pageCache = new PageCache()
-
-/** 滚动位置（per area:cid，不含页码），仅 drive 页使用 */
-const scrollPositions = new Map<string, number>()
 
 type ListData = Api.FileApi.Res.Files
 
@@ -63,9 +60,6 @@ export const useDriveStore = defineStore('drive', () => {
   const fc_mix = shallowRef<Share.Base.Sorter['fc_mix']>()
 
   let generation = 0
-  /** cid 切换重载时置位，待 load 完成后由 loading watcher 恢复滚动 */
-  let pendingRestore = false
-
   const isSearch = computed(() => nav.area.value === 'search')
   const pageCount = computed(() => Math.ceil(total.value / query.size.value))
 
@@ -86,28 +80,6 @@ export const useDriveStore = defineStore('drive', () => {
       return d.path[d.path.length - 2]
     return undefined
   })
-
-  function scrollKey() {
-    return `${nav.area.value || 'all'}:${nav.cid.value || '0'}`
-  }
-
-  function saveScroll() {
-    scrollPositions.set(scrollKey(), window.scrollY)
-  }
-
-  function restoreScroll() {
-    const top = scrollPositions.get(scrollKey())
-    if (top === undefined)
-      return
-    if (loading.value) {
-      // cid 切换重载：等 load 完成后由 loading watcher 恢复
-      pendingRestore = true
-    }
-    else {
-      // 内容已就绪（keep-alive 复活）：立即恢复
-      nextTick(() => requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' })))
-    }
-  }
 
   function applyRes(res: ListData) {
     data.value = res
@@ -384,7 +356,6 @@ export const useDriveStore = defineStore('drive', () => {
   }
 
   /** 单一 watcher：route 参数 / 页码 / size / keyword 变化 → navigate */
-  let prevCidKey = scrollKey()
   watch(
     [nav.cid, nav.area, () => query.page.value, () => query.size.value, () => query.keyword.value],
     (curr, prev) => {
@@ -393,7 +364,6 @@ export const useDriveStore = defineStore('drive', () => {
 
       // pageSize 变化：旧缓存自然失配（key 含 size），滚回顶部即可
       if (prevSize !== undefined && size !== prevSize) {
-        window.scrollTo({ top: 0, behavior: 'instant' })
         navigate()
         return
       }
@@ -401,18 +371,7 @@ export const useDriveStore = defineStore('drive', () => {
       // 搜索关键词变化：重置页码
       if (prevKeyword !== undefined && keyword !== prevKeyword) {
         query.page.value = 1
-        window.scrollTo({ top: 0, behavior: 'instant' })
         navigate()
-        return
-      }
-
-      const cidKey = scrollKey()
-      if (cidKey !== prevCidKey) {
-        scrollPositions.set(prevCidKey, window.scrollY)
-        prevCidKey = cidKey
-        window.scrollTo({ top: 0, behavior: 'instant' })
-        navigate()
-        restoreScroll()
         return
       }
 
@@ -420,16 +379,6 @@ export const useDriveStore = defineStore('drive', () => {
     },
     { immediate: true },
   )
-
-  // cid 切换重载完成（loading true→false）后恢复滚动位置
-  watch(loading, (n, o) => {
-    if (!(o && !n && pendingRestore))
-      return
-    pendingRestore = false
-    const top = scrollPositions.get(scrollKey())
-    if (top !== undefined)
-      nextTick(() => requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' })))
-  })
 
   return {
     query,
@@ -459,7 +408,5 @@ export const useDriveStore = defineStore('drive', () => {
     applyStarMutation,
     changeSort,
     afterAction,
-    saveScroll,
-    restoreScroll,
   }
 })

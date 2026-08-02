@@ -22,7 +22,10 @@ import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
+import { getFilesItemId } from '@/utils/filesItem'
 import { useDrivePageList } from './useDrivePageList'
+
+type ThumbnailProps = InstanceType<typeof FileItemThumbnail>['$props']
 
 /** 文件浏览器内容组件 */
 const FileBroswer = defineComponent({
@@ -54,6 +57,7 @@ const FileBroswer = defineComponent({
     const keywordInput = ref(props.keyword?.value ?? '')
     const keyword = ref(props.keyword?.value ?? '')
     const scrollRef = ref<HTMLDivElement>()
+    const getScrollElement = () => scrollRef.value
     const viewType = useStorage<'list' | 'card'>('115Master_file_browser_view_type', 'list')
 
     /** 移动端搜索展开交互：默认仅搜索图标，点击后展开搜索框并 focus，同时隐藏操作按钮 */
@@ -74,6 +78,16 @@ const FileBroswer = defineComponent({
       nf: ref('1'),
       size: 20,
     })
+    const positionKey = computed(() => [
+      source.area.value || 'all',
+      source.cid.value || '0',
+      explorer.page.value,
+      explorer.size.value,
+      keyword.value,
+      explorer.order.value ?? '',
+      explorer.asc.value ?? '',
+      explorer.fc_mix.value ?? '',
+    ].join(':'))
 
     // cid/area/keyword 变化 → 刷新
     watch([source.cid, source.area, keyword], () => {
@@ -293,6 +307,9 @@ const FileBroswer = defineComponent({
           class={[...scrollbar(), 'relative flex min-h-0 flex-1 flex-col overflow-y-auto']}
         >
           <FileList
+            items={explorer.data.value?.data ?? []}
+            getScrollElement={getScrollElement}
+            positionKey={positionKey.value}
             viewType={viewType.value}
             class="
               pt-1
@@ -303,32 +320,38 @@ const FileBroswer = defineComponent({
             error={explorer.error.value ?? null}
             empty={!explorer.loading.value && (explorer.data.value?.data?.length ?? 0) === 0}
           >
-            {(explorer.data.value?.data ?? []).map(item => (
-              <FileItem
-                class="data-[view-type=list]:px-6"
-                key={item.pc}
-                data={item}
-                pathSelect={true}
-                viewType={viewType.value}
-                cid={source.cid.value}
-                order={explorer.order.value}
-                asc={explorer.asc.value}
-                onClick={() => handleClickItem(item)}
-                onContextmenu={(e: MouseEvent) => handleContextmenu(item, e)}
-              >
-                {{
-                  thumbnail: (thumbnailProps: any) => (
-                    <FileItemThumbnail {...thumbnailProps} />
-                  ),
-                }}
-              </FileItem>
-            ))}
-            <FileContextMenu
-              actionConfig={contextmenuActions.value}
-              position={contextmenuPosition.value}
-              show={contextmenuShow.value}
-              onClose={() => contextmenuShow.value = false}
-            />
+            {{
+              item: ({ item, index }: { item: Share.Entity.FilesItem, index: number }) => (
+                <FileItem
+                  class="data-[view-type=list]:px-6"
+                  key={getFilesItemId(item)}
+                  data={item}
+                  index={index}
+                  setsize={explorer.data.value?.data?.length ?? 0}
+                  pathSelect={true}
+                  viewType={viewType.value}
+                  cid={source.cid.value}
+                  order={explorer.order.value}
+                  asc={explorer.asc.value}
+                  onClick={() => handleClickItem(item)}
+                  onContextmenu={(e: MouseEvent) => handleContextmenu(item, e)}
+                >
+                  {{
+                    thumbnail: (thumbnailProps: ThumbnailProps) => (
+                      <FileItemThumbnail {...thumbnailProps} />
+                    ),
+                  }}
+                </FileItem>
+              ),
+              overlay: () => (
+                <FileContextMenu
+                  actionConfig={contextmenuActions.value}
+                  position={contextmenuPosition.value}
+                  show={contextmenuShow.value}
+                  onClose={() => contextmenuShow.value = false}
+                />
+              ),
+            }}
           </FileList>
 
           {explorer.pageCount.value > 1 && (

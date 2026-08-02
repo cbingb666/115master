@@ -54,7 +54,7 @@ export function gmStore(page: Page): Promise<Record<string, unknown>> {
   return page.evaluate(key => JSON.parse(localStorage.getItem(key) ?? '{}'), GM_STORE_KEY)
 }
 
-export { dirs, filesRes, searchRes } from './fixtures/files'
+export { dirs, filesRes, searchRes, video } from './fixtures/files'
 export { spaceInfo } from './fixtures/space'
 export { userAq } from './fixtures/user'
 export { CORS, FILES_RE, json } from './mockApi'

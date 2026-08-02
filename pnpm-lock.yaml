@@ -71,6 +71,9 @@ importers:
       '@libmedia/common':
         specifier: ^2.2.0
         version: 2.2.0
+      '@tanstack/vue-virtual':
+        specifier: ^3.13.35
+        version: 3.13.35(vue@3.5.27(typescript@5.9.3))
       '@vueuse/components':
         specifier: ^14.1.0
         version: 14.2.1(vue@3.5.27(typescript@5.9.3))
@@ -1800,6 +1803,14 @@ packages:
     resolution: {integrity: sha512-jVA+/UpKL1vRLg6Hkao5jldawNmRo7mQYrZtNHMIVpLfLhDml5nMRUo/8MwoX2vNXvnaXNNMedrMfMugAVX1nA==}
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
+
+  '@tanstack/virtual-core@3.17.7':
+    resolution: {integrity: sha512-bp+v10y65sp2H7WpWfIMyxTNfl8ZVfxFTLRjPIFRryi6FV/J33z4IS53WO4pTk36KlvJ4iLiQz+oaydDC1xbcA==}
+
+  '@tanstack/vue-virtual@3.13.35':
+    resolution: {integrity: sha512-lOfSPvgPdlaH6Qy+CyIc3XpycitaSQ9GECndGpTuDiu+uDA1am+90yWXwzDSd/20ZM196ggWJLS+Qb6WjVd/OA==}
+    peerDependencies:
+      vue: ^2.7.0 || ^3.0.0
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -6283,6 +6294,13 @@ snapshots:
       '@tailwindcss/oxide': 4.1.18
       tailwindcss: 4.1.18
       vite: 6.4.1(@types/node@25.2.2)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
+
+  '@tanstack/virtual-core@3.17.7': {}
+
+  '@tanstack/vue-virtual@3.13.35(vue@3.5.27(typescript@5.9.3))':
+    dependencies:
+      '@tanstack/virtual-core': 3.17.7
+      vue: 3.5.27(typescript@5.9.3)
 
   '@testing-library/dom@10.4.1':
     dependencies:

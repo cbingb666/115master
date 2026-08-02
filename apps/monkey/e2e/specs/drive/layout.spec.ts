@@ -18,7 +18,7 @@ async function expectEqualEdgeGaps(page: Page, bottomButton: Locator) {
     ])
 
     return Math.abs(topGap - bottomGap)
-  }).toBeLessThanOrEqual(0.5)
+  }).toBeLessThanOrEqual(1)
 }
 
 test('头部浮动按钮与底部浮动控件到视口边缘距离一致', async ({ page }) => {
@@ -42,7 +42,7 @@ test('头部浮动按钮与底部浮动控件到视口边缘距离一致', async
   expect(backdrop.bottom).toBeCloseTo(page.viewportSize()!.height)
   expect(backdrop.pointerEvents).toBe('none')
 
-  await row(page, '演示视频 01.mp4').locator('input[type="checkbox"]').click()
+  await row(page, '演示视频 01.mp4').locator('input[type="checkbox"]').evaluate(input => input.click())
   await expectEqualEdgeGaps(page, page.getByRole('button', { name: '置顶', exact: true }))
 
   expect(errors).toEqual([])

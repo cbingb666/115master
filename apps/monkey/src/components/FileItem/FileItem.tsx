@@ -27,6 +27,14 @@ const FileItem = defineComponent({
       type: Object as PropType<Share.Entity.FilesItem>,
       required: true,
     },
+    index: {
+      type: Number,
+      default: 0,
+    },
+    setsize: {
+      type: Number,
+      default: 0,
+    },
     pathSelect: {
       type: Boolean,
       default: false,
@@ -174,9 +182,9 @@ const FileItem = defineComponent({
             data-[dropzone=true]:bg-primary/10
             data-[dropzone=true]:ring-primary
             hover:bg-base-content/5
-            data-[view-type=list]:even:bg-base-content/[0.03]
+            data-[view-type=list]:data-[stripe=even]:bg-base-content/[0.03]
             data-[view-type=list]:hover:bg-base-content/5
-            dark:data-[view-type=list]:even:bg-base-content/5
+            dark:data-[view-type=list]:data-[stripe=even]:bg-base-content/5
             dark:data-[view-type=list]:hover:bg-base-content/10
             relative
             flex
@@ -187,14 +195,11 @@ const FileItem = defineComponent({
             data-[dragging=true]:opacity-30
             data-[dropzone=true]:ring-2
             data-[dropzone=true]:ring-inset
-            data-[view-type=card]:h-full
             data-[view-type=card]:flex-col
             data-[view-type=card]:rounded-2xl
             data-[view-type=card]:data-[checked=true]:ring-6
             data-[view-type=list]:items-stretch
             data-[view-type=list]:overflow-x-clip
-            data-[view-type=list]:[contain-intrinsic-block-size:auto_4rem]
-            data-[view-type=list]:[content-visibility:auto]
             max-sm:select-none
             max-sm:[-webkit-touch-callout:none]
           `,
@@ -203,9 +208,14 @@ const FileItem = defineComponent({
             data-checked={props.checked}
             data-dragging={props.dragging}
             data-dropzone={hovering}
+            data-file-list-index={props.index}
             data-in-viewport={inViewport.value}
             data-select-mode={props.selectMode}
+            data-stripe={props.index % 2 === 1 ? 'even' : 'odd'}
             data-view-type={props.viewType}
+            aria-posinset={props.index + 1}
+            aria-setsize={props.setsize || undefined}
+            role="listitem"
           >
             {/* 复选框 */}
             <FileItemCheckbox

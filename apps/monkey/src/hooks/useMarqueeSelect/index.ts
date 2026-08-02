@@ -6,6 +6,8 @@ export interface UseMarqueeSelectOptions {
   container?: HTMLElement | (() => HTMLElement | undefined)
   /** 项目唯一标识 */
   itemKey?: string
+  /** 框选期间锁定的真实滚动容器，缺省使用容器元素 */
+  scrollContainer?: HTMLElement | (() => HTMLElement | undefined)
   /** 是否禁用框选 */
   disabled?: boolean
   /** 选择框的样式类名 */
@@ -31,6 +33,7 @@ interface Point {
 export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
   const {
     container,
+    scrollContainer,
     itemKey = 'data-selection-key',
     disabled = false,
     selectionBoxClass = 'marquee-selection-box',
@@ -44,12 +47,13 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
   const endPoint = shallowRef<Point>({ x: 0, y: 0, top: 0, left: 0 })
   const selectionBox = shallowRef<HTMLElement | null>(null)
   const containerElement = shallowRef<HTMLElement | null>(null)
+  const scrollElement = shallowRef<HTMLElement | null>(null)
   const containerRect = useElementBounding(containerElement)
   const originalUserSelect = shallowRef<string>('')
   const items = shallowRef<Item[]>([])
 
   /** 滚动锁定 */
-  const scrollLock = useScrollLock(containerElement)
+  const scrollLock = useScrollLock(scrollElement)
 
   /** 快捷键 */
   const { shift, meta } = useMagicKeys()
@@ -74,6 +78,12 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
       return container()
     }
     return container || null
+  }
+
+  const getScrollContainer = () => {
+    if (typeof scrollContainer === 'function')
+      return scrollContainer()
+    return scrollContainer || getContainer()
   }
 
   /** 检测元素是否与选择框相交 */
@@ -314,6 +324,7 @@ export function useMarqueeSelect(options: UseMarqueeSelectOptions = {}) {
       return
 
     containerElement.value = containerEl
+    scrollElement.value = getScrollContainer() ?? null
 
     // 创建选择框
     if (!selectionBox.value) {

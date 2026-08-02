@@ -158,8 +158,6 @@ describe('fileItem', () => {
     expect(label.classList).toContain('pointer-events-none')
     expect(checkbox.classList).toContain('group-data-[view-type=list]:opacity-100')
     expect(checkbox.className).not.toContain('group-data-[view-type=list]:transition-transform')
-    expect(label.closest('[data-view-type="list"]')?.classList).toContain('data-[view-type=list]:[content-visibility:auto]')
-    expect(label.closest('[data-view-type="list"]')?.classList).toContain('data-[view-type=list]:[contain-intrinsic-block-size:auto_4rem]')
     expect(checkbox.tabIndex).toBe(-1)
   })
 

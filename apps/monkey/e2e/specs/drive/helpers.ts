@@ -25,7 +25,7 @@ export async function boot(page: Page, options: BootOptions = {}) {
   await expect(row(page, '动漫').first()).toBeVisible()
 }
 
-/** 文件行（data-selection-key=pickcode，见 useFileList.itemProps） */
+/** 文件行（data-selection-key=统一文件/目录 ID，见 useFileList.itemProps） */
 export function rows(page: Page) {
   return page.locator('[data-selection-key]')
 }

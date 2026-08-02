@@ -26,6 +26,8 @@ export interface UseListSelectionOptions<T> {
   container: () => HTMLElement | undefined
   /** 已过滤的可见列表（Shift 区间与全选都基于它） */
   list: () => readonly T[]
+  /** 框选期间锁定的真实滚动容器；与选择框容器不同时显式传入 */
+  scrollContainer?: () => HTMLElement | undefined
   /** item 唯一标识，同时落地为 data-selection-key 供框选 DOM 查询 */
   key: (item: T) => string
   selection: SelectionAdapter<T>
@@ -56,9 +58,9 @@ export interface ListSelectionBind<T> {
  * 与业务无关——item 类型与 selection 持有方由调用方决定。
  */
 export function useListSelection<T>(options: UseListSelectionOptions<T>): ListSelectionBind<T> {
-  const { container, list, key, selection, disabled = false, onOpen, selectMode, onExitSelectMode } = options
+  const { container, scrollContainer, list, key, selection, disabled = false, onOpen, selectMode, onExitSelectMode } = options
 
-  useMarqueeSelect({ container, disabled })
+  useMarqueeSelect({ container, scrollContainer, disabled })
 
   /** 仅拦截 Cmd/Ctrl+A，避免触发浏览器原生全选；焦点在可编辑元素上时放行原生全选 */
   const keys = useMagicKeys({

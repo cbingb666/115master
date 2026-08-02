@@ -2,6 +2,7 @@ import type { Share } from '@115master/drive115'
 import { Fancybox } from '@fancyapps/ui/dist/fancybox/'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { useListSelection } from '@/hooks/useListSelection'
+import { getFilesItemId } from '@/utils/filesItem'
 import { Utils115 } from '@/utils/utils115'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 
@@ -16,6 +17,8 @@ export interface FileListInteractionProps {
   onDragMove?: (cid: string, items: Share.Entity.FilesItem[]) => void
   /** 框选容器，缺省取列表网格容器 */
   marqueeContainer?: () => HTMLElement | undefined
+  /** 框选期间锁定的真实滚动容器 */
+  marqueeScrollContainer?: () => HTMLElement | undefined
 }
 
 export function useFileList(props: FileListInteractionProps) {
@@ -27,8 +30,9 @@ export function useFileList(props: FileListInteractionProps) {
   /** 通用多选交互（框选 + 点击 + Shift/Meta·Ctrl + ESC/Cmd·Ctrl+A） */
   const selection = useListSelection<Share.Entity.FilesItem>({
     container: () => props.marqueeContainer?.() ?? containerRef.value,
+    scrollContainer: props.marqueeScrollContainer,
     list: () => props.listData,
-    key: item => item.pc,
+    key: getFilesItemId,
     selection: {
       has: item => props.checkeds.has(item),
       toggle: props.onChecked,

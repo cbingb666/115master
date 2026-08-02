@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { dirs, FILES_RE, filesRes, json } from '../../support'
+import { dirs, FILES_RE, filesRes, json, video } from '../../support'
 import { boot, HEADER_BTN, headerBtn, record, row, rows, watch } from './helpers'
 
 test.describe('列表渲染', () => {
@@ -15,8 +15,8 @@ test.describe('列表渲染', () => {
     expect(first.url.searchParams.get('limit')).toBe('256')
     expect(first.url.searchParams.get('o')).toBeNull()
 
-    /** 根目录 43 项全部渲染（2 文件夹 + 40 视频 + 1 文档） */
-    await expect(rows(page)).toHaveCount(43)
+    /** 根目录逻辑上有 43 项；小列表允许 overscan 一次渲染完整。 */
+    await expect(page.getByRole('list', { name: '文件列表' })).toHaveAttribute('data-file-list-total', '43')
 
     /** 文件夹行：名称渲染，s=0 不渲染大小列（FileItemContent 按 s 真值渲染） */
     const dir = row(page, '动漫')
@@ -66,6 +66,59 @@ test.describe('列表渲染', () => {
     await headerBtn(page, HEADER_BTN.view).click()
     await expect(page.locator('[data-view-type]').first()).toHaveAttribute('data-view-type', 'list')
     expect(await page.evaluate(() => localStorage.getItem('115Master_drive_view_type'))).toBe('list')
+
+    expect(errors).toEqual([])
+  })
+
+  test('1000 项使用 window 原生滚动且 DOM 数量有界', async ({ page }) => {
+    const errors = watch(page)
+    const dir = {
+      ...dirs['0'],
+      items: [
+        ...dirs['0'].items.slice(0, 2),
+        ...Array.from({ length: 998 }, (_, index) =>
+          video(`虚拟文件 ${String(index + 1).padStart(4, '0')}.mp4`, '0')),
+      ],
+    }
+    await boot(page, {
+      storage: {
+        '115Master_drive_view_type': 'list',
+        '115Master_pageSize': '1000',
+      },
+      mocks: api => api.override(FILES_RE, ({ route, url }) => {
+        if (url.searchParams.get('cid') !== '0')
+          return
+        return json(route, filesRes(
+          dir,
+          Number(url.searchParams.get('offset') ?? 0),
+          Number(url.searchParams.get('limit') ?? 1000),
+        ))
+      }),
+    })
+
+    const list = page.getByRole('list', { name: '文件列表' })
+    await expect(list).toHaveAttribute('data-file-list-total', '1000')
+    expect(await rows(page).count()).toBeLessThan(80)
+    expect(await page.evaluate(() => document.scrollingElement!.scrollHeight > document.scrollingElement!.clientHeight)).toBe(true)
+
+    await page.evaluate(() => window.scrollTo(0, document.scrollingElement!.scrollHeight))
+    await expect(row(page, '虚拟文件 0998.mp4')).toBeVisible()
+    expect(await rows(page).count()).toBeLessThan(80)
+
+    /** 布局重排和目录往返都以文件 ID 恢复同一滚动锚点。 */
+    await headerBtn(page, HEADER_BTN.view).click()
+    await expect(list).toHaveAttribute('data-view-type', 'card')
+    await expect(row(page, '虚拟文件 0998.mp4')).toBeVisible()
+    await headerBtn(page, HEADER_BTN.view).click()
+    await expect(list).toHaveAttribute('data-view-type', 'list')
+
+    await page.evaluate(() => location.hash = '#/drive/1001')
+    await expect(row(page, '动漫 第01话.mp4')).toBeVisible()
+    await page.goBack()
+    await expect(row(page, '虚拟文件 0998.mp4')).toBeVisible()
+
+    await page.keyboard.press('Meta+a')
+    await expect(page.getByTitle('退出多选')).toContainText('1000 项')
 
     expect(errors).toEqual([])
   })
