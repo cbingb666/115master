@@ -4,6 +4,10 @@ import { defineComponent } from 'vue'
 const FileItemCheckbox = defineComponent({
   name: 'FileItemCheckbox',
   props: {
+    animate: {
+      type: Boolean,
+      required: true,
+    },
     checked: {
       type: Boolean,
       required: true,
@@ -47,18 +51,20 @@ const FileItemCheckbox = defineComponent({
       <label class={[
         `
           group-data-[view-type=card]:ui-z-cover
-          cursor-pointer group-data-[view-type=card]:absolute
-          group-data-[view-type=card]:top-3 group-data-[view-type=card]:left-3
-          group-data-[view-type=card]:flex group-data-[view-type=card]:items-center
-          group-data-[view-type=list]:flex group-data-[view-type=list]:flex-none
-          group-data-[view-type=list]:cursor-pointer group-data-[view-type=list]:items-center
-          group-data-[view-type=list]:overflow-hidden
-          group-data-[view-type=list]:transition-[width] group-data-[view-type=list]:duration-300
-          group-data-[view-type=list]:ease-[var(--ui-ease-move)] motion-reduce:group-data-[view-type=list]:transition-none
+          group-data-[view-type=list]:ui-z-cover cursor-pointer
+          group-data-[view-type=card]:absolute group-data-[view-type=card]:top-3
+          group-data-[view-type=card]:left-3 group-data-[view-type=card]:flex
+          group-data-[view-type=card]:items-center group-data-[view-type=list]:absolute
+          group-data-[view-type=list]:top-1/2 group-data-[view-type=list]:left-0
+          group-data-[view-type=list]:flex group-data-[view-type=list]:w-9
+          group-data-[view-type=list]:-translate-y-1/2 group-data-[view-type=list]:items-center
         `,
+        props.animate
+          ? 'group-data-[view-type=list]:transition-transform group-data-[view-type=list]:duration-300 group-data-[view-type=list]:ease-[var(--ui-ease-move)] motion-reduce:group-data-[view-type=list]:transition-none'
+          : '',
         props.selectMode
-          ? 'group-data-[view-type=list]:w-9'
-          : 'pointer-events-none group-data-[view-type=list]:w-0',
+          ? 'group-data-[view-type=list]:translate-x-[var(--main-content-gutter)]'
+          : 'pointer-events-none group-data-[view-type=list]:-translate-x-9',
       ]}
       >
         <input
@@ -66,11 +72,15 @@ const FileItemCheckbox = defineComponent({
             `
               checkbox checkbox-sm
               checked:bg-primary checked:text-primary-content
-              checked:border-primary opacity-0
-              transition-opacity duration-300 ease-[var(--ui-ease-standard)]
-              group-data-[select-mode=true]:opacity-100
+              checked:border-primary
+              group-data-[view-type=card]:transition-opacity group-data-[view-type=card]:duration-300
+              group-data-[view-type=card]:ease-[var(--ui-ease-standard)]
+              group-data-[view-type=list]:opacity-100
               motion-reduce:transition-none
             `,
+            props.selectMode
+              ? 'group-data-[view-type=card]:opacity-100'
+              : 'group-data-[view-type=card]:opacity-0',
             !props.checked && `
               group-data-[view-type=card]:border-black/25
               group-data-[view-type=card]:bg-white/85

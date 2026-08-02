@@ -46,6 +46,33 @@ vi.mock('../FileItemThumbnail', () => ({
 
 const apps: ReturnType<typeof createApp>[] = []
 
+function mockIntersectionObserver() {
+  let callback: IntersectionObserverCallback = () => {}
+  let instance: IntersectionObserver
+  const created = vi.fn()
+  const observe = vi.fn()
+
+  vi.stubGlobal('IntersectionObserver', class {
+    observe = observe
+    unobserve = vi.fn()
+    disconnect = vi.fn()
+
+    constructor(cb: IntersectionObserverCallback) {
+      callback = cb
+      instance = this as unknown as IntersectionObserver
+      created()
+    }
+  })
+
+  return {
+    created,
+    observe,
+    show(target: Element, isIntersecting: boolean) {
+      callback([{ isIntersecting, target } as IntersectionObserverEntry], instance)
+    },
+  }
+}
+
 function pointer(type: string, pointerType = 'touch', x = 20) {
   const event = new MouseEvent(type, { bubbles: true, clientX: x, clientY: 20 })
   Object.defineProperty(event, 'pointerType', { value: pointerType })
@@ -57,6 +84,7 @@ function mountItem(options: {
   dragPayload?: () => Share.Entity.FilesItem[]
   onChecked?: (checked: boolean) => void
   selectMode?: boolean
+  viewType?: 'card' | 'list'
 } = {}) {
   const root = document.createElement('div')
   document.body.appendChild(root)
@@ -121,23 +149,75 @@ describe('fileItem', () => {
     const label = root.querySelector('label')!
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
 
-    expect(label.classList).toContain('group-data-[view-type=list]:w-0')
-    expect(label.classList).toContain('group-data-[view-type=list]:transition-[width]')
+    expect(label.classList).toContain('group-data-[view-type=list]:w-9')
+    expect(label.classList).toContain('group-data-[view-type=list]:absolute')
+    expect(label.classList).toContain('group-data-[view-type=list]:-translate-x-9')
+    expect(label.classList).toContain('group-data-[view-type=list]:transition-transform')
+    expect(label.className).not.toContain('transition-[width]')
+    expect(label.className).not.toContain('transition-[margin-left]')
     expect(label.classList).toContain('pointer-events-none')
-    expect(checkbox.classList).toContain('opacity-0')
+    expect(checkbox.classList).toContain('group-data-[view-type=list]:opacity-100')
+    expect(checkbox.className).not.toContain('group-data-[view-type=list]:transition-transform')
+    expect(label.closest('[data-view-type="list"]')?.classList).toContain('data-[view-type=list]:[content-visibility:auto]')
+    expect(label.closest('[data-view-type="list"]')?.classList).toContain('data-[view-type=list]:[contain-intrinsic-block-size:auto_4rem]')
     expect(checkbox.tabIndex).toBe(-1)
   })
 
-  it('列表视图进入多选模式后展开 checkbox 并推开原内容', () => {
+  it('列表视图进入多选模式后 checkbox 随固定槽滑入并推开原内容', () => {
     const root = mountItem({ selectMode: true })
     const label = root.querySelector('label')!
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+    const link = root.querySelector('a')!
 
     expect(label.classList).toContain('group-data-[view-type=list]:w-9')
-    expect(label.classList).not.toContain('group-data-[view-type=list]:pr-4')
+    expect(label.classList).toContain('group-data-[view-type=list]:translate-x-[var(--main-content-gutter)]')
+    expect(label.classList).not.toContain('group-data-[view-type=list]:-translate-x-9')
     expect(label.classList).not.toContain('pointer-events-none')
-    expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
+    expect(checkbox.classList).toContain('group-data-[view-type=list]:opacity-100')
+    expect(link.classList).toContain('pl-9')
+    expect(link.classList).not.toContain('translate-x-9')
+    expect(link.classList).not.toContain('pr-9')
+    expect(link.classList).toContain('group-data-[view-type=list]:transition-[padding-left]')
+    expect(link.classList).not.toContain('group-data-[view-type=list]:transition-transform')
     expect(checkbox.tabIndex).toBe(0)
+  })
+
+  it('卡片视图多选时不应用列表内容位移', () => {
+    const root = mountItem({ selectMode: true, viewType: 'card' })
+    const link = root.querySelector('a')!
+
+    expect(link.classList).not.toContain('pl-9')
+  })
+
+  it('不可见列表项不挂载多选过渡，进入视口后恢复', async () => {
+    const viewport = mockIntersectionObserver()
+    const root = mountItem({ selectMode: true })
+    await nextTick()
+    const item = root.querySelector<HTMLElement>('[data-view-type="list"]')!
+    const label = root.querySelector('label')!
+    const link = root.querySelector('a')!
+
+    expect(item.dataset.inViewport).toBe('false')
+    expect(label.classList).not.toContain('group-data-[view-type=list]:transition-transform')
+    expect(link.classList).not.toContain('group-data-[view-type=list]:transition-[padding-left]')
+
+    viewport.show(item, true)
+    await nextTick()
+
+    expect(item.dataset.inViewport).toBe('true')
+    expect(label.classList).toContain('group-data-[view-type=list]:transition-transform')
+    expect(link.classList).toContain('group-data-[view-type=list]:transition-[padding-left]')
+  })
+
+  it('大量列表项共享一个视口 observer', async () => {
+    const viewport = mockIntersectionObserver()
+
+    mountItem()
+    mountItem()
+    await nextTick()
+
+    expect(viewport.created).toHaveBeenCalledOnce()
+    expect(viewport.observe).toHaveBeenCalledTimes(2)
   })
 
   it('列表视图的末列时间向右边界对齐', () => {
@@ -155,9 +235,8 @@ describe('fileItem', () => {
     expect(link.classList).toContain('group-data-[select-mode=true]:cursor-pointer')
     expect(link.classList).toContain('focus:outline-none')
     expect(link.classList).toContain('focus-visible:outline-2')
-    expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
-    expect(checkbox.classList).toContain('transition-opacity')
-    expect(checkbox.classList).toContain('duration-300')
+    expect(checkbox.classList).toContain('group-data-[view-type=list]:opacity-100')
+    expect(checkbox.className).not.toContain('group-data-[view-type=list]:transition-transform')
     expect(checkbox.classList).not.toContain('group-hover:opacity-100')
   })
 

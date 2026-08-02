@@ -6,6 +6,7 @@ import { unrefElement } from '@vueuse/core'
 import { defineComponent, withModifiers } from 'vue'
 import { useContextmenu } from '@/hooks/useContextmenu'
 import { useLongPress } from '@/hooks/useLongPress'
+import { useViewportVisibility } from '@/hooks/useViewportVisibility'
 import { getFilesItemId } from '@/utils/filesItem'
 import { FileDndSource, FileDndTarget } from '../FileDnd'
 import { Link } from '../Link'
@@ -106,6 +107,7 @@ const FileItem = defineComponent({
       asc: props.asc,
       onPreview: props.onPreview,
     })
+    const inViewport = useViewportVisibility(itemRef)
 
     /** 长按：200ms 选中该项；多选态交给点击与拖拽处理。 */
     const longPressFired = useLongPress(itemRef, {
@@ -190,6 +192,9 @@ const FileItem = defineComponent({
             data-[view-type=card]:rounded-2xl
             data-[view-type=card]:data-[checked=true]:ring-6
             data-[view-type=list]:items-stretch
+            data-[view-type=list]:overflow-x-clip
+            data-[view-type=list]:[contain-intrinsic-block-size:auto_4rem]
+            data-[view-type=list]:[content-visibility:auto]
             max-sm:select-none
             max-sm:[-webkit-touch-callout:none]
           `,
@@ -198,12 +203,14 @@ const FileItem = defineComponent({
             data-checked={props.checked}
             data-dragging={props.dragging}
             data-dropzone={hovering}
+            data-in-viewport={inViewport.value}
             data-select-mode={props.selectMode}
             data-view-type={props.viewType}
           >
             {/* 复选框 */}
             <FileItemCheckbox
               checked={props.checked}
+              animate={inViewport.value}
               pathSelect={props.pathSelect}
               selectMode={props.selectMode}
               onChecked={props.onChecked}
@@ -212,7 +219,8 @@ const FileItem = defineComponent({
 
             {/* 链接区域 */}
             <Link
-              class="
+              class={[
+                `
             focus-visible:outline-primary
             cursor-default
             group-data-[select-mode=true]:cursor-pointer group-data-[view-type=card]:flex
@@ -220,8 +228,14 @@ const FileItem = defineComponent({
             group-data-[view-type=card]:flex-col group-data-[view-type=list]:flex
             group-data-[view-type=list]:min-w-0 group-data-[view-type=list]:flex-1
             group-data-[view-type=list]:items-center group-data-[view-type=list]:gap-3
-            group-data-[view-type=list]:py-1 focus:outline-none focus-visible:outline-2
-          "
+            group-data-[view-type=list]:py-1
+            focus:outline-none focus-visible:outline-2
+          `,
+                inViewport.value
+                  ? 'group-data-[view-type=list]:transition-[padding-left] group-data-[view-type=list]:duration-300 group-data-[view-type=list]:ease-out motion-reduce:transition-none'
+                  : '',
+                props.selectMode && props.viewType === 'list' ? 'pl-9' : '',
+              ]}
               {...link.value}
               draggable={false}
               onClickCapture={withModifiers(handleClick, ['prevent'])}

@@ -5,6 +5,28 @@ import TagItem from '../TagItem'
 
 const apps: ReturnType<typeof createApp>[] = []
 
+function mockIntersectionObserver() {
+  let callback: IntersectionObserverCallback = () => {}
+  let instance: IntersectionObserver
+
+  vi.stubGlobal('IntersectionObserver', class {
+    constructor(cb: IntersectionObserverCallback) {
+      callback = cb
+      instance = this as unknown as IntersectionObserver
+    }
+
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  })
+
+  return {
+    show(target: Element, isIntersecting: boolean) {
+      callback([{ isIntersecting, target } as IntersectionObserverEntry], instance)
+    },
+  }
+}
+
 function pointer(type: string, button = 0, x = 20) {
   const event = new MouseEvent(type, { bubbles: true, button, clientX: x, clientY: 20 })
   Object.defineProperty(event, 'pointerType', { value: 'mouse' })
@@ -46,23 +68,56 @@ describe('tagItem', () => {
     const root = mountItem()
     const slot = root.querySelector<HTMLElement>('[data-checkbox-slot]')!
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+    const content = root.querySelector<HTMLElement>('[data-item-content]')!
 
-    expect(slot.classList).toContain('w-0')
-    expect(slot.classList).toContain('transition-[width]')
-    expect(checkbox.classList).toContain('opacity-0')
-    expect(checkbox.classList).toContain('transition-opacity')
+    expect(slot.classList).toContain('w-9')
+    expect(slot.classList).toContain('absolute')
+    expect(slot.classList).toContain('-translate-x-9')
+    expect(slot.classList).toContain('transition-transform')
+    expect(slot.className).not.toContain('transition-[width]')
+    expect(slot.className).not.toContain('transition-[margin-left]')
+    expect(checkbox.classList).toContain('opacity-100')
+    expect(checkbox.classList).not.toContain('transition-transform')
+    expect(content.classList).not.toContain('translate-x-9')
     expect(checkbox.tabIndex).toBe(-1)
   })
 
-  it('进入多选模式后展开 checkbox 并推开色点与名称', () => {
+  it('进入多选模式后 checkbox 随固定槽滑入并推开色点与名称', () => {
     const root = mountItem({ selectMode: true })
     const slot = root.querySelector<HTMLElement>('[data-checkbox-slot]')!
     const checkbox = root.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+    const content = root.querySelector<HTMLElement>('[data-item-content]')!
 
     expect(slot.classList).toContain('w-9')
-    expect(slot.classList).not.toContain('pr-4')
-    expect(checkbox.classList).toContain('group-data-[select-mode=true]:opacity-100')
+    expect(slot.classList).toContain('translate-x-[var(--main-content-gutter)]')
+    expect(slot.classList).not.toContain('-translate-x-9')
+    expect(checkbox.classList).toContain('opacity-100')
+    expect(content.classList).toContain('pl-9')
+    expect(content.classList).not.toContain('translate-x-9')
+    expect(content.classList).not.toContain('pr-9')
+    expect(content.classList).toContain('transition-[padding-left]')
+    expect(content.classList).not.toContain('transition-transform')
     expect(checkbox.tabIndex).toBe(0)
+  })
+
+  it('不可见标签项不挂载多选过渡，进入视口后恢复', async () => {
+    const viewport = mockIntersectionObserver()
+    const root = mountItem({ selectMode: true })
+    await nextTick()
+    const item = root.querySelector('li')!
+    const slot = root.querySelector<HTMLElement>('[data-checkbox-slot]')!
+    const content = root.querySelector<HTMLElement>('[data-item-content]')!
+
+    expect(item.dataset.inViewport).toBe('false')
+    expect(slot.classList).not.toContain('transition-transform')
+    expect(content.classList).not.toContain('transition-[padding-left]')
+
+    viewport.show(item, true)
+    await nextTick()
+
+    expect(item.dataset.inViewport).toBe('true')
+    expect(slot.classList).toContain('transition-transform')
+    expect(content.classList).toContain('transition-[padding-left]')
   })
 
   it('uses the drive list view row surface and spacing', () => {
@@ -75,6 +130,8 @@ describe('tagItem', () => {
     expect(item.classList).toContain('hover:bg-base-content/5')
     expect(item.classList).toContain('min-h-14')
     expect(item.classList).toContain('px-(--main-content-gutter)')
+    expect(item.classList).toContain('[content-visibility:auto]')
+    expect(item.classList).toContain('[contain-intrinsic-block-size:auto_3.5rem]')
 
     const color = item.querySelector<HTMLElement>('[data-color-slot]')!
     expect(color.classList).toContain('mr-3')
