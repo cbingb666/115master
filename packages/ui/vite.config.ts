@@ -15,6 +15,7 @@ const assets = [
   ['components.css', 'components.css'],
   ['button.css', 'button.css'],
   ['dialog.css', 'dialog.css'],
+  ['header.css', 'header.css'],
   ['navigation-stack.css', 'navigation-stack.css'],
   ['pill.css', 'pill.css'],
   ['scrollbar.css', 'scrollbar.css'],

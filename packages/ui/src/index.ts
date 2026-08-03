@@ -38,6 +38,10 @@ export type {
   DialogServiceMessages,
   DialogServiceOptions,
 } from './components/Dialog/service'
+export { Header } from './components/Header/Header'
+export type { HeaderProps } from './components/Header/Header'
+export { HeaderEnd } from './components/Header/HeaderEnd'
+export { HeaderStart } from './components/Header/HeaderStart'
 export { NavigationStack } from './components/NavigationStack/NavigationStack'
 export type {
   NavigationStackDirection,

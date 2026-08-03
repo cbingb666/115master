@@ -36,7 +36,7 @@ test.describe('列表渲染', () => {
     const errors = watch(page)
     await boot(page)
 
-    const geometry = await page.locator('.header-sticky-effect').evaluate((header) => {
+    const geometry = await page.locator('[data-ui-header-content]').evaluate((header) => {
       const main = header.parentElement?.parentElement
       const width = Number.parseFloat(getComputedStyle(main!).marginLeft)
       return {

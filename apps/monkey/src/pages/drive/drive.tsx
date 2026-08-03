@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
-import { Button, Pill, Tooltip } from '@115master/ui'
+import { Button, Header, HeaderEnd, HeaderStart, Pill, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useEventListener, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, ref, Transition, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -16,9 +16,6 @@ import {
   FilePath,
   FileSortSelector,
   FileViewType,
-  Header,
-  HeaderEnd,
-  HeaderStart,
   Layout,
   Main,
   PageSizeOptions,
@@ -497,11 +494,12 @@ const Drive = defineComponent({
       <DndMonitor>
         {{ default: ({ active }: { active: boolean }) => (
           <div
-            class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] sm:[--main-content-gutter:calc(var(--spacing)*6)]"
+            class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] [--ui-header-gutter:var(--main-content-gutter)] sm:[--main-content-gutter:calc(var(--spacing)*6)]"
             style={{
               '--drive-floating-gap': 'calc(var(--spacing) * 2)',
               '--drive-floating-content-gap': 'calc(var(--drive-floating-gap) + var(--spacing) * 3)',
               '--drive-bottom-gap': 'calc(env(safe-area-inset-bottom) + var(--drive-floating-content-gap))',
+              '--ui-header-offset': 'var(--drive-floating-gap)',
             }}
           >
             <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">

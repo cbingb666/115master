@@ -1,7 +1,6 @@
 import type { PropType } from 'vue'
-import { Button, Tooltip } from '@115master/ui'
+import { Button, Header, HeaderEnd, HeaderStart, Tooltip } from '@115master/ui'
 import { defineComponent } from 'vue'
-import { Header, HeaderEnd, HeaderStart } from '@/components/Header'
 import { I, Icon } from '@/icons'
 
 /**

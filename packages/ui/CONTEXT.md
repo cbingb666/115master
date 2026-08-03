@@ -73,7 +73,7 @@ _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Tooltip、ContextMenu、Watermark、Dialog、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：
@@ -159,6 +159,10 @@ _Avoid_: 链接按钮、router button
 **Pill**：
 呈现胶囊几何的信息、组合布局或导航容器；不执行按钮动作。
 _Avoid_: 胶囊按钮、Badge
+
+**Header**：
+应用无关的吸附式页面头部外壳；随根滚动渐显衬底，并通过 HeaderStart 与 HeaderEnd 组合可收缩主内容和不收缩尾部操作。应用拥有业务内容，并可通过 `--ui-header-offset` 与 `--ui-header-gutter` 调整页面集成几何。
+_Avoid_: 业务导航栏、路由头部、应用间距变量
 
 **Watermark**：
 在内容区域上方重复铺陈文本身份标记的装饰性组件；不拦截内容交互或进入无障碍树，只用于降低随意传播意愿，不构成数据保护边界。

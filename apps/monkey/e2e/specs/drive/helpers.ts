@@ -35,9 +35,9 @@ export function row(page: Page, name: string) {
   return page.locator(`[data-selection-key]:has(span[title="${name}"])`)
 }
 
-/** 顶栏（Header.tsx 的 @container 外壳） */
+/** 顶栏（UI Header 的 @container 外壳） */
 export function header(page: Page) {
-  return page.locator('.header-sticky-effect')
+  return page.locator('[data-ui-header-content]')
 }
 
 /**

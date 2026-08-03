@@ -2,7 +2,7 @@ import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
 import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
-import { Button, Pill } from '@115master/ui'
+import { Button, Header, HeaderEnd, HeaderStart, Pill } from '@115master/ui'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
@@ -10,9 +10,6 @@ import { useAppDialog } from '@/app/dialog'
 import {
   ActionBar,
   ActionMenu,
-  Header,
-  HeaderEnd,
-  HeaderStart,
   Layout,
   LoadingError,
   Main,
@@ -300,7 +297,7 @@ const Tags = defineComponent({
     }
 
     return () => (
-      <div class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] sm:[--main-content-gutter:calc(var(--spacing)*6)]">
+      <div class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] [--ui-header-gutter:var(--main-content-gutter)] sm:[--main-content-gutter:calc(var(--spacing)*6)]">
         <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
           <Sider>
             <SiderContent />
