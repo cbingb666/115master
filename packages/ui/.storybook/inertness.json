@@ -187,7 +187,7 @@
       ]
     },
     {
-      "id": "ui-overlayhost--theme-scoped-target",
+      "id": "ui-overlayhost--default",
       "docs": "ui-overlayhost--docs",
       "component": true,
       "tags": [
@@ -195,7 +195,7 @@
         "test"
       ],
       "tests": [
-        "ui-overlayhost--theme-scoped-target:proves-theme-scoped-target-ownership"
+        "ui-overlayhost--default:hosts-an-accessible-transient-overlay-inside-the-current-theme"
       ],
       "ready": "[data-ui-overlay-host]",
       "outcomes": [
