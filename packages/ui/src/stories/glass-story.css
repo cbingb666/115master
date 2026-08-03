@@ -1,0 +1,148 @@
+.ui-glass-story__materials {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.ui-glass-story__stage {
+  display: grid;
+  min-height: 15rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-box);
+}
+
+.ui-glass-story__stage--quiet {
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--color-primary) 8%, transparent), transparent 58%),
+    var(--color-base-200);
+}
+
+.ui-glass-story__stage--color,
+.ui-glass-story__ownership {
+  background:
+    radial-gradient(
+      circle at 18% 25%,
+      color-mix(in oklab, var(--color-primary) 82%, transparent) 0 12%,
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 82% 70%,
+      color-mix(in oklab, var(--color-accent) 72%, transparent) 0 10%,
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      var(--color-base-200),
+      color-mix(in oklab, var(--color-secondary) 28%, var(--color-base-100))
+    );
+}
+
+.ui-glass-story__stage--media {
+  align-items: end;
+  background:
+    radial-gradient(circle at 70% 28%, color-mix(in oklab, white 70%, transparent) 0 5%, transparent 6%),
+    linear-gradient(145deg, var(--color-primary), var(--color-secondary) 48%, var(--color-neutral));
+}
+
+.ui-glass-story__stage--panel {
+  grid-column: 1 / -1;
+  background:
+    radial-gradient(circle at 15% 20%, color-mix(in oklab, var(--color-accent) 36%, transparent), transparent 28%),
+    radial-gradient(circle at 85% 80%, color-mix(in oklab, var(--color-primary) 32%, transparent), transparent 32%),
+    var(--color-base-200);
+}
+
+.ui-glass-story__card {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  min-height: 100%;
+  padding: 1.25rem;
+  border-radius: var(--radius-box);
+}
+
+.ui-glass-story__card h2,
+.ui-glass-story__card p,
+.ui-glass-story__owner h2,
+.ui-glass-story__owner p {
+  margin: 0;
+}
+
+.ui-glass-story__card .ui-foundation-demo__label {
+  color: inherit;
+}
+
+.ui-glass-story__stage--media .ui-glass-story__card {
+  min-height: auto;
+}
+
+.ui-glass-story__card--panel {
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.65fr);
+  align-items: center;
+}
+
+.ui-glass-story__panel-content {
+  padding: 1rem;
+  border-radius: var(--radius-field);
+}
+
+.ui-glass-story__ownership {
+  padding: clamp(1.5rem, 6vw, 5rem);
+  border-radius: var(--radius-box);
+}
+
+.ui-glass-story__owner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  border-radius: var(--radius-box);
+}
+
+.ui-glass-story__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: end;
+}
+
+.ui-glass-story__tones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  border-radius: var(--radius-box);
+  background:
+    radial-gradient(circle at 20% 25%, color-mix(in oklab, var(--color-primary) 32%, transparent), transparent 32%),
+    radial-gradient(circle at 80% 75%, color-mix(in oklab, var(--color-accent) 28%, transparent), transparent 30%),
+    var(--color-base-200);
+}
+
+.ui-glass-story__tones > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+@media (width < 48rem) {
+  .ui-glass-story__materials,
+  .ui-glass-story__tones {
+    grid-template-columns: 1fr;
+  }
+
+  .ui-glass-story__stage--panel {
+    grid-column: auto;
+  }
+
+  .ui-glass-story__tones > :last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .ui-glass-story__card--panel,
+  .ui-glass-story__owner {
+    grid-template-columns: 1fr;
+  }
+
+  .ui-glass-story__controls {
+    justify-content: start;
+  }
+}

@@ -450,20 +450,38 @@
       ]
     },
     {
-      "id": "foundations-theme-token-and-glass--tracer",
-      "docs": "foundations-theme-token-and-glass--docs",
+      "id": "foundations-glass--filter-ownership",
+      "docs": "foundations-glass--docs",
       "tags": [
         "autodocs",
         "test"
       ],
       "tests": [
-        "foundations-theme-token-and-glass--tracer:proves-theme-glass-and-semantic-action-contracts"
+        "foundations-glass--filter-ownership:keeps-the-carrying-surface-as-the-only-backdrop-filter-owner"
       ],
-      "ready": "[data-ui-theme-actions]",
+      "ready": "[data-ui-glass-filter-owner]",
       "outcomes": [
         {
-          "selector": "[data-ui-theme-actions]",
-          "text": "0"
+          "selector": "[data-ui-glass-nested-button]",
+          "focused": false
+        }
+      ]
+    },
+    {
+      "id": "foundations-glass--semantic-tones",
+      "docs": "foundations-glass--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "foundations-glass--semantic-tones:preserves-semantic-content-tones-on-filtered-surfaces"
+      ],
+      "ready": "[data-ui-glass-tone=\"warning\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-glass-tone]",
+          "count": 3
         }
       ]
     },
