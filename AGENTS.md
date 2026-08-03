@@ -128,3 +128,7 @@ Multi-context —— 根目录 `CONTEXT-MAP.md` 指向各 package/app 的 `CONTE
 ### Verification
 
 离线验证平台（单测/Storybook、业务 E2E、视觉回归）的命令、并行 agent 规约与扩展指南。详见 `docs/agents/verification.md`。
+
+### Component Stories
+
+组件 Story 的所有权、分类、Args/Controls、fixture、可访问性、显式 `.test()` 与视觉回归规范。详见 `docs/agents/component-stories.md`。

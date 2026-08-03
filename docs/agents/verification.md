@@ -132,9 +132,10 @@ test.describe('<feature>', () => {
 
 ### 新增 story
 
+- 编写与评审规则见 [组件 Stories 规范](./component-stories.md)。
 - Storybook 浏览器测试与视觉回归都按 `storybook-static/index.json` 动态发现：新增 story 后重新 `pnpm build-storybook` 即自动纳入，无需改测试代码。
 - `subtype === 'test'` 的显式测试条目不参与视觉回归。
-- 纯展示（无交互）的 story 可登记进 `apps/monkey/.storybook/inertness.json`，获得 inertness 检查保证。
+- 纯展示（无交互）的 story 可登记进所属 Storybook 的 `.storybook/inertness.json`，获得 inertness 检查保证。
 
 ## 已知限制与后续路线
 
