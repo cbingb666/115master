@@ -1,6 +1,6 @@
 import { expect, within } from 'storybook/test'
 import { computed } from 'vue'
-import preview from '../../../.storybook/preview'
+import preview from '../../.storybook/preview'
 
 const colors = [
   {

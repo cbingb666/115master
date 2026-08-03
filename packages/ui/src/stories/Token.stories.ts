@@ -1,6 +1,6 @@
 import { expect, waitFor, within } from 'storybook/test'
 import { onMounted, ref } from 'vue'
-import preview from '../../../.storybook/preview'
+import preview from '../../.storybook/preview'
 
 const groups = [
   {
