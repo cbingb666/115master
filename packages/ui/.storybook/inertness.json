@@ -9,13 +9,13 @@
         "test"
       ],
       "tests": [
-        "foundations-motion--comparison:plays-the-semantic-motion-comparison"
+        "foundations-motion--comparison:compares-every-semantic-curve-from-an-inert-starting-point"
       ],
-      "ready": "main[aria-label=\"Motion Token 曲线对比\"]",
+      "ready": "main[aria-labelledby=\"ui-motion-comparison-title\"]",
       "outcomes": [
         {
-          "selector": "[data-ui-motion-plays]",
-          "text": "0"
+          "selector": "[data-ui-motion-position]",
+          "text": "起点"
         }
       ]
     },
@@ -27,13 +27,35 @@
         "test"
       ],
       "tests": [
-        "foundations-motion--magnetic-snap:plays-the-magnetic-snap-example"
+        "foundations-motion--magnetic-snap:settles-at-the-magnetic-target-after-an-explicit-action"
       ],
-      "ready": "main[aria-label=\"磁贴吸附 Motion Token\"]",
+      "ready": "main[aria-labelledby=\"ui-motion-snap-title\"]",
       "outcomes": [
         {
-          "selector": "[data-ui-motion-snap-plays]",
-          "text": "0"
+          "selector": "[data-ui-motion-snap-position]",
+          "text": "起点"
+        }
+      ]
+    },
+    {
+      "id": "foundations-motion--reduced-motion",
+      "docs": "foundations-motion--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "foundations-motion--reduced-motion:preserves-the-outcome-while-removing-reduced-motion-interpolation"
+      ],
+      "ready": "main[aria-labelledby=\"ui-motion-reduced-title\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-motion-preference]",
+          "text": "完整动态效果"
+        },
+        {
+          "selector": "[data-ui-motion-reduced-position]",
+          "text": "起点"
         }
       ]
     },
