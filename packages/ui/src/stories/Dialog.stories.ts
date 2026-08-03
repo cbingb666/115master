@@ -165,6 +165,7 @@ Sizes.test('proves sizes and responsive presentation', async ({ canvasElement })
     await waitFor(() => expect(phase).toHaveTextContent(`${size} opened`))
     await waitFor(() => expect(panel).toBeVisible())
     await expect(getComputedStyle(dialog).alignItems).toBe(desktop ? 'center' : 'flex-end')
+    await waitFor(() => expect(panel.getBoundingClientRect().width).toBeCloseTo(panel.offsetWidth, 0))
     widths.push(panel.getBoundingClientRect().width)
 
     await userEvent.click(canvas.getByRole('button', { name: `Close ${size}` }))
