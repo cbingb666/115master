@@ -13,6 +13,8 @@
         <Button
           variant="ghost"
           shape="circle"
+          aria-label="关闭播放列表"
+          title="关闭播放列表"
           :class="styles.playlist.header.close"
           @click="emit('close')"
         >

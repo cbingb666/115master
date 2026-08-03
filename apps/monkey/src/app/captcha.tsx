@@ -1,6 +1,6 @@
 import type { DialogHandle } from '@115master/ui'
 import type { App, PropType } from 'vue'
-import { Button, Dialog, Tooltip } from '@115master/ui'
+import { Button, Dialog, ModalHost, Tooltip } from '@115master/ui'
 import { LayoutGroup, motion, MotionConfig } from 'motion-v'
 import {
   createApp,
@@ -512,24 +512,26 @@ function standaloneDialog(api: CaptchaApi) {
     const StandaloneCaptcha = defineComponent({
       name: 'StandaloneCaptcha',
       setup: () => () => (
-        <Dialog
-          open
-          title="人机验证"
-          size="md"
-          closeOnBackdrop={false}
-          onClose={() => settle(false)}
-        >
-          {{
-            default: () => (
-              <CaptchaChallenge
-                api={api}
-                tooltipTo={root}
-                onCancel={() => settle(false)}
-                onVerified={() => settle(true)}
-              />
-            ),
-          }}
-        </Dialog>
+        <ModalHost>
+          <Dialog
+            open
+            title="人机验证"
+            size="md"
+            closeOnBackdrop={false}
+            onClose={() => settle(false)}
+          >
+            {{
+              default: () => (
+                <CaptchaChallenge
+                  api={api}
+                  tooltipTo={root}
+                  onCancel={() => settle(false)}
+                  onVerified={() => settle(true)}
+                />
+              ),
+            }}
+          </Dialog>
+        </ModalHost>
       ),
     })
 

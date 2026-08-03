@@ -3,16 +3,31 @@ import { EPISODES, setupVideo, showControls, sider, videoUrl, watch } from './su
 
 /** 播放列表：侧边栏渲染、点击切换、上一集/下一集 */
 test.describe('播放列表', () => {
-  test('侧边栏渲染多文件列表并高亮当前集', async ({ page }) => {
+  test('Drawer 覆盖播放器、渲染列表，并在 Escape 后恢复触发焦点', async ({ page }) => {
     const errors = watch(page)
     await setupVideo(page)
     await page.goto(videoUrl(EPISODES[0].pc))
 
-    // 默认收起；点击头部「播放列表」按钮展开
-    await expect(sider(page)).toHaveAttribute('data-visible', 'false')
-    await page.locator('button[title^="播放列表"]').click()
-    await expect(sider(page)).toHaveAttribute('data-visible', 'true')
+    const player = page.locator('[data-app-video-player]')
+    const trigger = page.locator('[data-app-playlist-trigger]')
+    const before = await player.boundingBox()
+
+    if (!before)
+      throw new Error('播放器缺少可测量几何。')
+
+    await expect(sider(page)).not.toHaveAttribute('open')
+    await trigger.click()
+    await expect(sider(page)).toHaveAttribute('open', '')
     await expect(sider(page).locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
+
+    const after = await player.boundingBox()
+    const panel = await sider(page).locator('[data-ui-drawer-panel]').boundingBox()
+
+    if (!after || !panel)
+      throw new Error('播放列表 Drawer 缺少可测量几何。')
+    expect(after).toEqual(before)
+    expect(panel.x).toBeLessThan(before.x + before.width)
+    expect(panel.x + panel.width).toBeCloseTo(before.x + before.width, 0)
 
     // 3 集全部渲染，计数正确
     await expect(sider(page).getByText('(3)')).toBeVisible()
@@ -20,6 +35,12 @@ test.describe('播放列表', () => {
       await expect(sider(page).getByText(ep.n)).toBeVisible()
     // 当前集标题高亮（text-primary）
     await expect(sider(page).locator('.text-primary')).toHaveText(EPISODES[0].n)
+    // Drawer 打开期间保留触发器，跨过控制栏自动隐藏阈值后仍可恢复焦点
+    await page.waitForTimeout(1_100)
+    await expect(trigger).toBeAttached()
+    await page.keyboard.press('Escape')
+    await expect(sider(page)).not.toHaveAttribute('open')
+    await expect(trigger).toBeFocused()
     expect(errors).toEqual([])
   })
 
@@ -28,7 +49,7 @@ test.describe('播放列表', () => {
     const { requested } = await setupVideo(page)
     await page.goto(videoUrl(EPISODES[0].pc))
 
-    await page.locator('button[title^="播放列表"]').click()
+    await page.locator('[data-app-playlist-trigger]').click()
     await sider(page).getByText(EPISODES[1].n).click()
 
     // hash 路由切换 → 重新请求第 2 集的文件信息（文档标题随数据更新，不受控制栏自动隐藏影响）
@@ -37,6 +58,7 @@ test.describe('播放列表', () => {
     expect(requested).toContain(EPISODES[1].pc)
     // 当前集高亮跟随切换
     await expect(sider(page).locator('.text-primary')).toHaveText(EPISODES[1].n)
+    await expect(sider(page)).toHaveAttribute('open', '')
     expect(errors).toEqual([])
   })
 

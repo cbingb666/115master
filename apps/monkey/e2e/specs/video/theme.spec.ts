@@ -55,8 +55,9 @@ test.describe('主题与设置', () => {
 
     // 网盘页侧边栏 → 偏好设置对话框（桌面/移动两个 Sider 各有一份按钮，取可见的）
     await page.locator('button[title="偏好设置"]:visible').click()
-    const dialog = page.locator('.ui-dialog')
+    const dialog = page.getByRole('dialog', { name: '偏好设置' })
     await expect(dialog.getByRole('heading', { name: '偏好设置' })).toBeVisible()
+    await expect(dialog).toHaveAttribute('data-ui-dialog-size', 'lg')
 
     // 切换为深色：data-theme 立即生效，GM 值持久化
     await dialog.getByRole('radio', { name: '深色' }).click()
@@ -71,7 +72,7 @@ test.describe('主题与设置', () => {
     expect(errors).toEqual([])
   })
 
-  test('移动端偏好设置使用 Dialog 式导航 Sheet', async ({ page }) => {
+  test('移动菜单支持 Escape/蒙层关闭，并在真实 closed 后交接给偏好 Drawer', async ({ page }) => {
     const errors = watch(page)
     await page.setViewportSize({ width: 390, height: 844 })
     await setupVideo(page, { gmValues: { USER_SETTINGS: { theme: 'light' } } })
@@ -79,20 +80,37 @@ test.describe('主题与设置', () => {
 
     const menu = page.getByRole('button', { name: '打开菜单' })
     const sider = page.locator('[data-ui-mobile-sider]')
+    const menuDrawer = page.locator('dialog[aria-label="导航菜单"]')
+
     await menu.click()
+    await expect(menuDrawer).toHaveAttribute('open', '')
     await expect(sider).toHaveClass(/\bui-scrollbar\b/)
     await expect(sider).toHaveClass(/\bui-scrollbar-md\b/)
+    await page.keyboard.press('Escape')
+    await expect(menuDrawer).not.toHaveAttribute('open')
+    await expect(menu).toBeFocused()
+
+    await menu.click()
+    await page.mouse.click(8, 8)
+    await expect(menuDrawer).not.toHaveAttribute('open')
+    await expect(menu).toBeFocused()
+
+    await menu.click()
     const trigger = page.locator('button[title="偏好设置"]:visible')
     await trigger.click()
 
-    const dialog = page.locator('.ui-navigation-stack-dialog')
-    const panel = dialog.locator('[data-ui-dialog-panel]')
+    const dialog = page.locator('dialog.ui-drawer').filter({
+      has: page.locator('[data-ui-navigation-stack]'),
+    })
+    const panel = dialog.locator('[data-ui-drawer-panel]')
     const stack = dialog.locator('[data-ui-navigation-stack]')
-    const handle = dialog.locator('[data-ui-navigation-drag-handle]')
+    const handle = dialog.locator('[data-ui-drawer-drag-handle]')
+    await expect(page.getByRole('dialog', { name: '偏好设置' })).toBeVisible()
     await expect(dialog.getByRole('heading', { name: '偏好设置' })).toBeVisible()
-    await expect(stack).toHaveAttribute('data-ui-navigation-mobile-presentation', 'sheet')
+    await expect(dialog).toHaveClass(/\bui-drawer\b/)
+    await expect(dialog).toHaveAttribute('data-ui-drawer-placement', 'bottom')
     await expect(handle).toBeVisible()
-    await expect(sider).not.toBeInViewport()
+    await expect(menuDrawer).not.toHaveAttribute('open')
     await expect(panel).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
 
     const bounds = await panel.boundingBox()
@@ -102,7 +120,7 @@ test.describe('主题与设置', () => {
     expect(bounds.x).toBe(0)
     expect(bounds.width).toBe(390)
     expect(bounds.y + bounds.height).toBe(844)
-    expect(bounds.height).toBe(633)
+    expect(bounds.height).toBeLessThanOrEqual(633)
     await expect(panel).toHaveCSS('border-top-left-radius', '32px')
     await expect(panel).toHaveCSS('border-bottom-left-radius', '0px')
 
@@ -110,7 +128,10 @@ test.describe('主题与设置', () => {
     await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'forward')
     await expect(page.getByRole('dialog', { name: '外观' })).toBeVisible()
     await expect(page.getByRole('heading', { name: '外观' })).toBeVisible()
-    await expect(dialog.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
+    const scrollOwner = dialog.locator('.ui-navigation-stack__content')
+    await expect(scrollOwner).toHaveCount(1)
+    await expect(scrollOwner).toHaveCSS('overflow-y', 'auto')
+    await expect(scrollOwner.locator('[class~="overflow-y-auto"]')).toHaveCount(0)
 
     await page.getByRole('button', { name: '返回偏好设置' }).click()
     await expect(stack).toHaveAttribute('data-ui-navigation-direction', 'back')

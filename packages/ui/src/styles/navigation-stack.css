@@ -1,12 +1,4 @@
 @layer components {
-  .ui-navigation-stack-dialog .ui-dialog__content {
-    display: flex;
-    min-width: 0;
-    min-height: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-
   .ui-navigation-stack {
     --ui-navigation-stack-page-duration: 220ms;
     --ui-navigation-stack-header-duration: 180ms;
@@ -199,83 +191,13 @@
     border-top: var(--border) solid var(--ui-glass-border);
   }
 
-  .ui-navigation-stack__handle {
-    display: none;
-  }
-
-  @media (width < 40rem) {
-    .ui-navigation-stack-dialog--mobile-fullscreen {
-      padding: 0;
-    }
-
-    .ui-navigation-stack-dialog--mobile-fullscreen > .ui-dialog__panel {
-      width: 100%;
-      height: 100dvh;
-      max-height: none;
-      border: 0;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet > .ui-dialog__panel {
-      max-height: min(82dvh, 44rem);
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet .ui-dialog__content,
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack,
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack__content {
-      flex: 0 1 auto;
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet .ui-dialog__content,
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack {
-      width: 100%;
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack__handle {
-      display: flex;
-      flex: 0 0 1.25rem;
-      align-items: center;
-      justify-content: center;
-      cursor: grab;
-      touch-action: none;
-      user-select: none;
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack__handle::before {
-      width: 2.25rem;
-      height: 0.25rem;
-      border-radius: 999px;
-      background: color-mix(in oklab, currentcolor 22%, transparent);
-      content: '';
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack__handle:active {
-      cursor: grabbing;
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack__header {
-      min-height: 3.5rem;
-      padding: 0 0.5rem;
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack__page {
-      min-height: 0;
-      padding: 1.25rem;
-    }
-
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack__actions {
-      padding: 1rem 1.25rem 1.25rem;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .ui-navigation-stack {
       --ui-navigation-stack-page-duration: 100ms;
       --ui-navigation-stack-header-duration: 100ms;
     }
 
-    .ui-navigation-stack-dialog--mobile-sheet .ui-navigation-stack__content {
+    .ui-drawer--bottom .ui-navigation-stack__content {
       transition-duration: 0ms;
     }
 

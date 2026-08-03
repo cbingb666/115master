@@ -29,7 +29,7 @@ _Avoid_: 公共变量、主题 Token
 _Avoid_: 预设 Token、完整 Token 表
 
 **层叠尺度**：
-由 `--ui-z-*` 公共 Token 与同名 `ui-z-*` 工具类承载的全局 z-index 语义序列，分组件内（under/raised/cover）、页面（elevated/dropdown/header/fab/scrim/sheet）、全局浮层（host/progress/menu/toast/tooltip/dnd/watermark）三段；progress 有意低于浮层，非交互 watermark 位于普通文档最高层，Dialog 走原生 top layer 不参与本尺度。
+由 `--ui-z-*` 公共 Token 与同名 `ui-z-*` 工具类承载的全局 z-index 语义序列，分组件内（under/raised/cover）、页面（elevated/dropdown/header/fab/scrim/sheet）、全局浮层（host/progress/menu/toast/tooltip/dnd/watermark）三段；progress 有意低于浮层，非交互 watermark 位于普通文档最高层，Modal Surface 走原生 top layer 不参与本尺度。
 _Avoid_: 裸数值 z-index、组件私自定义层级
 
 **Glass 材质**：
@@ -73,7 +73,7 @@ _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Progress、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Progress、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：
@@ -96,21 +96,37 @@ _Avoid_: dark class、应用颜色表
 以最小的完整组件集合切换所有权；集合内实现、测试、stories 与消费入口一起迁移，不以减少改动文件数为目标。
 _Avoid_: 转发壳迁移、少改文件
 
-**Dialog 原语**：
-应用无关、由状态驱动的临时界面契约，负责模态交互、结构、可访问性与视觉呈现。
-_Avoid_: 弹窗服务、路由弹窗
+**Modal Surface**：
+应用无关、由状态驱动并暂时阻断外部交互的界面表面；Dialog 与 Drawer 是两种表面语义，共享关闭、焦点和生命周期契约。
+_Avoid_: 页面抽屉、浮层、Navigation Stack
+
+**Dialog**：
+带内容与操作结构的 Modal Surface，适合命令、确认、输入或聚焦任务。
+_Avoid_: Dialog 服务、Drawer、路由弹窗
+
+**Drawer**：
+从视口边缘进入且不预设业务结构的 Modal Surface，适合临时覆盖页面并承载调用方自己的完整内容。
+_Avoid_: 持久侧栏、页面 Sheet、Dialog
+
+**Modal Host**：
+单个 Vue 应用内所有 Modal Surface 的共享协调域；一个表面只属于一个 Host，一个 Host 对应一条 Modal Stack。
+_Avoid_: 全局 Modal 管理器、Dialog Host、Overlay Host
+
+**Modal Stack**：
+同一 Modal Host 内按实际打开顺序形成的表面集合；栈顶独占交互与蒙层，关闭时焦点沿打开链返回。
+_Avoid_: Navigation Stack、Dialog Service Stack、调用方层级
 
 **Navigation Stack**：
-应用无关、由状态驱动的临时导航栈；复用 Dialog 原语的模态生命周期与视觉外壳，移动端可呈现为全屏页面或内容高度的 Dialog 式 Sheet，桌面端呈现为居中 Dialog，并统一拥有标题栏、安全区、内容滚动、拖拽关闭、返回意图、关闭意图与方向感知转场。调用方通过页面标识与层级描述当前页面，并拥有导航状态、业务内容与本地化文案。
-_Avoid_: 设置面板、路由容器、Dialog 尺寸别名
+应用无关、由状态驱动且不拥有 Modal Surface 的内容导航栈；统一标题栏、安全区、内容滚动、返回与关闭意图和方向感知转场。调用方选择 Dialog 或 Drawer，并拥有页面标识、层级、导航状态、业务内容与本地化文案。
+_Avoid_: Modal Stack、设置面板、路由容器、模态外壳
 
 **Dialog 服务**：
-由 UI 基础包提供的应用无关命令式协调层，将配置对象形式的 alert、confirm、prompt 或自定义流程转换为 Dialog 原语状态。
-_Avoid_: Dialog 原语、路由弹窗服务
+由 UI 基础包提供的应用无关命令式协调层，将配置对象形式的 alert、confirm、prompt 或自定义流程转换为 Dialog 状态。
+_Avoid_: Dialog、Modal Host、路由弹窗服务
 
 **Dialog Host**：
-在单个 Vue 应用作用域内承载 Dialog 服务状态并渲染 Dialog 原语的宿主。
-_Avoid_: 全局 Dialog 单例、Dialog 容器
+在单个 Vue 应用作用域内承载 Dialog 服务状态并渲染服务条目的宿主；它参与 Modal Host，但不协调其他 Modal Surface。
+_Avoid_: Modal Host、全局 Dialog 单例、Dialog 容器
 
 **Dialog 服务实例**：
 由工厂为一个应用、Story 或测试创建的独立命令式 Dialog 状态与操作集合。
@@ -124,9 +140,9 @@ _Avoid_: UI Dialog 服务、router-aware Dialog
 应用在创建 Dialog 服务实例时提供的默认操作与提示文案，可由单次调用覆盖。
 _Avoid_: UI 内置中文、UI 内置英文
 
-**Dialog Stack**：
-同一服务实例内按打开顺序管理的 Dialog 集合；只有栈顶可交互，关闭栈顶后恢复下层上下文。
-_Avoid_: Dialog 队列、并行弹窗
+**Dialog Service Stack**：
+同一 Dialog 服务实例内按创建顺序管理的条目集合；它保留服务级 LIFO 操作，同时所有已渲染条目仍属于应用的 Modal Stack。
+_Avoid_: Modal Stack、Dialog 队列、并行弹窗
 
 **Dialog Outcome**：
 命令式 Dialog 结束时的正常结果；确认、提交或取消由返回值区分，取消不属于异常。

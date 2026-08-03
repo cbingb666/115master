@@ -232,9 +232,9 @@ export async function showControls(page: Page) {
   await quality.hover()
 }
 
-/** 播放列表侧边栏（按 data-visible 区分于遮罩层） */
+/** 播放列表 modal Drawer。 */
 export function sider(page: Page) {
-  return page.locator('div[data-visible]').filter({ hasText: '播放列表' })
+  return page.locator('dialog[aria-label="播放列表"]')
 }
 
 export { gmStore, watch } from '../../support'

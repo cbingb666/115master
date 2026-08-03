@@ -24,7 +24,6 @@ const meta = preview.meta({
     size: 'md',
     closeOnEscape: true,
     closeOnBackdrop: true,
-    inert: false,
   },
   argTypes: {
     open: { control: 'boolean' },
@@ -35,7 +34,6 @@ const meta = preview.meta({
     closeOnEscape: { control: 'boolean' },
     closeOnBackdrop: { control: 'boolean' },
     initialFocus: { control: false },
-    inert: { control: 'boolean' },
   },
   render: (args) => {
     const [, update] = useArgs<DialogProps>()

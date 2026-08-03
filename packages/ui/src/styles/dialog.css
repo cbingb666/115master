@@ -48,8 +48,14 @@
     transition: opacity var(--ui-dialog-duration) var(--ui-ease-enter);
   }
 
-  .ui-dialog[data-ui-dialog-state='open']::backdrop {
+  .ui-dialog[data-ui-modal-backdrop='true'][data-ui-dialog-state='open']::backdrop {
     opacity: 1;
+  }
+
+  .ui-dialog[data-ui-modal-backdrop='false']::backdrop {
+    background: transparent;
+    opacity: 0;
+    transition: none;
   }
 
   .ui-dialog__panel {
@@ -95,6 +101,12 @@
     min-height: 0;
     overflow: auto;
     padding: 1.25rem;
+  }
+
+  .ui-dialog__content:has(> .ui-navigation-stack) {
+    display: flex;
+    padding: 0;
+    overflow: hidden;
   }
 
   .ui-dialog__actions {

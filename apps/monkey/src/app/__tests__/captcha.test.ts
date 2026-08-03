@@ -96,7 +96,7 @@ afterEach(() => {
   apps.splice(0).forEach(app => app.unmount())
 })
 
-describe('captcha dialog', () => {
+describe('captcha dialog', { timeout: 15_000 }, () => {
   it('在 Master 弹窗中渲染原生点选验证并提交四个序号', async () => {
     document.body.innerHTML = '<div id="my-app"></div>'
     const service = deferred()

@@ -2,12 +2,7 @@
   <div :class="styles.container.main">
     <!-- 主内容区域 -->
     <div :class="styles.container.pageMain">
-      <div
-        :class="[
-          styles.player.container,
-          preferences.showPlaylist && styles.player.containerFold,
-        ]"
-      >
+      <div data-app-video-player :class="styles.player.container">
         <!-- 视频播放器 -->
         <XPlayer
           ref="xplayerRef"
@@ -81,6 +76,8 @@
                 <Button
                   variant="ghost"
                   shape="circle"
+                  aria-label="播放列表"
+                  data-app-playlist-trigger
                   :title="getActionNameTip(ctx, '播放列表', 'toggleShowSider')"
                   @click="togglePlaylist"
                 >
@@ -105,26 +102,21 @@
       <MovieInfo :movie-infos="DataMovieInfo" />
     </div>
 
-    <!-- Overlay 遮罩 -->
-    <div
-      :data-visible="preferences.showPlaylist"
-      :class="styles.sidebar.overlay"
-      @click="handleClosePlaylist"
-    />
-
-    <!-- Playlist 侧边栏 -->
-    <div
-      :data-visible="preferences.showPlaylist"
-      :class="styles.sidebar.content"
+    <Drawer
+      v-model:open="preferences.showPlaylist"
+      label="播放列表"
+      placement="end"
+      size="md"
+      data-app-xplayer-shortcuts
+      style="--ui-drawer-size: var(--app-playlist-width, min(100vw, 32rem))"
     >
       <Playlist
         :pick-code="params.pickCode.value"
         :playlist="DataPlaylist"
-        :visible="preferences.showPlaylist"
         @play="handleChangeVideo"
         @close="handleClosePlaylist"
       />
-    </div>
+    </Drawer>
   </div>
 </template>
 
@@ -140,9 +132,9 @@ import type {
 import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import type XPlayerInstance from '@/components/XPlayer/index.vue'
 import type { Subtitle, ThumbnailRequest } from '@/components/XPlayer/types'
-import { Button } from '@115master/ui'
+import { Button, Drawer } from '@115master/ui'
 import { format } from '@115master/utils'
-import { useEventListener, useTitle } from '@vueuse/core'
+import { useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
 import { computed, h, nextTick, onMounted, ref, shallowRef, toValue, watch } from 'vue'
 import iinaIcon from '@/assets/icons/iina-icon.png'
@@ -189,7 +181,6 @@ const styles = clsx({
       'bg-base-100 text-base-content',
       'sm:[--app-xplayer-ratio:0.3] md:[--app-xplayer-ratio:0.518] lg:[--app-xplayer-ratio:0.618] 2xl:[--app-xplayer-ratio:0.718]',
       '[--app-playlist-ratio:calc(1-var(--app-xplayer-ratio))]',
-      '[--app-xplayer-width:calc(100%*var(--app-xplayer-ratio))]',
       '[--app-playlist-width:calc(100%*var(--app-playlist-ratio))]',
       'relative',
     ],
@@ -199,31 +190,8 @@ const styles = clsx({
   // 播放器样式
   player: {
     container:
-      ['relative flex h-screen w-full transform-gpu items-center justify-center transition-all duration-200 ease-[var(--ui-ease-move)] will-change-contents'],
-    containerFold: [
-      'w-(--app-xplayer-width)!',
-    ],
+      ['relative flex h-screen w-full items-center justify-center'],
     video: 'absolute m-auto h-full w-full overflow-hidden',
-  },
-  // 侧边栏样式
-  sidebar: {
-    overlay: [
-      'ui-z-scrim fixed inset-0',
-      'bg-black/40',
-      'cursor-pointer',
-      'transition-opacity duration-300 ease-[var(--ui-ease-standard)]',
-      'pointer-events-none opacity-0',
-      'data-[visible=true]:opacity-100',
-      'data-[visible=true]:pointer-events-auto',
-    ],
-    content: [
-      'ui-z-sheet fixed inset-y-0 right-0',
-      'w-(--app-playlist-width)',
-      'h-screen',
-      'transition-transform duration-300 ease-[var(--ui-ease-move)]',
-      'translate-x-full',
-      'data-[visible=true]:translate-x-0',
-    ],
   },
   // 控制样式
   controls: {
@@ -504,16 +472,6 @@ function handleSeek(ctx: PlayerContext) {
 function handleClosePlaylist() {
   preferences.value.showPlaylist = false
 }
-
-/**
- * Esc 关闭播放列表：冒泡阶段监听，
- * XPlayer 弹窗（Popup）在 capture 阶段拦截 Esc 并阻止传播，优先级更高。
- */
-useEventListener(window, 'keydown', (event: KeyboardEvent) => {
-  if (event.key !== 'Escape' || !preferences.value.showPlaylist)
-    return
-  handleClosePlaylist()
-})
 
 /** 切换播放列表 */
 function togglePlaylist() {

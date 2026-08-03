@@ -5,9 +5,9 @@ import type {
   SlotsType,
   VNodeChild,
 } from 'vue'
+import type { ModalInitialFocus } from '../Modal/ModalRoot'
 import type {
   DialogCloseReason,
-  DialogInitialFocus,
   DialogSize,
 } from './Dialog'
 import {
@@ -21,6 +21,7 @@ import {
 } from 'vue'
 import { Button } from '../Button/Button'
 import { filled } from '../content'
+import { useModalHost } from '../Modal/ModalHost'
 import { Dialog } from './Dialog'
 
 export type DialogRenderable = VNodeChild | (() => VNodeChild)
@@ -53,7 +54,7 @@ export interface DialogOptions {
   size?: DialogSize
   closeOnEscape?: boolean
   closeOnBackdrop?: boolean
-  initialFocus?: DialogInitialFocus
+  initialFocus?: ModalInitialFocus
   onCancel?: () => void
   onOpened?: () => void
   onError?: (error: unknown) => void
@@ -526,6 +527,7 @@ export const DialogHost = defineComponent({
   }>,
 
   setup(props, { slots }) {
+    useModalHost('DialogHost')
     const runtime = internal(props.service)
     const id = `ui-dialog-host-${useId()}`
 
@@ -629,7 +631,6 @@ export const DialogHost = defineComponent({
               closeOnEscape={closeOnEscape}
               closeOnBackdrop={closeOnBackdrop}
               initialFocus={prompt ? `#${inputId}` : entry.options.initialFocus}
-              inert={!top || entry.closing}
               onClose={reason => cancel(runtime, entry, reason)}
               onKeydown={event => enter(runtime, entry, showConfirm, top, event)}
               onOpened={() => {

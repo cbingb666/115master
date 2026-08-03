@@ -154,6 +154,9 @@ new Drive115({
   - `xl`（72rem）— 文件浏览器等宽幅列表/树（`useFileBrowserDialog` 默认）。
   - `full` — 仅沉浸式场景，目前无业务使用。
   - 注意：size 仅在 ≥640px 断点生效，移动端各档渲染一致（底部抽屉）。
+- **Modal Surface**：MASTER 与独立 Vue 挂载各自只放一个 `ModalHost`；`DialogHost`、声明式 `Dialog` 和 `Drawer` 都必须位于其下。模态边缘面板使用 UI `Drawer`（原生 top layer），`ui-z-sheet` 只用于不阻断页面的 page drawer。
+- **NavigationStack 组合**：NavigationStack 只负责受控内容导航，不拥有 open 状态或模态外壳；桌面偏好设置组合 `Dialog size="lg"`，移动端组合 bottom `Drawer size="lg"`。调用方拥有页面标识、层级和关闭状态。
+- **Drawer 尺寸**：优先使用 `sm / md / lg / full` 语义档；确有连续响应宽度时只覆盖公共 `--ui-drawer-size`，不依赖 UI 内部 panel 类或自定义 z-index。
 - **TSX + SFC 混用**：App 骨架、drive 页用 `.tsx`（`defineComponent` + JSX）；UI 组件多用 `.vue` SFC。
 - **路径别名**：`@/` → `src/`。
 - **错误处理**：业务异常经 `drive115` 的 `onError` 回调收敛为 `action`，UI 据 `action` 决定行为，不识别具体错误码。

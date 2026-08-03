@@ -58,14 +58,3 @@
 @utility app-animate-slide-in-right {
   animation: app-slide-in-right 0.3s var(--ui-ease-enter);
 }
-
-@media (width < 40rem) {
-  .app-preferences-dialog > .ui-dialog__panel {
-    height: 75vh;
-  }
-
-  .app-preferences-dialog.ui-navigation-stack-dialog--mobile-sheet
-    :is(.ui-dialog__content, .ui-navigation-stack, .ui-navigation-stack__content) {
-    flex: 1 1 auto;
-  }
-}

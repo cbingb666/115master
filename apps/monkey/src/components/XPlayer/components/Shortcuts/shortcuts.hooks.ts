@@ -85,10 +85,6 @@ export function useShortcutsActionListener(
     if (ctx.popupManager.hasOpenPopup.value)
       return
 
-    // 事件发生在原生模态弹窗内时不处理快捷键（如全局搜索 Dialog）
-    if (event.target instanceof Element && event.target.closest('dialog[open]'))
-      return
-
     // 如果目标是可编辑元素，不处理快捷键
     if (isEditableElement(event.target))
       return
@@ -99,6 +95,13 @@ export function useShortcutsActionListener(
       mergedActionMap.value,
     )
     if (!action)
+      return
+
+    const modal = event.target instanceof Element
+      ? event.target.closest('dialog[open]')
+      : null
+
+    if (modal && (!modal.hasAttribute('data-app-xplayer-shortcuts') || !action.action.allowInModal))
       return
 
     event.preventDefault()
@@ -115,10 +118,6 @@ export function useShortcutsActionListener(
     if (ctx.popupManager.hasOpenPopup.value)
       return
 
-    // 事件发生在原生模态弹窗内时不处理快捷键（如全局搜索 Dialog）
-    if (event.target instanceof Element && event.target.closest('dialog[open]'))
-      return
-
     // 如果目标是可编辑元素，不处理快捷键
     if (isEditableElement(event.target))
       return
@@ -129,6 +128,13 @@ export function useShortcutsActionListener(
       mergedActionMap.value,
     )
     if (!action)
+      return
+
+    const modal = event.target instanceof Element
+      ? event.target.closest('dialog[open]')
+      : null
+
+    if (modal && (!modal.hasAttribute('data-app-xplayer-shortcuts') || !action.action.allowInModal))
       return
 
     event.preventDefault()

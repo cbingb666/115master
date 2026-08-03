@@ -76,6 +76,8 @@ export type Action = RequireAtLeastOne<{
    * @default false
    */
   allowRepeat?: boolean
+  /** 允许动作在显式接入 XPlayer 快捷键的原生模态表面内执行。 */
+  allowInModal?: boolean
   /**
    * 最大快捷键数量
    * @description 用于限制单个动作可以绑定的快捷键数量
@@ -127,6 +129,8 @@ export type ActionKeyBindings = Record<ActionKey, KeyBindings>
  * 匹配动作
  */
 export interface ActionMatch {
+  /** 动作键。 */
+  actionKey: ActionKey
   /**
    * 绑定键
    */

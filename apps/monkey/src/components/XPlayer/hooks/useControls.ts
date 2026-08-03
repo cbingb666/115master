@@ -32,7 +32,10 @@ export function useControls(ctx: PlayerContext) {
 
   /** 是否禁止自动隐藏控制栏（hover 优先，其次是拖拽和弹窗） */
   const disabledAutoHide = computed(
-    () => isHovering.value || isDragging.value || hasOpenPopup.value,
+    () => isHovering.value
+      || isDragging.value
+      || hasOpenPopup.value
+      || ctx.rootPropsVm.showPlaylist.value,
   )
 
   /** 隐藏控制栏计时器 */
@@ -92,6 +95,15 @@ export function useControls(ctx: PlayerContext) {
     )
   }
 
+  watch(ctx.rootPropsVm.showPlaylist, (open) => {
+    if (open) {
+      show()
+      stopAutoHideTimer()
+      return
+    }
+    startAutoHideTimer()
+  })
+
   /** 设置是否禁止鼠标离开控制栏 */
   const setDisabledHideOnMouseLeave = (value: boolean) => {
     disabledHideOnMouseLeave.value = value
@@ -126,7 +138,7 @@ export function useControls(ctx: PlayerContext) {
 
   /** 鼠标离开 */
   const handleRootMouseLeave = useDebounceFn(() => {
-    if (disabledHideOnMouseLeave.value) {
+    if (disabledHideOnMouseLeave.value || disabledAutoHide.value) {
       return
     }
 

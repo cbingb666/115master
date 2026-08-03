@@ -1,4 +1,4 @@
-import { DialogHost, OverlayHost, Watermark } from '@115master/ui'
+import { DialogHost, ModalHost, OverlayHost, Watermark } from '@115master/ui'
 import { GM_info } from 'vite-plugin-monkey/dist/client'
 import { defineComponent, KeepAlive, onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
@@ -53,14 +53,16 @@ const App = defineComponent({
 
       return (
         <OverlayHost>
-          {content}
-          {import.meta.env.DEV && (
-            <Watermark
-              content={GM_info.script.name}
-              opacity={0.09}
-              class="ui-z-watermark pointer-events-none fixed inset-0"
-            />
-          )}
+          <ModalHost>
+            {content}
+            {import.meta.env.DEV && (
+              <Watermark
+                content={GM_info.script.name}
+                opacity={0.09}
+                class="ui-z-watermark pointer-events-none fixed inset-0"
+              />
+            )}
+          </ModalHost>
         </OverlayHost>
       )
     }

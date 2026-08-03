@@ -435,7 +435,7 @@ export function matchAction(
       const keyBinding = keyBindings[index]
 
       if (isSameKeyBinding(eventKeyBinding, keyBinding)) {
-        return { keyBinding, action, index }
+        return { actionKey, keyBinding, action, index }
       }
     }
   }

@@ -1,4 +1,4 @@
-import { createDialogService, DialogHost, OverlayHost } from '@115master/ui'
+import { createDialogService, DialogHost, ModalHost, OverlayHost } from '@115master/ui'
 import { icons } from '@iconify-json/ion'
 import { addCollection } from '@iconify/vue'
 import addonA11y from '@storybook/addon-a11y'
@@ -58,7 +58,7 @@ const preview = definePreview({
   },
   decorators: [
     (story, context) => ({
-      components: { DialogHost, OverlayHost, story },
+      components: { DialogHost, ModalHost, OverlayHost, story },
       setup() {
         /** context.globals 是 reactive 对象，必须通过 computed 读取才能响应工具栏切换 */
         const theme = computed(() => (context.globals.theme === 'light' ? 'light' : 'dark'))
@@ -80,9 +80,11 @@ const preview = definePreview({
       template: `
         <div :data-theme="theme" class="bg-base-100 text-base-content min-h-screen p-8">
           <OverlayHost>
-            <DialogHost :service="dialog">
-              <story />
-            </DialogHost>
+            <ModalHost>
+              <DialogHost :service="dialog">
+                <story />
+              </DialogHost>
+            </ModalHost>
           </OverlayHost>
         </div>
       `,

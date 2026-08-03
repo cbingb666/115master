@@ -17,7 +17,6 @@ export type {
 export { Dialog } from './components/Dialog/Dialog'
 export type {
   DialogCloseReason,
-  DialogInitialFocus,
   DialogProps,
   DialogSize,
 } from './components/Dialog/Dialog'
@@ -38,15 +37,25 @@ export type {
   DialogServiceMessages,
   DialogServiceOptions,
 } from './components/Dialog/service'
+export { Drawer } from './components/Drawer/Drawer'
+export type {
+  DrawerCloseReason,
+  DrawerPlacement,
+  DrawerProps,
+  DrawerSize,
+} from './components/Drawer/Drawer'
 export { Header } from './components/Header/Header'
 export type { HeaderProps } from './components/Header/Header'
 export { HeaderEnd } from './components/Header/HeaderEnd'
 export { HeaderStart } from './components/Header/HeaderStart'
+export { ModalHost } from './components/Modal/ModalHost'
+export type {
+  ModalDismissReason,
+  ModalInitialFocus,
+} from './components/Modal/ModalRoot'
 export { NavigationStack } from './components/NavigationStack/NavigationStack'
 export type {
   NavigationStackDirection,
-  NavigationStackDismissReason,
-  NavigationStackMobilePresentation,
   NavigationStackPageKey,
   NavigationStackProps,
 } from './components/NavigationStack/NavigationStack'

@@ -1,3 +1,4 @@
+import { ModalHost } from '@115master/ui'
 import addonA11y from '@storybook/addon-a11y'
 import addonDocs from '@storybook/addon-docs'
 import addonVitest from '@storybook/addon-vitest'
@@ -39,12 +40,12 @@ const preview = definePreview({
   },
   decorators: [
     (story, context) => ({
-      components: { story },
+      components: { ModalHost, story },
       setup() {
         const theme = computed(() => context.globals.theme === 'dark' ? 'dark' : 'light')
         return { theme }
       },
-      template: '<div :data-theme="theme" data-ui-storybook-root><story /></div>',
+      template: '<div :data-theme="theme" data-ui-storybook-root><ModalHost><story /></ModalHost></div>',
     }),
   ],
 })

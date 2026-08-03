@@ -60,7 +60,7 @@
       ]
     },
     {
-      "id": "ui-navigationstack--responsive-presentation",
+      "id": "ui-navigationstack--composition",
       "docs": "ui-navigationstack--docs",
       "component": true,
       "tags": [
@@ -68,31 +68,12 @@
         "test"
       ],
       "tests": [
-        "ui-navigationstack--responsive-presentation:adapts-full-screen-and-sheet-presentations-to-the-viewport"
+        "ui-navigationstack--composition:fills-dialog-and-drawer-surfaces-and-emits-a-close-intent"
       ],
-      "ready": "main[aria-label=\"Navigation Stack presentations\"]",
+      "ready": "[data-ui-navigation-composition]",
       "outcomes": [
         {
-          "selector": "dialog[open]",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "id": "ui-navigationstack--content-and-actions",
-      "docs": "ui-navigationstack--docs",
-      "component": true,
-      "tags": [
-        "autodocs",
-        "test"
-      ],
-      "tests": [
-        "ui-navigationstack--content-and-actions:renders-caller-owned-content-and-persistent-actions"
-      ],
-      "ready": "[data-ui-navigation-content-result]",
-      "outcomes": [
-        {
-          "selector": "[data-ui-navigation-content-result]",
+          "selector": "[data-ui-navigation-composition]",
           "text": "idle"
         },
         {
@@ -110,9 +91,32 @@
         "test"
       ],
       "tests": [
-        "ui-navigationstack--navigation:infers-forward-replace-and-back-directions-from-page-identity-and-depth"
+        "ui-navigationstack--navigation:infers-forward-replace-and-back-across-multiple-depths-while-animating-bottom-height"
       ],
-      "ready": "main[aria-label=\"Navigation Stack direction\"]",
+      "ready": "[data-ui-navigation-result]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-navigation-result]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-drawer--placements",
+      "docs": "ui-drawer--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-drawer--placements:anchors-every-placement-and-exposes-the-bottom-drag-handle"
+      ],
+      "ready": "main[aria-label=\"Drawer placements\"]",
       "outcomes": [
         {
           "selector": "dialog[open]",
@@ -121,22 +125,110 @@
       ]
     },
     {
-      "id": "ui-navigationstack--dismissal",
-      "docs": "ui-navigationstack--docs",
+      "id": "ui-drawer--sizes",
+      "docs": "ui-drawer--docs",
       "component": true,
       "tags": [
         "autodocs",
         "test"
       ],
       "tests": [
-        "ui-navigationstack--dismissal:reports-button-escape-and-backdrop-dismissal-while-restoring-focus"
+        "ui-drawer--sizes:maps-semantic-sizes-and-permits-a-placement-axis-css-override"
       ],
-      "ready": "[data-ui-navigation-dismiss]",
+      "ready": "main[aria-label=\"Drawer sizes\"]",
       "outcomes": [
         {
-          "selector": "[data-ui-navigation-dismiss]",
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-drawer--lifecycle",
+      "docs": "ui-drawer--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-drawer--lifecycle:settles-lifecycle-applies-dismissal-policies-and-restores-trigger-focus"
+      ],
+      "ready": "[data-ui-drawer-phase]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-drawer-phase]",
           "text": "idle"
         },
+        {
+          "selector": "[data-ui-drawer-reason]",
+          "text": "none"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-drawer--swipe",
+      "docs": "ui-drawer--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-drawer--swipe:dismisses-past-the-threshold-and-snaps-back-after-rejection-or-cancellation"
+      ],
+      "ready": "[data-ui-drawer-swipe-reason]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-drawer-swipe-reason]",
+          "text": "none"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-drawer--reduced-motion",
+      "docs": "ui-drawer--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-drawer--reduced-motion:settles-immediately-when-reduced-motion-is-active"
+      ],
+      "ready": "[data-ui-drawer-reduced-phase]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-drawer-reduced-phase]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "integrations-modalhost--mixed-stacks",
+      "docs": "integrations-modalhost--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "integrations-modalhost--mixed-stacks:coordinates-drawer-to-dialog-and-drawer-to-drawer-stacks-with-a-complete-focus-chain"
+      ],
+      "ready": "main[aria-label=\"Modal Host behavior\"]",
+      "outcomes": [
         {
           "selector": "dialog[open]",
           "count": 0

@@ -19,6 +19,7 @@ vi.mock('@115master/ui', async () => {
 
   return {
     DialogHost: Host,
+    ModalHost: Host,
     OverlayHost: Host,
     Watermark: defineComponent({
       props: {

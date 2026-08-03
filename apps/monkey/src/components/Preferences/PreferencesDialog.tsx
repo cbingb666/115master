@@ -1,5 +1,5 @@
 import type { PreferenceSection } from './PreferencesContent'
-import { NavigationStack } from '@115master/ui'
+import { Dialog, Drawer, NavigationStack } from '@115master/ui'
 import { useMediaQuery } from '@vueuse/core'
 import { computed, defineComponent, ref } from 'vue'
 import PreferencesContent, { PREFERENCE_SECTIONS } from './PreferencesContent'
@@ -16,7 +16,6 @@ export function usePreferencesDialog() {
 
 function closePreferencesDialog() {
   open.value = false
-  section.value = null
 }
 
 export const PreferencesDialog = defineComponent({
@@ -35,25 +34,23 @@ export const PreferencesDialog = defineComponent({
 
     function update(value: boolean) {
       open.value = value
+    }
 
-      if (!value)
+    function closed() {
+      if (!open.value)
         section.value = null
     }
 
-    return () => (
+    const navigation = () => (
       <NavigationStack
-        open={open.value}
         title={title.value}
         pageKey={pageKey.value}
         depth={depth.value}
-        mobilePresentation="sheet"
         canGoBack={canGoBack.value}
         backLabel="返回偏好设置"
         closeLabel="关闭偏好设置"
-        size="lg"
-        class="app-preferences-dialog"
-        onUpdate:open={update}
         onBack={() => section.value = null}
+        onDismiss={closePreferencesDialog}
       >
         <PreferencesContent
           section={section.value}
@@ -62,5 +59,31 @@ export const PreferencesDialog = defineComponent({
         />
       </NavigationStack>
     )
+
+    return () => desktop.value
+      ? (
+          <Dialog
+            open={open.value}
+            label={title.value}
+            size="lg"
+            onUpdate:open={update}
+            onClosed={closed}
+          >
+            {navigation}
+          </Dialog>
+        )
+      : (
+          <Drawer
+            open={open.value}
+            label={title.value}
+            placement="bottom"
+            size="lg"
+            style="--ui-drawer-size: min(75dvh, 44rem)"
+            onUpdate:open={update}
+            onClosed={closed}
+          >
+            {navigation}
+          </Drawer>
+        )
   },
 })

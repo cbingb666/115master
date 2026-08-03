@@ -120,11 +120,28 @@ test.describe('控制栏', () => {
     await setupVideo(page)
     await page.goto(videoUrl(EPISODES[0].pc))
 
-    await expect(sider(page)).toHaveAttribute('data-visible', 'false')
+    await expect(sider(page)).not.toHaveAttribute('open')
     await page.keyboard.press('Backslash')
-    await expect(sider(page)).toHaveAttribute('data-visible', 'true')
+    await expect(sider(page)).toHaveAttribute('open', '')
     await page.keyboard.press('Backslash')
-    await expect(sider(page)).toHaveAttribute('data-visible', 'false')
+    await expect(sider(page)).not.toHaveAttribute('open')
+    expect(errors).toEqual([])
+  })
+
+  test('全屏期间关闭播放列表，并在退出全屏后恢复', async ({ page }) => {
+    const errors = watch(page)
+    await setupVideo(page)
+    await page.goto(videoUrl(EPISODES[0].pc))
+
+    await page.locator('[data-app-playlist-trigger]').click()
+    await expect(sider(page)).toHaveAttribute('open', '')
+    await page.keyboard.press('f')
+    await page.waitForFunction(() => !!document.fullscreenElement)
+    await expect(sider(page)).not.toHaveAttribute('open')
+
+    await page.keyboard.press('f')
+    await page.waitForFunction(() => !document.fullscreenElement)
+    await expect(sider(page)).toHaveAttribute('open', '')
     expect(errors).toEqual([])
   })
 })
