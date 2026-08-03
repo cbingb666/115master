@@ -80,7 +80,7 @@
       ]
     },
     {
-      "id": "ui-button--contract",
+      "id": "ui-button--interaction",
       "docs": "ui-button--docs",
       "component": true,
       "tags": [
@@ -88,16 +88,39 @@
         "test"
       ],
       "tests": [
-        "ui-button--contract:executes-the-public-interaction-contract"
+        "ui-button--interaction:supports-pointer-and-keyboard-actions-and-exposes-unavailable-states"
       ],
       "ready": "[data-ui-button-actions]",
       "outcomes": [
         {
           "selector": "[data-ui-button-actions]",
           "text": "0"
+        }
+      ]
+    },
+    {
+      "id": "ui-button--native-form",
+      "docs": "ui-button--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-button--native-form:preserves-native-button-submit-and-reset-behavior"
+      ],
+      "ready": "[data-ui-button-form-actions]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-button-form-actions]",
+          "text": "0"
         },
         {
           "selector": "[data-ui-button-submits]",
+          "text": "0"
+        },
+        {
+          "selector": "[data-ui-button-resets]",
           "text": "0"
         }
       ]
