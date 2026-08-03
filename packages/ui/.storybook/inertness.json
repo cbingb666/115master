@@ -384,7 +384,7 @@
       ]
     },
     {
-      "id": "ui-dialog--controlled",
+      "id": "ui-dialog--lifecycle",
       "docs": "ui-dialog--docs",
       "component": true,
       "tags": [
@@ -392,9 +392,9 @@
         "test"
       ],
       "tests": [
-        "ui-dialog--controlled:proves-controlled-state-lifecycle-and-focus-behavior"
+        "ui-dialog--lifecycle:proves-controlled-state-lifecycle-and-focus-behavior"
       ],
-      "ready": "main[aria-label=\"Controlled Dialog\"]",
+      "ready": "main[aria-label=\"Dialog lifecycle\"]",
       "outcomes": [
         {
           "selector": "[data-ui-dialog-phase]",
@@ -407,7 +407,7 @@
       ]
     },
     {
-      "id": "ui-dialog--label-only",
+      "id": "ui-dialog--content",
       "docs": "ui-dialog--docs",
       "component": true,
       "tags": [
@@ -415,9 +415,9 @@
         "test"
       ],
       "tests": [
-        "ui-dialog--label-only:proves-the-label-only-accessible-name"
+        "ui-dialog--content:proves-prop-slot-and-label-only-accessible-names"
       ],
-      "ready": "main[aria-label=\"Label-only Dialog\"]",
+      "ready": "main[aria-label=\"Dialog content\"]",
       "outcomes": [
         {
           "selector": "dialog[open]",
@@ -445,7 +445,7 @@
       ]
     },
     {
-      "id": "ui-dialog--close-policies",
+      "id": "ui-dialog--dismissal",
       "docs": "ui-dialog--docs",
       "component": true,
       "tags": [
@@ -453,9 +453,9 @@
         "test"
       ],
       "tests": [
-        "ui-dialog--close-policies:proves-escape-and-backdrop-close-policies"
+        "ui-dialog--dismissal:proves-escape-and-backdrop-close-policies"
       ],
-      "ready": "main[aria-label=\"Dialog close policies\"]",
+      "ready": "main[aria-label=\"Dialog dismissal\"]",
       "outcomes": [
         {
           "selector": "[data-ui-dialog-reason]",
@@ -468,7 +468,7 @@
       ]
     },
     {
-      "id": "ui-dialog--sizes-and-responsive-presentation",
+      "id": "ui-dialog--sizes",
       "docs": "ui-dialog--docs",
       "component": true,
       "tags": [
@@ -476,10 +476,14 @@
         "test"
       ],
       "tests": [
-        "ui-dialog--sizes-and-responsive-presentation:proves-sizes-and-responsive-presentation"
+        "ui-dialog--sizes:proves-sizes-and-responsive-presentation"
       ],
       "ready": "main[aria-label=\"Dialog sizes\"]",
       "outcomes": [
+        {
+          "selector": "[data-ui-dialog-size-phase]",
+          "text": "idle"
+        },
         {
           "selector": "dialog[open]",
           "count": 0
