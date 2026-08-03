@@ -228,7 +228,7 @@
       ]
     },
     {
-      "id": "ui-contextmenu--contract",
+      "id": "ui-contextmenu--positioning",
       "docs": "ui-contextmenu--docs",
       "component": true,
       "tags": [
@@ -236,14 +236,94 @@
         "test"
       ],
       "tests": [
-        "ui-contextmenu--contract:proves-positioning-focus-host-ownership-and-dismissal"
+        "ui-contextmenu--positioning:positions-at-coordinates-and-avoids-viewport-edges"
       ],
-      "ready": "button:has-text(\"右键打开菜单\")",
+      "ready": "main[aria-label=\"Context Menu 定位\"]",
       "outcomes": [
         {
-          "selector": "[data-ui-context-menu-result]",
+          "selector": "[role=\"menu\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-contextmenu--keyboard-navigation",
+      "docs": "ui-contextmenu--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-contextmenu--keyboard-navigation:cycles-keyboard-focus-and-restores-the-trigger"
+      ],
+      "ready": "main[aria-label=\"Context Menu 键盘交互\"]",
+      "outcomes": [
+        {
+          "selector": "[role=\"menu\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-contextmenu--dismissal",
+      "docs": "ui-contextmenu--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-contextmenu--dismissal:reports-escape-and-backdrop-dismissal"
+      ],
+      "ready": "main[aria-label=\"Context Menu 关闭语义\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-context-menu-reason]",
           "text": "idle"
         },
+        {
+          "selector": "[role=\"menu\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-contextmenu--scroll-locking",
+      "docs": "ui-contextmenu--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-contextmenu--scroll-locking:locks-and-restores-the-targeted-scroll-container"
+      ],
+      "ready": "main[aria-label=\"Context Menu 滚动锁定\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-context-menu-scroll]",
+          "scrollTop": 0
+        },
+        {
+          "selector": "[role=\"menu\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-contextmenu--overlay-targets",
+      "docs": "ui-contextmenu--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-contextmenu--overlay-targets:resolves-explicit-hosted-and-fallback-targets"
+      ],
+      "ready": "main[aria-label=\"Context Menu 浮层目标\"]",
+      "outcomes": [
         {
           "selector": "[role=\"menu\"]",
           "count": 0
