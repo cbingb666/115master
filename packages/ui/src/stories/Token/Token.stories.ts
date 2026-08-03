@@ -1,7 +1,6 @@
 import { expect, waitFor, within } from 'storybook/test'
 import { onMounted, ref } from 'vue'
 import preview from '../../../.storybook/preview'
-import './Token.css'
 
 const groups = [
   {
@@ -86,46 +85,46 @@ export const LayeringScale = meta.story({
       return { groups, root, values }
     },
     template: `
-      <main ref="root" class="ui-token-demo" aria-label="Design Token 层叠尺度">
-        <header class="ui-token-demo__intro">
-          <p class="ui-token-demo__eyebrow">@115master/ui · Design Token</p>
-          <h1 class="ui-token-demo__title">层叠尺度</h1>
-          <p class="ui-token-demo__copy">
+      <main ref="root" class="min-h-screen bg-[radial-gradient(circle_at_8%_0%,color-mix(in_oklab,var(--color-primary)_13%,transparent),transparent_28rem),var(--color-base-100)] p-[clamp(1.25rem,4vw,3rem)] text-base-content" aria-label="Design Token 层叠尺度">
+        <header class="mx-auto mb-8 grid max-w-7xl gap-3 min-[76rem]:pl-0">
+          <p class="m-0 text-xs font-bold uppercase tracking-[0.1em] text-primary">@115master/ui · Design Token</p>
+          <h1 class="m-0 text-[clamp(2rem,7vw,4.5rem)] leading-[0.95] tracking-[-0.04em]">层叠尺度</h1>
+          <p class="m-0 max-w-3xl text-[1.05rem] leading-[1.7]">
             颜色、圆角与尺寸沿用 daisyUI；UI Token 只为缺失的全局层叠角色补充稳定名称。
           </p>
-          <p class="ui-token-demo__note">
+          <p class="m-0 w-fit rounded-field border border-base-content/15 bg-base-200 px-3.5 py-2.5 text-sm text-base-content/70">
             使用语义角色而非裸 z-index。原生 Dialog 位于 top layer，不占用这里的数值。
           </p>
         </header>
 
-        <div class="ui-token-demo__groups">
+        <div class="mx-auto grid max-w-7xl items-start gap-4 md:grid-cols-2 min-[72rem]:grid-cols-[0.8fr_1.1fr_1.2fr] md:[&>:last-child]:col-span-2 min-[72rem]:[&>:last-child]:col-span-1">
           <section
             v-for="group in groups"
             :key="group.id"
             :aria-labelledby="'ui-token-group-' + group.id"
-            class="ui-token-demo__group"
+            class="min-w-0 rounded-box border border-base-content/10 bg-base-200/90 p-4"
           >
-            <header class="ui-token-demo__group-header">
-              <p class="ui-token-demo__range">{{ group.name }}</p>
-              <h2 :id="'ui-token-group-' + group.id">{{ group.name }}层级</h2>
-              <p>{{ group.description }}</p>
+            <header class="grid gap-1.5 px-1.5 pb-4 pt-1.5">
+              <p class="m-0 text-xs font-bold uppercase tracking-[0.1em] text-base-content/80">{{ group.name }}</p>
+              <h2 class="m-0 text-xl" :id="'ui-token-group-' + group.id">{{ group.name }}层级</h2>
+              <p class="m-0 min-h-[3em] text-sm leading-6 text-base-content/65">{{ group.description }}</p>
             </header>
 
-            <ol class="ui-token-demo__list">
+            <ol class="m-0 list-none p-0">
               <li
                 v-for="layer in group.layers"
                 :key="layer.id"
                 :class="layer.utility"
                 :data-ui-token="layer.id"
-                class="ui-token-demo__layer"
+                class="mb-2 grid break-inside-avoid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-field border border-base-content/10 bg-base-100 p-3 last:mb-0 max-[32rem]:grid-cols-1"
               >
-                <div class="ui-token-demo__role">
-                  <strong>{{ layer.role }}</strong>
-                  <code>{{ layer.token }}</code>
+                <div class="grid min-w-0 gap-1">
+                  <strong class="text-sm">{{ layer.role }}</strong>
+                  <code class="[overflow-wrap:anywhere] text-[0.7rem] text-base-content/70">{{ layer.token }}</code>
                 </div>
-                <div class="ui-token-demo__pair">
-                  <code>.{{ layer.utility }}</code>
-                  <span data-ui-token-value>{{ values[layer.id] }}</span>
+                <div class="grid min-w-0 justify-items-end gap-1 max-[32rem]:grid-cols-[minmax(0,1fr)_auto] max-[32rem]:items-center max-[32rem]:justify-items-start">
+                  <code class="[overflow-wrap:anywhere] text-[0.7rem] text-base-content/70">.{{ layer.utility }}</code>
+                  <span class="grid min-h-8 min-w-14 place-items-center rounded-selector bg-base-300 px-2 font-bold tabular-nums text-base-content" data-ui-token-value>{{ values[layer.id] }}</span>
                 </div>
               </li>
             </ol>

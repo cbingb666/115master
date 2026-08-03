@@ -87,6 +87,8 @@ Story 导出名必须使用稳定的 PascalCase 英文标识符，例如 `Defaul
 - Story 必须 hermetic：不访问真实网络，不依赖前一个 Story 留下的状态，不使用随机数或当前时间产生可见差异。
 - fixture 只提供证明契约所需的最小容器、provider、host、mock 和数据。
 - 全 Story 共享的 Theme 或应用环境放在 preview decorator；只对当前契约有意义的上下文保留在 Story render 中。
+- Story 的演示布局、响应式状态和视觉修饰必须直接使用仓库已有的 Tailwind CSS / daisyUI utility；不得创建、导入或维护 Story 专用 CSS 文件。
+- 只有值必须由运行时数据或被演示的公共 CSS Token 决定时，才使用 Vue `:style` 绑定；静态视觉值不得通过 inline style 绕过 Tailwind。
 - 初始状态必须在首次渲染时直接构造。不通过自动点击、输入、路由跳转或定时器把 Canvas 推进到展示状态。
 - 需要为测试暴露结果时，使用用户可观察的 DOM 结果，如 `output`、状态文本、ARIA 状态或路由标记。专用选择器按所有权使用 `data-ui-*` 或 `data-app-*` 前缀。
 - 当内容本身不是契约时，使用简短、中性、确定的 fixture 文案。UI Foundation 不使用 Monkey 业务文案。
@@ -272,6 +274,7 @@ Behavior.test('executes the public action contract', async ({ canvasElement }) =
 - [ ] Story 按公开契约轴拆分，没有无意义笛卡尔积
 - [ ] 静态矩阵的 Controls 已绑定或禁用
 - [ ] fixture 最小、确定、hermetic，首次渲染即是目标初始状态
+- [ ] 演示样式使用 Tailwind CSS / daisyUI utility，没有 Story 专用 CSS 或静态 inline style
 - [ ] 父 Canvas 不会自动产生用户输入或改变可观察状态
 - [ ] 交互契约使用 `.test()` 且与父 Story 共享 fixture
 - [ ] 断言使用 role、accessible name 和公开可观察结果

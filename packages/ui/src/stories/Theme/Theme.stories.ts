@@ -1,7 +1,6 @@
 import { expect, within } from 'storybook/test'
 import { computed } from 'vue'
 import preview from '../../../.storybook/preview'
-import './Theme.css'
 
 const colors = [
   {
@@ -96,43 +95,45 @@ export const SemanticColors = meta.story({
   render: () => ({
     setup: () => ({ colors }),
     template: `
-      <main class="ui-theme-palette" aria-label="Theme 语义颜色映射">
-        <header class="ui-theme-header">
-          <p class="ui-theme-header__eyebrow">Foundations · Theme</p>
-          <h1 class="ui-theme-header__title">同一组语义颜色</h1>
-          <p class="ui-theme-header__copy">Light 与 Dark 改变视觉取值，不改变颜色角色。</p>
+      <main class="min-h-screen bg-base-100 p-8 text-base-content max-sm:p-4" aria-label="Theme 语义颜色映射">
+        <div class="mx-auto grid max-w-[76rem] gap-6">
+        <header class="grid gap-3 rounded-box border border-base-300 bg-base-200 p-6">
+          <p class="m-0 text-xs font-bold uppercase tracking-[0.08em] text-base-content/65">Foundations · Theme</p>
+          <h1 class="m-0 text-[clamp(1.75rem,5vw,3rem)] leading-none">同一组语义颜色</h1>
+          <p class="m-0 max-w-2xl text-base-content/70">Light 与 Dark 改变视觉取值，不改变颜色角色。</p>
         </header>
 
-        <div class="ui-theme-palette__themes">
+        <div class="grid grid-cols-1 overflow-hidden rounded-box border border-base-300 min-[56rem]:grid-cols-2">
           <section
             v-for="theme in ['light', 'dark']"
             :key="theme"
             :aria-label="theme === 'light' ? 'Light Theme 语义颜色' : 'Dark Theme 语义颜色'"
-            class="ui-theme-palette__theme"
+            class="grid content-start gap-4 bg-base-100 p-5 text-base-content min-[56rem]:[&+&]:border-s min-[56rem]:[&+&]:border-base-300 max-[56rem]:[&+&]:border-t max-[56rem]:[&+&]:border-base-300"
             :data-theme="theme"
             data-ui-theme-palette
           >
-            <header class="ui-theme-palette__heading">
-              <h2>{{ theme }}</h2>
-              <code>data-theme="{{ theme }}"</code>
+            <header class="flex flex-wrap items-center justify-between gap-3">
+              <h2 class="m-0 text-lg capitalize">{{ theme }}</h2>
+              <code class="text-xs">data-theme="{{ theme }}"</code>
             </header>
 
-            <div class="ui-theme-palette__swatches">
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-3">
               <article
                 v-for="color in colors"
                 :key="color.name"
-                class="ui-theme-swatch"
+                class="overflow-hidden rounded-field border border-base-300 bg-base-100"
                 :data-ui-theme-color="color.name"
               >
-                <div class="ui-theme-swatch__sample" :style="color.style" aria-hidden="true">Aa</div>
-                <div class="ui-theme-swatch__meta">
-                  <strong>{{ color.label }}</strong>
-                  <code>{{ color.background }}</code>
-                  <code>{{ color.foreground }}</code>
+                <div class="grid min-h-20 place-items-center text-2xl font-extrabold" :style="color.style" aria-hidden="true">Aa</div>
+                <div class="grid gap-0.5 bg-base-100 p-2.5 text-base-content">
+                  <strong class="text-[0.8125rem]">{{ color.label }}</strong>
+                  <code class="overflow-hidden text-ellipsis text-xs text-base-content/65">{{ color.background }}</code>
+                  <code class="overflow-hidden text-ellipsis text-xs text-base-content/65">{{ color.foreground }}</code>
                 </div>
               </article>
             </div>
           </section>
+        </div>
         </div>
       </main>
     `,
@@ -168,66 +169,68 @@ export const Selection = meta.story({
       return { current }
     },
     template: `
-      <main class="ui-theme-selection" aria-label="Theme 选择规则">
-        <header class="ui-theme-header">
-          <p class="ui-theme-header__eyebrow">Foundations · Theme</p>
-          <h1 class="ui-theme-header__title">继承与显式选择</h1>
-          <p class="ui-theme-header__copy">未声明的区域继承当前选择；data-theme 固定局部作用域。</p>
+      <main class="min-h-screen bg-base-100 p-8 text-base-content max-sm:p-4" aria-label="Theme 选择规则">
+        <div class="mx-auto grid max-w-[76rem] gap-6">
+        <header class="grid gap-3 rounded-box border border-base-300 bg-base-200 p-6">
+          <p class="m-0 text-xs font-bold uppercase tracking-[0.08em] text-base-content/65">Foundations · Theme</p>
+          <h1 class="m-0 text-[clamp(1.75rem,5vw,3rem)] leading-none">继承与显式选择</h1>
+          <p class="m-0 max-w-2xl text-base-content/70">未声明的区域继承当前选择；data-theme 固定局部作用域。</p>
         </header>
 
-        <div class="ui-theme-selection__grid">
+        <div class="grid grid-cols-1 gap-4 min-[56rem]:grid-cols-3">
           <section
             aria-label="继承的 Theme 选择"
-            class="ui-theme-selection__scope"
+            class="grid gap-4 rounded-box border border-base-300 bg-base-100 p-5 text-base-content"
             data-ui-theme-selection="inherited"
           >
-            <div class="ui-theme-selection__sample" aria-hidden="true">
-              <span />
-              <span />
-              <span />
+            <div class="grid min-h-32 grid-cols-3 overflow-hidden rounded-field bg-base-200" aria-hidden="true">
+              <span class="bg-primary" />
+              <span class="bg-secondary" />
+              <span class="bg-accent" />
             </div>
-            <div class="ui-theme-selection__meta">
-              <h2>Inherited</h2>
-              <p>Storybook: <output data-ui-theme-current>{{ current }}</output></p>
-              <code>无 data-theme</code>
+            <div class="grid gap-1">
+              <h2 class="m-0 text-lg">Inherited</h2>
+              <p class="m-0 text-base-content/65">Storybook: <output class="font-bold text-base-content" data-ui-theme-current>{{ current }}</output></p>
+              <code class="text-xs text-base-content/65">无 data-theme</code>
             </div>
           </section>
 
           <section
             aria-label="显式 Light Theme"
-            class="ui-theme-selection__scope"
+            class="grid gap-4 rounded-box border border-base-300 bg-base-100 p-5 text-base-content"
             data-theme="light"
             data-ui-theme-selection="explicit"
           >
-            <div class="ui-theme-selection__sample" aria-hidden="true">
-              <span />
-              <span />
-              <span />
+            <div class="grid min-h-32 grid-cols-3 overflow-hidden rounded-field bg-base-200" aria-hidden="true">
+              <span class="bg-primary" />
+              <span class="bg-secondary" />
+              <span class="bg-accent" />
             </div>
-            <div class="ui-theme-selection__meta">
-              <h2>Light</h2>
-              <p>Explicit scope</p>
-              <code>data-theme="light"</code>
+            <div class="grid gap-1">
+              <h2 class="m-0 text-lg">Light</h2>
+              <p class="m-0 text-base-content/65">Explicit scope</p>
+              <code class="text-xs text-base-content/65">data-theme="light"</code>
             </div>
           </section>
 
           <section
             aria-label="显式 Dark Theme"
-            class="ui-theme-selection__scope"
+            class="grid gap-4 rounded-box border border-base-300 bg-base-100 p-5 text-base-content"
             data-theme="dark"
             data-ui-theme-selection="explicit"
           >
-            <div class="ui-theme-selection__sample" aria-hidden="true">
-              <span />
-              <span />
-              <span />
+            <div class="grid min-h-32 grid-cols-3 overflow-hidden rounded-field bg-base-200" aria-hidden="true">
+              <span class="bg-primary" />
+              <span class="bg-secondary" />
+              <span class="bg-accent" />
             </div>
-            <div class="ui-theme-selection__meta">
-              <h2>Dark</h2>
-              <p>Explicit scope</p>
-              <code>data-theme="dark"</code>
+            <div class="grid gap-1">
+              <h2 class="m-0 text-lg">Dark</h2>
+              <p class="m-0 text-base-content/65">Explicit scope</p>
+              <code class="text-xs text-base-content/65">data-theme="dark"</code>
             </div>
           </section>
+        </div>
         </div>
       </main>
     `,

@@ -2,7 +2,6 @@ import { Button } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
 import { ref } from 'vue'
 import preview from '../../../.storybook/preview'
-import './Motion.css'
 
 const motions = [
   {
@@ -85,16 +84,16 @@ export const Comparison = meta.story({
     template: `
       <main
         aria-labelledby="ui-motion-comparison-title"
-        class="ui-motion-demo"
-        :data-ui-motion-active="active"
+        class="min-h-screen bg-base-100 p-[clamp(1rem,4vw,2rem)] text-base-content"
       >
-        <header class="ui-motion-demo__header">
-          <div>
-            <p class="ui-motion-demo__eyebrow">Foundations · Motion</p>
-            <h1 id="ui-motion-comparison-title" class="ui-motion-demo__title">语义曲线对比</h1>
-            <p class="ui-motion-demo__copy">所有轨道使用相同距离与 800ms 时长，仅 timing function 不同。</p>
+        <div class="mx-auto grid w-full max-w-6xl gap-6">
+        <header class="flex flex-wrap items-end justify-between gap-6 rounded-box border border-base-300 bg-base-200 p-[clamp(1.25rem,4vw,1.75rem)] max-md:items-stretch">
+          <div class="min-w-[min(100%,18rem)]">
+            <p class="m-0 mb-2 text-xs font-bold uppercase tracking-[0.08em] text-base-content/70">Foundations · Motion</p>
+            <h1 id="ui-motion-comparison-title" class="m-0 text-[clamp(1.75rem,5vw,3rem)] leading-none">语义曲线对比</h1>
+            <p class="m-0 mt-3 max-w-2xl leading-[1.6] text-base-content/75">所有轨道使用相同距离与 800ms 时长，仅 timing function 不同。</p>
           </div>
-          <div class="ui-motion-demo__actions">
+          <div class="flex flex-wrap items-center gap-3 max-md:items-stretch">
             <Button
               :aria-pressed="active"
               color="primary"
@@ -102,9 +101,9 @@ export const Comparison = meta.story({
             >
               {{ active ? '返回起点' : '移至终点' }}
             </Button>
-            <span class="ui-motion-demo__status">
+            <span class="inline-flex min-h-10 items-center gap-1.5 rounded-field border border-base-300 bg-base-100 px-3 text-[0.8125rem] text-base-content/75">
               当前位置
-              <output
+              <output class="font-bold tabular-nums text-base-content"
                 aria-label="曲线对比当前位置"
                 aria-live="polite"
                 data-ui-motion-position
@@ -115,25 +114,29 @@ export const Comparison = meta.story({
           </div>
         </header>
 
-        <ul class="ui-motion-demo__list" aria-label="Motion Token 语义列表">
+        <ul class="m-0 grid list-none gap-3 p-0" aria-label="Motion Token 语义列表">
           <li
             v-for="motion in motions"
             :key="motion.name"
-            class="ui-motion-demo__row"
+            class="grid grid-cols-[minmax(12rem,0.75fr)_minmax(16rem,1.25fr)] items-center gap-6 rounded-box border border-base-300 bg-base-100 p-4 max-md:grid-cols-1 max-md:gap-4"
             :style="{ '--ui-motion-ease': motion.token }"
           >
-            <div class="ui-motion-demo__meta">
-              <strong>{{ motion.label }}</strong>
-              <code>--ui-ease-{{ motion.name }}</code>
-              <span>{{ motion.detail }}</span>
+            <div class="grid min-w-0 grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1">
+              <strong class="text-base">{{ motion.label }}</strong>
+              <code class="w-fit justify-self-start rounded-field border border-base-300 bg-base-200 px-1.5 py-0.5 text-xs font-semibold text-base-content">--ui-ease-{{ motion.name }}</code>
+              <span class="col-span-2 text-[0.8125rem] leading-6 text-base-content/70">{{ motion.detail }}</span>
             </div>
-            <div class="ui-motion-demo__rail" aria-hidden="true">
-              <span class="ui-motion-demo__well ui-motion-demo__well--start" />
-              <span class="ui-motion-demo__well ui-motion-demo__well--end" />
-              <span class="ui-motion-demo__tile">{{ motion.name.slice(0, 1).toUpperCase() }}</span>
+            <div class="relative h-14 rounded-full bg-base-200 shadow-[inset_0_0_0_var(--border)_var(--color-base-300)]" aria-hidden="true">
+              <span class="absolute inset-y-1.5 start-1.5 w-11 rounded-full border border-dashed border-primary/60" />
+              <span class="absolute inset-y-1.5 end-1.5 w-11 rounded-full border border-dashed border-primary/60" />
+              <span
+                class="absolute start-1.5 top-1.5 grid size-11 place-items-center rounded-full bg-primary font-extrabold text-primary-content shadow-[0_0.5rem_1.25rem_color-mix(in_oklab,var(--color-primary)_30%,transparent)] transition-[inset-inline-start] duration-800 motion-reduce:duration-0 [transition-timing-function:var(--ui-motion-ease)]"
+                :class="{ 'start-[calc(100%-3.125rem)]': active }"
+              >{{ motion.name.slice(0, 1).toUpperCase() }}</span>
             </div>
           </li>
         </ul>
+        </div>
       </main>
     `,
   }),
@@ -172,16 +175,16 @@ export const MagneticSnap = meta.story({
     template: `
       <main
         aria-labelledby="ui-motion-snap-title"
-        class="ui-motion-snap"
-        :data-ui-motion-active="active"
+        class="min-h-screen bg-base-100 p-[clamp(1rem,4vw,2rem)] text-base-content"
       >
-        <header class="ui-motion-demo__header">
-          <div>
-            <p class="ui-motion-demo__eyebrow">--ui-ease-snap</p>
-            <h1 id="ui-motion-snap-title" class="ui-motion-demo__title">磁贴吸附</h1>
-            <p class="ui-motion-demo__copy">磁贴接近目标后略微越界，再回落到唯一的吸附位置。</p>
+        <div class="mx-auto grid w-full max-w-6xl gap-6">
+        <header class="flex flex-wrap items-end justify-between gap-6 rounded-box border border-base-300 bg-base-200 p-[clamp(1.25rem,4vw,1.75rem)] max-md:items-stretch">
+          <div class="min-w-[min(100%,18rem)]">
+            <p class="m-0 mb-2 text-xs font-bold uppercase tracking-[0.08em] text-base-content/70">--ui-ease-snap</p>
+            <h1 id="ui-motion-snap-title" class="m-0 text-[clamp(1.75rem,5vw,3rem)] leading-none">磁贴吸附</h1>
+            <p class="m-0 mt-3 max-w-2xl leading-[1.6] text-base-content/75">磁贴接近目标后略微越界，再回落到唯一的吸附位置。</p>
           </div>
-          <div class="ui-motion-demo__actions">
+          <div class="flex flex-wrap items-center gap-3 max-md:items-stretch">
             <Button
               :aria-pressed="active"
               color="primary"
@@ -189,9 +192,9 @@ export const MagneticSnap = meta.story({
             >
               {{ active ? '返回起点' : '吸附到目标' }}
             </Button>
-            <span class="ui-motion-demo__status">
+            <span class="inline-flex min-h-10 items-center gap-1.5 rounded-field border border-base-300 bg-base-100 px-3 text-[0.8125rem] text-base-content/75">
               当前位置
-              <output
+              <output class="font-bold tabular-nums text-base-content"
                 aria-label="磁贴当前位置"
                 aria-live="polite"
                 data-ui-motion-snap-position
@@ -202,17 +205,22 @@ export const MagneticSnap = meta.story({
           </div>
         </header>
 
-        <section class="ui-motion-snap__stage" aria-label="吸附演示区域">
-          <div class="ui-motion-snap__target ui-motion-snap__target--start">
+        <section class="relative min-h-[22rem] overflow-hidden rounded-box border border-base-300 bg-linear-to-br from-primary/10 to-secondary/10 shadow-[inset_0_0_3rem_color-mix(in_oklab,var(--color-primary)_8%,transparent)] max-md:min-h-72" aria-label="吸附演示区域">
+          <div class="absolute start-8 top-1/2 grid size-32 -translate-y-1/2 place-items-end justify-center rounded-box border-2 border-dashed border-primary/60 bg-primary/10 pb-3 text-xs font-bold text-base-content/70 max-md:start-4 max-md:size-22">
             <span>起点</span>
           </div>
-          <div class="ui-motion-snap__target ui-motion-snap__target--end">
+          <div class="absolute end-8 top-1/2 grid size-32 -translate-y-1/2 place-items-end justify-center rounded-box border-2 border-dashed border-primary/60 bg-primary/10 pb-3 text-xs font-bold text-base-content/70 max-md:end-4 max-md:size-22">
             <span>吸附目标</span>
           </div>
-          <div class="ui-motion-snap__tile" aria-hidden="true">
+          <div
+            class="absolute start-10 top-1/2 grid size-28 -translate-y-1/2 place-items-center rounded-box border border-white/35 bg-linear-to-br from-primary to-secondary text-2xl font-black text-primary-content shadow-[0_1.25rem_3rem_color-mix(in_oklab,var(--color-primary)_28%,transparent),inset_0_1px_0_color-mix(in_oklab,white_42%,transparent)] transition-[inset-inline-start] duration-560 motion-reduce:duration-0 [transition-timing-function:var(--ui-ease-snap)] max-md:start-[1.375rem] max-md:size-19 max-md:text-base"
+            :class="{ 'start-[calc(100%-9.5rem)] max-md:start-[calc(100%-6.125rem)]': active }"
+            aria-hidden="true"
+          >
             <span>115</span>
           </div>
         </section>
+        </div>
       </main>
     `,
   }),
@@ -253,19 +261,19 @@ export const ReducedMotion = meta.story({
     template: `
       <main
         aria-labelledby="ui-motion-reduced-title"
-        class="ui-motion-reduced"
-        :data-ui-motion-active="active"
+        class="min-h-screen bg-base-100 p-[clamp(1rem,4vw,2rem)] text-base-content"
       >
-        <header class="ui-motion-demo__header">
-          <div>
-            <p class="ui-motion-demo__eyebrow">prefers-reduced-motion</p>
-            <h1 id="ui-motion-reduced-title" class="ui-motion-demo__title">减少动态效果</h1>
-            <p class="ui-motion-demo__copy">偏好只改变抵达终点的路径，不改变操作及其结果。</p>
+        <div class="mx-auto grid w-full max-w-6xl gap-6">
+        <header class="flex flex-wrap items-end justify-between gap-6 rounded-box border border-base-300 bg-base-200 p-[clamp(1.25rem,4vw,1.75rem)] max-md:items-stretch">
+          <div class="min-w-[min(100%,18rem)]">
+            <p class="m-0 mb-2 text-xs font-bold uppercase tracking-[0.08em] text-base-content/70">prefers-reduced-motion</p>
+            <h1 id="ui-motion-reduced-title" class="m-0 text-[clamp(1.75rem,5vw,3rem)] leading-none">减少动态效果</h1>
+            <p class="m-0 mt-3 max-w-2xl leading-[1.6] text-base-content/75">偏好只改变抵达终点的路径，不改变操作及其结果。</p>
           </div>
-          <div class="ui-motion-demo__actions">
-            <span class="ui-motion-demo__preference">
+          <div class="flex flex-wrap items-center gap-3 max-md:items-stretch">
+            <span class="inline-flex min-h-10 items-center gap-1.5 rounded-field border border-primary/35 bg-primary/10 px-3 text-[0.8125rem] text-base-content/75">
               当前偏好
-              <output aria-label="当前动态效果偏好" data-ui-motion-preference>
+              <output class="font-bold tabular-nums text-base-content" aria-label="当前动态效果偏好" data-ui-motion-preference>
                 {{ reduced ? '减少动态效果' : '完整动态效果' }}
               </output>
             </span>
@@ -276,9 +284,9 @@ export const ReducedMotion = meta.story({
             >
               {{ active ? '返回起点' : '移至终点' }}
             </Button>
-            <span class="ui-motion-demo__status">
+            <span class="inline-flex min-h-10 items-center gap-1.5 rounded-field border border-base-300 bg-base-100 px-3 text-[0.8125rem] text-base-content/75">
               当前位置
-              <output
+              <output class="font-bold tabular-nums text-base-content"
                 aria-label="降级演示当前位置"
                 aria-live="polite"
                 data-ui-motion-reduced-position
@@ -289,14 +297,19 @@ export const ReducedMotion = meta.story({
           </div>
         </header>
 
-        <section class="ui-motion-reduced__stage" aria-label="动态效果降级演示">
-          <div class="ui-motion-reduced__rail" aria-hidden="true">
-            <span class="ui-motion-reduced__well ui-motion-reduced__well--start" />
-            <span class="ui-motion-reduced__well ui-motion-reduced__well--end" />
-            <span class="ui-motion-reduced__tile" data-ui-motion-reduced-tile>115</span>
+        <section class="grid gap-4 rounded-box border border-base-300 bg-base-100 p-[clamp(1.25rem,5vw,3rem)] max-md:p-4" aria-label="动态效果降级演示">
+          <div class="relative h-20 rounded-full bg-base-200 shadow-[inset_0_0_0_var(--border)_var(--color-base-300)]" aria-hidden="true">
+            <span class="absolute inset-y-2.5 start-2.5 w-15 rounded-full border border-dashed border-primary/60" />
+            <span class="absolute inset-y-2.5 end-2.5 w-15 rounded-full border border-dashed border-primary/60" />
+            <span
+              class="absolute start-2.5 top-2.5 grid size-15 place-items-center rounded-full bg-neutral text-sm font-extrabold text-neutral-content transition-[inset-inline-start] duration-640 motion-reduce:duration-0 [transition-timing-function:var(--ui-ease-move)]"
+              :class="{ 'start-[calc(100%-4.375rem)]': active }"
+              data-ui-motion-reduced-tile
+            >115</span>
           </div>
-          <p class="ui-motion-reduced__note">完整动态效果使用 Move 完成结构位移；减少动态效果时直接呈现相同终点。</p>
+          <p class="m-0 text-center text-sm leading-6 text-base-content/75">完整动态效果使用 Move 完成结构位移；减少动态效果时直接呈现相同终点。</p>
         </section>
+        </div>
       </main>
     `,
   }),
