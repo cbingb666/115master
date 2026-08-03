@@ -2,7 +2,7 @@ import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
 import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
-import { Button, Header, HeaderEnd, HeaderStart, Pill } from '@115master/ui'
+import { Button, Header, HeaderEnd, HeaderStart, Pill, Progress } from '@115master/ui'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
@@ -13,7 +13,6 @@ import {
   Layout,
   LoadingError,
   Main,
-  Progress,
   SelectionHeader,
   Sider,
   SiderContent,

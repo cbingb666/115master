@@ -209,6 +209,29 @@
       ]
     },
     {
+      "id": "ui-progress--toggle",
+      "docs": "ui-progress--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-progress--toggle:finishes-and-restarts-the-visual-loading-indicator"
+      ],
+      "ready": "[data-ui-progress-state]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-progress-state]",
+          "text": "active"
+        },
+        {
+          "selector": "[data-ui-progress]",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "ui-overlayhost--default",
       "docs": "ui-overlayhost--docs",
       "component": true,

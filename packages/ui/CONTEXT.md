@@ -73,7 +73,7 @@ _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Progress、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、选项、结果、关闭原因、服务实例和句柄类型。内部 Dialog 子组件、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：
@@ -155,6 +155,10 @@ _Avoid_: 静默校验、通用表单引擎
 **Button**：
 始终以原生按钮语义执行动作的控件；视觉可以呈现为 link 或 Glass，但不承担导航。
 _Avoid_: 链接按钮、router button
+
+**Progress**：
+固定在视口顶缘、由 active 状态驱动的页面级 indeterminate 加载反馈；只承担不占布局的视觉提示，调用方仍负责为内容区域声明 busy 语义。
+_Avoid_: 确定进度条、布局内进度、业务加载状态
 
 **Pill**：
 呈现胶囊几何的信息、组合布局或导航容器；不执行按钮动作。

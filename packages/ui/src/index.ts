@@ -58,6 +58,8 @@ export type {
   PillSize,
   PillVariant,
 } from './components/Pill/Pill'
+export { Progress } from './components/Progress/Progress'
+export type { ProgressProps } from './components/Progress/Progress'
 export { scrollbar } from './components/Scrollbar/Scrollbar'
 export type { ScrollbarSize } from './components/Scrollbar/Scrollbar'
 export { Tooltip } from './components/Tooltip/Tooltip'

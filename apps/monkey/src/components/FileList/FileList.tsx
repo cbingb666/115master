@@ -2,6 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Range } from '@tanstack/vue-virtual'
 import type { MaybeElement } from '@vueuse/core'
 import type { PropType, Ref, SlotsType, VNodeChild } from 'vue'
+import { Progress } from '@115master/ui'
 import { defaultRangeExtractor, useVirtualizer, useWindowVirtualizer } from '@tanstack/vue-virtual'
 import { breakpointsTailwind, unrefElement, useBreakpoints, useEventListener, useResizeObserver, useThrottleFn } from '@vueuse/core'
 import {
@@ -19,7 +20,6 @@ import {
 import { getFilesItemId } from '@/utils/filesItem'
 import Empty from '../Empty/Empty'
 import LoadingError from '../LoadingError/LoadingError'
-import Progress from '../Progress/Progress'
 import { group, locate } from './layout'
 
 interface Position {

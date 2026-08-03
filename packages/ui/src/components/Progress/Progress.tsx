@@ -1,14 +1,23 @@
+import type { ExtractPublicPropTypes } from 'vue'
 import { defineComponent, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 
+const props = {
+  active: {
+    type: Boolean,
+    default: true,
+  },
+} as const
+
+export type ProgressProps = ExtractPublicPropTypes<typeof props>
+
+/**
+ * A decorative, indeterminate loading indicator fixed to the viewport's top
+ * edge. Callers remain responsible for exposing the busy state semantically.
+ */
 export const Progress = defineComponent({
   name: 'Progress',
 
-  props: {
-    active: {
-      type: Boolean,
-      default: true,
-    },
-  },
+  props,
 
   setup(props) {
     const bar = shallowRef<HTMLElement>()
@@ -38,6 +47,7 @@ export const Progress = defineComponent({
 
     function start() {
       stop()
+      clearTimeout(timer.value)
       base.value = 0
       if (bar.value) {
         bar.value.style.opacity = '1'
@@ -65,8 +75,8 @@ export const Progress = defineComponent({
         start()
     })
 
-    watch(() => props.active, (v) => {
-      if (v) {
+    watch(() => props.active, (value) => {
+      if (value) {
         show.value = true
         start()
         return
@@ -84,10 +94,15 @@ export const Progress = defineComponent({
         return null
 
       return (
-        <div class="bg-base-300/35 ui-z-progress pointer-events-none fixed inset-x-0 top-0 h-0.5 overflow-hidden">
+        <div
+          aria-hidden="true"
+          class="bg-base-300/35 ui-z-progress pointer-events-none fixed inset-x-0 top-0 h-0.5 overflow-hidden"
+          data-ui-progress=""
+        >
           <div
             ref={bar}
             class="h-full w-1/3 rounded-full will-change-transform"
+            data-ui-progress-bar=""
             style="transform: translate3d(-35%, 0, 0); background: var(--color-primary); box-shadow: 0 0 10px color-mix(in oklab, var(--color-primary) 60%, transparent);"
           />
         </div>
@@ -95,5 +110,3 @@ export const Progress = defineComponent({
     }
   },
 })
-
-export default Progress
