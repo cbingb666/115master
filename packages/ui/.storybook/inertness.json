@@ -122,7 +122,7 @@
       ]
     },
     {
-      "id": "ui-watermark--contract",
+      "id": "ui-watermark--behavior",
       "docs": "ui-watermark--docs",
       "component": true,
       "tags": [
@@ -130,7 +130,7 @@
         "test"
       ],
       "tests": [
-        "ui-watermark--contract:proves-repeated-decoration-and-content-interaction"
+        "ui-watermark--behavior:keeps-decoration-inert-above-interactive-content"
       ],
       "ready": "[data-ui-watermark-actions]",
       "outcomes": [
