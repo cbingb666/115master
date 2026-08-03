@@ -11,6 +11,12 @@ const placements = [
   'bottom',
 ] as const satisfies readonly DrawerPlacement[]
 
+const motions: Record<DrawerPlacement, string> = {
+  start: 'ui-drawer-enter-start',
+  end: 'ui-drawer-enter-end',
+  bottom: 'ui-drawer-enter-bottom',
+}
+
 const sizes = [
   'sm',
   'md',
@@ -20,6 +26,30 @@ const sizes = [
 
 async function hidden(drawer: HTMLElement) {
   await waitFor(() => expect(drawer).not.toHaveAttribute('open'))
+  await frame()
+}
+
+function frame() {
+  return new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
+}
+
+function opening(drawer: HTMLElement, panel: HTMLElement) {
+  return new Promise<{ matrix: DOMMatrixReadOnly, opacity: number }>((resolve) => {
+    const observer = new MutationObserver(() => {
+      if (drawer.dataset.uiDrawerState !== 'open')
+        return
+      observer.disconnect()
+      resolve({
+        matrix: new DOMMatrixReadOnly(getComputedStyle(panel).transform),
+        opacity: Number.parseFloat(getComputedStyle(drawer).opacity),
+      })
+    })
+
+    observer.observe(drawer, {
+      attributeFilter: ['data-ui-drawer-state'],
+      attributes: true,
+    })
+  })
 }
 
 const meta = preview.meta({
@@ -115,18 +145,55 @@ export const Placements = meta.story({
   }),
 })
 
-Placements.test('anchors every placement and exposes the bottom drag handle', async ({ canvasElement }) => {
+Placements.test('slides every placement in from its anchored edge and exposes the bottom drag handle', async ({ canvasElement }) => {
   const canvas = within(canvasElement)
 
   for (const placement of placements) {
-    await userEvent.click(canvas.getByRole('button', { name: `Open ${placement} Drawer` }))
-    const drawer = canvas.getByRole('dialog', { name: `${placement} Drawer` })
+    const drawer = canvasElement.querySelector<HTMLDialogElement>(`[data-ui-drawer-placement="${placement}"]`)
+
+    if (!drawer)
+      throw new Error(`${placement} Drawer did not render its modal root`)
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+
     const panel = drawer.querySelector<HTMLElement>('[data-ui-drawer-panel]')
 
     if (!panel)
       throw new Error(`${placement} Drawer did not expose its panel`)
+    const sample = opening(drawer, panel)
+
+    canvas.getByRole('button', { name: `Open ${placement} Drawer` }).click()
     await expect(drawer).toHaveAttribute('data-ui-drawer-placement', placement)
-    await waitFor(() => expect(getComputedStyle(panel).transform).toBe('matrix(1, 0, 0, 1, 0, 0)'))
+    const start = await sample
+    const animation = panel.getAnimations().find((candidate): candidate is CSSAnimation => (
+      candidate instanceof CSSAnimation && candidate.animationName === motions[placement]
+    ))
+
+    await expect(drawer).toHaveAttribute('data-ui-drawer-state', 'open')
+    await expect(start.opacity).toBe(1)
+
+    if (reduced) {
+      await expect(start.matrix.m41).toBe(0)
+      await expect(start.matrix.m42).toBe(0)
+    }
+    if (!reduced) {
+      await expect(animation).toBeDefined()
+      const initial = placement === 'bottom' ? start.matrix.m42 : start.matrix.m41
+      const extent = placement === 'bottom' ? panel.offsetHeight : panel.offsetWidth
+
+      await expect(Math.sign(initial)).toBe(placement === 'start' ? -1 : 1)
+      await expect(Math.abs(initial)).toBeGreaterThan(extent * 0.5)
+      await waitFor(() => {
+        const moved = new DOMMatrixReadOnly(getComputedStyle(panel).transform)
+        const current = placement === 'bottom' ? moved.m42 : moved.m41
+
+        expect(Math.abs(current)).toBeGreaterThan(0)
+        expect(Math.abs(current)).toBeLessThan(Math.abs(initial))
+      })
+    }
+    await waitFor(
+      () => expect(getComputedStyle(panel).transform).toBe('matrix(1, 0, 0, 1, 0, 0)'),
+      { timeout: 1000 },
+    )
     await expect(!!drawer.querySelector('[data-ui-drawer-drag-handle]')).toBe(placement === 'bottom')
     await userEvent.keyboard('{Escape}')
     await hidden(drawer)
@@ -134,7 +201,7 @@ Placements.test('anchors every placement and exposes the bottom drag handle', as
 })
 
 export const Sizes = meta.story({
-  name: '语义尺寸与变量覆盖',
+  name: '底部语义尺寸与变量覆盖',
   parameters: {
     controls: { disable: true },
   },
@@ -153,6 +220,7 @@ export const Sizes = meta.story({
           :key="size"
           :open="open === size"
           :label="size + ' Drawer'"
+          placement="bottom"
           :size="size"
           @update:open="open = $event ? size : undefined"
         >
@@ -161,6 +229,7 @@ export const Sizes = meta.story({
         <Drawer
           :open="open === 'override'"
           label="Override Drawer"
+          placement="bottom"
           size="lg"
           style="--ui-drawer-size: 18rem"
           @update:open="open = $event ? 'override' : undefined"
@@ -172,8 +241,9 @@ export const Sizes = meta.story({
   }),
 })
 
-Sizes.test('maps semantic sizes and permits a placement-axis CSS override', async ({ canvasElement }) => {
+Sizes.test('maps bottom semantic sizes to panel heights and permits a placement-axis CSS override', async ({ canvasElement }) => {
   const canvas = within(canvasElement)
+  const rem = Number.parseFloat(getComputedStyle(document.documentElement).fontSize)
   const values: Record<DrawerSize, string> = {
     sm: '20rem',
     md: '32rem',
@@ -184,17 +254,29 @@ Sizes.test('maps semantic sizes and permits a placement-axis CSS override', asyn
   for (const size of sizes) {
     await userEvent.click(canvas.getByRole('button', { name: `Open ${size}` }))
     const drawer = canvas.getByRole('dialog', { name: `${size} Drawer` })
+    const panel = drawer.querySelector<HTMLElement>('[data-ui-drawer-panel]')
+
+    if (!panel)
+      throw new Error(`${size} Drawer did not expose its panel`)
 
     await expect(drawer).toHaveAttribute('data-ui-drawer-size', size)
     await expect(getComputedStyle(drawer).getPropertyValue('--ui-drawer-size').trim()).toBe(values[size])
+    await expect(panel.getBoundingClientRect().height).toBe(size === 'full'
+      ? window.innerHeight
+      : Math.min(Number.parseFloat(values[size]) * rem, window.innerHeight - rem))
     await userEvent.keyboard('{Escape}')
     await hidden(drawer)
   }
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open override' }))
   const drawer = canvas.getByRole('dialog', { name: 'Override Drawer' })
+  const panel = drawer.querySelector<HTMLElement>('[data-ui-drawer-panel]')
+
+  if (!panel)
+    throw new Error('Override Drawer did not expose its panel')
 
   await expect(getComputedStyle(drawer).getPropertyValue('--ui-drawer-size').trim()).toBe('18rem')
+  await expect(panel.getBoundingClientRect().height).toBe(18 * rem)
   await userEvent.keyboard('{Escape}')
   await hidden(drawer)
 })
