@@ -388,6 +388,50 @@
       ]
     },
     {
+      "id": "foundations-theme--semantic-colors",
+      "docs": "foundations-theme--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "foundations-theme--semantic-colors:maps-the-same-semantic-roles-across-light-and-dark-themes"
+      ],
+      "ready": "main[aria-label=\"Theme 语义颜色映射\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-theme-palette]",
+          "count": 2
+        },
+        {
+          "selector": "[data-ui-theme-color]",
+          "count": 22
+        }
+      ]
+    },
+    {
+      "id": "foundations-theme--selection",
+      "docs": "foundations-theme--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "foundations-theme--selection:keeps-inherited-and-explicit-theme-selection-observable"
+      ],
+      "ready": "main[aria-label=\"Theme 选择规则\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-theme-selection=\"inherited\"]",
+          "count": 1
+        },
+        {
+          "selector": "[data-ui-theme-selection=\"explicit\"]",
+          "count": 2
+        }
+      ]
+    },
+    {
       "id": "foundations-theme-token-and-glass--tracer",
       "docs": "foundations-theme-token-and-glass--docs",
       "tags": [
