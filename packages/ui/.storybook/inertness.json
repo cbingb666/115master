@@ -38,6 +38,48 @@
       ]
     },
     {
+      "id": "ui-navigationstack--responsive-presentation",
+      "docs": "ui-navigationstack--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-navigationstack--responsive-presentation:adapts-full-screen-and-sheet-presentations-to-the-viewport"
+      ],
+      "ready": "main[aria-label=\"Navigation Stack presentations\"]",
+      "outcomes": [
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-navigationstack--content-and-actions",
+      "docs": "ui-navigationstack--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-navigationstack--content-and-actions:renders-caller-owned-content-and-persistent-actions"
+      ],
+      "ready": "[data-ui-navigation-content-result]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-navigation-content-result]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
       "id": "ui-navigationstack--navigation",
       "docs": "ui-navigationstack--docs",
       "component": true,
@@ -46,9 +88,28 @@
         "test"
       ],
       "tests": [
-        "ui-navigationstack--navigation:proves-navigation-dismissal-focus-and-responsive-presentation"
+        "ui-navigationstack--navigation:infers-forward-replace-and-back-directions-from-page-identity-and-depth"
       ],
-      "ready": "main[aria-label=\"Navigation Stack\"]",
+      "ready": "main[aria-label=\"Navigation Stack direction\"]",
+      "outcomes": [
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-navigationstack--dismissal",
+      "docs": "ui-navigationstack--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-navigationstack--dismissal:reports-button-escape-and-backdrop-dismissal-while-restoring-focus"
+      ],
+      "ready": "[data-ui-navigation-dismiss]",
       "outcomes": [
         {
           "selector": "[data-ui-navigation-dismiss]",
