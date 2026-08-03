@@ -514,20 +514,21 @@
       ]
     },
     {
-      "id": "ui-dialog-service--factory-isolation-and-injection",
+      "id": "ui-dialog-service--default",
       "docs": "ui-dialog-service--docs",
+      "component": true,
       "tags": [
         "autodocs",
         "test"
       ],
       "tests": [
-        "ui-dialog-service--factory-isolation-and-injection:proves-factory-isolation-injection-and-missing-host-failure"
+        "ui-dialog-service--default:resolves-an-alert-and-restores-the-trigger"
       ],
-      "ready": "main[aria-label=\"Dialog service isolation\"]",
+      "ready": "main[aria-label=\"Default Dialog Service\"]",
       "outcomes": [
         {
-          "selector": "[data-ui-dialog-host-error]",
-          "text": "none"
+          "selector": "[data-ui-dialog-service-default]",
+          "text": "idle"
         },
         {
           "selector": "dialog[open]",
@@ -536,16 +537,59 @@
       ]
     },
     {
-      "id": "ui-dialog-service--outcomes-and-close-reasons",
+      "id": "ui-dialog-service--factory-isolation",
       "docs": "ui-dialog-service--docs",
+      "component": true,
       "tags": [
         "autodocs",
         "test"
       ],
       "tests": [
-        "ui-dialog-service--outcomes-and-close-reasons:proves-api-outcomes-and-structured-close-reasons"
+        "ui-dialog-service--factory-isolation:isolates-factory-instances-and-injects-the-nearest-service"
       ],
-      "ready": "main[aria-label=\"Dialog service outcomes\"]",
+      "ready": "main[aria-label=\"Dialog Service isolation\"]",
+      "outcomes": [
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--host-requirement",
+      "docs": "ui-dialog-service--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--host-requirement:rejects-a-service-call-without-a-mounted-host"
+      ],
+      "ready": "main[aria-label=\"Dialog Service Host requirement\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-host-error]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--outcomes",
+      "docs": "ui-dialog-service--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--outcomes:returns-alert-confirm-and-prompt-outcomes"
+      ],
+      "ready": "main[aria-label=\"Dialog Service outcomes\"]",
       "outcomes": [
         {
           "selector": "[data-ui-dialog-outcome]",
@@ -558,21 +602,91 @@
       ]
     },
     {
-      "id": "ui-dialog-service--errors-and-async-confirmation",
+      "id": "ui-dialog-service--enter-confirmation",
       "docs": "ui-dialog-service--docs",
+      "component": true,
       "tags": [
         "autodocs",
         "test"
       ],
       "tests": [
-        "ui-dialog-service--errors-and-async-confirmation:proves-render-and-confirmation-errors-plus-pending-protection"
+        "ui-dialog-service--enter-confirmation:confirms-on-enter-unless-the-call-disables-it"
       ],
-      "ready": "main[aria-label=\"Dialog service failures\"]",
+      "ready": "main[aria-label=\"Dialog Service Enter confirmation\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-enter]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--close-reasons",
+      "docs": "ui-dialog-service--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--close-reasons:reports-each-public-close-reason-exactly-once"
+      ],
+      "ready": "main[aria-label=\"Dialog Service close reasons\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-reason]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--error-handling",
+      "docs": "ui-dialog-service--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--error-handling:reports-render-and-confirmation-failures-through-caller-owned-outcomes"
+      ],
+      "ready": "main[aria-label=\"Dialog Service errors\"]",
       "outcomes": [
         {
           "selector": "[data-ui-dialog-error]",
           "text": "none:0"
         },
+        {
+          "selector": "[data-ui-dialog-rejection]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--async-confirmation",
+      "docs": "ui-dialog-service--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--async-confirmation:locks-user-close-paths-while-pending-and-settles-once"
+      ],
+      "ready": "main[aria-label=\"Dialog Service pending confirmation\"]",
+      "outcomes": [
         {
           "selector": "[data-ui-dialog-async]",
           "text": "idle:0"
@@ -584,19 +698,20 @@
       ]
     },
     {
-      "id": "ui-dialog-service--prompt-keyboard-and-validation",
+      "id": "ui-dialog-service--prompt-validation",
       "docs": "ui-dialog-service--docs",
+      "component": true,
       "tags": [
         "autodocs",
         "test"
       ],
       "tests": [
-        "ui-dialog-service--prompt-keyboard-and-validation:proves-prompt-keyboard-paths-validation-and-submitted-snapshots"
+        "ui-dialog-service--prompt-validation:announces-a-required-error-and-submits-the-corrected-value"
       ],
-      "ready": "main[aria-label=\"Prompt behavior\"]",
+      "ready": "main[aria-label=\"Dialog Service Prompt validation\"]",
       "outcomes": [
         {
-          "selector": "[data-ui-dialog-prompt]",
+          "selector": "[data-ui-dialog-prompt-validation]",
           "text": "idle"
         },
         {
@@ -606,16 +721,86 @@
       ]
     },
     {
-      "id": "ui-dialog-service--stack-and-close-all",
+      "id": "ui-dialog-service--prompt-keyboard",
       "docs": "ui-dialog-service--docs",
+      "component": true,
       "tags": [
         "autodocs",
         "test"
       ],
       "tests": [
-        "ui-dialog-service--stack-and-close-all:proves-stack-focus-restoration-and-closeall-lifo"
+        "ui-dialog-service--prompt-keyboard:preserves-multiline-enter-and-honors-confirmonenter"
       ],
-      "ready": "main[aria-label=\"Dialog service Stack\"]",
+      "ready": "main[aria-label=\"Dialog Service Prompt keyboard\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-prompt-keyboard]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--submitted-snapshot",
+      "docs": "ui-dialog-service--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--submitted-snapshot:returns-the-submitted-value-captured-before-async-confirmation"
+      ],
+      "ready": "main[aria-label=\"Dialog Service Prompt snapshot\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-prompt-snapshot]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--stack",
+      "docs": "ui-dialog-service--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--stack:keeps-only-the-top-dialog-interactive-and-restores-parent-focus"
+      ],
+      "ready": "main[aria-label=\"Dialog Service Stack\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-dialog-stack]",
+          "text": "idle"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-dialog-service--close-all",
+      "docs": "ui-dialog-service--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog-service--close-all:closes-the-stack-in-lifo-order-and-restores-the-trigger"
+      ],
+      "ready": "main[aria-label=\"Dialog Service closeAll\"]",
       "outcomes": [
         {
           "selector": "[data-ui-dialog-order]",

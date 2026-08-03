@@ -4,12 +4,12 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { defineComponent, h, onBeforeUnmount, ref } from 'vue'
 import preview from '../../.storybook/preview'
 
-const messages: DialogServiceMessages = {
+const messages = {
   confirm: 'Confirm',
   cancel: 'Cancel',
   inputLabel: 'Value',
   requiredError: 'A value is required.',
-}
+} satisfies DialogServiceMessages
 
 function service() {
   return createDialogService({
@@ -20,7 +20,7 @@ function service() {
   })
 }
 
-function useMountedPromise() {
+function useSettlement() {
   const mounted = ref(true)
   onBeforeUnmount(() => mounted.value = false)
 
@@ -48,7 +48,7 @@ const Consumer = defineComponent({
 
   setup(props) {
     const dialog = useDialog()
-    const settle = useMountedPromise()
+    const settle = useSettlement()
 
     return () => h(Button, {
       onClick: () => settle(
@@ -64,57 +64,93 @@ const Consumer = defineComponent({
 
 const meta = preview.meta({
   title: 'UI/Dialog Service',
+  component: DialogHost,
   parameters: {
+    controls: { disable: true },
     docs: {
       description: {
         component:
-          '工厂创建的 Dialog 服务由当前 DialogHost 承载。每个应用、Story 与测试持有隔离实例，组件通过 useDialog 注入访问当前实例。',
+          'Dialog Service 将配置对象转换为由 DialogHost 承载的命令式 Dialog 流程，适合应用级 alert、confirm、prompt 与自定义协调。每个应用、Story 或测试拥有隔离实例；它不是全局单例，也不负责路由弹窗语义。',
       },
     },
   },
   tags: ['autodocs', 'test'],
 })
 
-export const FactoryIsolationAndInjection = meta.story({
-  name: '工厂隔离、注入与 Host 故障',
+export const Default = meta.story({
+  name: '默认',
   render: () => ({
-    components: { Consumer, DialogHost },
+    components: { Button, DialogHost },
     setup() {
-      const first = service()
-      const second = service()
-      const orphan = service()
-      const failure = ref('none')
+      const dialog = service()
+      const result = ref('idle')
+      const settle = useSettlement()
 
-      const openOrphan = async () => {
-        try {
-          await orphan.alert({
-            title: 'Orphan service',
-            content: 'This service has no Host.',
-          })
-        }
-        catch (error) {
-          failure.value = error instanceof Error ? error.message : String(error)
-        }
+      const open = () => {
+        result.value = 'pending'
+        return settle(
+          dialog.alert({
+            title: 'Service alert',
+            content: 'The Host renders one application-owned alert.',
+          }),
+          () => result.value = 'acknowledged',
+        )
       }
 
-      return { failure, first, openOrphan, second }
+      return { dialog, open, result }
     },
     template: `
-      <main aria-label="Dialog service isolation" class="flex flex-wrap gap-3 p-6">
+      <DialogHost :service="dialog">
+        <main aria-label="Default Dialog Service" class="flex items-center gap-3 p-6">
+          <Button @click="open">Open alert</Button>
+          <span>
+            Result:
+            <output aria-live="polite" data-ui-dialog-service-default>{{ result }}</output>
+          </span>
+        </main>
+      </DialogHost>
+    `,
+  }),
+})
+
+Default.test('resolves an alert and restores the trigger', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const trigger = canvas.getByRole('button', { name: 'Open alert' })
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-service-default]')
+
+  if (!result)
+    throw new Error('Default Dialog Service story did not render its observable outcome')
+
+  trigger.focus()
+  await userEvent.click(trigger)
+  const dialog = canvas.getByRole('dialog', { name: 'Service alert' })
+
+  await expect(dialog).toHaveTextContent('The Host renders one application-owned alert.')
+  await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
+  await waitFor(() => expect(result).toHaveTextContent('acknowledged'))
+  await waitFor(() => expect(dialog).not.toHaveAttribute('open'))
+  await expect(trigger).toHaveFocus()
+})
+
+export const FactoryIsolation = meta.story({
+  name: '工厂隔离与注入',
+  render: () => ({
+    components: { Consumer, DialogHost },
+    setup: () => ({ first: service(), second: service() }),
+    template: `
+      <main aria-label="Dialog Service isolation" class="flex flex-wrap gap-3 p-6">
         <DialogHost :service="first">
           <Consumer name="first" />
         </DialogHost>
         <DialogHost :service="second">
           <Consumer name="second" />
         </DialogHost>
-        <button type="button" class="btn" @click="openOrphan">Open without Host</button>
-        <output aria-live="polite" data-ui-dialog-host-error>{{ failure }}</output>
       </main>
     `,
   }),
 })
 
-FactoryIsolationAndInjection.test('proves factory isolation, injection, and missing Host failure', async ({ canvasElement }) => {
+FactoryIsolation.test('isolates factory instances and injects the nearest service', async ({ canvasElement }) => {
   const canvas = within(canvasElement)
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open first' }))
@@ -131,21 +167,51 @@ FactoryIsolationAndInjection.test('proves factory isolation, injection, and miss
   await expect(second).toHaveTextContent('Opened from second.')
   await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
   await waitFor(() => expect(second).not.toHaveAttribute('open'))
-
-  await userEvent.click(canvas.getByRole('button', { name: 'Open without Host' }))
-  await waitFor(() => expect(canvas.getByRole('status')).toHaveTextContent('Dialog service requires a mounted DialogHost.'))
 })
 
-export const OutcomesAndCloseReasons = meta.story({
-  name: 'API outcomes 与关闭原因',
+export const HostRequirement = meta.story({
+  name: 'Host 要求',
   render: () => ({
-    components: { DialogHost },
+    components: { Button },
+    setup() {
+      const dialog = service()
+      const failure = ref('idle')
+
+      const open = () => dialog.alert({
+        title: 'Orphan service',
+        content: 'This service has no Host.',
+      }).catch((cause) => {
+        failure.value = cause instanceof Error ? cause.message : String(cause)
+      })
+
+      return { failure, open }
+    },
+    template: `
+      <main aria-label="Dialog Service Host requirement" class="flex items-center gap-3 p-6">
+        <Button @click="open">Open without Host</Button>
+        <output aria-live="polite" data-ui-dialog-host-error>{{ failure }}</output>
+      </main>
+    `,
+  }),
+})
+
+HostRequirement.test('rejects a service call without a mounted Host', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Open without Host' }))
+  await waitFor(() => expect(canvas.getByRole('status')).toHaveTextContent(
+    'Dialog service requires a mounted DialogHost.',
+  ))
+})
+
+export const Outcomes = meta.story({
+  name: 'API outcomes',
+  render: () => ({
+    components: { Button, DialogHost },
     setup() {
       const dialog = service()
       const result = ref('idle')
-      const active = ref<DialogHandle>()
-      const settlements = ref(0)
-      const settle = useMountedPromise()
+      const settle = useSettlement()
 
       const alert = () => settle(
         dialog.alert({
@@ -172,7 +238,136 @@ export const OutcomesAndCloseReasons = meta.story({
         }),
         value => result.value = `prompt:${value ?? 'null'}`,
       )
-      const custom = (title: string) => {
+
+      return { alert, confirm, dialog, prompt, result }
+    },
+    template: `
+      <DialogHost :service="dialog">
+        <main aria-label="Dialog Service outcomes" class="flex flex-wrap items-center gap-3 p-6">
+          <Button @click="alert">Run alert</Button>
+          <Button @click="confirm">Run confirm</Button>
+          <Button @click="prompt">Run prompt</Button>
+          <output aria-live="polite" data-ui-dialog-outcome>{{ result }}</output>
+        </main>
+      </DialogHost>
+    `,
+  }),
+})
+
+Outcomes.test('returns alert, confirm, and prompt outcomes', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-outcome]')
+
+  if (!result)
+    throw new Error('Dialog Service outcome story did not render its output')
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Run alert' }))
+  await userEvent.click(canvas.getByRole('button', { name: 'Acknowledge alert' }))
+  await waitFor(() => expect(result).toHaveTextContent('alert:void'))
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Run confirm' }))
+  await userEvent.click(canvas.getByRole('button', { name: 'Decline choice' }))
+  await waitFor(() => expect(result).toHaveTextContent('confirm:false'))
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Run confirm' }))
+  await userEvent.click(canvas.getByRole('button', { name: 'Accept choice' }))
+  await waitFor(() => expect(result).toHaveTextContent('confirm:true'))
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Run prompt' }))
+  await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }))
+  await waitFor(() => expect(result).toHaveTextContent('prompt:null'))
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Run prompt' }))
+  const input = canvas.getByRole('textbox', { name: 'Project name' })
+  await userEvent.clear(input)
+  await userEvent.type(input, 'UI package')
+  await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
+  await waitFor(() => expect(result).toHaveTextContent('prompt:UI package'))
+})
+
+export const EnterConfirmation = meta.story({
+  name: 'Enter 确认',
+  render: () => ({
+    components: { Button, DialogHost },
+    setup() {
+      const dialog = service()
+      const result = ref('idle')
+      const settle = useSettlement()
+
+      const enabled = () => settle(
+        dialog.confirm({
+          title: 'Enter confirms',
+          content: 'Enter confirms even when Cancel owns focus.',
+        }),
+        value => result.value = `enabled:${value}`,
+      )
+      const disabled = () => settle(
+        dialog.confirm({
+          title: 'Enter remains editable',
+          content: h('label', { class: 'flex flex-col gap-2' }, [
+            'Note',
+            h('input', {
+              'class': 'input',
+              'data-ui-dialog-enter-input': '',
+              'type': 'text',
+            }),
+          ]),
+          confirmOnEnter: false,
+          initialFocus: '[data-ui-dialog-enter-input]',
+        }),
+        value => result.value = `disabled:${value}`,
+      )
+
+      return { dialog, disabled, enabled, result }
+    },
+    template: `
+      <DialogHost :service="dialog">
+        <main aria-label="Dialog Service Enter confirmation" class="flex flex-wrap items-center gap-3 p-6">
+          <Button @click="enabled">Open Enter-confirmed Dialog</Button>
+          <Button @click="disabled">Open Enter-disabled Dialog</Button>
+          <output aria-live="polite" data-ui-dialog-enter>{{ result }}</output>
+        </main>
+      </DialogHost>
+    `,
+  }),
+})
+
+EnterConfirmation.test('confirms on Enter unless the call disables it', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-enter]')
+
+  if (!result)
+    throw new Error('Dialog Service Enter story did not render its output')
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Open Enter-confirmed Dialog' }))
+  await waitFor(() => expect(canvas.getByRole('button', { name: 'Cancel' })).toHaveFocus())
+  await userEvent.keyboard('{Enter}')
+  await waitFor(() => expect(result).toHaveTextContent('enabled:true'))
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Open Enter-disabled Dialog' }))
+  const dialog = canvas.getByRole('dialog', { name: 'Enter remains editable' })
+  const input = canvas.getByRole('textbox', { name: 'Note' })
+
+  await waitFor(() => expect(input).toHaveFocus())
+  await userEvent.type(input, 'Draft{Enter}')
+  await expect(dialog).toHaveAttribute('open')
+  await expect(result).toHaveTextContent('enabled:true')
+  await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
+  await waitFor(() => expect(result).toHaveTextContent('disabled:true'))
+})
+
+export const CloseReasons = meta.story({
+  name: '结构化关闭原因',
+  render: () => ({
+    components: { Button, DialogHost },
+    setup() {
+      const active = ref<DialogHandle>()
+      const dialog = service()
+      const result = ref('idle')
+      const settlements = ref(0)
+      const settle = useSettlement()
+
+      const open = (title: string) => {
         settlements.value = 0
         const handle = dialog.create({
           title,
@@ -184,7 +379,7 @@ export const OutcomesAndCloseReasons = meta.story({
           result.value = `${outcome.reason}:${settlements.value}`
         })
       }
-      const closeSynchronously = () => {
+      const synchronous = () => {
         const handle = dialog.create({
           title: 'Synchronous close',
           content: 'This handle closes before the primitive opens.',
@@ -196,64 +391,33 @@ export const OutcomesAndCloseReasons = meta.story({
         })
       }
 
-      return {
-        active,
-        alert,
-        closeSynchronously,
-        confirm,
-        custom,
-        dialog,
-        prompt,
-        result,
-      }
+      return { active, dialog, open, result, synchronous }
     },
     template: `
       <DialogHost :service="dialog">
-        <main aria-label="Dialog service outcomes" class="flex flex-wrap gap-3 p-6">
-          <button type="button" class="btn" @click="alert">Run alert</button>
-          <button type="button" class="btn" @click="confirm">Run confirm</button>
-          <button type="button" class="btn" @click="prompt">Run prompt</button>
-          <button type="button" class="btn" @click="custom('Custom confirm')">Custom confirm</button>
-          <button type="button" class="btn" @click="custom('Custom cancel')">Custom cancel</button>
-          <button type="button" class="btn" @click="custom('Custom escape')">Custom escape</button>
-          <button type="button" class="btn" @click="custom('Custom backdrop')">Custom backdrop</button>
-          <button type="button" class="btn" @click="custom('Custom programmatic')">Custom programmatic</button>
-          <button type="button" class="btn" @click="custom('Custom destroy')">Custom destroy</button>
-          <button type="button" class="btn" @click="active?.close()">Close active</button>
-          <button type="button" class="btn" @click="active?.destroy()">Destroy active</button>
-          <button type="button" class="btn" @click="closeSynchronously">Create and close synchronously</button>
-          <output aria-live="polite" data-ui-dialog-outcome>{{ result }}</output>
+        <main aria-label="Dialog Service close reasons" class="flex flex-wrap items-center gap-3 p-6">
+          <Button @click="open('Custom confirm')">Custom confirm</Button>
+          <Button @click="open('Custom cancel')">Custom cancel</Button>
+          <Button @click="open('Custom escape')">Custom escape</Button>
+          <Button @click="open('Custom backdrop')">Custom backdrop</Button>
+          <Button @click="open('Custom programmatic')">Custom programmatic</Button>
+          <Button @click="open('Custom destroy')">Custom destroy</Button>
+          <Button @click="active?.close()">Close active</Button>
+          <Button @click="active?.destroy()">Destroy active</Button>
+          <Button @click="synchronous">Create and close synchronously</Button>
+          <output aria-live="polite" data-ui-dialog-reason>{{ result }}</output>
         </main>
       </DialogHost>
     `,
   }),
 })
 
-OutcomesAndCloseReasons.test('proves API outcomes and structured close reasons', async ({ canvasElement }) => {
+CloseReasons.test('reports each public close reason exactly once', async ({ canvasElement }) => {
   const canvas = within(canvasElement)
-  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-outcome]')
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-reason]')
 
   if (!result)
-    throw new Error('Dialog outcome story did not render its output')
-
-  await userEvent.click(canvas.getByRole('button', { name: 'Run alert' }))
-  await userEvent.click(canvas.getByRole('button', { name: 'Acknowledge alert' }))
-  await waitFor(() => expect(result).toHaveTextContent('alert:void'))
-
-  await userEvent.click(canvas.getByRole('button', { name: 'Run confirm' }))
-  await userEvent.click(canvas.getByRole('button', { name: 'Decline choice' }))
-  await waitFor(() => expect(result).toHaveTextContent('confirm:false'))
-
-  await userEvent.click(canvas.getByRole('button', { name: 'Run confirm' }))
-  await waitFor(() => expect(canvas.getByRole('button', { name: 'Decline choice' })).toHaveFocus())
-  await userEvent.keyboard('{Enter}')
-  await waitFor(() => expect(result).toHaveTextContent('confirm:true'))
-
-  await userEvent.click(canvas.getByRole('button', { name: 'Run prompt' }))
-  const input = canvas.getByRole('textbox', { name: 'Project name' })
-  await userEvent.clear(input)
-  await userEvent.type(input, 'UI package{Enter}')
-  await waitFor(() => expect(result).toHaveTextContent('prompt:UI package'))
+    throw new Error('Dialog Service close reason story did not render its output')
 
   await userEvent.click(canvas.getByRole('button', { name: 'Custom confirm' }))
   await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
@@ -284,72 +448,41 @@ OutcomesAndCloseReasons.test('proves API outcomes and structured close reasons',
   await waitFor(() => expect(result).toHaveTextContent('synchronous:programmatic'))
 })
 
-export const ErrorsAndAsyncConfirmation = meta.story({
-  name: 'render/onConfirm 错误与 pending',
+export const ErrorHandling = meta.story({
+  name: '错误处理',
   render: () => ({
-    components: { DialogHost },
+    components: { Button, DialogHost },
     setup() {
-      const failure = ref('none')
-      const failureCalls = ref(0)
-      const result = ref('idle')
       const calls = ref(0)
-      const active = ref<DialogHandle>()
-      const settle = useMountedPromise()
-      let release: ((value: false) => void) | undefined
+      const failure = ref('none')
+      const result = ref('idle')
       const dialog = createDialogService({
         messages,
         onError: (cause) => {
-          failureCalls.value += 1
+          calls.value += 1
           failure.value = cause instanceof Error ? cause.message : String(cause)
         },
       })
 
       const renderError = () => {
+        calls.value = 0
         failure.value = 'none'
-        failureCalls.value = 0
+        result.value = 'idle'
         const handle = dialog.create({
           title: 'Render failure',
           content: () => {
             throw new Error('render failed')
           },
         })
+
         void handle.closed.catch((cause) => {
           result.value = cause instanceof Error ? `rejected:${cause.message}` : 'rejected'
         })
       }
-      const confirmError = () => {
-        failure.value = 'none'
-        failureCalls.value = 0
-        dialog.create({
-          title: 'Confirmation failure',
-          content: 'The Dialog remains open after the caller handler fails.',
-          onConfirm: () => {
-            throw new Error('confirm failed')
-          },
-        })
-      }
-      const pending = () => {
-        calls.value = 0
-        result.value = 'pending'
-        const handle = dialog.create({
-          title: 'Pending confirmation',
-          content: 'User close paths lock while the Promise is pending.',
-          confirmText: 'Start request',
-          onConfirm: () => {
-            calls.value += 1
-            return new Promise<false>((resolve) => {
-              release = resolve
-            })
-          },
-        })
-        active.value = handle
-        return settle(handle.closed, (outcome) => {
-          result.value = outcome.reason
-        })
-      }
       const emptyTitle = () => {
+        calls.value = 0
         failure.value = 'none'
-        failureCalls.value = 0
+        result.value = 'idle'
         const handle = dialog.create({
           title: () => null,
           content: 'This must never open without an accessible name.',
@@ -359,9 +492,10 @@ export const ErrorsAndAsyncConfirmation = meta.story({
           result.value = cause instanceof Error ? `rejected:${cause.message}` : 'rejected'
         })
       }
-      const emptyInputLabel = () => {
+      const emptyLabel = () => {
+        calls.value = 0
         failure.value = 'none'
-        failureCalls.value = 0
+        result.value = 'idle'
         void dialog.prompt({
           title: 'Empty input label',
           inputLabel: () => null,
@@ -369,48 +503,52 @@ export const ErrorsAndAsyncConfirmation = meta.story({
           result.value = cause instanceof Error ? `rejected:${cause.message}` : 'rejected'
         })
       }
-      const releaseRequest = () => release?.(false)
+      const confirmError = () => {
+        calls.value = 0
+        failure.value = 'none'
+        result.value = 'idle'
+        dialog.create({
+          title: 'Confirmation failure',
+          content: 'The Dialog remains open after the caller handler fails.',
+          onConfirm: () => {
+            throw new Error('confirm failed')
+          },
+        })
+      }
 
       return {
-        active,
         calls,
         confirmError,
         dialog,
-        emptyInputLabel,
+        emptyLabel,
         emptyTitle,
         failure,
-        failureCalls,
-        pending,
-        releaseRequest,
         renderError,
         result,
       }
     },
     template: `
       <DialogHost :service="dialog">
-        <main aria-label="Dialog service failures" class="flex flex-wrap gap-3 p-6">
-          <button type="button" class="btn" @click="renderError">Throw while rendering</button>
-          <button type="button" class="btn" @click="emptyTitle">Render an empty title</button>
-          <button type="button" class="btn" @click="emptyInputLabel">Render an empty input label</button>
-          <button type="button" class="btn" @click="confirmError">Throw while confirming</button>
-          <button type="button" class="btn" @click="pending">Open pending Dialog</button>
-          <button type="button" class="btn" @click="active?.close()">Programmatic close</button>
-          <button type="button" class="btn" @click="releaseRequest">Release request</button>
-          <output aria-live="polite" data-ui-dialog-error>{{ failure }}:{{ failureCalls }}</output>
-          <output aria-live="polite" data-ui-dialog-async>{{ result }}:{{ calls }}</output>
+        <main aria-label="Dialog Service errors" class="flex flex-wrap items-center gap-3 p-6">
+          <Button @click="renderError">Throw while rendering</Button>
+          <Button @click="emptyTitle">Render an empty title</Button>
+          <Button @click="emptyLabel">Render an empty input label</Button>
+          <Button @click="confirmError">Throw while confirming</Button>
+          <output aria-live="polite" data-ui-dialog-error>{{ failure }}:{{ calls }}</output>
+          <output aria-live="polite" data-ui-dialog-rejection>{{ result }}</output>
         </main>
       </DialogHost>
     `,
   }),
 })
 
-ErrorsAndAsyncConfirmation.test('proves render and confirmation errors plus pending protection', async ({ canvasElement }) => {
+ErrorHandling.test('reports render and confirmation failures through caller-owned outcomes', async ({ canvasElement }) => {
   const canvas = within(canvasElement)
   const failure = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-error]')
-  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-async]')
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-rejection]')
 
   if (!failure || !result)
-    throw new Error('Dialog failure story did not render its outputs')
+    throw new Error('Dialog Service error story did not render its outputs')
 
   await userEvent.click(canvas.getByRole('button', { name: 'Throw while rendering' }))
   await waitFor(() => expect(failure).toHaveTextContent('render failed:1'))
@@ -433,14 +571,69 @@ ErrorsAndAsyncConfirmation.test('proves render and confirmation errors plus pend
   ))
 
   await userEvent.click(canvas.getByRole('button', { name: 'Throw while confirming' }))
-  const failed = canvas.getByRole('dialog', { name: 'Confirmation failure' })
+  const dialog = canvas.getByRole('dialog', { name: 'Confirmation failure' })
   await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
   await waitFor(() => expect(failure).toHaveTextContent('confirm failed:1'))
-  await expect(failed).toHaveAttribute('open')
+  await expect(dialog).toHaveAttribute('open')
   await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }))
+})
+
+export const AsyncConfirmation = meta.story({
+  name: '异步确认与 pending',
+  render: () => ({
+    components: { Button, DialogHost },
+    setup() {
+      const active = ref<DialogHandle>()
+      const calls = ref(0)
+      const dialog = service()
+      const release = ref<(value: false) => void>()
+      const result = ref('idle')
+      const settle = useSettlement()
+
+      const open = () => {
+        calls.value = 0
+        result.value = 'pending'
+        const handle = dialog.create({
+          title: 'Pending confirmation',
+          content: 'User close paths lock while the Promise is pending.',
+          confirmText: 'Start request',
+          onConfirm: () => {
+            calls.value += 1
+            return new Promise<false>((resolve) => {
+              release.value = resolve
+            })
+          },
+        })
+        active.value = handle
+        return settle(handle.closed, (outcome) => {
+          result.value = outcome.reason
+        })
+      }
+
+      return { active, calls, dialog, open, release, result }
+    },
+    template: `
+      <DialogHost :service="dialog">
+        <main aria-label="Dialog Service pending confirmation" class="flex flex-wrap items-center gap-3 p-6">
+          <Button @click="open">Open pending Dialog</Button>
+          <Button @click="active?.close()">Programmatic close</Button>
+          <Button @click="release?.(false)">Release request</Button>
+          <output aria-live="polite" data-ui-dialog-async>{{ result }}:{{ calls }}</output>
+        </main>
+      </DialogHost>
+    `,
+  }),
+})
+
+AsyncConfirmation.test('locks user close paths while pending and settles once', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-async]')
+
+  if (!result)
+    throw new Error('Dialog Service pending story did not render its output')
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open pending Dialog' }))
-  const pending = canvas.getByRole('dialog', { name: 'Pending confirmation' })
+  const dialog = canvas.getByRole('dialog', { name: 'Pending confirmation' })
   const submit = canvas.getByRole('button', { name: 'Start request' })
   const cancel = canvas.getByRole('button', { name: 'Cancel' })
 
@@ -449,8 +642,8 @@ ErrorsAndAsyncConfirmation.test('proves render and confirmation errors plus pend
   await expect(cancel).toBeDisabled()
   await userEvent.keyboard('{Enter}')
   await userEvent.keyboard('{Escape}')
-  await userEvent.click(pending)
-  await expect(pending).toHaveAttribute('open')
+  await userEvent.click(dialog)
+  await expect(dialog).toHaveAttribute('open')
   await expect(result).toHaveTextContent('pending:1')
 
   await userEvent.click(canvas.getByRole('button', { name: 'Programmatic close' }))
@@ -458,16 +651,16 @@ ErrorsAndAsyncConfirmation.test('proves render and confirmation errors plus pend
   await userEvent.click(canvas.getByRole('button', { name: 'Release request' }))
 })
 
-export const PromptKeyboardAndValidation = meta.story({
-  name: 'Prompt 键盘与校验',
+export const PromptValidation = meta.story({
+  name: 'Prompt 必填校验',
   render: () => ({
-    components: { DialogHost },
+    components: { Button, DialogHost },
     setup() {
       const dialog = service()
       const result = ref('idle')
-      const settle = useMountedPromise()
-      let release: (() => void) | undefined
-      const text = () => settle(
+      const settle = useSettlement()
+
+      const open = () => settle(
         dialog.prompt({
           title: 'Required text',
           inputLabel: 'File name',
@@ -476,6 +669,45 @@ export const PromptKeyboardAndValidation = meta.story({
         }),
         value => result.value = `text:${value ?? 'null'}`,
       )
+
+      return { dialog, open, result }
+    },
+    template: `
+      <DialogHost :service="dialog">
+        <main aria-label="Dialog Service Prompt validation" class="flex items-center gap-3 p-6">
+          <Button @click="open">Open required Prompt</Button>
+          <output aria-live="polite" data-ui-dialog-prompt-validation>{{ result }}</output>
+        </main>
+      </DialogHost>
+    `,
+  }),
+})
+
+PromptValidation.test('announces a required error and submits the corrected value', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-prompt-validation]')
+
+  if (!result)
+    throw new Error('Dialog Service Prompt validation story did not render its output')
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Open required Prompt' }))
+  const input = canvas.getByRole('textbox', { name: 'File name' })
+  await userEvent.type(input, '{Enter}')
+  await expect(canvas.getByRole('alert')).toHaveTextContent('Enter a file name.')
+  await expect(input).toHaveAttribute('aria-invalid', 'true')
+  await userEvent.type(input, 'video.mp4{Enter}')
+  await waitFor(() => expect(result).toHaveTextContent('text:video.mp4'))
+})
+
+export const PromptKeyboard = meta.story({
+  name: 'Prompt 键盘路径',
+  render: () => ({
+    components: { Button, DialogHost },
+    setup() {
+      const dialog = service()
+      const result = ref('idle')
+      const settle = useSettlement()
+
       const multiline = () => settle(
         dialog.prompt({
           title: 'Multiline text',
@@ -493,50 +725,27 @@ export const PromptKeyboardAndValidation = meta.story({
         }),
         value => result.value = `disabled:${value ?? 'null'}`,
       )
-      const asyncPrompt = () => settle(
-        dialog.prompt({
-          title: 'Async Prompt snapshot',
-          inputLabel: 'Submitted value',
-          defaultValue: 'A',
-          onConfirm: () => new Promise<void>((resolve) => {
-            release = resolve
-          }),
-        }),
-        value => result.value = `snapshot:${value ?? 'null'}`,
-      )
-      const releasePrompt = () => release?.()
 
-      return { asyncPrompt, dialog, disabled, multiline, releasePrompt, result, text }
+      return { dialog, disabled, multiline, result }
     },
     template: `
       <DialogHost :service="dialog">
-        <main aria-label="Prompt behavior" class="flex flex-wrap gap-3 p-6">
-          <button type="button" class="btn" @click="text">Open required Prompt</button>
-          <button type="button" class="btn" @click="multiline">Open multiline Prompt</button>
-          <button type="button" class="btn" @click="disabled">Open Enter-disabled Prompt</button>
-          <button type="button" class="btn" @click="asyncPrompt">Open async Prompt</button>
-          <button type="button" class="btn" @click="releasePrompt">Release async Prompt</button>
-          <output aria-live="polite" data-ui-dialog-prompt>{{ result }}</output>
+        <main aria-label="Dialog Service Prompt keyboard" class="flex flex-wrap items-center gap-3 p-6">
+          <Button @click="multiline">Open multiline Prompt</Button>
+          <Button @click="disabled">Open Enter-disabled Prompt</Button>
+          <output aria-live="polite" data-ui-dialog-prompt-keyboard>{{ result }}</output>
         </main>
       </DialogHost>
     `,
   }),
 })
 
-PromptKeyboardAndValidation.test('proves Prompt keyboard paths, validation, and submitted snapshots', async ({ canvasElement }) => {
+PromptKeyboard.test('preserves multiline Enter and honors confirmOnEnter', async ({ canvasElement }) => {
   const canvas = within(canvasElement)
-  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-prompt]')
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-prompt-keyboard]')
 
   if (!result)
-    throw new Error('Prompt story did not render its output')
-
-  await userEvent.click(canvas.getByRole('button', { name: 'Open required Prompt' }))
-  const input = canvas.getByRole('textbox', { name: 'File name' })
-  await userEvent.type(input, '{Enter}')
-  await expect(canvas.getByRole('alert')).toHaveTextContent('Enter a file name.')
-  await expect(input).toHaveAttribute('aria-invalid', 'true')
-  await userEvent.type(input, 'video.mp4{Enter}')
-  await waitFor(() => expect(result).toHaveTextContent('text:video.mp4'))
+    throw new Error('Dialog Service Prompt keyboard story did not render its output')
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open multiline Prompt' }))
   const textarea = canvas.getByRole('textbox', { name: 'Notes' })
@@ -547,37 +756,79 @@ PromptKeyboardAndValidation.test('proves Prompt keyboard paths, validation, and 
   await expect(result).toHaveTextContent('line two')
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open Enter-disabled Prompt' }))
-  const disabled = canvas.getByRole('textbox', { name: 'Disabled value' })
-  await userEvent.type(disabled, 'stay open{Enter}')
+  const input = canvas.getByRole('textbox', { name: 'Disabled value' })
+  await userEvent.type(input, 'stay open{Enter}')
   await userEvent.keyboard('{Control>}{Enter}{/Control}')
   await expect(canvas.getByRole('dialog', { name: 'Enter-disabled text' })).toHaveAttribute('open')
   await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
   await waitFor(() => expect(result).toHaveTextContent('disabled:stay open'))
+})
 
-  await userEvent.click(canvas.getByRole('button', { name: 'Open required Prompt' }))
-  await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }))
-  await waitFor(() => expect(result).toHaveTextContent('text:null'))
+export const SubmittedSnapshot = meta.story({
+  name: 'Prompt 提交快照',
+  render: () => ({
+    components: { Button, DialogHost },
+    setup() {
+      const dialog = service()
+      const release = ref<() => void>()
+      const result = ref('idle')
+      const settle = useSettlement()
+
+      const open = () => settle(
+        dialog.prompt({
+          title: 'Async Prompt snapshot',
+          inputLabel: 'Submitted value',
+          defaultValue: 'A',
+          onConfirm: () => new Promise<void>((resolve) => {
+            release.value = resolve
+          }),
+        }),
+        value => result.value = `snapshot:${value ?? 'null'}`,
+      )
+
+      return { dialog, open, release, result }
+    },
+    template: `
+      <DialogHost :service="dialog">
+        <main aria-label="Dialog Service Prompt snapshot" class="flex flex-wrap items-center gap-3 p-6">
+          <Button @click="open">Open async Prompt</Button>
+          <Button @click="release?.()">Release async Prompt</Button>
+          <output aria-live="polite" data-ui-dialog-prompt-snapshot>{{ result }}</output>
+        </main>
+      </DialogHost>
+    `,
+  }),
+})
+
+SubmittedSnapshot.test('returns the submitted value captured before async confirmation', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-prompt-snapshot]')
+
+  if (!result)
+    throw new Error('Dialog Service Prompt snapshot story did not render its output')
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open async Prompt' }))
-  const submitted = canvas.getByRole('textbox', { name: 'Submitted value' })
-  await userEvent.click(canvas.getByRole('button', { name: 'Confirm' }))
-  await userEvent.clear(submitted)
-  await userEvent.type(submitted, 'B')
+  const input = canvas.getByRole('textbox', { name: 'Submitted value' })
+  const confirm = canvas.getByRole('button', { name: 'Confirm' })
+  await userEvent.click(confirm)
+  await expect(confirm).toHaveAttribute('aria-busy', 'true')
+  await userEvent.clear(input)
+  await userEvent.type(input, 'B')
   await userEvent.click(canvas.getByRole('button', { name: 'Release async Prompt' }))
   await waitFor(() => expect(result).toHaveTextContent('snapshot:A'))
 })
 
-export const StackAndCloseAll = meta.story({
-  name: 'Stack、焦点恢复与 closeAll LIFO',
+export const Stack = meta.story({
+  name: 'Stack 与焦点恢复',
   render: () => ({
-    components: { DialogHost },
+    components: { Button, DialogHost },
     setup() {
       const dialog = service()
-      const order = ref<string[]>([])
-      const settle = useMountedPromise()
+      const result = ref('idle')
+      const settle = useSettlement()
 
-      const nested = () => {
-        dialog.create({
+      const open = () => {
+        const handle = dialog.create({
           title: 'Parent Dialog',
           content: 'The parent remains open after nested feedback.',
           confirmText: 'Open nested feedback',
@@ -590,8 +841,59 @@ export const StackAndCloseAll = meta.story({
             return false as const
           },
         })
+
+        return settle(handle.closed, outcome => result.value = outcome.reason)
       }
-      const stack = () => {
+
+      return { dialog, open, result }
+    },
+    template: `
+      <DialogHost :service="dialog">
+        <main aria-label="Dialog Service Stack" class="flex items-center gap-3 p-6">
+          <Button @click="open">Open nested flow</Button>
+          <output aria-live="polite" data-ui-dialog-stack>{{ result }}</output>
+        </main>
+      </DialogHost>
+    `,
+  }),
+})
+
+Stack.test('keeps only the top Dialog interactive and restores parent focus', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+  const trigger = canvas.getByRole('button', { name: 'Open nested flow' })
+  const result = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-stack]')
+
+  if (!result)
+    throw new Error('Dialog Service Stack story did not render its output')
+
+  await userEvent.click(trigger)
+  const parent = canvas.getByRole('dialog', { name: 'Parent Dialog' })
+  const confirm = canvas.getByRole('button', { name: 'Open nested feedback' })
+  await userEvent.click(confirm)
+  const child = canvas.getByRole('dialog', { name: 'Nested feedback' })
+
+  await expect(confirm).toBeDisabled()
+  await expect(child).toHaveAttribute('open')
+  await userEvent.click(canvas.getByRole('button', { name: 'Return to parent' }))
+  await waitFor(() => expect(child).not.toHaveAttribute('open'))
+  await waitFor(() => expect(confirm).not.toBeDisabled())
+  await waitFor(() => expect(confirm).toHaveFocus())
+  await expect(parent).toHaveAttribute('open')
+  await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }))
+  await waitFor(() => expect(result).toHaveTextContent('cancel'))
+  await expect(trigger).toHaveFocus()
+})
+
+export const CloseAll = meta.story({
+  name: 'closeAll LIFO',
+  render: () => ({
+    components: { Button, DialogHost },
+    setup() {
+      const dialog = service()
+      const order = ref<string[]>([])
+      const settle = useSettlement()
+
+      const open = () => {
         order.value = []
         ;['first', 'second', 'third'].forEach((name) => {
           const handle = dialog.create({
@@ -604,14 +906,13 @@ export const StackAndCloseAll = meta.story({
         })
       }
 
-      return { dialog, nested, order, stack }
+      return { dialog, open, order }
     },
     template: `
       <DialogHost :service="dialog">
-        <main aria-label="Dialog service Stack" class="flex flex-wrap gap-3 p-6">
-          <button type="button" class="btn" @click="nested">Open nested flow</button>
-          <button type="button" class="btn" @click="stack">Open three Dialogs</button>
-          <button type="button" class="btn" @click="dialog.closeAll()">Close all Dialogs</button>
+        <main aria-label="Dialog Service closeAll" class="flex flex-wrap items-center gap-3 p-6">
+          <Button @click="open">Open three Dialogs</Button>
+          <Button @click="dialog.closeAll()">Close all Dialogs</Button>
           <output aria-live="polite" data-ui-dialog-order>{{ order.join(',') }}</output>
         </main>
       </DialogHost>
@@ -619,29 +920,14 @@ export const StackAndCloseAll = meta.story({
   }),
 })
 
-StackAndCloseAll.test('proves Stack focus restoration and closeAll LIFO', async ({ canvasElement }) => {
+CloseAll.test('closes the Stack in LIFO order and restores the trigger', async ({ canvasElement }) => {
   const canvas = within(canvasElement)
+  const trigger = canvas.getByRole('button', { name: 'Open three Dialogs' })
   const order = canvasElement.querySelector<HTMLOutputElement>('[data-ui-dialog-order]')
 
   if (!order)
-    throw new Error('Dialog Stack story did not render its order output')
+    throw new Error('Dialog Service closeAll story did not render its order output')
 
-  await userEvent.click(canvas.getByRole('button', { name: 'Open nested flow' }))
-  const parent = canvas.getByRole('dialog', { name: 'Parent Dialog' })
-  const parentConfirm = canvas.getByRole('button', { name: 'Open nested feedback' })
-  await userEvent.click(parentConfirm)
-  const child = canvas.getByRole('dialog', { name: 'Nested feedback' })
-
-  await expect(parentConfirm).toBeDisabled()
-  await expect(child).toHaveAttribute('open')
-  await userEvent.click(canvas.getByRole('button', { name: 'Return to parent' }))
-  await waitFor(() => expect(child).not.toHaveAttribute('open'))
-  await waitFor(() => expect(parentConfirm).not.toBeDisabled())
-  await waitFor(() => expect(parentConfirm).toHaveFocus())
-  await expect(parent).toHaveAttribute('open')
-  await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }))
-
-  const trigger = canvas.getByRole('button', { name: 'Open three Dialogs' })
   await userEvent.click(trigger)
   await waitFor(() => expect(canvas.getAllByRole('dialog')).toHaveLength(3))
   await userEvent.click(canvas.getByRole('button', { name: 'Close all Dialogs' }))
@@ -649,5 +935,5 @@ StackAndCloseAll.test('proves Stack focus restoration and closeAll LIFO', async 
     'third:close-all,second:close-all,first:close-all',
   ))
   await waitFor(() => expect(canvas.queryAllByRole('dialog')).toHaveLength(0))
-  await waitFor(() => expect(trigger).toHaveFocus())
+  await expect(trigger).toHaveFocus()
 })
