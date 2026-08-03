@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
-import { Button, Header, HeaderEnd, HeaderStart, Pill, Tooltip } from '@115master/ui'
+import { Button, Header, HeaderEnd, HeaderStart, Pill, SelectionHeader, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, ref, Transition, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -21,7 +21,6 @@ import {
   PageSizeOptions,
   Pagination,
   ResponsiveMenu,
-  SelectionHeader,
   Sider,
   SiderContent,
   SortOptions,
@@ -239,9 +238,18 @@ const Drive = defineComponent({
         return (
           <SelectionHeader
             count={store.selection.count}
+            countLabel="项"
+            exitLabel="退出多选"
             onExit={exitSelectMode}
+            selectAllLabel="全选"
             onInvert={invert}
+            invertLabel="反选"
             onSelectAll={selectAll}
+            v-slots={{
+              exitIcon: () => <Icon class="text-xl" name={I.CLOSE} />,
+              selectAllIcon: () => <Icon class="text-xl" name={I.SELECT_ALL} />,
+              invertIcon: () => <Icon class="text-xl" name={I.INVERT} />,
+            }}
           />
         )
       }

@@ -2,7 +2,7 @@ import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
 import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
-import { Button, Header, HeaderEnd, HeaderStart, Pill, Progress } from '@115master/ui'
+import { Button, Header, HeaderEnd, HeaderStart, Pill, Progress, SelectionHeader } from '@115master/ui'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
@@ -13,7 +13,6 @@ import {
   Layout,
   LoadingError,
   Main,
-  SelectionHeader,
   Sider,
   SiderContent,
   useToast,
@@ -207,9 +206,18 @@ const Tags = defineComponent({
         return (
           <SelectionHeader
             count={store.selectedCount}
+            countLabel="项"
+            exitLabel="退出多选"
             onExit={multi.exit}
+            selectAllLabel="全选"
             onSelectAll={multi.selectAll}
+            invertLabel="反选"
             onInvert={multi.invert}
+            v-slots={{
+              exitIcon: () => <Icon class="text-xl" name={I.CLOSE} />,
+              selectAllIcon: () => <Icon class="text-xl" name={I.SELECT_ALL} />,
+              invertIcon: () => <Icon class="text-xl" name={I.INVERT} />,
+            }}
           />
         )
       }

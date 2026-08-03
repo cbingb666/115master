@@ -324,6 +324,25 @@
       ]
     },
     {
+      "id": "ui-selectionheader--behavior",
+      "docs": "ui-selectionheader--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-selectionheader--behavior:invokes-the-configured-selection-actions"
+      ],
+      "ready": "[data-ui-selection-header-result]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-selection-header-result]",
+          "text": "idle"
+        }
+      ]
+    },
+    {
       "id": "ui-overlayhost--default",
       "docs": "ui-overlayhost--docs",
       "component": true,

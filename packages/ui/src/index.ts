@@ -71,6 +71,8 @@ export { Progress } from './components/Progress/Progress'
 export type { ProgressProps } from './components/Progress/Progress'
 export { scrollbar } from './components/Scrollbar/Scrollbar'
 export type { ScrollbarSize } from './components/Scrollbar/Scrollbar'
+export { SelectionHeader } from './components/SelectionHeader/SelectionHeader'
+export type { SelectionHeaderProps } from './components/SelectionHeader/SelectionHeader'
 export { Tooltip } from './components/Tooltip/Tooltip'
 export type {
   TooltipPlacement,

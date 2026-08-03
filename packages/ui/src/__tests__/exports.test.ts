@@ -15,6 +15,7 @@ it('imports the narrow runtime contract without browser globals', async () => {
     'OverlayHost',
     'Pill',
     'Progress',
+    'SelectionHeader',
     'Tooltip',
     'Watermark',
     'createDialogService',
