@@ -267,7 +267,7 @@
       ]
     },
     {
-      "id": "ui-pill--containers",
+      "id": "ui-pill--navigation",
       "docs": "ui-pill--docs",
       "component": true,
       "tags": [
@@ -275,57 +275,15 @@
         "test"
       ],
       "tests": [
-        "ui-pill--containers:proves-container-semantics"
+        "ui-pill--navigation:exposes-native-link-semantics-and-keyboard-focus"
       ],
-      "ready": ".ui-pill:has-text(\"已选 5 项\")",
-      "outcomes": []
-    },
-    {
-      "id": "ui-pill--link",
-      "docs": "ui-pill--docs",
-      "component": true,
-      "tags": [
-        "autodocs",
-        "test"
-      ],
-      "tests": [
-        "ui-pill--link:proves-navigation-semantics-and-focus"
-      ],
-      "ready": "a[href=\"#library\"]",
+      "ready": "a[href=\"#details\"]",
       "outcomes": [
         {
-          "selector": "a[href=\"#library\"]",
+          "selector": "a[href=\"#details\"]",
           "focused": false
         }
       ]
-    },
-    {
-      "id": "ui-pill--sizes",
-      "docs": "ui-pill--docs",
-      "component": true,
-      "tags": [
-        "autodocs",
-        "test"
-      ],
-      "tests": [
-        "ui-pill--sizes:proves-the-public-size-scale"
-      ],
-      "ready": ".ui-pill-xs",
-      "outcomes": []
-    },
-    {
-      "id": "ui-pill--variants",
-      "docs": "ui-pill--docs",
-      "component": true,
-      "tags": [
-        "autodocs",
-        "test"
-      ],
-      "tests": [
-        "ui-pill--variants:proves-plain-and-glass-variants"
-      ],
-      "ready": ".ui-pill:has-text(\"Plain\")",
-      "outcomes": []
     },
     {
       "id": "foundations-theme-token-and-glass--tracer",
