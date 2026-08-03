@@ -18,11 +18,11 @@ import {
   SiderContent,
   useToast,
 } from '@/components'
-import { useMultiSelect } from '@/hooks/useMultiSelect'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
 import TagFormContent from './TagFormContent'
 import TagItem from './TagItem'
+import { useTagSelection } from './useTagSelection'
 
 const { LabelColor } = Api.TagApi.Req
 
@@ -43,18 +43,7 @@ const Tags = defineComponent({
 
     /** 框选 / 点空白容器：列表可视区（不含 SelectionHeader，避免点头部按钮被误判为点空白） */
     const listRef = ref<HTMLElement>()
-    const multi = useMultiSelect<Tag>({
-      container: () => listRef.value,
-      list: () => store.filtered,
-      key: t => t.id,
-      selection: {
-        has: t => store.isSelected(t.id),
-        toggle: (t, on) => store.toggle(t.id, on),
-        clear: store.clearSelection,
-        selectAll: store.selectAll,
-      },
-      count: () => store.selectedCount,
-    })
+    const multi = useTagSelection(store, () => listRef.value)
 
     const emptyText = computed(() =>
       store.keyword ? '无匹配标签' : '暂无标签，点击右上角「新建标签」',
@@ -219,7 +208,7 @@ const Tags = defineComponent({
           <SelectionHeader
             count={store.selectedCount}
             onExit={multi.exit}
-            onSelectAll={() => store.selectAll()}
+            onSelectAll={multi.selectAll}
             onInvert={multi.invert}
           />
         )
@@ -284,7 +273,7 @@ const Tags = defineComponent({
                   selected={store.isSelected(tag.id)}
                   selectMode={multi.selectMode.value}
                   {...multi.itemProps(tag)}
-                  onToggle={on => store.toggle(tag.id, on)}
+                  onToggle={on => multi.set(tag, on)}
                   onEdit={() => openTagForm(tag)}
                   onDelete={() => deleteTag(tag)}
                 />

@@ -1,2 +1,3 @@
 export { default as FileList } from './FileList'
-export { useFileList, useFilePreview } from './useFileList'
+export { useFilePreview } from './useFileList'
+export { useFileSelection } from './useFileSelection'

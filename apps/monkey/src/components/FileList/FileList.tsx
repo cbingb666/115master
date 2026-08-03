@@ -1,7 +1,7 @@
 import type { Share } from '@115master/drive115'
 import type { Range } from '@tanstack/vue-virtual'
 import type { MaybeElement } from '@vueuse/core'
-import type { PropType, Ref, SlotsType, VNodeChild } from 'vue'
+import type { PropType, SlotsType, VNodeChild } from 'vue'
 import { Progress } from '@115master/ui'
 import { defaultRangeExtractor, useVirtualizer, useWindowVirtualizer } from '@tanstack/vue-virtual'
 import { breakpointsTailwind, unrefElement, useBreakpoints, useEventListener, useResizeObserver, useThrottleFn } from '@vueuse/core'
@@ -40,10 +40,6 @@ const FileList = defineComponent({
     viewType: {
       type: String as PropType<'card' | 'list'>,
       default: 'list',
-    },
-    containerRef: {
-      type: Object as PropType<Ref<HTMLElement | undefined>>,
-      default: undefined,
     },
     getScrollElement: {
       type: Function as PropType<() => HTMLElement | undefined>,
@@ -322,7 +318,6 @@ const FileList = defineComponent({
 
         {!props.error && !props.loading && !props.empty && (
           <div
-            ref={props.containerRef}
             aria-label="文件列表"
             class="relative min-h-full w-full focus-within:outline-none"
             data-file-list-total={props.items.length}

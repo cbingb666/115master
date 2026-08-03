@@ -27,12 +27,6 @@ function mockIntersectionObserver() {
   }
 }
 
-function pointer(type: string, button = 0, x = 20) {
-  const event = new MouseEvent(type, { bubbles: true, button, clientX: x, clientY: 20 })
-  Object.defineProperty(event, 'pointerType', { value: 'mouse' })
-  return event
-}
-
 function mountItem(options: {
   selected?: boolean
   selectMode?: boolean
@@ -136,45 +130,5 @@ describe('tagItem', () => {
     const color = item.querySelector<HTMLElement>('[data-color-slot]')!
     expect(color.classList).toContain('mr-3')
     expect(color.classList).toContain('size-4')
-  })
-
-  it('pc 端鼠标左键长按进入多选并吞掉随后的 click', async () => {
-    vi.useFakeTimers()
-    const toggle = vi.fn()
-    const click = vi.fn()
-    const root = mountItem({ onToggle: toggle, onClick: click })
-    await nextTick()
-
-    root.querySelector('li')!.dispatchEvent(pointer('pointerdown'))
-    await vi.advanceTimersByTimeAsync(200)
-    root.querySelector('li')!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-
-    expect(toggle).toHaveBeenCalledWith(true)
-    expect(click).not.toHaveBeenCalled()
-  })
-
-  it('鼠标右键长按不进入多选', async () => {
-    vi.useFakeTimers()
-    const toggle = vi.fn()
-    const root = mountItem({ onToggle: toggle })
-    await nextTick()
-
-    root.querySelector('li')!.dispatchEvent(pointer('pointerdown', 2))
-    await vi.advanceTimersByTimeAsync(300)
-
-    expect(toggle).not.toHaveBeenCalled()
-  })
-
-  it('达到框选阈值时取消长按计时', async () => {
-    vi.useFakeTimers()
-    const toggle = vi.fn()
-    const root = mountItem({ onToggle: toggle })
-    await nextTick()
-
-    root.querySelector('li')!.dispatchEvent(pointer('pointerdown'))
-    document.dispatchEvent(pointer('pointermove', 0, 30))
-    await vi.advanceTimersByTimeAsync(300)
-
-    expect(toggle).not.toHaveBeenCalled()
   })
 })

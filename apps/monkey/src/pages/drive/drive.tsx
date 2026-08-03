@@ -1,7 +1,7 @@
 import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Button, Header, HeaderEnd, HeaderStart, Pill, Tooltip } from '@115master/ui'
-import { breakpointsTailwind, useBreakpoints, useEventListener, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
+import { breakpointsTailwind, useBreakpoints, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, ref, Transition, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppDialog } from '@/app/dialog'
@@ -25,8 +25,8 @@ import {
   Sider,
   SiderContent,
   SortOptions,
-  useFileList,
   useFilePreview,
+  useFileSelection,
 } from '@/components'
 import { DndMonitor } from '@/components/Dnd'
 import { useDriveAction } from '@/hooks/useDriveAction'
@@ -192,16 +192,22 @@ const Drive = defineComponent({
       })
     }
 
-    const { containerRef, selectMode, exitSelectMode, contextmenuShow, contextmenuPosition, itemProps } = useFileList({
-      get pathSelect() { return false },
-      get listData() { return store.data?.data ?? [] },
-      get checkeds() { return store.selection.checked },
-      onChecked: store.selection.toggle,
-      onCheckedClear: store.selection.clear,
-      onOpen: openItem,
+    const {
+      selectMode,
+      exitSelectMode,
+      selectAll,
+      invert,
+      contextmenuShow,
+      contextmenuPosition,
+      itemProps,
+    } = useFileSelection({
+      get items() { return store.data?.data ?? [] },
+      get selected() { return store.selection.checked },
+      set: store.selection.toggle,
+      clear: store.selection.clear,
+      onActivate: openItem,
       onDragMove: handleDragMove,
-      marqueeContainer: () => mainRef.value?.el,
-      marqueeScrollContainer: () => document.documentElement,
+      container: () => mainRef.value?.el,
     })
 
     const positionKey = computed(() => [
@@ -234,8 +240,8 @@ const Drive = defineComponent({
           <SelectionHeader
             count={store.selection.count}
             onExit={exitSelectMode}
-            onInvert={() => store.selection.invert(store.data?.data ?? [])}
-            onSelectAll={() => store.selection.selectAll(store.data?.data ?? [])}
+            onInvert={invert}
+            onSelectAll={selectAll}
           />
         )
       }
@@ -345,7 +351,6 @@ const Drive = defineComponent({
             data-[view-type=card]:px-5!
           "
           items={store.data?.data ?? []}
-          containerRef={containerRef}
           positionKey={positionKey.value}
           viewType={viewType.value}
           loading={store.loading}
@@ -465,23 +470,6 @@ const Drive = defineComponent({
 
     // cid 变化时退出选择模式（清空选中 + 复位 Shift 锚点）
     watch(() => store.nav.cid, () => {
-      exitSelectMode()
-    })
-
-    /** 点列表外空白退出选择模式；框选拖拽位移大时不退出（否则框选松开会清空刚选中的项） */
-    let downX = 0
-    let downY = 0
-    useEventListener(() => containerRef.value, 'pointerdown', (e: PointerEvent) => {
-      downX = e.clientX
-      downY = e.clientY
-    })
-    useEventListener(() => containerRef.value, 'pointerup', (e: PointerEvent) => {
-      if (!selectMode.value)
-        return
-      if (Math.hypot(e.clientX - downX, e.clientY - downY) > 5)
-        return
-      if ((e.target as HTMLElement).closest('[data-selection-key]'))
-        return
       exitSelectMode()
     })
 

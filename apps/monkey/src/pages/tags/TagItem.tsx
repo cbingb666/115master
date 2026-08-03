@@ -3,7 +3,6 @@ import type { Tag } from '@/store/tagList'
 import { Api } from '@115master/drive115'
 import { Button } from '@115master/ui'
 import { defineComponent, ref } from 'vue'
-import { useLongPress } from '@/hooks/useLongPress'
 import { useViewportVisibility } from '@/hooks/useViewportVisibility'
 import { I, Icon } from '@/icons'
 
@@ -48,22 +47,6 @@ const TagItem = defineComponent({
   setup(props) {
     const itemRef = ref<HTMLElement>()
     const inViewport = useViewportVisibility(itemRef)
-    const fired = useLongPress(itemRef, {
-      disabled: e => props.selectMode || Boolean((e.target as HTMLElement).closest('button, input, label')),
-      threshold: 200,
-      onTrigger: () => {
-        if (!props.selected)
-          props.onToggle(true)
-      },
-    })
-
-    function click(e: MouseEvent) {
-      if (fired.value) {
-        fired.value = false
-        return
-      }
-      props.onClick(e)
-    }
 
     return () => {
       const blank = props.tag.color === LabelColor.Blank
@@ -89,7 +72,7 @@ const TagItem = defineComponent({
           data-checked={props.selected}
           data-in-viewport={inViewport.value}
           data-select-mode={props.selectMode}
-          onClick={click}
+          onClick={props.onClick}
           onContextmenu={props.onContextmenu}
         >
           <span

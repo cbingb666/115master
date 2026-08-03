@@ -4,8 +4,6 @@ import type { PropType } from 'vue'
 import type { FileDndSourceBindings, FileDndTargetBindings } from '../FileDnd'
 import { unrefElement } from '@vueuse/core'
 import { defineComponent, withModifiers } from 'vue'
-import { useContextmenu } from '@/hooks/useContextmenu'
-import { useLongPress } from '@/hooks/useLongPress'
 import { useViewportVisibility } from '@/hooks/useViewportVisibility'
 import { getFilesItemId } from '@/utils/filesItem'
 import { FileDndSource, FileDndTarget } from '../FileDnd'
@@ -52,15 +50,11 @@ const FileItem = defineComponent({
       default: false,
     },
     onClick: {
-      type: Function as PropType<(data: Share.Entity.FilesItem) => void>,
+      type: Function as PropType<(event: MouseEvent) => void>,
       default: () => {},
     },
     onChecked: {
       type: Function as PropType<(checked: boolean) => void>,
-      default: () => {},
-    },
-    onRadio: {
-      type: Function as PropType<() => void>,
       default: () => {},
     },
     /** 拖拽激活时惰性求值被拖项（自动勾选当前项后返回全集） */
@@ -117,45 +111,13 @@ const FileItem = defineComponent({
     })
     const inViewport = useViewportVisibility(itemRef)
 
-    /** 长按：200ms 选中该项；多选态交给点击与拖拽处理。 */
-    const longPressFired = useLongPress(itemRef, {
-      disabled: () => props.pathSelect || props.selectMode,
-      moveTolerance: e => e.pointerType === 'mouse' ? 6 : 10,
-      threshold: 200,
-      onTrigger: () => {
-        if (!props.checked)
-          props.onChecked(true)
-      },
-    })
-
-    function handleClick(e: Event) {
-      // 长按刚触发（进入选择模式），吞掉随后合成的 click，避免又触发单击打开
-      if (longPressFired.value) {
-        longPressFired.value = false
-        return
-      }
-      // 路径选择模式
-      if (props.pathSelect) {
-        props.onClick?.(props.data)
-        return
-      }
-
-      // 非信任点击（自动化点击），直接打开
-      if (!e.isTrusted) {
-        open()
-        return
-      }
-
-      props.onClick?.(props.data)
+    function handleClick(event: Event) {
+      props.onClick(event as MouseEvent)
     }
 
     function handleMouseDown(e: MouseEvent) {
       e.stopPropagation()
     }
-
-    useContextmenu(itemRef, (e) => {
-      props.onContextmenu?.(e)
-    })
 
     /** 触摸仅在多选态启用；路径选择模式保持禁用。 */
     function disabled(event: PointerEvent) {
@@ -216,6 +178,7 @@ const FileItem = defineComponent({
             aria-posinset={props.index + 1}
             aria-setsize={props.setsize || undefined}
             role="listitem"
+            onContextmenu={event => props.onContextmenu(event)}
           >
             {/* 复选框 */}
             <FileItemCheckbox

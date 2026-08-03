@@ -73,12 +73,6 @@ function mockIntersectionObserver() {
   }
 }
 
-function pointer(type: string, pointerType = 'touch', x = 20) {
-  const event = new MouseEvent(type, { bubbles: true, clientX: x, clientY: 20 })
-  Object.defineProperty(event, 'pointerType', { value: pointerType })
-  return event
-}
-
 function mountItem(options: {
   checked?: boolean
   dragPayload?: () => Share.Entity.FilesItem[]
@@ -285,75 +279,5 @@ describe('fileItem', () => {
 
     expect(checkbox.classList).not.toContain('group-data-[view-type=card]:bg-white/85')
     expect(checkbox.classList).toContain('checked:bg-primary')
-  })
-
-  it('跨 realm 的移动端文件项长按会进入多选', async () => {
-    vi.useFakeTimers()
-    const frame = document.createElement('iframe')
-    document.body.appendChild(frame)
-    vi.stubGlobal('HTMLElement', (frame.contentWindow as Window & typeof globalThis).HTMLElement)
-    const checked = vi.fn()
-    const root = mountItem({ onChecked: checked })
-    await nextTick()
-
-    root.querySelector('#thumbnail')!.dispatchEvent(pointer('pointerdown'))
-    await vi.advanceTimersByTimeAsync(199)
-    expect(checked).not.toHaveBeenCalled()
-
-    await vi.advanceTimersByTimeAsync(1)
-
-    expect(checked).toHaveBeenCalledWith(true)
-  })
-
-  it('pc 端鼠标左键长按会进入多选', async () => {
-    vi.useFakeTimers()
-    const checked = vi.fn()
-    const root = mountItem({ onChecked: checked })
-    await nextTick()
-
-    root.querySelector('#thumbnail')!.dispatchEvent(pointer('pointerdown', 'mouse'))
-    await vi.advanceTimersByTimeAsync(200)
-
-    expect(checked).toHaveBeenCalledWith(true)
-  })
-
-  it('pc 端达到拖拽阈值时取消长按计时', async () => {
-    vi.useFakeTimers()
-    const checked = vi.fn()
-    const payload = vi.fn(() => [])
-    const root = mountItem({ dragPayload: payload, onChecked: checked })
-    await nextTick()
-
-    root.querySelector('#thumbnail')!.dispatchEvent(pointer('pointerdown', 'mouse'))
-    document.dispatchEvent(pointer('pointermove', 'mouse', 26))
-    await vi.advanceTimersByTimeAsync(300)
-
-    expect(payload).toHaveBeenCalledOnce()
-    expect(checked).not.toHaveBeenCalled()
-  })
-
-  it('多选态不再启动长按计时器', async () => {
-    vi.useFakeTimers()
-    const checked = vi.fn()
-    const root = mountItem({ onChecked: checked, selectMode: true })
-    await nextTick()
-
-    root.querySelector('#thumbnail')!.dispatchEvent(pointer('pointerdown'))
-    await vi.advanceTimersByTimeAsync(500)
-
-    expect(checked).not.toHaveBeenCalled()
-  })
-
-  it('触摸位移达到 10px 时取消长按，避免与拖拽边界重叠', async () => {
-    vi.useFakeTimers()
-    const checked = vi.fn()
-    const root = mountItem({ onChecked: checked })
-    await nextTick()
-
-    root.querySelector('#thumbnail')!.dispatchEvent(pointer('pointerdown'))
-    document.dispatchEvent(pointer('pointermove', 'touch', 30))
-    await vi.advanceTimersByTimeAsync(500)
-
-    expect(checked).not.toHaveBeenCalled()
   })
 })
