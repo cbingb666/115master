@@ -229,44 +229,6 @@
       ]
     },
     {
-      "id": "ui-tooltip--interaction",
-      "docs": "ui-tooltip--docs",
-      "component": true,
-      "tags": [
-        "autodocs",
-        "test"
-      ],
-      "tests": [
-        "ui-tooltip--interaction:proves-pointer-keyboard-and-aria-behavior"
-      ],
-      "ready": "button:has-text(\"说明触发器\")",
-      "outcomes": [
-        {
-          "selector": "[role=\"tooltip\"]",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "id": "ui-tooltip--content-slots-and-empty-content",
-      "docs": "ui-tooltip--docs",
-      "component": true,
-      "tags": [
-        "autodocs",
-        "test"
-      ],
-      "tests": [
-        "ui-tooltip--content-slots-and-empty-content:proves-slot-and-empty-content-behavior"
-      ],
-      "ready": "button:text-is(\"slot 内容\")",
-      "outcomes": [
-        {
-          "selector": "[role=\"tooltip\"]",
-          "count": 0
-        }
-      ]
-    },
-    {
       "id": "ui-tooltip--placements",
       "docs": "ui-tooltip--docs",
       "component": true,
@@ -275,9 +237,9 @@
         "test"
       ],
       "tests": [
-        "ui-tooltip--placements:proves-the-four-preferred-placements"
+        "ui-tooltip--placements:uses-each-public-preferred-placement"
       ],
-      "ready": "button:has-text(\"top\")",
+      "ready": "main[aria-label=\"Tooltip 首选方向\"]",
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
@@ -286,7 +248,7 @@
       ]
     },
     {
-      "id": "ui-tooltip--edge-and-scroll",
+      "id": "ui-tooltip--content",
       "docs": "ui-tooltip--docs",
       "component": true,
       "tags": [
@@ -294,9 +256,47 @@
         "test"
       ],
       "tests": [
-        "ui-tooltip--edge-and-scroll:proves-edge-collision-and-scroll-tracking"
+        "ui-tooltip--content:renders-slot-content-and-omits-empty-descriptions"
       ],
-      "ready": "button:has-text(\"边缘触发器\")",
+      "ready": "main[aria-label=\"Tooltip 内容\"]",
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-tooltip--positioning",
+      "docs": "ui-tooltip--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-tooltip--positioning:flips-away-from-the-viewport-edge"
+      ],
+      "ready": "main[aria-label=\"Tooltip 视口避让\"]",
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-tooltip--scroll-tracking",
+      "docs": "ui-tooltip--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-tooltip--scroll-tracking:tracks-its-anchor-while-the-container-scrolls"
+      ],
+      "ready": "main[aria-label=\"Tooltip 滚动跟随\"]",
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
@@ -317,9 +317,28 @@
         "test"
       ],
       "tests": [
-        "ui-tooltip--overlay-targets:proves-overlay-host-and-target-ownership"
+        "ui-tooltip--overlay-targets:resolves-hosted-explicit-and-body-fallback-targets"
       ],
-      "ready": "button:has-text(\"Host 触发器\")",
+      "ready": "main[aria-label=\"Tooltip 浮层目标\"]",
+      "outcomes": [
+        {
+          "selector": "[role=\"tooltip\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "id": "ui-tooltip--interaction",
+      "docs": "ui-tooltip--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-tooltip--interaction:supports-delayed-pointer-and-keyboard-accessible-disclosure"
+      ],
+      "ready": "main[aria-label=\"Tooltip 交互\"]",
       "outcomes": [
         {
           "selector": "[role=\"tooltip\"]",
