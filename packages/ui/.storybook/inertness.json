@@ -432,6 +432,24 @@
       ]
     },
     {
+      "id": "foundations-token--layering-scale",
+      "docs": "foundations-token--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "foundations-token--layering-scale:proves-token-utility-pairs-and-semantic-stacking-order"
+      ],
+      "ready": "[data-ui-token=\"watermark\"] [data-ui-token-value]:not(:empty)",
+      "outcomes": [
+        {
+          "selector": "[data-ui-token-value]:not(:empty)",
+          "count": 16
+        }
+      ]
+    },
+    {
       "id": "foundations-theme-token-and-glass--tracer",
       "docs": "foundations-theme-token-and-glass--docs",
       "tags": [
