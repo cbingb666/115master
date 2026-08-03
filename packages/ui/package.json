@@ -17,14 +17,14 @@
     "url": "https://github.com/cbingb666/115master/issues"
   },
   "sideEffects": [
-    "./dist/styles.css"
+    "./dist/styles/index.css"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles/index.css"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -1,7 +1,7 @@
 import type { PillSize, PillVariant } from '@115master/ui'
 import { Pill } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
-import preview from '../../.storybook/preview'
+import preview from '../../../.storybook/preview'
 
 const variants = [
   'plain',

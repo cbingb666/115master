@@ -6,22 +6,22 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig } from 'vite'
 
-const root = resolve(__dirname, 'src/styles')
+const root = resolve(__dirname, 'src')
 const assets = [
-  ['index.css', 'styles.css'],
-  ['themes.css', 'themes.css'],
-  ['tokens.css', 'tokens.css'],
-  ['glass.css', 'glass.css'],
-  ['components.css', 'components.css'],
-  ['button.css', 'button.css'],
-  ['dialog.css', 'dialog.css'],
-  ['drawer.css', 'drawer.css'],
-  ['header.css', 'header.css'],
-  ['navigation-stack.css', 'navigation-stack.css'],
-  ['pill.css', 'pill.css'],
-  ['scrollbar.css', 'scrollbar.css'],
-  ['watermark.css', 'watermark.css'],
-  ['../components/Tooltip/Tooltip.css', 'tooltip.css'],
+  ['styles/index.css', 'styles/index.css'],
+  ['styles/themes.css', 'styles/themes.css'],
+  ['styles/tokens.css', 'styles/tokens.css'],
+  ['styles/glass.css', 'styles/glass.css'],
+  ['styles/drawer.css', 'styles/drawer.css'],
+  ['styles/header.css', 'styles/header.css'],
+  ['components/index.css', 'components/index.css'],
+  ['components/Button/Button.css', 'components/Button/Button.css'],
+  ['components/Dialog/Dialog.css', 'components/Dialog/Dialog.css'],
+  ['components/NavigationStack/NavigationStack.css', 'components/NavigationStack/NavigationStack.css'],
+  ['components/Pill/Pill.css', 'components/Pill/Pill.css'],
+  ['components/Scrollbar/Scrollbar.css', 'components/Scrollbar/Scrollbar.css'],
+  ['components/Tooltip/Tooltip.css', 'components/Tooltip/Tooltip.css'],
+  ['components/Watermark/Watermark.css', 'components/Watermark/Watermark.css'],
 ] as const
 
 function styles(): Plugin {

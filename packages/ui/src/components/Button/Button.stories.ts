@@ -8,7 +8,7 @@ import type {
 import { Button } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
 import { ref } from 'vue'
-import preview from '../../.storybook/preview'
+import preview from '../../../.storybook/preview'
 
 const colors = [
   'default',

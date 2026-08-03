@@ -2,7 +2,9 @@
 @import './themes.css';
 @import './tokens.css';
 @import './glass.css';
-@import './components.css';
+@import './drawer.css';
+@import './header.css';
+@import '../components/index.css';
 
-/* Scan the distributed ESM modules for UI-owned utility classes. */
-@source "./";
+/* Scan the package modules for UI-owned utility classes. */
+@source "../";

@@ -1,7 +1,7 @@
 import { expect, waitFor, within } from 'storybook/test'
 import { onMounted, ref } from 'vue'
-import preview from '../../.storybook/preview'
-import './token.css'
+import preview from '../../../.storybook/preview'
+import './Token.css'
 
 const groups = [
   {

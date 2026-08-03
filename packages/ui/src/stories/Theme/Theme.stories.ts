@@ -1,7 +1,7 @@
 import { expect, within } from 'storybook/test'
 import { computed } from 'vue'
-import preview from '../../.storybook/preview'
-import './theme.css'
+import preview from '../../../.storybook/preview'
+import './Theme.css'
 
 const colors = [
   {

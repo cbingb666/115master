@@ -1,7 +1,7 @@
 import { Button, Dialog, Drawer, NavigationStack } from '@115master/ui'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { computed, ref } from 'vue'
-import preview from '../../.storybook/preview'
+import preview from '../../../.storybook/preview'
 
 const meta = preview.meta({
   title: 'UI/NavigationStack',

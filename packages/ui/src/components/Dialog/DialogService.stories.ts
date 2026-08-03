@@ -2,7 +2,7 @@ import type { DialogHandle, DialogServiceMessages } from '@115master/ui'
 import { Button, createDialogService, DialogHost, useDialog } from '@115master/ui'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { defineComponent, h, onBeforeUnmount, ref } from 'vue'
-import preview from '../../.storybook/preview'
+import preview from '../../../.storybook/preview'
 
 const messages = {
   confirm: 'Confirm',

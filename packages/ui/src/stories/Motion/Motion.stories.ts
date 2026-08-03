@@ -1,8 +1,8 @@
 import { Button } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
 import { ref } from 'vue'
-import preview from '../../.storybook/preview'
-import './motion.css'
+import preview from '../../../.storybook/preview'
+import './Motion.css'
 
 const motions = [
   {

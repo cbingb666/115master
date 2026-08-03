@@ -1,6 +1,6 @@
 import type { ScrollbarSize } from '@115master/ui'
 import { scrollbar } from '@115master/ui'
-import preview from '../../.storybook/preview'
+import preview from '../../../.storybook/preview'
 
 const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const satisfies readonly ScrollbarSize[]
 

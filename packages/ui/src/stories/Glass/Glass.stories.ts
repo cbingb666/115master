@@ -1,8 +1,8 @@
 import { Button, Pill } from '@115master/ui'
 import { expect, within } from 'storybook/test'
-import preview from '../../.storybook/preview'
-import './foundation.css'
-import './glass-story.css'
+import preview from '../../../.storybook/preview'
+import './Glass.css'
+import './GlassLayout.css'
 
 const meta = preview.meta({
   title: 'Foundations/Glass',
