@@ -55,6 +55,7 @@ const Drive = defineComponent({
     const route = useRoute()
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
     const isSearch = computed(() => store.nav.area === 'search')
+    const paginated = computed(() => store.mode === 'pagination')
 
     const actionHandlers = {
       newFolder: async () => {
@@ -209,7 +210,7 @@ const Drive = defineComponent({
     const positionKey = computed(() => [
       store.nav.area || 'all',
       store.nav.cid || '0',
-      store.query.page,
+      paginated.value ? store.query.page : 'infinite',
       store.query.size,
       store.query.keyword,
       store.query.suffix,
@@ -217,6 +218,7 @@ const Drive = defineComponent({
       store.order ?? '',
       store.asc ?? '',
       store.fc_mix ?? '',
+      store.mode,
     ].join(':'))
 
     /** 拖拽移动：乐观退出多选，避免等待 API 期间多选头部闪现 */
@@ -265,15 +267,17 @@ const Drive = defineComponent({
               </Button>
             </Tooltip>
             {isSearch.value
-              ? <FilePageSizeSelector {...page} />
+              ? paginated.value && <FilePageSizeSelector {...page} />
               : (
                   <>
                     <div class="hidden @[480px]:inline-flex">
                       <FileNewFolderButton onClick={actionHandlers.newFolder} />
                     </div>
-                    <div class="hidden @[480px]:inline-flex">
-                      <FilePageSizeSelector {...page} />
-                    </div>
+                    {paginated.value && (
+                      <div class="hidden @[480px]:inline-flex">
+                        <FilePageSizeSelector {...page} />
+                      </div>
+                    )}
                     <div class="hidden @[480px]:inline-flex">
                       <FileSortSelector {...sorter} onSort={handleSort} />
                     </div>
@@ -311,17 +315,19 @@ const Drive = defineComponent({
                             </ul>
                           </details>
                         </li>
-                        <li>
-                          <details>
-                            <summary>
-                              <Icon class="text-lg" name={I.DOCUMENT} />
-                              <span class="ml-2">每页</span>
-                            </summary>
-                            <ul>
-                              <PageSizeOptions {...page} />
-                            </ul>
-                          </details>
-                        </li>
+                        {paginated.value && (
+                          <li>
+                            <details>
+                              <summary>
+                                <Icon class="text-lg" name={I.DOCUMENT} />
+                                <span class="ml-2">每页</span>
+                              </summary>
+                              <ul>
+                                <PageSizeOptions {...page} />
+                              </ul>
+                            </details>
+                          </li>
+                        )}
                       </>
                     ),
                   }}
@@ -346,8 +352,13 @@ const Drive = defineComponent({
           positionKey={positionKey.value}
           viewType={viewType.value}
           loading={store.loading}
+          infinite={!paginated.value}
+          hasMore={store.hasMore}
+          loadingMore={store.loadingMore}
+          loadMoreError={store.moreError}
           error={store.error ?? undefined}
           empty={!store.loading && store.total === 0}
+          onLoadMore={store.loadMore}
         >
           {{
             item: ({ item, index }: { item: Share.Entity.FilesItem, index: number }) => (
@@ -381,7 +392,7 @@ const Drive = defineComponent({
     const bottomMode = computed<'actions' | 'pagination' | null>(() => {
       if (selectMode.value && store.selection.count > 0)
         return 'actions'
-      if (!store.loading && store.pageCount > 1)
+      if (paginated.value && !store.loading && store.pageCount > 1)
         return 'pagination'
       return null
     })

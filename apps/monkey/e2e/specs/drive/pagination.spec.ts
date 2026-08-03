@@ -61,4 +61,31 @@ test.describe('分页', () => {
 
     expect(errors).toEqual([])
   })
+
+  test('偏好设置切换为滚动无限加载：逐页追加并隐藏分页器', async ({ page }) => {
+    const errors = watch(page)
+    const reqs = record(page, FILES_RE)
+    await boot(page, { storage: SMALL })
+
+    await page.locator('button[title="偏好设置"]:visible').click()
+    const dialog = page.getByRole('dialog', { name: '偏好设置' })
+    await dialog.getByRole('button', { name: '文件列表' }).click()
+    await dialog.getByLabel('文件列表加载方式').selectOption('infinite')
+
+    expect(await page.evaluate(() => localStorage.getItem('115Master_drive_list_load_mode'))).toBe('infinite')
+    await expect(page.getByRole('list', { name: '文件列表' })).toHaveAttribute('data-file-list-total', '30')
+    await expect(page.getByRole('button', { name: '下一页' })).toBeHidden()
+    await page.getByRole('button', { name: '关闭偏好设置' }).click()
+
+    await page.evaluate(() => window.scrollTo(0, document.scrollingElement!.scrollHeight))
+    await expect.poll(() => reqs.some(r =>
+      r.url.searchParams.get('offset') === '30' && r.url.searchParams.get('limit') === '30',
+    )).toBe(true)
+    await expect(page.getByRole('list', { name: '文件列表' })).toHaveAttribute('data-file-list-total', '43')
+    await page.evaluate(() => window.scrollTo(0, document.scrollingElement!.scrollHeight))
+    await expect(row(page, '说明文档.pdf')).toBeVisible()
+    await expect(page.getByText('已加载全部 43 项')).toBeVisible()
+
+    expect(errors).toEqual([])
+  })
 })

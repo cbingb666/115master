@@ -57,6 +57,26 @@ const FileList = defineComponent({
       type: Boolean,
       default: false,
     },
+    infinite: {
+      type: Boolean,
+      default: false,
+    },
+    hasMore: {
+      type: Boolean,
+      default: false,
+    },
+    loadingMore: {
+      type: Boolean,
+      default: false,
+    },
+    loadMoreError: {
+      type: Object as PropType<Error | string | null>,
+      default: null,
+    },
+    onLoadMore: {
+      type: Function as PropType<() => void | Promise<unknown>>,
+      default: () => {},
+    },
     error: {
       type: Object as PropType<Error | string | null>,
       default: null,
@@ -76,6 +96,7 @@ const FileList = defineComponent({
   }>,
   setup: (props, { slots }) => {
     const track = ref<HTMLElement>()
+    const sentinel = ref<HTMLElement>()
     const margin = shallowRef(0)
     const focus = shallowRef<number>()
     const pending = shallowRef('')
@@ -226,7 +247,19 @@ const FileList = defineComponent({
       void restore(props.positionKey)
     }, { flush: 'post' })
 
-    onMounted(() => void nextTick(updateMargin))
+    function checkMore() {
+      if (!props.infinite || !props.hasMore || props.loading || props.loadingMore || props.loadMoreError || !sentinel.value)
+        return
+      const scroll = props.getScrollElement?.()
+      const bottom = scroll?.getBoundingClientRect().bottom ?? window.innerHeight
+      if (sentinel.value.getBoundingClientRect().top <= bottom + 480)
+        void props.onLoadMore()
+    }
+
+    onMounted(() => void nextTick(() => {
+      updateMargin()
+      checkMore()
+    }))
     onActivated(() => {
       pending.value = props.positionKey
       void restore(props.positionKey)
@@ -241,12 +274,18 @@ const FileList = defineComponent({
     const handleScroll = useThrottleFn(() => {
       if (!props.loading && !restoring)
         save()
+      checkMore()
     }, 50)
     useEventListener(window, 'scroll', () => {
       if (!props.getScrollElement)
         handleScroll()
     }, { passive: true })
     useEventListener(() => props.getScrollElement?.(), 'scroll', handleScroll, { passive: true })
+    watch(
+      [() => props.items.length, () => props.loadingMore, () => props.hasMore, () => props.infinite],
+      () => void nextTick(checkMore),
+      { flush: 'post' },
+    )
 
     function handleFocusin(event: FocusEvent) {
       const item = (event.target as HTMLElement).closest<HTMLElement>('[data-file-list-index]')
@@ -320,6 +359,32 @@ const FileList = defineComponent({
               ))}
             </div>
             {slots.overlay?.()}
+          </div>
+        )}
+
+        {!props.error && !props.loading && !props.empty && props.infinite && (
+          <div
+            ref={sentinel}
+            aria-live="polite"
+            class="text-base-content/50 flex h-16 items-center justify-center text-xs"
+            data-file-list-sentinel
+          >
+            {props.loadingMore && (
+              <span class="flex items-center gap-2">
+                <span class="loading loading-spinner loading-sm" aria-hidden="true" />
+                正在加载更多
+              </span>
+            )}
+            {props.loadMoreError && (
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                onClick={() => props.onLoadMore()}
+              >
+                加载失败，点击重试
+              </button>
+            )}
+            {!props.hasMore && !props.loadingMore && !props.loadMoreError && `已加载全部 ${props.items.length} 项`}
           </div>
         )}
       </div>

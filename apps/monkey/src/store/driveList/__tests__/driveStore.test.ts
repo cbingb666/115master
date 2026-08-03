@@ -6,6 +6,11 @@ import { ref } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
 import { pageCache, useDriveStore } from '../index'
 
+const storage = vi.hoisted(() => ({
+  mode: 'pagination',
+  size: 256,
+}))
+
 vi.mock('@/utils/drive115Instance', () => ({
   drive115: {
     file: {
@@ -30,7 +35,11 @@ vi.mock('@vueuse/router', () => ({
   useRouteQuery: (_key: string, def: unknown) => ref(def),
 }))
 vi.mock('@vueuse/core', () => ({
-  useStorage: (_key: string, def: unknown) => ref(def),
+  useStorage: (key: string, def: unknown) => ref(
+    key === '115Master_drive_list_load_mode'
+      ? storage.mode
+      : key === '115Master_pageSize' ? storage.size : def,
+  ),
 }))
 /** 共享的导航 area ref（星标跨目录测试用，store 每次创建都读同一 ref） */
 const navArea = ref('all')
@@ -70,6 +79,8 @@ beforeEach(() => {
   setActivePinia(createPinia())
   pageCache.clear()
   navArea.value = 'all'
+  storage.mode = 'pagination'
+  storage.size = 256
   vi.clearAllMocks()
 })
 
@@ -129,6 +140,28 @@ describe('driveStore SWR', () => {
     const store = useDriveStore()
     await Promise.all([store.navigate(1), store.navigate(1)])
     expect(store.data?.data?.map(i => i.n)).toEqual(['file-a'])
+  })
+
+  it('无限加载逐页追加，并保持已加载项顺序', async () => {
+    storage.mode = 'infinite'
+    storage.size = 2
+    vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes([item('a'), item('b')], 4))
+    const store = useDriveStore()
+
+    await vi.waitFor(() => expect(store.loading).toBe(false))
+    expect(store.data?.data?.map(i => i.n)).toEqual(['file-a', 'file-b'])
+    expect(store.hasMore).toBe(true)
+
+    vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes([item('c'), item('d')], 4))
+    await store.loadMore()
+
+    expect(file.getFilesWithFallback).toHaveBeenLastCalledWith(expect.objectContaining({ offset: 2, limit: 2 }))
+    expect(store.data?.data?.map(i => i.n)).toEqual(['file-a', 'file-b', 'file-c', 'file-d'])
+    expect(store.hasMore).toBe(false)
+
+    store.applyRemoveMutation([item('a')])
+    expect(store.data?.data?.map(i => i.n)).toEqual(['file-b', 'file-c', 'file-d'])
+    expect(store.total).toBe(3)
   })
 })
 

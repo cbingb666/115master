@@ -5,10 +5,11 @@ import { scrollbar } from '@115master/ui'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PKG from '@/../package.json'
 import ThemeToggle from '@/components/ThemeToggle'
+import { useDriveListMode } from '@/hooks/useDriveListMode'
 import { I, Icon } from '@/icons'
 import AccountPreferences from './AccountPreferences'
 
-export type PreferenceSection = 'appearance' | 'account' | 'about'
+export type PreferenceSection = 'appearance' | 'files' | 'account' | 'about'
 
 interface SectionItem {
   id: PreferenceSection
@@ -18,6 +19,7 @@ interface SectionItem {
 
 export const PREFERENCE_SECTIONS: SectionItem[] = [
   { id: 'appearance', label: '外观', icon: I.THEME_LIGHT },
+  { id: 'files', label: '文件列表', icon: I.LIST },
   { id: 'account', label: '账号', icon: I.ACCOUNT },
   { id: 'about', label: '关于', icon: I.ABOUT },
 ]
@@ -40,6 +42,7 @@ const PreferencesContent = defineComponent({
   },
 
   setup(props, { emit }) {
+    const mode = useDriveListMode()
     const isDesktop = ref(false)
     let mql: MediaQueryList | undefined
 
@@ -116,6 +119,27 @@ const PreferencesContent = defineComponent({
                   <p class="text-base-content/60 mt-1 text-xs">切换浅色、深色或跟随系统。</p>
                 </div>
                 <ThemeToggle />
+              </div>
+            )}
+
+            {display.value === 'files' && (
+              <div class="flex flex-col gap-4">
+                <div>
+                  <h3 class="text-base-content text-sm font-medium">加载方式</h3>
+                  <p class="text-base-content/60 mt-1 text-xs">选择使用分页器，或在滚动到底部时继续加载。</p>
+                </div>
+                <label class="flex flex-col gap-2" for="drive-list-load-mode">
+                  <span class="text-base-content/80 text-xs">文件列表加载方式</span>
+                  <select
+                    id="drive-list-load-mode"
+                    class="select select-bordered select-sm w-full max-w-xs"
+                    value={mode.value}
+                    onChange={event => mode.value = (event.target as HTMLSelectElement).value as typeof mode.value}
+                  >
+                    <option value="pagination">分页加载</option>
+                    <option value="infinite">滚动无限加载</option>
+                  </select>
+                </label>
               </div>
             )}
 

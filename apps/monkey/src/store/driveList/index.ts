@@ -7,6 +7,7 @@ import { defineStore } from 'pinia'
 import { computed, shallowRef, watch } from 'vue'
 import { router } from '@/app/router'
 import { PAGINATION_DEFAULT_PAGE_SIZE } from '@/constants'
+import { useDriveListMode } from '@/hooks/useDriveListMode'
 import { usePathNav } from '@/hooks/useDriveNav'
 import { useDriveSelection } from '@/hooks/useDriveSelection'
 import { drive115 } from '@/utils/drive115Instance'
@@ -49,10 +50,15 @@ export const useDriveStore = defineStore('drive', () => {
 
   const nav = usePathNav(router)
   const selection = useDriveSelection()
+  const mode = useDriveListMode()
 
   const data = shallowRef<ListData | null>(null)
   const loading = shallowRef(false)
+  const loadingMore = shallowRef(false)
   const error = shallowRef<Error | null>(null)
+  const moreError = shallowRef<Error | null>(null)
+  const pages = new Map<number, ListData>()
+  const loadedPage = shallowRef(1)
 
   const total = shallowRef(0)
   const order = shallowRef<Share.Base.Sorter['o']>()
@@ -62,6 +68,7 @@ export const useDriveStore = defineStore('drive', () => {
   let generation = 0
   const isSearch = computed(() => nav.area.value === 'search')
   const pageCount = computed(() => Math.ceil(total.value / query.size.value))
+  const hasMore = computed(() => mode.value === 'infinite' && loadedPage.value < pageCount.value)
 
   const path = computed((): Share.Entity.PathItem[] => {
     if (isSearch.value) {
@@ -83,13 +90,35 @@ export const useDriveStore = defineStore('drive', () => {
     return undefined
   })
 
-  function applyRes(res: ListData) {
-    data.value = res
+  function render(res: ListData) {
+    loadedPage.value = Math.max(...pages.keys())
+    if (mode.value === 'pagination') {
+      data.value = res
+    }
+    else {
+      const items = new Map<string, Share.Entity.FilesItem>()
+      Array.from(pages.entries())
+        .sort((a, b) => a[0] - b[0])
+        .forEach(([, page]) => page.data?.forEach(item => items.set(getFilesItemId(item), item)))
+      data.value = {
+        ...res,
+        offset: 0,
+        cur: loadedPage.value,
+        data: [...items.values()],
+      }
+    }
     total.value = res.count
     order.value = res.order
     asc.value = res.is_asc
     if ('fc_mix' in res)
       fc_mix.value = res.fc_mix
+  }
+
+  function applyRes(res: ListData, page: number, append = false) {
+    if (!append)
+      pages.clear()
+    pages.set(page, res)
+    render(res)
   }
 
   function listQuery(pageNum: number) {
@@ -108,17 +137,23 @@ export const useDriveStore = defineStore('drive', () => {
     }
   }
 
-  async function load(q: ReturnType<typeof listQuery>): Promise<boolean> {
+  async function load(q: ReturnType<typeof listQuery>, append = false): Promise<boolean> {
     const key = cacheKey(q)
     const cached = pageCache.get(key)
     // 缓存命中 → 立即渲染，后台 SWR 校验
     if (cached)
-      applyRes(fromCache(cached, q.page, q.size, data.value))
+      applyRes(fromCache(cached, q.page, q.size, data.value), q.page, append)
 
     const gen = generation
-    loading.value = true
-    if (!cached)
-      error.value = null
+    if (append) {
+      loadingMore.value = true
+      moreError.value = null
+    }
+    else {
+      loading.value = true
+      if (!cached)
+        error.value = null
+    }
 
     const params: Api.FileApi.Req.GetFiles = {
       aid: 1,
@@ -161,34 +196,53 @@ export const useDriveStore = defineStore('drive', () => {
         asc: Number(res.is_asc ?? 0),
         fc_mix: Number('fc_mix' in res ? res.fc_mix : 0),
       })
-      applyRes(res as ListData)
-      error.value = null
+      applyRes(res as ListData, q.page, append)
+      if (append)
+        moreError.value = null
+      else
+        error.value = null
       return true
     }
     catch (e) {
       if (gen !== generation)
         return false
       const err = Core.toDrive115Error(e)
-      error.value = err
+      if (append) {
+        if (!cached)
+          moreError.value = err
+      }
+      else {
+        error.value = err
+      }
       appLogger.warn('文件列表加载失败', Core.toResult(err))
-      return false
+      return !!cached
     }
     finally {
-      if (gen === generation)
-        loading.value = false
+      if (gen === generation) {
+        if (append)
+          loadingMore.value = false
+        else
+          loading.value = false
+      }
     }
   }
 
-  async function loadSearch(): Promise<boolean> {
+  async function loadSearch(page: number, append = false): Promise<boolean> {
     const gen = generation
-    loading.value = true
-    error.value = null
+    if (append) {
+      loadingMore.value = true
+      moreError.value = null
+    }
+    else {
+      loading.value = true
+      error.value = null
+    }
     const cid = nav.cid.value || '0'
     const params: Api.FileApi.Req.GetFilesSearch = {
       aid: 1,
       cid,
       show_dir: 1,
-      offset: (query.page.value - 1) * query.size.value,
+      offset: (page - 1) * query.size.value,
       limit: query.size.value,
       format: 'json',
       search_value: query.keyword.value,
@@ -204,36 +258,56 @@ export const useDriveStore = defineStore('drive', () => {
         throw new Core.Drive115Error(res.message, Core.Drive115ErrorCode.Unknown)
       if (gen !== generation)
         return false
-      data.value = res as unknown as ListData
-      total.value = res.count
-      order.value = res.order
-      asc.value = res.is_asc
+      applyRes(res as unknown as ListData, page, append)
+      if (append)
+        moreError.value = null
+      else
+        error.value = null
       return true
     }
     catch (e) {
       if (gen !== generation)
         return false
       const err = Core.toDrive115Error(e)
-      error.value = err
+      if (append)
+        moreError.value = err
+      else
+        error.value = err
       appLogger.warn('文件搜索失败', Core.toResult(err))
       return false
     }
     finally {
-      if (gen === generation)
-        loading.value = false
+      if (gen === generation) {
+        if (append)
+          loadingMore.value = false
+        else
+          loading.value = false
+      }
     }
   }
 
   /** 导航入口：路由/翻页/排序变化时调用 */
   async function navigate(pageNum: number = query.page.value) {
     generation++
+    loadingMore.value = false
+    moreError.value = null
+    const page = mode.value === 'infinite' ? 1 : pageNum
     if (isSearch.value)
-      return loadSearch()
-    return load(listQuery(pageNum))
+      return loadSearch(page)
+    return load(listQuery(page))
   }
 
   function refresh() {
     return navigate(query.page.value)
+  }
+
+  function loadMore() {
+    if (mode.value !== 'infinite' || loading.value || loadingMore.value || !hasMore.value)
+      return Promise.resolve(false)
+    const page = loadedPage.value + 1
+    if (isSearch.value)
+      return loadSearch(page, true)
+    return load(listQuery(page), true)
   }
 
   function changePage(p: number) {
@@ -257,24 +331,33 @@ export const useDriveStore = defineStore('drive', () => {
     const area = nav.area.value || 'all'
     const cid = nav.cid.value || '0'
     const q = listQuery(query.page.value)
-    const pages = pageCache.pagesOf(area, cid, q.size, q.order, q.asc, q.fc_mix, q.suffix, q.type, q.fc, q.nf)
-    if (pages.size === 0) {
+    const cached = pageCache.pagesOf(area, cid, q.size, q.order, q.asc, q.fc_mix, q.suffix, q.type, q.fc, q.nf)
+    if (cached.size === 0) {
       refresh()
       return
     }
-    const next = reorder(pages, q.size, op)
+    const next = reorder(cached, q.size, op)
     for (const [p, pageData] of next)
       pageCache.set(cacheKey({ ...q, page: p }), pageData)
     /** 被清空的页槽位删除（翻到时会重新拉取，不命中空缓存渲染空页） */
-    for (const p of pages.keys()) {
+    for (const p of cached.keys()) {
       if (!next.has(p)) {
         const emptyKey = cacheKey({ ...q, page: p })
         pageCache.invalidateKey(emptyKey)
       }
     }
-    const current = next.get(query.page.value)
+
+    for (const p of Array.from(pages.keys())) {
+      const page = next.get(p)
+      if (page)
+        pages.set(p, fromCache(page, p, q.size, data.value))
+      else
+        pages.delete(p)
+    }
+    const last = Math.max(...pages.keys())
+    const current = pages.get(last)
     if (current)
-      applyRes(fromCache(current, query.page.value, q.size, data.value))
+      render(current)
     else
       refresh()
     selection.clear()
@@ -357,12 +440,22 @@ export const useDriveStore = defineStore('drive', () => {
     refresh()
   }
 
-  /** 单一 watcher：route 参数 / 页码 / size / keyword 变化 → navigate */
+  /** 单一 watcher：route 参数 / 页码 / size / keyword / 加载方式变化 → navigate */
   watch(
-    [nav.cid, nav.area, () => query.page.value, () => query.size.value, () => query.keyword.value],
+    [nav.cid, nav.area, () => query.page.value, () => query.size.value, () => query.keyword.value, () => mode.value],
     (curr, prev) => {
-      const [, , , size, keyword] = curr
-      const [, , , prevSize, prevKeyword] = prev ?? []
+      const [, , , size, keyword, currentMode] = curr
+      const [, , , prevSize, prevKeyword, prevMode] = prev ?? []
+
+      if (prevMode !== undefined && currentMode !== prevMode) {
+        selection.clear()
+        if (query.page.value !== 1) {
+          query.page.value = 1
+          return
+        }
+        navigate(1)
+        return
+      }
 
       // pageSize 变化：旧缓存自然失配（key 含 size），滚回顶部即可
       if (prevSize !== undefined && size !== prevSize) {
@@ -389,7 +482,9 @@ export const useDriveStore = defineStore('drive', () => {
     // 列表状态
     data,
     loading,
+    loadingMore,
     error,
+    moreError,
     total,
     order,
     asc,
@@ -398,9 +493,12 @@ export const useDriveStore = defineStore('drive', () => {
     prevLevel,
     isSearch,
     pageCount,
+    hasMore,
+    mode,
     // 行为
     navigate,
     refresh,
+    loadMore,
     changePage,
     changeSize,
     invalidate,
