@@ -132,6 +132,7 @@ test.describe('选择与操作', () => {
     await check(page, '演示视频 01.mp4')
     await page.keyboard.press('Meta+a')
     await expect(page.getByTitle('退出多选')).toContainText('43 项')
+    await expect(page.getByTitle('全选')).toHaveCount(0)
 
     expect(errors).toEqual([])
   })

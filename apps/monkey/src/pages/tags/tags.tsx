@@ -209,14 +209,12 @@ const Tags = defineComponent({
             countLabel="项"
             exitLabel="退出多选"
             onExit={multi.exit}
+            allSelected={multi.allSelected.value}
             selectAllLabel="全选"
             onSelectAll={multi.selectAll}
-            invertLabel="反选"
-            onInvert={multi.invert}
             v-slots={{
               exitIcon: () => <Icon class="text-xl" name={I.CLOSE} />,
               selectAllIcon: () => <Icon class="text-xl" name={I.SELECT_ALL} />,
-              invertIcon: () => <Icon class="text-xl" name={I.INVERT} />,
             }}
           />
         )

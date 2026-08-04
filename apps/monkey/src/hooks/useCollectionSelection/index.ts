@@ -35,6 +35,7 @@ export interface CollectionSelectionMenu<T> extends Point {
 
 export interface CollectionSelectionBind<T> {
   active: ComputedRef<boolean>
+  allSelected: ComputedRef<boolean>
   menu: ShallowRef<CollectionSelectionMenu<T> | null>
   itemProps: (item: T) => {
     'data-selection-key': string
@@ -45,7 +46,6 @@ export interface CollectionSelectionBind<T> {
   set: (item: T, selected: boolean) => void
   clear: () => void
   selectAll: () => void
-  invert: () => void
   closeMenu: () => void
 }
 
@@ -80,6 +80,10 @@ function scroller(container: HTMLElement): HTMLElement | Window {
  */
 export function useCollectionSelection<T>(options: CollectionSelectionOptions<T>): CollectionSelectionBind<T> {
   const active = computed(() => options.selection.size() > 0)
+  const allSelected = computed(() => {
+    const items = options.items()
+    return items.length > 0 && items.every(item => options.selection.has(item))
+  })
   const menu = shallowRef<CollectionSelectionMenu<T> | null>(null)
   const selecting = shallowRef(false)
   const start = shallowRef<Point>({ x: 0, y: 0 })
@@ -121,10 +125,6 @@ export function useCollectionSelection<T>(options: CollectionSelectionOptions<T>
   function selectAll() {
     options.selection.clear()
     options.items().forEach(value => options.selection.set(value, true))
-  }
-
-  function invert() {
-    options.items().forEach(value => options.selection.set(value, !options.selection.has(value)))
   }
 
   function click(value: T, event: MouseEvent) {
@@ -517,5 +517,5 @@ export function useCollectionSelection<T>(options: CollectionSelectionOptions<T>
     box.value?.remove()
   })
 
-  return { active, menu, itemProps, set, clear, selectAll, invert, closeMenu }
+  return { active, allSelected, menu, itemProps, set, clear, selectAll, closeMenu }
 }

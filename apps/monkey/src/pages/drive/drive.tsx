@@ -193,9 +193,9 @@ const Drive = defineComponent({
 
     const {
       selectMode,
+      allSelected,
       exitSelectMode,
       selectAll,
-      invert,
       contextmenuShow,
       contextmenuPosition,
       itemProps,
@@ -241,14 +241,12 @@ const Drive = defineComponent({
             countLabel="项"
             exitLabel="退出多选"
             onExit={exitSelectMode}
+            allSelected={allSelected.value}
             selectAllLabel="全选"
-            onInvert={invert}
-            invertLabel="反选"
             onSelectAll={selectAll}
             v-slots={{
               exitIcon: () => <Icon class="text-xl" name={I.CLOSE} />,
               selectAllIcon: () => <Icon class="text-xl" name={I.SELECT_ALL} />,
-              invertIcon: () => <Icon class="text-xl" name={I.INVERT} />,
             }}
           />
         )

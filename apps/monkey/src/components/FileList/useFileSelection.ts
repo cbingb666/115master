@@ -55,9 +55,9 @@ export function useFileSelection(options: FileSelectionOptions) {
 
   return {
     selectMode: selection.active,
+    allSelected: selection.allSelected,
     exitSelectMode: selection.clear,
     selectAll: selection.selectAll,
-    invert: selection.invert,
     contextmenuShow,
     contextmenuPosition,
     itemProps,

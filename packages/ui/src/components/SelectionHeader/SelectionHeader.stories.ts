@@ -1,6 +1,6 @@
 import type { SelectionHeaderProps } from '@115master/ui'
 import { SelectionHeader } from '@115master/ui'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { ref } from 'vue'
 import preview from '../../../.storybook/preview'
 
@@ -12,10 +12,9 @@ const meta = preview.meta({
     countLabel: 'items',
     exitLabel: 'Exit selection',
     onExit: () => {},
+    allSelected: false,
     selectAllLabel: 'Select all',
     onSelectAll: () => {},
-    invertLabel: 'Invert selection',
-    onInvert: () => {},
   } satisfies SelectionHeaderProps,
   render: args => ({
     components: { SelectionHeader },
@@ -34,12 +33,6 @@ const meta = preview.meta({
               <path d="m5 6 4 4" />
             </svg>
           </template>
-          <template #invert-icon>
-            <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M7 7h10l-3-3M17 17H7l3 3" />
-              <path d="M17 7a7 7 0 0 1 2 5M7 17a7 7 0 0 1-2-5" />
-            </svg>
-          </template>
         </SelectionHeader>
       </div>
     `,
@@ -48,7 +41,7 @@ const meta = preview.meta({
     docs: {
       description: {
         component:
-          'SelectionHeader 是选择模式的页面头部：展示选中数量并提供退出操作，可按调用方提供的回调显示全选与反选。文案由调用方提供，图标通过 named slots 注入；组件不管理选择状态。',
+          'SelectionHeader 是选择模式的页面头部：展示选中数量并提供退出操作，可按调用方提供的回调显示全选。全选按钮位于左侧，并由调用方通过 allSelected 控制隐藏；文案由调用方提供，图标通过 named slots 注入；组件不管理选择状态。',
       },
     },
   },
@@ -64,13 +57,25 @@ export const ExitOnly = meta.story({
   args: {
     selectAllLabel: undefined,
     onSelectAll: undefined,
-    invertLabel: undefined,
-    onInvert: undefined,
   },
   parameters: {
     docs: {
       description: {
-        story: '不提供全选和反选回调时，只渲染退出操作。',
+        story: '不提供全选回调时，只渲染退出操作。',
+      },
+    },
+  },
+})
+
+export const AllSelected = meta.story({
+  name: '已全选',
+  args: {
+    allSelected: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '调用方标记为已全选时，全选按钮不渲染。',
       },
     },
   },
@@ -85,11 +90,14 @@ export const Behavior = meta.story({
     components: { SelectionHeader },
     setup() {
       const result = ref('idle')
+      const allSelected = ref(false)
       const exit = () => result.value = 'exit'
-      const selectAll = () => result.value = 'select-all'
-      const invert = () => result.value = 'invert'
+      const selectAll = () => {
+        result.value = 'select-all'
+        allSelected.value = true
+      }
 
-      return { result, exit, selectAll, invert }
+      return { result, allSelected, exit, selectAll }
     },
     template: `
       <section aria-label="Selection header actions" class="min-h-48 bg-base-200">
@@ -98,10 +106,9 @@ export const Behavior = meta.story({
           count-label="items"
           exit-label="Exit selection"
           :on-exit="exit"
+          :all-selected="allSelected"
           select-all-label="Select all"
           :on-select-all="selectAll"
-          invert-label="Invert selection"
-          :on-invert="invert"
         >
           <template #exit-icon>
             <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2">
@@ -112,12 +119,6 @@ export const Behavior = meta.story({
             <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2">
               <path d="m5 12 4 4L19 6" />
               <path d="m5 6 4 4" />
-            </svg>
-          </template>
-          <template #invert-icon>
-            <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M7 7h10l-3-3M17 17H7l3 3" />
-              <path d="M17 7a7 7 0 0 1 2 5M7 17a7 7 0 0 1-2-5" />
             </svg>
           </template>
         </SelectionHeader>
@@ -137,8 +138,7 @@ Behavior.test('invokes the configured selection actions', async ({ canvasElement
   await expect(canvas.getByText('5 items')).toBeVisible()
   await userEvent.click(canvas.getByRole('button', { name: 'Select all' }))
   await expect(result).toHaveTextContent('select-all')
-  await userEvent.click(canvas.getByRole('button', { name: 'Invert selection' }))
-  await expect(result).toHaveTextContent('invert')
+  await waitFor(() => expect(canvas.queryByRole('button', { name: 'Select all' })).not.toBeInTheDocument())
   await userEvent.click(canvas.getByRole('button', { name: 'Exit selection' }))
   await expect(result).toHaveTextContent('exit')
 })

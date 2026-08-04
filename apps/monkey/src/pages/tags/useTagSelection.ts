@@ -21,8 +21,8 @@ export function useTagSelection(store: ReturnType<typeof useTagStore>, container
 
   return {
     selectMode: selection.active,
+    allSelected: selection.allSelected,
     exit: selection.clear,
-    invert: selection.invert,
     selectAll: selection.selectAll,
     itemProps: selection.itemProps,
     set: selection.set,

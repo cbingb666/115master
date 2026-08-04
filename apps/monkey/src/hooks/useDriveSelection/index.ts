@@ -22,17 +22,6 @@ export function useDriveSelection() {
     checked.value = new Set(items)
   }
 
-  function invert(items: Share.Entity.FilesItem[]) {
-    const next = new Set(checked.value)
-    for (const item of items) {
-      if (next.has(item))
-        next.delete(item)
-      else
-        next.add(item)
-    }
-    checked.value = next
-  }
-
   function clear() {
     checked.value = new Set()
   }
@@ -48,7 +37,6 @@ export function useDriveSelection() {
     toggle,
     radio,
     selectAll,
-    invert,
     clear,
     has,
   }
