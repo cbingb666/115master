@@ -1,41 +1,35 @@
 import type { Plugin } from 'vite'
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { readdirSync, readFileSync } from 'node:fs'
+import { join, relative, resolve } from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import { defineConfig } from 'vite'
+import { defineConfig, normalizePath } from 'vite'
 
 const root = resolve(__dirname, 'src')
-const assets = [
-  ['styles/index.css', 'styles/index.css'],
-  ['styles/themes.css', 'styles/themes.css'],
-  ['styles/tokens.css', 'styles/tokens.css'],
-  ['styles/glass.css', 'styles/glass.css'],
-  ['styles/drawer.css', 'styles/drawer.css'],
-  ['styles/header.css', 'styles/header.css'],
-  ['components/index.css', 'components/index.css'],
-  ['components/Button/Button.css', 'components/Button/Button.css'],
-  ['components/Dialog/Dialog.css', 'components/Dialog/Dialog.css'],
-  ['components/NavigationStack/NavigationStack.css', 'components/NavigationStack/NavigationStack.css'],
-  ['components/Pill/Pill.css', 'components/Pill/Pill.css'],
-  ['components/Scrollbar/Scrollbar.css', 'components/Scrollbar/Scrollbar.css'],
-  ['components/Tooltip/Tooltip.css', 'components/Tooltip/Tooltip.css'],
-  ['components/Watermark/Watermark.css', 'components/Watermark/Watermark.css'],
-] as const
+const directories = ['styles', 'components'] as const
 
 function styles(): Plugin {
+  const assets = () => directories
+    .flatMap(directory => readdirSync(resolve(root, directory), {
+      recursive: true,
+      withFileTypes: true,
+    }))
+    .filter(file => file.isFile() && file.name.endsWith('.css'))
+    .map(file => normalizePath(relative(root, join(file.parentPath, file.name))))
+    .sort()
+
   return {
     name: 'ui-compilable-styles',
     buildStart() {
-      assets.forEach(([source]) => this.addWatchFile(resolve(root, source)))
+      directories.forEach(directory => this.addWatchFile(resolve(root, directory)))
     },
     generateBundle() {
-      assets.forEach(([source, target]) => {
+      assets().forEach((file) => {
         this.emitFile({
           type: 'asset',
-          fileName: target,
-          source: readFileSync(resolve(root, source)),
+          fileName: file,
+          source: readFileSync(resolve(root, file)),
         })
       })
     },
@@ -47,7 +41,7 @@ export default defineConfig({
   build: {
     target: 'es2020',
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: resolve(root, 'index.ts'),
       formats: ['es'],
       fileName: 'index',
     },
