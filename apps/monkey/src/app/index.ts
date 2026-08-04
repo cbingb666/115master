@@ -11,6 +11,9 @@ import { userSettings } from '@/utils/userSettings'
  */
 export async function createMasterApp() {
   resetDocument()
+  if (import.meta.env.DEV)
+    await import('./devtools')
+
   const style = document.createElement('style')
   style.textContent = mainStyles
   style.dataset.v = 'style_css'

@@ -9,6 +9,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import monkey, { cdn, util } from 'vite-plugin-monkey'
+import vueDevTools from 'vite-plugin-vue-devtools'
 import svgLoader from 'vite-svg-loader'
 import PKG from './package.json'
 import { devConfig } from './plugins/dev'
@@ -55,6 +56,10 @@ export default defineConfig({
       },
     }),
     mkcert(),
+    // userscript 没有 HTML 入口，在 MasterApp 重置文档后再注入开发面板
+    vueDevTools({
+      appendTo: 'src/app/devtools.ts',
+    }),
     vue(),
     vueJsx(),
     tailwindcss(),
