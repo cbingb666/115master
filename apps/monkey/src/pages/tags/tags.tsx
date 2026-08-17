@@ -2,7 +2,7 @@ import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
 import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
-import { Button, Header, HeaderEnd, HeaderStart, Pill, Progress, SelectionHeader } from '@115master/ui'
+import { Button, Header, HeaderEnd, HeaderStart, Pill, Progress, SelectionHeader, StatusFeedback } from '@115master/ui'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
@@ -11,7 +11,6 @@ import {
   ActionBar,
   ActionMenu,
   Layout,
-  LoadingError,
   Main,
   Sider,
   SiderContent,
@@ -19,6 +18,7 @@ import {
 } from '@/components'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
+import { errorFeedback } from '@/utils/errorFeedback'
 import TagFormContent from './TagFormContent'
 import TagItem from './TagItem'
 import { useTagSelection } from './useTagSelection'
@@ -251,10 +251,10 @@ const Tags = defineComponent({
       if (store.error) {
         return (
           <div class="flex flex-1 items-center justify-center pt-20">
-            <LoadingError
-              message={store.error}
-              retryable
-              retryText="重试"
+            <StatusFeedback
+              status="error"
+              {...errorFeedback(store.error)}
+              retryLabel="重试"
               onRetry={() => store.load()}
             />
           </div>

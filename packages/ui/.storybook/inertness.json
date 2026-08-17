@@ -343,6 +343,25 @@
       ]
     },
     {
+      "id": "ui-statusfeedback--behavior",
+      "docs": "ui-statusfeedback--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-statusfeedback--behavior:invokes-retry-close-and-detail-actions"
+      ],
+      "ready": "[data-ui-status-feedback-result]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-status-feedback-result]",
+          "text": "idle"
+        }
+      ]
+    },
+    {
       "id": "ui-overlayhost--default",
       "docs": "ui-overlayhost--docs",
       "component": true,

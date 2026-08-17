@@ -1,10 +1,11 @@
 import type { PropType } from 'vue'
 import { Api } from '@115master/drive115'
-import { Button, scrollbar } from '@115master/ui'
+import { Button, scrollbar, StatusFeedback } from '@115master/ui'
 import { defineComponent } from 'vue'
-import { Empty, LoadingError } from '@/components'
+import { Empty } from '@/components'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
+import { errorFeedback } from '@/utils/errorFeedback'
 
 const { LabelColor } = Api.TagApi.Req
 
@@ -95,10 +96,10 @@ const TagPickerContent = defineComponent({
             {store.error
               ? (
                   <div class="flex items-center justify-center py-10">
-                    <LoadingError
-                      message={store.error}
-                      retryable
-                      retryText="重试"
+                    <StatusFeedback
+                      status="error"
+                      {...errorFeedback(store.error)}
+                      retryLabel="重试"
                       onRetry={() => store.load()}
                     />
                   </div>

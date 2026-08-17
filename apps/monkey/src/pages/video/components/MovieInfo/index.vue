@@ -24,9 +24,10 @@
       </div>
 
       <template v-if="movieInfo.error.value">
-        <LoadingError
+        <StatusFeedback
           :class="styles.states.error"
-          :message="movieInfo.error.value"
+          status="error"
+          v-bind="errorFeedback(movieInfo.error.value)"
         />
       </template>
 
@@ -226,6 +227,7 @@
 
 <script lang="ts" setup>
 import type { useDataMovieInfo } from '@/pages/video/data/useDataMovieInfo'
+import { StatusFeedback } from '@115master/ui'
 import { format } from '@115master/utils'
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
 import {
@@ -236,10 +238,10 @@ import {
 } from 'vue'
 import {
   Empty,
-  LoadingError,
 } from '@/components'
 import { Image } from '@/components/Image'
 import { clsx } from '@/utils/clsx'
+import { errorFeedback } from '@/utils/errorFeedback'
 import CopyButton from './components/CopyButton.vue'
 import 'photoswipe/style.css'
 

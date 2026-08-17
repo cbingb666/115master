@@ -9,10 +9,12 @@
   >
     <div :class="styles.cover.container">
       <template v-if="videoCover.error">
-        <LoadingError
+        <StatusFeedback
           :class="styles.cover.imageError"
-          :message="videoCover.error"
-          size="mini"
+          status="error"
+          size="xs"
+          :padded="false"
+          v-bind="errorFeedback(videoCover.error)"
         />
       </template>
 
@@ -54,13 +56,14 @@
 
 <script setup lang="ts">
 import type { Share } from '@115master/drive115'
+import { StatusFeedback } from '@115master/ui'
 import { format } from '@115master/utils'
 import { computed, shallowRef } from 'vue'
-import { LoadingError } from '@/components'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import { errorFeedback } from '@/utils/errorFeedback'
 
 const props = defineProps<{
   item: Share.Entity.FilesItem

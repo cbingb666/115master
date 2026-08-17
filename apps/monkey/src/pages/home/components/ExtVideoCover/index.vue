@@ -3,7 +3,7 @@
     <div :class="styles.container.content">
       <!-- 错误状态 -->
       <div v-if="videoCover.error" :class="styles.states.error">
-        <LoadingError size="mini" :message="videoCover.error" />
+        <StatusFeedback status="error" size="xs" :padded="false" v-bind="errorFeedback(videoCover.error)" />
       </div>
 
       <!-- 骨架屏 -->
@@ -36,11 +36,12 @@
 </template>
 
 <script setup lang="ts">
+import { StatusFeedback } from '@115master/ui'
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import { LoadingError } from '@/components'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { clsx } from '@/utils/clsx'
+import { errorFeedback } from '@/utils/errorFeedback'
 import 'photoswipe/style.css'
 
 const props = defineProps<{

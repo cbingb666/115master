@@ -43,10 +43,11 @@
           v-show="thumb.error.value"
           :class="styles.image.error"
         >
-          <LoadingError
-            :message="thumb.error.value"
-            size="mini"
-            :show-detail-button="false"
+          <StatusFeedback
+            status="error"
+            :message="formatError(thumb.error.value)"
+            size="xs"
+            :padded="false"
           />
         </div>
       </transition>
@@ -60,13 +61,14 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 import type { ThumbnailFrame } from '@/components/XPlayer/types'
+import { StatusFeedback } from '@115master/ui'
 import { image as imageUtil, number } from '@115master/utils'
 import { refManualReset } from '@vueuse/core'
 import { computed, onUnmounted, shallowRef, toValue, watch } from 'vue'
-import { LoadingError } from '@/components'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { clsx } from '@/utils/clsx'
+import { formatError } from '@/utils/errorFeedback'
 
 interface Props {
   /** 是否显示 */

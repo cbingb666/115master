@@ -1,7 +1,7 @@
 import type { PropType, StyleValue, VNode } from 'vue'
 import type { ImageLoader, ImageResource } from '@/utils/imageLoader'
+import { StatusFeedback } from '@115master/ui'
 import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
-import LoadingError from '../LoadingError/LoadingError'
 
 type Fit = 'cover' | 'contain'
 type LoadState = 'loading' | 'error' | 'success'
@@ -129,7 +129,7 @@ const Image = defineComponent({
     function resolveFallback() {
       const f = props.fallback
       if (!f)
-        return <LoadingError message="图片加载失败" size="mini" showDetailButton={false} />
+        return <StatusFeedback status="error" message="图片加载失败" size="xs" padded={false} />
       return typeof f === 'function' ? f() : f
     }
 

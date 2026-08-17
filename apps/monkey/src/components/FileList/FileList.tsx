@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Range } from '@tanstack/vue-virtual'
 import type { MaybeElement } from '@vueuse/core'
 import type { PropType, SlotsType, VNodeChild } from 'vue'
-import { Progress } from '@115master/ui'
+import { Progress, StatusFeedback } from '@115master/ui'
 import { defaultRangeExtractor, useVirtualizer, useWindowVirtualizer } from '@tanstack/vue-virtual'
 import { breakpointsTailwind, unrefElement, useBreakpoints, useEventListener, useResizeObserver, useThrottleFn } from '@vueuse/core'
 import {
@@ -17,9 +17,9 @@ import {
   shallowRef,
   watch,
 } from 'vue'
+import { errorFeedback } from '@/utils/errorFeedback'
 import { getFilesItemId } from '@/utils/filesItem'
 import Empty from '../Empty/Empty'
-import LoadingError from '../LoadingError/LoadingError'
 import { group, locate } from './layout'
 
 interface Position {
@@ -298,10 +298,12 @@ const FileList = defineComponent({
     return () => (
       <div class="relative min-h-full w-full" data-view-type={props.viewType}>
         {props.error && (
-          <LoadingError
+          <StatusFeedback
             class="absolute inset-0 m-auto"
-            message={props.error}
-            size="mini"
+            status="error"
+            size="xs"
+            padded={false}
+            {...errorFeedback(props.error)}
           />
         )}
 

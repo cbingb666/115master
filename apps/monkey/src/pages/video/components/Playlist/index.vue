@@ -23,7 +23,7 @@
       </div>
 
       <div v-if="playlist.error" :class="styles.playlist.content">
-        <LoadingError :message="playlist.error" />
+        <StatusFeedback status="error" v-bind="errorFeedback(playlist.error)" />
       </div>
       <div v-else-if="playlist.isLoading || (!playlist.isLoading && !playlist.isReady)" :class="styles.playlist.content">
         <div class="skeleton h-24 w-full rounded-lg" />
@@ -50,11 +50,11 @@
 import type { Share } from '@115master/drive115'
 import type PlaylistItemVue from './item.vue'
 import type { useDataPlaylist } from '@/pages/video/data/useDataPlaylist'
-import { Button, scrollbar } from '@115master/ui'
+import { Button, scrollbar, StatusFeedback } from '@115master/ui'
 import { nextTick, useTemplateRef, watch } from 'vue'
-import { LoadingError } from '@/components'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
+import { errorFeedback } from '@/utils/errorFeedback'
 import PlaylistItem from './item.vue'
 
 const props = defineProps<{

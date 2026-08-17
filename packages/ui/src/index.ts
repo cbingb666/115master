@@ -73,6 +73,12 @@ export { scrollbar } from './components/Scrollbar/Scrollbar'
 export type { ScrollbarSize } from './components/Scrollbar/Scrollbar'
 export { SelectionHeader } from './components/SelectionHeader/SelectionHeader'
 export type { SelectionHeaderProps } from './components/SelectionHeader/SelectionHeader'
+export { StatusFeedback } from './components/StatusFeedback/StatusFeedback'
+export type {
+  StatusFeedbackProps,
+  StatusFeedbackSize,
+  StatusFeedbackStatus,
+} from './components/StatusFeedback/StatusFeedback'
 export { Tooltip } from './components/Tooltip/Tooltip'
 export type {
   TooltipPlacement,

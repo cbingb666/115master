@@ -1,12 +1,5 @@
 import type { ValueOf } from 'type-fest'
 
-export const MEDIA_ERROR_NAME = {
-  [MediaError.MEDIA_ERR_ABORTED]: 'Aborted',
-  [MediaError.MEDIA_ERR_NETWORK]: 'Network Error',
-  [MediaError.MEDIA_ERR_DECODE]: 'Decode Error',
-  [MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED]: 'Source Not Supported',
-}
-
 /**
  * 视频源扩展名
  */

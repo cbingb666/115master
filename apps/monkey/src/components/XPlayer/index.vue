@@ -44,13 +44,13 @@
     <HUD />
 
     <!-- 错误提示 -->
-    <LoadingError
+    <StatusFeedback
       v-if="playerCore?.loadError"
       :class="styles.error"
-      :message="playerCore.loadError"
-      :closable="true"
-      close-text="忽略错误"
-      @close="playerCore.loadError = undefined"
+      status="error"
+      v-bind="errorFeedback(playerCore.loadError)"
+      close-label="忽略错误"
+      :on-close="closeError"
     />
 
     <!-- 加载动画 -->
@@ -81,10 +81,10 @@
 <script setup lang="ts">
 import type { PlayerContext } from './hooks/usePlayerProvide'
 import type { XPlayerEmit, XPlayerProps } from './types'
-import { Button } from '@115master/ui'
+import { Button, StatusFeedback } from '@115master/ui'
 import { shallowRef, watch, watchEffect } from 'vue'
-import { LoadingError } from '@/components'
 import { clsx } from '@/utils/clsx'
+import { errorFeedback } from '@/utils/errorFeedback'
 import ContextMenu from './components/ContextMenu/index.vue'
 import ControlsBar from './components/Controls/ControlBar.vue'
 import ControlsHeader from './components/Controls/ControlHeader.vue'
@@ -168,6 +168,11 @@ const {
   playerCore,
   controls,
 } = ctx
+
+function closeError() {
+  if (playerCore.value)
+    playerCore.value.loadError = undefined
+}
 
 // 监听控制栏可见性，直接设置光标样式
 watch(

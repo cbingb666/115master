@@ -3,7 +3,7 @@
     <div :class="styles.container.content">
       <!-- 错误状态 -->
       <div v-if="extInfo.error.value" :class="styles.states.error">
-        <LoadingError :message="extInfo.error.value" size="mini" />
+        <StatusFeedback status="error" size="xs" :padded="false" v-bind="errorFeedback(extInfo.error.value)" />
       </div>
 
       <!-- 加载骨架 -->
@@ -140,15 +140,16 @@
 </template>
 
 <script setup lang="ts">
+import { StatusFeedback } from '@115master/ui'
 import { format } from '@115master/utils'
 import { useAsyncState, useElementVisibility } from '@vueuse/core'
 import { computed, onMounted, ref, watch } from 'vue'
 import {
   Empty,
   Image,
-  LoadingError,
 } from '@/components'
 import { clsx } from '@/utils/clsx'
+import { errorFeedback } from '@/utils/errorFeedback'
 import { createGMImageLoader } from '@/utils/imageLoader'
 import { Jav, JavBus, JavDB } from '@/utils/jav'
 import { MissAV } from '@/utils/jav/missAV'

@@ -5,12 +5,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createApp, h, nextTick, shallowReactive } from 'vue'
 import Image from '../Image'
 
-vi.mock('../../LoadingError/LoadingError', async () => {
+vi.mock('@115master/ui', async () => {
   const vue = await import('vue')
   return {
-    default: vue.defineComponent({
-      name: 'LoadingErrorStub',
-      setup: () => () => vue.h('div', { 'data-loading-error': '' }),
+    StatusFeedback: vue.defineComponent({
+      name: 'StatusFeedbackStub',
+      setup: () => () => vue.h('div', { 'data-status-feedback': '' }),
     }),
   }
 })
@@ -180,7 +180,7 @@ describe('image', () => {
 
     expect(dispose).toHaveBeenCalledOnce()
     expect(view.host.firstElementChild?.getAttribute('aria-busy')).toBeNull()
-    expect(view.host.querySelector('[data-loading-error]')).not.toBeNull()
+    expect(view.host.querySelector('[data-status-feedback]')).not.toBeNull()
   })
 
   it('reloads the same src when the loader key changes', async () => {

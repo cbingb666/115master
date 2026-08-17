@@ -16,6 +16,7 @@ it('imports the narrow runtime contract without browser globals', async () => {
     'Pill',
     'Progress',
     'SelectionHeader',
+    'StatusFeedback',
     'Tooltip',
     'Watermark',
     'createDialogService',
