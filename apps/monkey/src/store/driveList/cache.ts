@@ -1,152 +1,103 @@
 import type { Share } from '@115master/drive115'
+import type { InfiniteData, QueryClient, QueryKey } from '@tanstack/vue-query'
+import type { DriveListPage, DriveListProfile } from './query'
+import { hashKey } from '@tanstack/vue-query'
 import { getFilesItemId } from '@/utils/filesItem'
-
-/** 列表查询参数（全部参与缓存键，保证不同查询组合互不覆盖） */
-export interface ListQuery {
-  /** 区域 'all' | 'star' | ... */
-  area: string
-  cid: string
-  page: number
-  size: number
-  order: string
-  asc: number
-  /** 文件夹混排（排序参数之一），必须进 key */
-  fc_mix: number
-  /** 文件后缀筛选 */
-  suffix: string
-  /** 文件类型筛选 */
-  type: string
-  /** 只显示文件或文件夹（FileBroswer 用 fc=1） */
-  fc: string
-  /** 不显示文件夹（FileBroswer 用 nf='1'） */
-  nf: string
-}
-
-export function cacheKey(q: ListQuery): string {
-  return [
-    q.area,
-    q.cid,
-    q.page,
-    q.size,
-    q.order,
-    q.asc,
-    q.fc_mix,
-    q.suffix,
-    q.type,
-    q.fc,
-    q.nf,
-  ].join('|')
-}
-
-/** 目录前缀（用于按目录失效该目录全部页/排序/size 组合） */
-export function cidPrefix(area: string, cid: string): string {
-  return `${area}|${cid}|`
-}
-
-export interface Page {
-  items: Share.Entity.FilesItem[]
-  total: number
-  order: string
-  asc: number
-  fc_mix: number
-}
-
-export class PageCache {
-  private store = new Map<string, Page>()
-  private inflight = new Map<string, Promise<unknown>>()
-
-  constructor(private max = 150) {}
-
-  get size() {
-    return this.store.size
-  }
-
-  get(key: string): Page | undefined {
-    const entry = this.store.get(key)
-    if (!entry)
-      return undefined
-    // LRU: 移到末尾
-    this.store.delete(key)
-    this.store.set(key, entry)
-    return entry
-  }
-
-  set(key: string, page: Page) {
-    this.store.delete(key)
-    this.store.set(key, page)
-    if (this.store.size > this.max) {
-      const oldest = this.store.keys().next().value!
-      this.store.delete(oldest)
-    }
-  }
-
-  /** 前缀失效：删除该目录全部页（所有排序/size/筛选组合） */
-  invalidateCid(area: string, cid: string) {
-    const prefix = cidPrefix(area, cid)
-    for (const key of this.store.keys()) {
-      if (key.startsWith(prefix))
-        this.store.delete(key)
-    }
-  }
-
-  /** 按完整 key 删除单个槽位 */
-  invalidateKey(key: string) {
-    this.store.delete(key)
-  }
-
-  clear() {
-    this.store.clear()
-  }
-
-  /** 收集某目录某排序组合下全部已缓存页（page 升序），供 reorder 使用 */
-  pagesOf(area: string, cid: string, size: number, order: string, asc: number, fcMix: number, suffix: string, type: string, fc: string, nf: string): Map<number, Page> {
-    const pages = new Map<number, Page>()
-    const prefix = cidPrefix(area, cid)
-    for (const [key, page] of this.store) {
-      if (!key.startsWith(prefix))
-        continue
-      const parts = key.split('|')
-      if (Number(parts[3]) !== size)
-        continue
-      if (parts[4] !== order || parts[5] !== String(asc) || parts[6] !== String(fcMix))
-        continue
-      if (parts[7] !== suffix || parts[8] !== type || parts[9] !== fc || parts[10] !== nf)
-        continue
-      pages.set(Number(parts[2]), page)
-    }
-    return pages
-  }
-
-  /** 请求去重：同 key 有 in-flight 时复用 Promise */
-  fetch<T>(key: string, loader: () => Promise<T>): Promise<T> {
-    const pending = this.inflight.get(key)
-    if (pending)
-      return pending as Promise<T>
-    const promise = loader().finally(() => this.inflight.delete(key))
-    this.inflight.set(key, promise)
-    return promise
-  }
-}
 
 export type ReorderOp
   = | { kind: 'remove', ids: string[] }
     | { kind: 'update', item: Share.Entity.FilesItem }
 
+interface ParsedKey {
+  root: 'drive-list' | 'drive-search'
+  area: string
+  cid: string
+  mode: 'page' | 'infinite'
+  params: DriveListProfile & { page?: number }
+}
+
+interface PageEntry {
+  key: QueryKey
+  page: number
+  data: DriveListPage
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function parseKey(key: QueryKey): ParsedKey | undefined {
+  const [root, area, cid, mode, params] = key
+  if ((root !== 'drive-list' && root !== 'drive-search')
+    || typeof area !== 'string'
+    || typeof cid !== 'string'
+    || (mode !== 'page' && mode !== 'infinite')
+    || !isRecord(params)
+    || typeof params.size !== 'number') {
+    return undefined
+  }
+  return {
+    root,
+    area,
+    cid,
+    mode,
+    params: params as unknown as DriveListProfile & { page?: number },
+  }
+}
+
+function isDriveListPage(value: unknown): value is DriveListPage {
+  return isRecord(value)
+    && Array.isArray(value.items)
+    && typeof value.total === 'number'
+    && typeof value.page === 'number'
+    && typeof value.size === 'number'
+}
+
+function isInfiniteDriveListData(value: unknown): value is InfiniteData<DriveListPage, number> {
+  return isRecord(value)
+    && Array.isArray(value.pages)
+    && value.pages.every(isDriveListPage)
+    && Array.isArray(value.pageParams)
+}
+
+function matchesScope(key: QueryKey, area: string, cid: string) {
+  const parsed = parseKey(key)
+  return parsed?.area === area && parsed.cid === cid
+}
+
+function removalMeta(pages: Map<number, DriveListPage>, ids: Set<string>) {
+  const found = new Map<string, Share.Entity.FilesItem>()
+  pages.forEach(page => page.items.forEach((item) => {
+    const id = getFilesItemId(item)
+    if (ids.has(id))
+      found.set(id, item)
+  }))
+  const first = [...pages.values()][0]
+  const values = [...found.values()]
+  return {
+    total: Math.max(0, (first?.total ?? 0) - found.size),
+    fileCount: Math.max(0, (first?.fileCount ?? 0) - values.filter(item => item.fc !== 0).length),
+    folderCount: Math.max(0, (first?.folderCount ?? 0) - values.filter(item => item.fc === 0).length),
+  }
+}
+
 /**
- * 全缓存页重排。
- * remove: 拍平已缓存页 → 按 id 移除 → 按 size 重新切页；最后一页存在未缓存后续页时允许不满。
- * update: 只就地替换同 id 数据，不触碰排序位置（位置由 SWR 后台校验修正）。
- * 未缓存的页不在输出中（翻到时会重新拉取）。
+ * 对同一查询组合的全部缓存页做纯数据投影。
+ * remove 会跨页补位；update 仅替换实体，排序位置交给下次后台校验纠正。
  */
-export function reorder(pages: Map<number, Page>, size: number, op: ReorderOp): Map<number, Page> {
+export function reorder(
+  pages: Map<number, DriveListPage>,
+  size: number,
+  op: ReorderOp,
+): Map<number, DriveListPage> {
   const sorted = [...pages.entries()].sort((a, b) => a[0] - b[0])
   if (sorted.length === 0)
     return new Map()
 
   if (op.kind === 'update') {
     const id = getFilesItemId(op.item)
-    return new Map(sorted.map(([p, page]) => [
-      p,
+    return new Map(sorted.map(([pageNumber, page]) => [
+      pageNumber,
       {
         ...page,
         items: page.items.map(item => getFilesItemId(item) === id ? op.item : item),
@@ -155,19 +106,118 @@ export function reorder(pages: Map<number, Page>, size: number, op: ReorderOp): 
   }
 
   const ids = new Set(op.ids)
-  const meta = sorted[0][1]
-  const flat = sorted.flatMap(([, page]) => page.items)
-  const kept = flat.filter(item => !ids.has(getFilesItemId(item)))
-  const removed = flat.length - kept.length
-  const total = Math.max(0, meta.total - removed)
+  const meta = removalMeta(pages, ids)
+  const result = new Map<number, DriveListPage>()
+  let start = 0
+  for (let index = 1; index <= sorted.length; index++) {
+    const previousPage = sorted[index - 1]?.[0]
+    const currentPage = sorted[index]?.[0]
+    if (index < sorted.length && currentPage === previousPage + 1)
+      continue
 
-  const result = new Map<number, Page>()
-  sorted.forEach(([p], i) => {
-    const items = kept.slice(i * size, (i + 1) * size)
-    // 全部移除 → 清空所有槽位（total=0）；部分移除 → 仅清理变空的槽位
-    if (items.length === 0)
-      return
-    result.set(p, { ...meta, items, total })
-  })
+    const run = sorted.slice(start, index)
+    const items = run
+      .flatMap(([, page]) => page.items)
+      .filter(item => !ids.has(getFilesItemId(item)))
+    run.forEach(([pageNumber, page], runIndex) => {
+      const pageItems = items.slice(runIndex * size, (runIndex + 1) * size)
+      if (pageItems.length > 0)
+        result.set(pageNumber, { ...page, ...meta, items: pageItems })
+    })
+    start = index
+  }
   return result
+}
+
+function updatePaginationGroups(client: QueryClient, area: string, cid: string, op: ReorderOp) {
+  const groups = new Map<string, PageEntry[]>()
+  const queries = client.getQueryCache().findAll({
+    predicate: query => matchesScope(query.queryKey, area, cid),
+  })
+
+  queries.forEach((query) => {
+    const parsed = parseKey(query.queryKey)
+    if (!parsed || parsed.mode !== 'page' || typeof parsed.params.page !== 'number' || !isDriveListPage(query.state.data))
+      return
+    const { page, ...profile } = parsed.params
+    const groupKey = hashKey([parsed.root, parsed.area, parsed.cid, profile])
+    const entries = groups.get(groupKey) ?? []
+    entries.push({ key: query.queryKey, page, data: query.state.data })
+    groups.set(groupKey, entries)
+  })
+
+  let touched = false
+  groups.forEach((entries) => {
+    const pages = new Map(entries.map(entry => [entry.page, entry.data]))
+    const next = reorder(pages, entries[0].data.size, op)
+    const first = entries[0].data
+    const meta = op.kind === 'remove'
+      ? removalMeta(pages, new Set(op.ids))
+      : { total: first.total, fileCount: first.fileCount, folderCount: first.folderCount }
+
+    entries.forEach((entry) => {
+      client.setQueryData(
+        entry.key,
+        next.get(entry.page) ?? { ...entry.data, ...meta, items: [] },
+      )
+    })
+    touched = true
+  })
+  return touched
+}
+
+function updateInfiniteQueries(client: QueryClient, area: string, cid: string, op: ReorderOp) {
+  const queries = client.getQueryCache().findAll({
+    predicate: query => matchesScope(query.queryKey, area, cid),
+  })
+  let touched = false
+
+  queries.forEach((query) => {
+    const parsed = parseKey(query.queryKey)
+    const current = query.state.data
+    if (!parsed || parsed.mode !== 'infinite' || !isInfiniteDriveListData(current))
+      return
+    const pages = new Map(current.pages.map(page => [page.page, page]))
+    const next = [...reorder(pages, parsed.params.size, op).values()]
+    const first = current.pages[0]
+    const meta = op.kind === 'remove'
+      ? removalMeta(pages, new Set(op.ids))
+      : first && { total: first.total, fileCount: first.fileCount, folderCount: first.folderCount }
+    const resultPages = next.length > 0 || !first
+      ? next
+      : [{ ...first, ...meta, items: [] }]
+    client.setQueryData<InfiniteData<DriveListPage, number>>(query.queryKey, {
+      pages: resultPages,
+      pageParams: resultPages.map(page => page.page),
+    })
+    touched = true
+  })
+  return touched
+}
+
+/** 对目录内所有已缓存分页、无限列表和搜索变体同步施加增量。 */
+export function applyDriveListMutation(
+  client: QueryClient,
+  area: string,
+  cid: string,
+  op: ReorderOp,
+) {
+  void client.cancelQueries({ predicate: query => matchesScope(query.queryKey, area, cid) })
+  const pageTouched = updatePaginationGroups(client, area, cid, op)
+  const infiniteTouched = updateInfiniteQueries(client, area, cid, op)
+  return pageTouched || infiniteTouched
+}
+
+/** 标记目录下所有查询变体过期；不主动刷新非当前目录。 */
+export async function invalidateDriveListScope(client: QueryClient, area: string, cid: string) {
+  const predicate = (query: { queryKey: QueryKey }) => matchesScope(query.queryKey, area, cid)
+  await client.cancelQueries({ predicate })
+  await client.invalidateQueries({ predicate, refetchType: 'none' })
+}
+
+/** 排序规则改变后丢弃该目录旧规则数据。 */
+export function removeDriveListScope(client: QueryClient, area: string, cid: string) {
+  const predicate = (query: { queryKey: QueryKey }) => matchesScope(query.queryKey, area, cid)
+  void client.cancelQueries({ predicate })
+  client.removeQueries({ predicate })
 }

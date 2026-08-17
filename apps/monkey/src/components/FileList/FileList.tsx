@@ -53,6 +53,10 @@ const FileList = defineComponent({
       type: Boolean,
       default: false,
     },
+    refreshing: {
+      type: Boolean,
+      default: false,
+    },
     infinite: {
       type: Boolean,
       default: false,
@@ -307,7 +311,7 @@ const FileList = defineComponent({
           />
         )}
 
-        {!props.error && <Progress active={props.loading} />}
+        {!props.error && <Progress active={props.loading || props.refreshing} />}
 
         {!props.error && !props.loading && props.empty && (
           <div class="absolute inset-0 flex justify-center pt-30">

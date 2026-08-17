@@ -1,5 +1,7 @@
 import { scrollbar } from '@115master/ui'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { createApp, defineAsyncComponent } from 'vue'
+import { queryClient } from '@/app/queryClient'
 import { router } from '@/app/router'
 import logoSvgUrl from '@/assets/logo.svg?url'
 import mainStyles from '@/styles/main.css?inline'
@@ -36,6 +38,7 @@ export async function createMasterApp() {
   }))
   app.use(router)
   app.use(await import('pinia').then(m => m.createPinia()))
+  app.use(VueQueryPlugin, { queryClient })
   app.mount('#my-app')
 }
 

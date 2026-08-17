@@ -89,11 +89,6 @@ const FileBroswer = defineComponent({
       explorer.fc_mix.value ?? '',
     ].join(':'))
 
-    // cid/area/keyword 变化 → 刷新
-    watch([source.cid, source.area, keyword], () => {
-      explorer.changePage(1)
-      explorer.refresh()
-    }, { immediate: true })
     const { newFolder, renameItem } = useFileAction()
     const { deleteBatch } = useDeleteAction()
     const contextmenuShow = shallowRef(false)
@@ -318,6 +313,7 @@ const FileBroswer = defineComponent({
               data-[view-type=card]:px-7
             "
             loading={explorer.loading.value}
+            refreshing={explorer.refreshing.value}
             error={explorer.error.value ?? null}
             empty={!explorer.loading.value && (explorer.data.value?.data?.length ?? 0) === 0}
           >

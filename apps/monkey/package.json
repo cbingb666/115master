@@ -51,6 +51,7 @@
     "@libmedia/avplayer": "^1.2.2",
     "@libmedia/avutil": "^1.2.0",
     "@libmedia/common": "^2.2.0",
+    "@tanstack/vue-query": "^5",
     "@tanstack/vue-virtual": "^3.13.35",
     "@vueuse/components": "^14.1.0",
     "@vueuse/core": "^14.1.0",

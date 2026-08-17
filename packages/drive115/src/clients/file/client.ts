@@ -9,13 +9,15 @@ import { BaseApiClient } from '../base.ts'
  */
 export class FileApiClient extends BaseApiClient {
   /** 获取文件列表，主接口失败时回退到 APS 接口 */
-  async getFilesWithFallback(params: Req.GetFiles): Promise<Drive115Response<Res.Files>> {
-    const primary = await this.handle<Res.Files>(this.getFilesRaw(params))
+  async getFilesWithFallback(params: Req.GetFiles, signal?: AbortSignal): Promise<Drive115Response<Res.Files>> {
+    const primary = await this.handle<Res.Files>(this.getFilesRaw(params, signal))
     if (primary.state)
       return primary
+    if (signal?.aborted)
+      throw signal.reason ?? new DOMException('请求已取消', 'AbortError')
 
     const fallback = await this.handle<Res.Files>(
-      this.apsGetNatsortFilesRaw(params, primary.order, primary.is_asc),
+      this.apsGetNatsortFilesRaw(params, primary.order, primary.is_asc, signal),
     )
     if (fallback.state)
       return fallback
@@ -222,11 +224,11 @@ export class FileApiClient extends BaseApiClient {
   }
 
   /** 搜索 */
-  async searchFiles(params: Req.GetFilesSearch): Promise<Drive115Response<Res.GetFilesSearch>> {
+  async searchFiles(params: Req.GetFilesSearch, signal?: AbortSignal): Promise<Drive115Response<Res.GetFilesSearch>> {
     return this.handle<Res.GetFilesSearch>(
       this.fetchRequest.get(
         new URL('/files/search', URL_115.WEB_API).href,
-        { params },
+        { params, signal },
       ).then(r => r.json()),
     )
   }
@@ -255,10 +257,12 @@ export class FileApiClient extends BaseApiClient {
     params: Req.GetFiles,
     order?: string,
     isAsc?: number,
+    signal?: AbortSignal,
   ) {
     const response = await this.fetchRequest.get(
       new URL('/natsort/files.php', URL_115.APS).href,
       {
+        signal,
         params: {
           ...params,
           ...(order !== undefined && { o: order }),
@@ -269,10 +273,10 @@ export class FileApiClient extends BaseApiClient {
     return response.json()
   }
 
-  private async getFilesRaw(params: Req.GetFiles) {
+  private async getFilesRaw(params: Req.GetFiles, signal?: AbortSignal) {
     const response = await this.fetchRequest.get(
       new URL('/files', URL_115.WEB_API).href,
-      { params },
+      { params, signal },
     )
     return response.json()
   }

@@ -360,6 +360,7 @@ const Drive = defineComponent({
           positionKey={positionKey.value}
           viewType={viewType.value}
           loading={store.loading}
+          refreshing={store.refreshing}
           infinite={!paginated.value}
           hasMore={store.hasMore}
           loadingMore={store.loadingMore}

@@ -109,6 +109,7 @@ test.describe('主题与设置', () => {
     await expect(dialog).toHaveAttribute('data-ui-dialog-size', 'lg')
 
     // 切换为深色：data-theme 立即生效，GM 值持久化
+    await dialog.getByRole('button', { name: '外观' }).click()
     await dialog.getByRole('radio', { name: '深色' }).click()
     await expect(page.locator('#my-app')).toHaveAttribute('data-theme', 'dark')
     await expect(dialog.getByRole('radio', { name: '深色' })).toHaveAttribute('aria-checked', 'true')
