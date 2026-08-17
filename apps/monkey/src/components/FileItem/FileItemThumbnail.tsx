@@ -78,7 +78,7 @@ const FileItemThumbnail = defineComponent({
         <div
           class="
             border-base-content/5 absolute inset-0 m-auto h-full w-full
-            cursor-grab overflow-hidden border bg-black
+            cursor-grab overflow-hidden border bg-black bg-clip-padding
             group-data-[view-type=card]:overflow-hidden group-data-[view-type=card]:rounded-2xl
             group-data-[view-type=list]:rounded-lg
           "
