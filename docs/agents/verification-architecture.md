@@ -2,8 +2,6 @@
 
 三幅图看懂验证平台：整体架构、E2E 运行时、并行 agent 工作流。操作手册见 [verification.md](./verification.md)。
 
-> 图中用例数字（166 / 57 / 265 / 185）为当前快照，会随 story / spec 增加自动增长——E2E 按 spec 文件发现、视觉回归按 `index.json` 动态生成，无需同步改图。
-
 ## 平台架构总览
 
 ```mermaid
@@ -15,23 +13,21 @@ flowchart LR
 
   subgraph BUILD[串行构建 · 不可并行]
     US["userscript<br/>apps/monkey/dist/115master.user.js"]
-    SB["storybook-static × 2<br/>packages/ui + apps/monkey"]
+    SB["storybook-static × 2<br/>packages/ui + apps/monkey<br/>显式测试索引校验"]
   end
 
   subgraph PILLARS[验证支柱]
-    T1["① 单测 + Storybook 浏览器测试<br/>vitest projects + inertness<br/>monkey 265 / ui 185 例*"]
-    T2["② 业务 E2E harness<br/>纯路由拦截 · 零端口 · 离线<br/>57 例*"]
-    T3["③ 视觉回归<br/>story × light/dark 截图<br/>166 例*"]
+    T1["① 单元 + Storybook 浏览器测试<br/>vitest projects + inertness"]
+    T2["② 业务 E2E harness<br/>纯路由拦截 · 零端口 · 离线"]
   end
 
-  GATE["pnpm verify 总闸门<br/>type-check && test && test:e2e && build-storybook && test:visual"]
+  GATE["pnpm verify 总闸门<br/>type-check && test && test:e2e && build-storybook"]
 
   M -- "pnpm build" --> US
   M & P -- "pnpm build-storybook" --> SB
   M & P -- "pnpm test" --> T1
   US -- "注入页面" --> T2
-  SB -- "index.json 动态生成用例" --> T3
-  T1 & T2 & T3 --> GATE
+  T1 & T2 & SB --> GATE
 ```
 
 ## E2E 运行时
@@ -75,28 +71,21 @@ flowchart TD
     EC["Agent C：test:e2e:run --shard=3/3"]
   end
 
-  subgraph VIS["视觉回归 · 端口错开"]
-    VA["Agent D：VISUAL_UI_PORT=6306 VISUAL_MONKEY_PORT=6307<br/>test:visual --shard=1/2"]
-    VB["Agent E：VISUAL_UI_PORT=6406 VISUAL_MONKEY_PORT=6407<br/>test:visual --shard=2/2"]
-  end
-
-  UNIT["Agent F：单测 / Storybook 按包分工<br/>pnpm --filter &lt;pkg&gt; test"]
+  UNIT["Agent D：单测 / Storybook 按包分工<br/>pnpm --filter &lt;pkg&gt; test"]
 
   GO --> E2E
-  GO --> VIS
   GO --> UNIT
 
-  E2E & VIS & UNIT --> OUT["输出各自隔离<br/>test-results 等已 gitignore"]
+  E2E & UNIT --> OUT["输出各自隔离<br/>test-results 等已 gitignore"]
 
   subgraph LOCK["独占操作 · 任何时刻只允许一个 agent"]
-    L1["pnpm test:visual:update（写共享基线）"]
-    L2["pnpm add / pnpm install（锁文件）"]
-    L3["userscript / storybook 构建"]
+    L1["pnpm add / pnpm install（锁文件）"]
+    L2["userscript / Storybook 构建"]
   end
 ```
 
 要点：
 
 - E2E 纯路由拦截，无端口无服务器，分片/分工直接并行；按目录分工用 `test:e2e:run specs/<子目录>`（位置参数前不能加 `--`）。
-- 视觉回归的唯一共享资源是两个静态服务器端口与基线目录：跑对比错开端口即可并行，更新基线必须串行。
+- 单测与 Storybook 浏览器测试按包分工，避免重复执行相同矩阵。
 - 构建产物（userscript dist、storybook-static）是所有 agent 的共享输入，构建本身串行做完一次即可。

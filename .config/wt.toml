@@ -6,7 +6,7 @@
 install = "pnpm install"
 
 # wt merge 时的验证门禁：rebase 之后、合并进目标分支之前运行，失败则中止合并
-# 全量闸门是 pnpm verify（含 e2e + 视觉回归，较慢），这里用快速子集
+# 全量闸门是 pnpm verify（含 e2e + Storybook 静态构建，较慢），这里用快速子集
 [pre-merge]
 type-check = "pnpm type-check"
 test = "pnpm test"

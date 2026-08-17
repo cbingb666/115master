@@ -10,7 +10,7 @@
 
 - 组件某个公开状态或使用场景的可浏览文档；
 - 一个确定性、可隔离渲染的最小 fixture；
-- 真实浏览器中的 render、可访问性和视觉回归输入；
+- 真实浏览器中的 render 与可访问性测试输入；
 - 需要时，显式交互契约的唯一父 Canvas。
 
 Story 描述公开 UI 契约，不解释组件的私有实现。
@@ -49,7 +49,7 @@ Story 描述公开 UI 契约，不解释组件的私有实现。
 
 Story 导出名必须使用稳定的 PascalCase 英文标识符，例如 `Default`、`Sizes`、`Disabled`。需要中文展示名或特殊字符时使用 `name`，不通过改导出名调整文案。
 
-修改 `title` 或 Story 导出名会改变 Story ID，必须同时检查 inertness 清单、静态索引和视觉基线。
+修改 `title` 或 Story 导出名会改变 Story ID，必须同时检查 inertness 清单和静态索引。
 
 ## Story 组织
 
@@ -128,16 +128,6 @@ UI Storybook 的 a11y violation 视为错误。Monkey 存量 Story 的暂时政�
 - 测试名描述用户可观察的契约，不描述实现过程。
 
 新增、重命名或删除带 `.test()` 的父 Story 时，必须同步更新所属 Storybook 的 `.storybook/inertness.json`。纯展示 Story 在需要额外保证无输入副作用时也可以登记。
-
-## 视觉回归
-
-- 父 Story 是视觉回归的输入，`.test()` 子项不参与截图。
-- 将不同公开轴拆成独立 Story，使基线失败能直接指向 Variants、Sizes、States 或 Context。
-- 截图中的数据、文案、排序、容器尺寸和初始状态必须确定。
-- 持续动画、随机内容和不稳定时间不得进入普通视觉 Story。Motion 本身是契约时，使用专用确定性场景。
-- 主题或背景会改变契约时，必须在真实上下文中渲染，不用文字说明代替视觉证据。
-
-有意的视觉变更必须先运行回归并逐张确认 diff，然后才串行更新共享基线。
 
 ## 最小模板
 
@@ -280,9 +270,8 @@ Behavior.test('executes the public action contract', async ({ canvasElement }) =
 - [ ] 断言使用 role、accessible name 和公开可观察结果
 - [ ] 键盘、焦点、label、busy/disabled 和装饰语义按契约覆盖
 - [ ] Theme、背景、Overlay、容器宽度等上下文真实且最小
-- [ ] Story ID 变更已同步 inertness 清单与视觉基线
+- [ ] Story ID 变更已同步 inertness 清单与静态索引
 - [ ] 受影响包的 type-check、lint、test 和 Storybook 静态构建通过
-- [ ] 视觉回归 diff 已逐张确认，只在变更有意时更新基线
 
 ## 验证
 
@@ -298,10 +287,9 @@ pnpm --filter @115master/monkey lint
 pnpm --filter @115master/monkey test
 
 pnpm build-storybook                       # 静态索引与两套 Storybook
-pnpm test:visual                           # 意图确认后才 update
 ```
 
-具体分片、并行与视觉基线更新规则见 [验证平台](./verification.md)。
+具体分片、并行与静态构建规则见 [验证平台](./verification.md)。
 
 ## 参考
 
