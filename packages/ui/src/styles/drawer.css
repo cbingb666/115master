@@ -11,7 +11,7 @@
     max-height: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: clip;
     border: 0;
     background: transparent;
     opacity: 1;

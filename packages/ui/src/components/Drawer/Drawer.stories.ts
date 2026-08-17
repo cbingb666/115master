@@ -34,14 +34,25 @@ function frame() {
 }
 
 function opening(drawer: HTMLElement, panel: HTMLElement) {
-  return new Promise<{ matrix: DOMMatrixReadOnly, opacity: number }>((resolve) => {
+  return new Promise<{
+    drawerRect: DOMRect
+    matrix: DOMMatrixReadOnly
+    opacity: number
+    panelRect: DOMRect
+    scrollLeft: number
+    scrollTop: number
+  }>((resolve) => {
     const observer = new MutationObserver(() => {
       if (drawer.dataset.uiDrawerState !== 'open')
         return
       observer.disconnect()
       resolve({
+        drawerRect: drawer.getBoundingClientRect(),
         matrix: new DOMMatrixReadOnly(getComputedStyle(panel).transform),
         opacity: Number.parseFloat(getComputedStyle(drawer).opacity),
+        panelRect: panel.getBoundingClientRect(),
+        scrollLeft: drawer.scrollLeft,
+        scrollTop: drawer.scrollTop,
       })
     })
 
@@ -159,6 +170,11 @@ Placements.test('slides every placement in from its anchored edge and exposes th
 
     if (!panel)
       throw new Error(`${placement} Drawer did not expose its panel`)
+    const focusTarget = panel.firstElementChild
+
+    if (!(focusTarget instanceof HTMLElement))
+      throw new Error(`${placement} Drawer did not render focusable test content`)
+    focusTarget.tabIndex = 0
     const sample = opening(drawer, panel)
 
     canvas.getByRole('button', { name: `Open ${placement} Drawer` }).click()
@@ -179,9 +195,17 @@ Placements.test('slides every placement in from its anchored edge and exposes th
       await expect(animation).toBeDefined()
       const initial = placement === 'bottom' ? start.matrix.m42 : start.matrix.m41
       const extent = placement === 'bottom' ? panel.offsetHeight : panel.offsetWidth
+      const rendered = placement === 'start'
+        ? start.panelRect.left - start.drawerRect.left
+        : placement === 'end'
+          ? start.panelRect.right - start.drawerRect.right
+          : start.panelRect.bottom - start.drawerRect.bottom
 
       await expect(Math.sign(initial)).toBe(placement === 'start' ? -1 : 1)
       await expect(Math.abs(initial)).toBeGreaterThan(extent * 0.5)
+      await expect(rendered).toBeCloseTo(initial, 0)
+      await expect(start.scrollLeft).toBe(0)
+      await expect(start.scrollTop).toBe(0)
       await waitFor(() => {
         const moved = new DOMMatrixReadOnly(getComputedStyle(panel).transform)
         const current = placement === 'bottom' ? moved.m42 : moved.m41
