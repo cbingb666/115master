@@ -18,16 +18,23 @@ test.describe('播放列表', () => {
     await expect(sider(page)).not.toHaveAttribute('open')
     await trigger.click()
     await expect(sider(page)).toHaveAttribute('open', '')
+    // Drawer 独占模态 Surface，播放列表内容不得再嵌套玻璃面板。
+    await expect(sider(page).locator('.ui-glass-panel')).toHaveCount(1)
     await expect(sider(page).locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
 
-    const after = await player.boundingBox()
-    const panel = await sider(page).locator('[data-ui-drawer-panel]').boundingBox()
+    const panel = sider(page).locator('[data-ui-drawer-panel]')
+    await expect.poll(async () => {
+      const box = await panel.boundingBox()
+      return box ? Math.round(box.x + box.width) : null
+    }).toBe(Math.round(before.x + before.width))
 
-    if (!after || !panel)
+    const after = await player.boundingBox()
+    const box = await panel.boundingBox()
+
+    if (!after || !box)
       throw new Error('播放列表 Drawer 缺少可测量几何。')
     expect(after).toEqual(before)
-    expect(panel.x).toBeLessThan(before.x + before.width)
-    expect(panel.x + panel.width).toBeCloseTo(before.x + before.width, 0)
+    expect(box.x).toBeLessThan(before.x + before.width)
 
     // 3 集全部渲染，计数正确
     await expect(sider(page).getByText('(3)')).toBeVisible()

@@ -1,47 +1,45 @@
 <template>
   <div :class="styles.playlist.container">
-    <div :class="styles.box">
-      <div :class="styles.playlist.header.root">
-        <div :class="styles.playlist.header.title">
-          <Icon :name="I.PLAYLIST" class="size-10" />
-          播放列表
-          <span
-            v-if="playlist.state?.data?.length && playlist.state?.data?.length > 0"
-            :class="styles.playlist.header.count"
-          >({{ playlist.state?.data.length }})</span>
-        </div>
-        <Button
-          variant="ghost"
-          shape="circle"
-          aria-label="关闭播放列表"
-          title="关闭播放列表"
-          :class="styles.playlist.header.close"
-          @click="emit('close')"
-        >
-          <Icon :name="I.CLOSE" :class="styles.playlist.header.closeIcon" />
-        </Button>
+    <div :class="styles.playlist.header.root">
+      <div :class="styles.playlist.header.title">
+        <Icon :name="I.PLAYLIST" class="size-10" />
+        播放列表
+        <span
+          v-if="playlist.state?.data?.length && playlist.state?.data?.length > 0"
+          :class="styles.playlist.header.count"
+        >({{ playlist.state?.data.length }})</span>
       </div>
-
-      <div v-if="playlist.error" :class="styles.playlist.content">
-        <StatusFeedback status="error" v-bind="errorFeedback(playlist.error)" />
-      </div>
-      <div v-else-if="playlist.isLoading || (!playlist.isLoading && !playlist.isReady)" :class="styles.playlist.content">
-        <div class="skeleton h-24 w-full rounded-lg" />
-      </div>
-      <div
-        v-else
-        :class="[scrollbar(), styles.playlist.content]"
+      <Button
+        variant="ghost"
+        shape="circle"
+        aria-label="关闭播放列表"
+        title="关闭播放列表"
+        :class="styles.playlist.header.close"
+        @click="emit('close')"
       >
-        <PlaylistItem
-          v-for="item in playlist.state?.data"
-          ref="playlistItemRefs"
-          :key="item.pc"
-          :item="item"
-          :active="item.pc === pickCode"
-          @play="handlePlay"
-        />
-        <div :class="styles.playlist.divider" />
-      </div>
+        <Icon :name="I.CLOSE" :class="styles.playlist.header.closeIcon" />
+      </Button>
+    </div>
+
+    <div v-if="playlist.error" :class="styles.playlist.content">
+      <StatusFeedback status="error" v-bind="errorFeedback(playlist.error)" />
+    </div>
+    <div v-else-if="playlist.isLoading || (!playlist.isLoading && !playlist.isReady)" :class="styles.playlist.content">
+      <div class="skeleton h-24 w-full rounded-lg" />
+    </div>
+    <div
+      v-else
+      :class="[scrollbar(), styles.playlist.content]"
+    >
+      <PlaylistItem
+        v-for="item in playlist.state?.data"
+        ref="playlistItemRefs"
+        :key="item.pc"
+        :item="item"
+        :active="item.pc === pickCode"
+        @play="handlePlay"
+      />
+      <div :class="styles.playlist.divider" />
     </div>
   </div>
 </template>
@@ -69,15 +67,6 @@ const emit = defineEmits<{
 
 /** 样式常量定义 */
 const styles = clsx({
-  box: [
-    '[--space:calc(var(--spacing)*2)]',
-    'relative',
-    'h-[calc(100%-var(--space)*2)] w-[calc(100%-var(--space)*2)]',
-    'mx-auto mt-[var(--space)]',
-    'rounded-2xl',
-    'overflow-hidden',
-    'ui-glass-panel',
-  ],
   playlist: {
     container: [
       'text-base-content relative box-border flex h-full flex-col',
