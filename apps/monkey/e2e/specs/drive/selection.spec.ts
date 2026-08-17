@@ -1,9 +1,11 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
-import { json } from '../../support'
-import { boot, menu, row, rows, watch } from './helpers'
+import { dirs, FILES_RE, filesRes, json } from '../../support'
+import { boot, menu, record, row, rows, watch } from './helpers'
 
 const LABEL_RE = /^https:\/\/webapi\.115\.com\/label\/list/
+const MOVE_RE = /^https:\/\/webapi\.115\.com\/files\/move(?:\?|$)/
+const MOVE_PROGRESS_RE = /^https:\/\/webapi\.115\.com\/files\/move_progress/
 
 /** 勾选某行的复选框 */
 async function check(page: Page, name: string) {
@@ -11,6 +13,51 @@ async function check(page: Page, name: string) {
 }
 
 test.describe('选择与操作', () => {
+  test('移动两个文件后从服务端重新获取源目录', async ({ page }) => {
+    const errors = watch(page)
+    const requests = record(page, FILES_RE)
+    let moved = false
+    await boot(page, {
+      mocks: (api) => {
+        api.override(FILES_RE, ({ route, url }) => {
+          if ((url.searchParams.get('cid') ?? '0') !== '0')
+            return
+          const root = dirs['0']
+          return json(route, filesRes({
+            ...root,
+            items: moved ? [root.items[0]] : [root.items[0], root.items[2], root.items[3]],
+          }, 0, 256))
+        })
+        api.override(MOVE_RE, ({ route }) => {
+          moved = true
+          return json(route, { state: true })
+        })
+        api.override(MOVE_PROGRESS_RE, ({ route }) => json(route, { state: true, progress: 100 }))
+      },
+    })
+
+    await check(page, '演示视频 01.mp4')
+    await check(page, '演示视频 02.mp4')
+    await expect(page.getByTitle('退出多选')).toContainText('2 项')
+    await page.getByRole('button', { name: '移动' }).click()
+
+    const dialog = page.getByRole('dialog', { name: '移动到' })
+    await expect(page).toHaveURL(/fb_cid=0/)
+    await dialog.getByRole('listitem').filter({ hasText: '动漫' }).click()
+    await expect(page).toHaveURL(/fb_cid=1001/)
+    const before = requests.filter(request => request.url.searchParams.get('cid') === '0').length
+    await dialog.getByRole('button', { name: '确认' }).click()
+
+    await expect(dialog).toBeHidden()
+    await expect.poll(() => (
+      requests.filter(request => request.url.searchParams.get('cid') === '0').length
+    )).toBeGreaterThan(before)
+    await expect(row(page, '动漫')).toBeVisible()
+    await expect(row(page, '演示视频 01.mp4')).toHaveCount(0)
+    await expect(row(page, '演示视频 02.mp4')).toHaveCount(0)
+    expect(errors).toEqual([])
+  })
+
   test('分页器与 ActionBar 交叉切换时保持视觉连续', async ({ page }) => {
     const errors = watch(page)
     await boot(page, { storage: { '115Master_pageSize': '30' } })

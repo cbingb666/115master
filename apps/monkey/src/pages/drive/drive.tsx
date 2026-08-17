@@ -74,13 +74,13 @@ const Drive = defineComponent({
         const items = store.selection.values
         const res = await action.moveBatch(store.nav.cid, items)
         if (res.success)
-          store.applyRemoveMutation(items, res.pid)
+          await store.afterAction([res.pid])
       },
       improve: async () => {
         const pid = store.prevLevel?.cid ?? '0'
         const items = store.selection.values
         if (await action.improve(items, pid))
-          store.applyRemoveMutation(items, pid)
+          await store.afterAction([pid])
       },
       rename: async () => {
         const item = store.selection.values[0]
@@ -228,7 +228,7 @@ const Drive = defineComponent({
       exitSelectMode()
       const success = await action.dragMove(cid, originItems)
       if (success)
-        store.applyRemoveMutation(originItems, cid)
+        await store.afterAction([cid])
       return success
     }
 

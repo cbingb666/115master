@@ -308,11 +308,11 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
 
       /**
        * 最小化刷新 drive 列表：
-       * 离开 drive 页后 nav 冻结在进入时的目录，与源目录一致则增量移除缓存页中的该项（目标目录失效）；
+       * 离开 drive 页后 nav 冻结在进入时的目录，与源目录一致则重新校验源/目标目录；
        * 不一致（如直接打开播放页）则失效源/目标目录缓存，返回列表时重拉
        */
       if (driveStore.nav.cid === sourceCid) {
-        driveStore.applyRemoveMutation([fileItem], pid)
+        await driveStore.afterAction([pid])
       }
       else {
         driveStore.invalidate('all', sourceCid)

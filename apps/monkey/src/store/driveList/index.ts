@@ -153,15 +153,17 @@ export const useDriveStore = defineStore('drive', () => {
     return list.changeSort(nextOrder, nextAsc, nextFcMix)
   }
 
-  function afterAction(invalidateCids?: string[]) {
+  async function afterAction(invalidateCids?: string[]) {
     const cid = nav.cid.value || '0'
-    void invalidate(nav.area.value || 'all', cid)
-    invalidateCids?.forEach((targetCid) => {
-      void invalidate('all', targetCid)
-      void invalidate('star', targetCid)
-    })
     selection.clear()
-    void refresh()
+    await Promise.all([
+      invalidate(nav.area.value || 'all', cid),
+      ...(invalidateCids?.flatMap(targetCid => [
+        invalidate('all', targetCid),
+        invalidate('star', targetCid),
+      ]) ?? []),
+    ])
+    return refresh()
   }
 
   watch(
