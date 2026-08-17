@@ -40,8 +40,6 @@ export function useContextMenu(ctx: PlayerContext) {
   const visible = ref(false)
   /** 菜单位置 */
   const position = shallowRef({ x: 0, y: 0 })
-  /** 关于弹窗显示状态 */
-  const showAbout = ref(false)
   /** 设置弹窗显示状态 */
   const showSettings = ref(false)
   /** 设置弹窗默认 tab */
@@ -67,15 +65,6 @@ export function useContextMenu(ctx: PlayerContext) {
       actionKey: 'statistics',
       action: () => {
         ctx.statistics.toggleVisible()
-        visible.value = false
-      },
-    },
-    {
-      id: 'about',
-      label: '关于',
-      icon: I.ABOUT,
-      action: () => {
-        showAbout.value = true
         visible.value = false
       },
     },
@@ -121,7 +110,6 @@ export function useContextMenu(ctx: PlayerContext) {
     visible,
     position,
     menuItems,
-    showAbout,
     showSettings,
     defaultSettingsTab,
     show,

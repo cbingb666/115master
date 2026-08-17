@@ -96,7 +96,9 @@ test.describe('控制栏', () => {
     await page.goto(videoUrl(EPISODES[0].pc))
 
     await page.mouse.click(720, 450, { button: 'right' })
-    await page.locator('.x-popup:visible').getByText('Statistics', { exact: true }).click()
+    const menu = page.locator('.x-popup:visible')
+    await expect(menu.getByText('关于', { exact: true })).toHaveCount(0)
+    await menu.getByText('Statistics', { exact: true }).click()
     const statistics = page.locator('.x-popup').filter({
       has: page.getByRole('heading', { name: 'Statistics' }),
     })
@@ -104,14 +106,6 @@ test.describe('控制栏', () => {
     await expect(statistics.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
     await statistics.getByRole('button').click()
     await expect(statistics).toBeHidden()
-
-    await page.mouse.click(720, 450, { button: 'right' })
-    await page.locator('.x-popup:visible').getByText('关于', { exact: true }).click()
-    const about = page.locator('.x-popup').filter({
-      has: page.getByRole('heading', { name: '关于' }),
-    })
-    await expect(about).toBeVisible()
-    await expect(about.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
     expect(errors).toEqual([])
   })
 

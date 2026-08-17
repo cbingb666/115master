@@ -60,11 +60,7 @@
     <Statistics />
 
     <!-- 右键菜单 -->
-    <ContextMenu>
-      <template #aboutContent>
-        <slot name="aboutContent" />
-      </template>
-    </ContextMenu>
+    <ContextMenu />
 
     <!-- 恢复容器 -->
     <div
@@ -122,8 +118,6 @@ defineSlots<{
   headerLeft: (props: { ctx: PlayerContext }) => void
   /** 头部右侧插槽 */
   headerRight: (props: { ctx: PlayerContext }) => void
-  /** 关于内容插槽 */
-  aboutContent: () => void
 }>()
 
 const styles = clsx({

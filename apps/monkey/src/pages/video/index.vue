@@ -89,9 +89,6 @@
               </PlayerControlSurface>
             </div>
           </template>
-          <template #aboutContent>
-            <About />
-          </template>
         </XPlayer>
       </div>
     </div>
@@ -157,7 +154,6 @@ import { appLogger } from '@/utils/logger'
 import { isMac } from '@/utils/platform'
 import { goToPlayer } from '@/utils/route'
 import { webLinkIINA, webLinkShortcutsMpv } from '@/utils/weblink'
-import About from './components/About/index.vue'
 import { FileActionMenu } from './components/FileActionMenu'
 import HeaderInfo from './components/HeaderInfo/index.vue'
 import MovieInfo from './components/MovieInfo/index.vue'

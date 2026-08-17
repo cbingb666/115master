@@ -35,16 +35,6 @@
     </ul>
   </Popup>
 
-  <!-- 关于弹窗 -->
-  <AboutPopup
-    :visible="contextMenu.showAbout.value"
-    @update:visible="(val: boolean) => contextMenu.showAbout.value = val"
-  >
-    <template #content>
-      <slot name="aboutContent" />
-    </template>
-  </AboutPopup>
-
   <!-- 偏好设置弹窗 -->
   <PlayerSettingsPopup
     :visible="contextMenu.showSettings.value"
@@ -60,11 +50,6 @@ import PlayerSettingsPopup from '@/components/XPlayer/components/Settings/Player
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import AboutPopup from './AboutPopup.vue'
-
-defineSlots<{
-  aboutContent: () => void
-}>()
 
 const styles = clsx({
   container: 'menu',
