@@ -17,9 +17,9 @@ interface SectionItem {
 }
 
 export const PREFERENCE_SECTIONS: SectionItem[] = [
+  { id: 'account', label: '账号', icon: I.ACCOUNT },
   { id: 'appearance', label: '外观', icon: I.THEME_LIGHT },
   { id: 'files', label: '文件列表', icon: I.LIST },
-  { id: 'account', label: '账号', icon: I.ACCOUNT },
   { id: 'about', label: '关于', icon: I.ABOUT },
 ]
 
