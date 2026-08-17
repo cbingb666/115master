@@ -90,6 +90,40 @@ test.describe('保存目录选择器', () => {
     expect(errors).toEqual([])
   })
 
+  test('分页器吸附在列表底部，滚动到底后不遮挡列表', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    const scroll = picker.locator('[data-file-browser-scroll]')
+    const dock = picker.locator('[data-file-browser-pagination]')
+    const pagination = dock.locator(':scope > *')
+
+    await expect(dock).toHaveCSS('position', 'sticky')
+    await expect.poll(async () => {
+      const listBox = await scroll.boundingBox()
+      const paginationBox = await pagination.boundingBox()
+      if (!listBox || !paginationBox)
+        return false
+      return listBox.y + listBox.height - paginationBox.y - paginationBox.height
+    }).toBe(16)
+
+    await scroll.evaluate(element => element.scrollTo({ top: element.scrollHeight }))
+    await expect.poll(() => scroll.evaluate(element => (
+      element.scrollHeight - element.clientHeight - element.scrollTop
+    ))).toBe(0)
+    await expect.poll(async () => {
+      const listBox = await picker.getByRole('list', { name: '文件列表' }).boundingBox()
+      const paginationBox = await pagination.boundingBox()
+      if (!listBox || !paginationBox)
+        return Number.POSITIVE_INFINITY
+      return listBox.y + listBox.height - paginationBox.y
+    }).toBeLessThanOrEqual(0)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
   test('排序按钮可打开选项并刷新列表', async ({ page }) => {
     const errors = watch(page)
     const requests = record(page, FILES_RE)

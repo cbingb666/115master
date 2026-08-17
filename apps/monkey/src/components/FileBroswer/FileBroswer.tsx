@@ -305,6 +305,7 @@ const FileBroswer = defineComponent({
         <div
           ref={scrollRef}
           class={[...scrollbar(), 'relative flex min-h-0 flex-1 flex-col overflow-y-auto']}
+          data-file-browser-scroll
         >
           <FileList
             items={explorer.data.value?.data ?? []}
@@ -312,7 +313,7 @@ const FileBroswer = defineComponent({
             positionKey={positionKey.value}
             viewType={viewType.value}
             class="
-              pt-1
+              shrink-0 pt-1
               data-[view-type=card]:gap-3!
               data-[view-type=card]:px-7
             "
@@ -355,7 +356,10 @@ const FileBroswer = defineComponent({
           </FileList>
 
           {explorer.pageCount.value > 1 && (
-            <div class="ui-z-elevated fixed bottom-4 left-1/2 flex -translate-x-1/2 justify-center">
+            <div
+              class="ui-z-elevated sticky bottom-0 flex shrink-0 justify-center px-4 py-4"
+              data-file-browser-pagination
+            >
               <Pagination
                 surface="floating"
                 currentPage={explorer.page.value}
