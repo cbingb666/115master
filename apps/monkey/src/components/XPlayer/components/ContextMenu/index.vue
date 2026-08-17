@@ -1,21 +1,17 @@
 <template>
-  <Popup
-    :visible="contextMenu.visible.value"
-    :x="contextMenu.position.value.x"
-    :y="contextMenu.position.value.y"
-    @update:visible="contextMenu.hide"
+  <UiContextMenu
+    :open="contextMenu.visible.value"
+    :position="contextMenu.position.value"
+    aria-label="播放器操作"
+    @update:open="(visible: boolean) => contextMenu.visible.value = visible"
   >
-    <ul
-      :class="styles.container"
-      role="menu"
-      @keydown="onMenuKeydown"
-    >
+    <ul role="group">
       <li
-        v-for="(item, index) in contextMenu.menuItems"
+        v-for="item in contextMenu.menuItems"
         :key="item.id"
+        role="none"
       >
         <button
-          :ref="(el) => setMenuItemRef(el, index)"
           type="button"
           role="menuitem"
           :class="styles.menuItem"
@@ -33,7 +29,7 @@
         </button>
       </li>
     </ul>
-  </Popup>
+  </UiContextMenu>
 
   <!-- 偏好设置弹窗 -->
   <PlayerSettingsPopup
@@ -44,15 +40,13 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, watch } from 'vue'
-import Popup from '@/components/XPlayer/components/Popup/index.vue'
+import { ContextMenu as UiContextMenu } from '@115master/ui'
 import PlayerSettingsPopup from '@/components/XPlayer/components/Settings/PlayerSettingsPopup.vue'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
-  container: 'menu',
   menuItem: 'menu-item rounded-xl px-3',
   icon: 'size-5',
   label: 'flex-1 text-sm font-medium',
@@ -60,57 +54,4 @@ const styles = clsx({
 })
 
 const { contextMenu, shortcuts } = usePlayerContext()
-
-/** 菜单项元素（v-for 索引对应） */
-const menuItemRefs: (HTMLButtonElement | null)[] = []
-
-function setMenuItemRef(el: unknown, index: number) {
-  menuItemRefs[index] = (el as HTMLButtonElement | null) ?? null
-}
-
-/** 方向键 / Tab 在菜单项间循环聚焦 */
-function focusItem(delta: number) {
-  const items = menuItemRefs.filter((el): el is HTMLButtonElement => !!el)
-  if (items.length === 0)
-    return
-  const index = items.indexOf(document.activeElement as HTMLButtonElement)
-  const next = index === -1
-    ? (delta > 0 ? 0 : items.length - 1)
-    : (index + delta + items.length) % items.length
-  items[next].focus()
-}
-
-function onMenuKeydown(event: KeyboardEvent) {
-  switch (event.key) {
-    case 'ArrowDown':
-      event.preventDefault()
-      focusItem(1)
-      break
-    case 'ArrowUp':
-      event.preventDefault()
-      focusItem(-1)
-      break
-    case 'Home':
-      event.preventDefault()
-      menuItemRefs.find(Boolean)?.focus()
-      break
-    case 'End':
-      event.preventDefault()
-      menuItemRefs.filter(Boolean).slice(-1)[0]?.focus()
-      break
-    case 'Tab':
-      // 菜单开启期间焦点保持在菜单内循环
-      event.preventDefault()
-      focusItem(event.shiftKey ? -1 : 1)
-      break
-  }
-}
-
-// 菜单打开时聚焦首个菜单项，保证 Esc / 方向键立即可用
-watch(contextMenu.visible, async (visible) => {
-  if (!visible)
-    return
-  await nextTick()
-  menuItemRefs.find(Boolean)?.focus()
-})
 </script>

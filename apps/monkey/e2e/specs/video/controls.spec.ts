@@ -62,9 +62,9 @@ test.describe('控制栏', () => {
     await setupVideo(page)
     await page.goto(videoUrl(EPISODES[0].pc))
 
-    // 右键播放器遮罩 → 上下文菜单 → 偏好设置（弹层常驻 DOM，取可见的）
+    // 右键播放器遮罩 → 上下文菜单 → 偏好设置
     await page.mouse.click(720, 450, { button: 'right' })
-    const menu = page.locator('.x-popup:visible')
+    const menu = page.getByRole('menu', { name: '播放器操作' })
     await menu.getByText('偏好设置', { exact: true }).click()
 
     /** 设置弹窗：播放/快捷键两个标签页 */
@@ -96,7 +96,7 @@ test.describe('控制栏', () => {
     await page.goto(videoUrl(EPISODES[0].pc))
 
     await page.mouse.click(720, 450, { button: 'right' })
-    const menu = page.locator('.x-popup:visible')
+    const menu = page.getByRole('menu', { name: '播放器操作' })
     await expect(menu.getByText('关于', { exact: true })).toHaveCount(0)
     await menu.getByText('Statistics', { exact: true }).click()
     const statistics = page.locator('.x-popup').filter({

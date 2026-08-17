@@ -70,30 +70,6 @@ export function useContextMenu(ctx: PlayerContext) {
     },
   ]
 
-  /** 显示菜单 */
-  const show = (x: number, y: number) => {
-    /** 获取播放器容器的位置 */
-    const rootRect = ctx.refs.rootRef.value?.getBoundingClientRect()
-
-    if (rootRect) {
-      // 计算相对于播放器容器的位置
-      position.value = {
-        x: x - rootRect.left,
-        y: y - rootRect.top,
-      }
-    }
-    else {
-      position.value = { x, y }
-    }
-
-    visible.value = true
-  }
-
-  /** 隐藏菜单 */
-  const hide = () => {
-    visible.value = false
-  }
-
   /** 打开设置弹窗 */
   const openSettings = (tab: SettingsTab = 'play') => {
     defaultSettingsTab.value = tab
@@ -103,7 +79,8 @@ export function useContextMenu(ctx: PlayerContext) {
   /** 处理右键事件 */
   const handleContextMenu = (event: MouseEvent) => {
     event.preventDefault()
-    show(event.clientX, event.clientY)
+    position.value = { x: event.clientX, y: event.clientY }
+    visible.value = true
   }
 
   return {
@@ -112,8 +89,6 @@ export function useContextMenu(ctx: PlayerContext) {
     menuItems,
     showSettings,
     defaultSettingsTab,
-    show,
-    hide,
     handleContextMenu,
     openSettings,
   }
