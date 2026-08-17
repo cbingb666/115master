@@ -17,6 +17,7 @@ const Dropdown = defineComponent({
   setup: (_, { slots }) => {
     const anchor = shallowRef<HTMLElement>()
     const menu = shallowRef<HTMLElement>()
+    const target = shallowRef<HTMLElement | string>('#my-app')
     const open = shallowRef(false)
     const pos = shallowRef({ x: 0, y: 0 })
 
@@ -42,6 +43,7 @@ const Dropdown = defineComponent({
     }
 
     const show = () => {
+      target.value = anchor.value?.closest<HTMLElement>('[data-ui-modal-root]') ?? '#my-app'
       open.value = true
       nextTick(place)
     }
@@ -113,7 +115,7 @@ const Dropdown = defineComponent({
         <div ref={anchor} class="inline-flex">
           {slots.target?.({ onClick: toggle })}
         </div>
-        <Teleport to="#my-app">
+        <Teleport to={target.value}>
           {open.value && (
             <div
               ref={menu}

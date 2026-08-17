@@ -204,7 +204,7 @@ const FileBroswer = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        <div class="ui-z-elevated sticky top-0 flex justify-end px-6 pt-3">
+        <div class="ui-z-header sticky top-0 flex justify-end px-6 pt-3">
           <div class="flex w-full items-center gap-2 sm:w-auto">
             {showSearchBox.value && (
               <label
