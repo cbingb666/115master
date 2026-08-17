@@ -52,6 +52,10 @@ const props = {
     type: String as PropType<DrawerSize>,
     default: 'md',
   },
+  overlayHandle: {
+    type: Boolean,
+    default: false,
+  },
   closeOnEscape: {
     type: Boolean,
     default: true,
@@ -208,10 +212,16 @@ export const Drawer = defineComponent({
           closeOnBackdrop={props.closeOnBackdrop}
           initialFocus={props.initialFocus}
           {...mergeProps(attrs, {
-            'class': ['ui-drawer', placements[props.placement], sizes[props.size]],
+            'class': [
+              'ui-drawer',
+              placements[props.placement],
+              sizes[props.size],
+              props.overlayHandle && 'ui-drawer--overlay-handle',
+            ],
             'aria-label': label || undefined,
             'data-ui-drawer-placement': props.placement,
             'data-ui-drawer-size': props.size,
+            'data-ui-drawer-overlay-handle': props.overlayHandle ? '' : undefined,
             'onUpdate:open': (open: boolean) => emit('update:open', open),
             'onClose': (reason: ModalDismissReason) => emit('close', reason),
             'onOpened': () => emit('opened'),

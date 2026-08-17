@@ -12,6 +12,7 @@ test.describe('播放列表', () => {
     const drawer = sider(page)
     const panel = drawer.locator('[data-ui-drawer-panel]')
     const handle = drawer.locator('[data-ui-drawer-drag-handle]')
+    const header = drawer.locator('[data-app-playlist-header]')
     const cover = drawer.locator('.aspect-video').first()
 
     for (const width of [390, 639]) {
@@ -26,6 +27,27 @@ test.describe('播放列表', () => {
           width: Math.round(box.width),
         }
       }).toEqual({ bottom: 900, height: 512, width })
+      await expect(drawer).toHaveAttribute('data-ui-drawer-overlay-handle', '')
+      await expect.poll(async () => {
+        const [panelBox, handleBox, headerBox] = await Promise.all([
+          panel.boundingBox(),
+          handle.boundingBox(),
+          header.boundingBox(),
+        ])
+        if (!panelBox || !handleBox || !headerBox)
+          return null
+        return {
+          handleHeight: Math.round(handleBox.height),
+          handleInset: Math.round(handleBox.y - panelBox.y),
+          headerHeight: Math.round(headerBox.height),
+          headerOffset: Math.round(headerBox.y - handleBox.y),
+        }
+      }).toEqual({
+        handleHeight: 20,
+        handleInset: 1,
+        headerHeight: 84,
+        headerOffset: 0,
+      })
     }
 
     await expect.poll(async () => Math.round((await cover.boundingBox())?.width ?? 0)).toBe(160)

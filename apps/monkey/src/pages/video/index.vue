@@ -107,6 +107,8 @@
       label="播放列表"
       :placement="placement"
       size="md"
+      overlay-handle
+      class="app-playlist-drawer"
       data-app-xplayer-shortcuts
     >
       <Playlist

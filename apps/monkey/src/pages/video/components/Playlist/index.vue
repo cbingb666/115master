@@ -1,6 +1,6 @@
 <template>
   <div :class="styles.playlist.container">
-    <div :class="styles.playlist.header.root">
+    <div data-app-playlist-header :class="styles.playlist.header.root">
       <div :class="styles.playlist.header.title">
         <Icon :name="I.PLAYLIST" class="size-10" />
         播放列表
@@ -71,14 +71,15 @@ const styles = clsx({
     container: [
       'text-base-content relative box-border flex h-full flex-col',
       '[--app-playlist-space:calc(var(--spacing)*4)]',
-      '[--app-playlist-header-height:calc(var(--spacing)*16)]',
+      '[--app-playlist-header-height:calc(var(--spacing)*16+var(--app-playlist-handle-space,0rem))]',
     ],
     header: {
       root: [
         'ui-z-raised absolute inset-x-0 top-0',
         'flex flex-shrink-0 items-center justify-between',
         'h-(--app-playlist-header-height)',
-        'px-(--app-playlist-space) py-4',
+        'px-(--app-playlist-space) pb-4',
+        'pt-[calc(var(--spacing)*4+var(--app-playlist-handle-space,0rem))]',
         'text-base-content',
         'app-playlist-header-fade',
       ],
@@ -142,6 +143,10 @@ watch(
 </script>
 
 <style>
+.app-playlist-drawer.ui-drawer--bottom {
+  --app-playlist-handle-space: var(--ui-drawer-handle-size);
+}
+
 .app-playlist-header-fade::before {
   position: absolute;
   inset: 0;

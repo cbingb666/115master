@@ -1,6 +1,7 @@
 @layer components {
   .ui-drawer {
     --ui-drawer-duration: 300ms;
+    --ui-drawer-handle-size: 1.25rem;
 
     position: fixed;
     inset: 0;
@@ -155,12 +156,24 @@
 
   .ui-drawer__handle {
     display: flex;
-    flex: 0 0 1.25rem;
+    flex: 0 0 var(--ui-drawer-handle-size);
     align-items: center;
     justify-content: center;
     cursor: grab;
     touch-action: none;
     user-select: none;
+  }
+
+  .ui-drawer--bottom.ui-drawer--overlay-handle .ui-drawer__panel {
+    position: relative;
+  }
+
+  .ui-drawer--bottom.ui-drawer--overlay-handle .ui-drawer__handle {
+    position: absolute;
+    z-index: var(--ui-z-cover);
+    inset-block-start: 0;
+    inset-inline: 0;
+    block-size: var(--ui-drawer-handle-size);
   }
 
   .ui-drawer__handle::before {
