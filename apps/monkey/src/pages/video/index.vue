@@ -301,7 +301,7 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
       const sourceCid = params.cid.value || DataFileInfo.state.parent_id || '0'
 
       /** 复用 masterapp 的移动功能（文件浏览器对话框 + 移动 API） */
-      const { success, pid, items } = await moveAction.moveBatch(sourceCid, [fileItem])
+      const { success, pid } = await moveAction.moveBatch(sourceCid, [fileItem])
       if (!success) {
         return
       }
@@ -312,7 +312,7 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
        * 不一致（如直接打开播放页）则失效源/目标目录缓存，返回列表时重拉
        */
       if (driveStore.nav.cid === sourceCid) {
-        driveStore.applyRemoveMutation(items, pid)
+        driveStore.applyRemoveMutation([fileItem], pid)
       }
       else {
         driveStore.invalidate('all', sourceCid)

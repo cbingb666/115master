@@ -74,7 +74,7 @@ const Drive = defineComponent({
         const items = store.selection.values
         const res = await action.moveBatch(store.nav.cid, items)
         if (res.success)
-          store.applyRemoveMutation(res.items, res.pid)
+          store.applyRemoveMutation(items, res.pid)
       },
       improve: async () => {
         const pid = store.prevLevel?.cid ?? '0'

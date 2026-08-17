@@ -3,7 +3,6 @@ import { promise } from '@115master/utils'
 import { useAppDialog } from '@/app/dialog'
 import { useFileBrowserDialog, useToast } from '@/components'
 import { drive115 } from '@/utils/drive115Instance'
-import { getFilesItemId } from '@/utils/filesItem'
 import { getFileIds } from './helpers'
 
 /** 移动操作 */
@@ -69,21 +68,13 @@ export function useMoveAction() {
   }
 
   /** 移动批量 */
-  async function moveBatch(defaultPid: string, items: Share.Entity.FilesItem[]): Promise<{
-    success: boolean
-    pid: string
-    items: Share.Entity.FilesItem[]
-  }> {
+  async function moveBatch(defaultPid: string, items: Share.Entity.FilesItem[]): Promise<{ success: boolean, pid: string }> {
     const pid = await moveDialog(defaultPid)
-    if (!pid)
-      return { success: false, pid: '', items: [] }
-
-    const movable = items.filter(item => getFilesItemId(item) !== pid)
-    if (movable.length === 0)
-      return { success: false, pid, items: [] }
-
-    const success = await moveCore(pid, movable)
-    return { success, pid, items: movable }
+    if (!pid) {
+      return { success: false, pid: '' }
+    }
+    const success = await moveCore(pid, items)
+    return { success, pid }
   }
 
   /** 拖拽移动 */

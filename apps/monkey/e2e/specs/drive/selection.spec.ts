@@ -1,24 +1,9 @@
 import type { Page } from '@playwright/test'
-import type { MockApi } from '../../support'
 import { expect, test } from '@playwright/test'
-import { dirs, FILES_RE, filesRes, json } from '../../support'
-import { boot, menu, record, row, rows, watch } from './helpers'
+import { json } from '../../support'
+import { boot, menu, row, rows, watch } from './helpers'
 
 const LABEL_RE = /^https:\/\/webapi\.115\.com\/label\/list/
-const MOVE_RE = /^https:\/\/webapi\.115\.com\/files\/move(?:\?|$)/
-const MOVE_PROGRESS_RE = /^https:\/\/webapi\.115\.com\/files\/move_progress/
-
-function mockMinimalDirectory(api: MockApi) {
-  api.override(FILES_RE, ({ route, url }) => {
-    if ((url.searchParams.get('cid') ?? '0') !== '0')
-      return
-    const root = dirs['0']
-    return json(route, filesRes({
-      ...root,
-      items: [root.items[0], root.items[2], root.items[3]],
-    }, 0, 256))
-  })
-}
 
 /** 勾选某行的复选框 */
 async function check(page: Page, name: string) {
@@ -26,43 +11,6 @@ async function check(page: Page, name: string) {
 }
 
 test.describe('选择与操作', () => {
-  test('全选后移动到已选文件夹仍保留目标文件夹', async ({ page }) => {
-    const errors = watch(page)
-    const moves = record(page, MOVE_RE)
-    await boot(page, {
-      mocks: (api) => {
-        mockMinimalDirectory(api)
-        api.override(MOVE_RE, ({ route }) => json(route, { state: true }))
-        api.override(MOVE_PROGRESS_RE, ({ route }) => json(route, { state: true, progress: 100 }))
-      },
-    })
-
-    await check(page, '演示视频 01.mp4')
-    await page.keyboard.press('Meta+a')
-    await expect(page.getByTitle('退出多选')).toContainText('3 项')
-    await page.getByRole('button', { name: '移动' }).click()
-
-    const dialog = page.getByRole('dialog', { name: '移动到' })
-    await expect(dialog).toBeVisible()
-    await expect(page).toHaveURL(/fb_cid=0/)
-    await dialog.getByRole('listitem').filter({ hasText: '动漫' }).click()
-    await expect(page).toHaveURL(/fb_cid=1001/)
-    await dialog.getByRole('button', { name: '确认' }).click()
-
-    await expect(dialog).toBeHidden()
-    await expect.poll(() => moves.length).toBe(1)
-    const body = new URLSearchParams(moves[0].postData ?? '')
-    const fids = [...body.entries()]
-      .filter(([key]) => key.startsWith('fid['))
-      .map(([, value]) => value)
-    expect(body.get('pid')).toBe('1001')
-    expect(fids).not.toContain('1001')
-    await expect(row(page, '动漫')).toBeVisible()
-    await expect(row(page, '演示视频 01.mp4')).toHaveCount(0)
-    await expect(row(page, '演示视频 02.mp4')).toHaveCount(0)
-    expect(errors).toEqual([])
-  })
-
   test('分页器与 ActionBar 交叉切换时保持视觉连续', async ({ page }) => {
     const errors = watch(page)
     await boot(page, { storage: { '115Master_pageSize': '30' } })
