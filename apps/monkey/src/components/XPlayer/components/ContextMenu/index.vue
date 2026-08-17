@@ -2,6 +2,7 @@
   <UiContextMenu
     :open="contextMenu.visible.value"
     :position="contextMenu.position.value"
+    material="overlay"
     aria-label="播放器操作"
     @update:open="(visible: boolean) => contextMenu.visible.value = visible"
   >

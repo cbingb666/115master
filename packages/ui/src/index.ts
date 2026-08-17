@@ -10,6 +10,7 @@ export type {
 export { ContextMenu } from './components/ContextMenu/ContextMenu'
 export type {
   ContextMenuCloseReason,
+  ContextMenuMaterial,
   ContextMenuPosition,
   ContextMenuProps,
   ContextMenuTarget,

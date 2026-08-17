@@ -24,8 +24,14 @@ export interface ContextMenuPosition {
   y: number
 }
 
+export type ContextMenuMaterial = 'floating' | 'overlay'
 export type ContextMenuTarget = HTMLElement | string
 export type ContextMenuCloseReason = 'escape' | 'backdrop'
+
+const materials = {
+  floating: 'ui-glass-floating',
+  overlay: 'ui-glass-overlay',
+} satisfies Record<ContextMenuMaterial, string>
 
 const itemSelector
   = ':is([role^="menuitem"], li > a, li > button):not(:disabled):not([aria-disabled="true"])'
@@ -38,6 +44,10 @@ const props = {
   position: {
     type: Object as PropType<ContextMenuPosition>,
     default: () => ({ x: 0, y: 0 }),
+  },
+  material: {
+    type: String as PropType<ContextMenuMaterial>,
+    default: 'floating',
   },
   to: {
     type: [String, Object] as PropType<ContextMenuTarget>,
@@ -67,7 +77,8 @@ function scrollParent(x: number, y: number) {
 /**
  * A controlled, Theme-scoped context-menu surface. Applications provide menu
  * items through the default slot while positioning, collision handling,
- * dismissal, scroll locking and keyboard focus stay inside this module.
+ * dismissal, scroll locking, keyboard focus and material selection stay
+ * inside this module.
  */
 export const ContextMenu = defineComponent({
   name: 'ContextMenu',
@@ -271,7 +282,7 @@ export const ContextMenu = defineComponent({
                 'class': [
                   'ui-context-menu',
                   'menu',
-                  'ui-glass-floating',
+                  materials[props.material],
                   'ui-z-menu',
                   'fixed',
                   'top-0',

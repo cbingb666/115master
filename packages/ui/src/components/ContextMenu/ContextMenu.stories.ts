@@ -1,4 +1,8 @@
-import type { ContextMenuPosition, ContextMenuProps } from '@115master/ui'
+import type {
+  ContextMenuMaterial,
+  ContextMenuPosition,
+  ContextMenuProps,
+} from '@115master/ui'
 import { ContextMenu, OverlayHost } from '@115master/ui'
 import { useArgs } from 'storybook/preview-api'
 import { expect, fireEvent, userEvent, waitFor, within } from 'storybook/test'
@@ -15,6 +19,11 @@ const content = `
     <li role="none"><button type="button" role="menuitem">删除</button></li>
   </ul>
 `
+
+const materials = [
+  'floating',
+  'overlay',
+] as const satisfies readonly ContextMenuMaterial[]
 
 function useMenu() {
   const open = ref(false)
@@ -41,10 +50,12 @@ const meta = preview.meta({
   title: 'UI/ContextMenu',
   component: ContextMenu,
   args: {
+    material: 'floating',
     open: false,
     position: { x: 0, y: 0 },
   },
   argTypes: {
+    material: { control: 'inline-radio', options: materials },
     open: { control: 'boolean' },
     position: { control: 'object' },
     to: { control: false },
@@ -97,7 +108,7 @@ const meta = preview.meta({
     docs: {
       description: {
         component:
-          '由坐标与受控 open 状态驱动的临时操作表面，用于在指针位置呈现上下文操作。它负责 Overlay Host、视口避让、滚动锁定、焦点循环与关闭语义；应用仍拥有菜单项内容与业务动作。',
+          '由坐标与受控 open 状态驱动的临时操作表面，用于在指针位置呈现上下文操作。它负责 Overlay Host、视口避让、滚动锁定、焦点循环、关闭语义与材质选择；应用仍拥有菜单项内容与业务动作。',
       },
     },
   },
@@ -106,6 +117,89 @@ const meta = preview.meta({
 
 export const Default = meta.story({
   name: '默认',
+})
+
+export const Materials = meta.story({
+  name: '材质',
+  parameters: {
+    controls: { disable: true },
+  },
+  render: () => ({
+    components: { ContextMenu, OverlayHost },
+    setup() {
+      const open = reactive({ floating: false, overlay: false })
+      const position = ref({ x: 0, y: 0 } satisfies ContextMenuPosition)
+
+      function show(material: ContextMenuMaterial, event: MouseEvent) {
+        position.value = { x: event.clientX, y: event.clientY }
+        open.floating = material === 'floating'
+        open.overlay = material === 'overlay'
+      }
+
+      return { open, position, show }
+    },
+    template: `
+      <OverlayHost>
+        <main aria-label="Context Menu 材质" class="grid min-h-80 grid-cols-2 gap-6 bg-linear-to-br from-primary/60 via-secondary/40 to-neutral p-8">
+          <button
+            class="btn self-center"
+            type="button"
+            aria-haspopup="menu"
+            :aria-expanded="open.floating"
+            @click="show('floating', $event)"
+            @contextmenu.prevent="show('floating', $event)"
+          >
+            Floating 菜单
+          </button>
+          <button
+            class="btn self-center"
+            type="button"
+            aria-haspopup="menu"
+            :aria-expanded="open.overlay"
+            @click="show('overlay', $event)"
+            @contextmenu.prevent="show('overlay', $event)"
+          >
+            Overlay 菜单
+          </button>
+          <ContextMenu
+            v-model:open="open.floating"
+            :position="position"
+            material="floating"
+            aria-label="Floating 材质操作"
+          >
+            ${content}
+          </ContextMenu>
+          <ContextMenu
+            v-model:open="open.overlay"
+            :position="position"
+            material="overlay"
+            aria-label="Overlay 材质操作"
+          >
+            ${content}
+          </ContextMenu>
+        </main>
+      </OverlayHost>
+    `,
+  }),
+})
+
+Materials.test('renders distinct floating and media overlay materials', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+
+  await invoke(canvas.getByRole('button', { name: 'Floating 菜单' }))
+  let menu = await canvas.findByRole('menu', { name: 'Floating 材质操作' })
+  const background = getComputedStyle(menu).backgroundColor
+  await expect(getComputedStyle(menu).backdropFilter).not.toBe('none')
+  await userEvent.keyboard('{Escape}')
+  await waitFor(async () => {
+    await expect(canvas.queryByRole('menu')).not.toBeInTheDocument()
+  })
+
+  await invoke(canvas.getByRole('button', { name: 'Overlay 菜单' }))
+  menu = await canvas.findByRole('menu', { name: 'Overlay 材质操作' })
+  await expect(getComputedStyle(menu).backgroundColor).not.toBe(background)
+  await expect(getComputedStyle(menu).backdropFilter).not.toBe('none')
+  await userEvent.keyboard('{Escape}')
 })
 
 export const Positioning = meta.story({

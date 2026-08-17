@@ -65,7 +65,7 @@ _Avoid_: 组件基础 Story、重复 Story
 _Avoid_: Popover、菜单、可点击提示
 
 **Context Menu**：
-由坐标与受控 open 状态驱动的临时操作表面；统一负责 Overlay Host、视口避让、滚动锁定、焦点循环与关闭语义，菜单项内容由应用通过 slot 提供。
+由坐标与受控 open 状态驱动的临时操作表面；统一负责 Overlay Host、视口避让、滚动锁定、焦点循环、关闭语义与材质选择，默认使用 floating，媒体场景可选择 overlay，菜单项内容由应用通过 slot 提供。
 _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 
 **Overlay Host**：

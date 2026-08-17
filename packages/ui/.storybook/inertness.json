@@ -1125,6 +1125,25 @@
       ]
     },
     {
+      "id": "ui-contextmenu--materials",
+      "docs": "ui-contextmenu--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-contextmenu--materials:renders-distinct-floating-and-media-overlay-materials"
+      ],
+      "ready": "main[aria-label=\"Context Menu 材质\"]",
+      "outcomes": [
+        {
+          "selector": "[role=\"menu\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
       "id": "ui-dialog-service--close-all",
       "docs": "ui-dialog-service--docs",
       "component": true,
