@@ -48,6 +48,14 @@ export { Header } from './components/Header/Header'
 export type { HeaderProps } from './components/Header/Header'
 export { HeaderEnd } from './components/Header/HeaderEnd'
 export { HeaderStart } from './components/Header/HeaderStart'
+export { Image } from './components/Image/Image'
+export type {
+  ImageFallback,
+  ImageFit,
+  ImageLoader,
+  ImageProps,
+  ImageResource,
+} from './components/Image/Image'
 export { ModalHost } from './components/Modal/ModalHost'
 export type {
   ModalDismissReason,

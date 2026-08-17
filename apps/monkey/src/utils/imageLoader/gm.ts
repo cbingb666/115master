@@ -1,4 +1,4 @@
-import type { ImageLoader, ImageResource } from './types'
+import type { ImageLoader, ImageResource } from '@115master/ui'
 import { image as imageUtil } from '@115master/utils'
 import { imageCache } from '@/utils/cache/imageCache'
 import { GMRequest } from '@/utils/request/gmRequest'

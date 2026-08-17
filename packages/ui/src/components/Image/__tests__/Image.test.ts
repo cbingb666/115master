@@ -1,19 +1,9 @@
 // @vitest-environment jsdom
 
-import type { ImageLoader, ImageResource } from '@/utils/imageLoader'
+import type { ImageLoader, ImageResource } from '../Image'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createApp, h, nextTick, shallowReactive } from 'vue'
-import Image from '../Image'
-
-vi.mock('@115master/ui', async () => {
-  const vue = await import('vue')
-  return {
-    StatusFeedback: vue.defineComponent({
-      name: 'StatusFeedbackStub',
-      setup: () => () => vue.h('div', { 'data-status-feedback': '' }),
-    }),
-  }
-})
+import { Image } from '../Image'
 
 const apps: ReturnType<typeof createApp>[] = []
 
@@ -45,7 +35,7 @@ function mount(values: TestProps) {
 }
 
 async function flush() {
-  for (let i = 0; i < 8; i++)
+  for (let index = 0; index < 8; index++)
     await Promise.resolve()
   await new Promise(resolve => setTimeout(resolve, 0))
   await nextTick()
@@ -180,7 +170,7 @@ describe('image', () => {
 
     expect(dispose).toHaveBeenCalledOnce()
     expect(view.host.firstElementChild?.getAttribute('aria-busy')).toBeNull()
-    expect(view.host.querySelector('[data-status-feedback]')).not.toBeNull()
+    expect(view.host.querySelector('[data-ui-status-feedback]')).not.toBeNull()
   })
 
   it('reloads the same src when the loader key changes', async () => {
@@ -207,6 +197,7 @@ describe('image', () => {
 
     expect(view.host.firstElementChild?.classList).toContain('size-12')
     expect(view.host.firstElementChild?.getAttribute('style')).toBe('width: 12px;')
+    expect(view.host.firstElementChild?.hasAttribute('data-ui-image')).toBe(true)
   })
 
   it('exposes an accessible failure label', async () => {

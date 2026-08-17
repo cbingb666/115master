@@ -140,13 +140,12 @@
 </template>
 
 <script setup lang="ts">
-import { StatusFeedback } from '@115master/ui'
+import { Image, StatusFeedback } from '@115master/ui'
 import { format } from '@115master/utils'
 import { useAsyncState, useElementVisibility } from '@vueuse/core'
 import { computed, onMounted, ref, watch } from 'vue'
 import {
   Empty,
-  Image,
 } from '@/components'
 import { clsx } from '@/utils/clsx'
 import { errorFeedback } from '@/utils/errorFeedback'

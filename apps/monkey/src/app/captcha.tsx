@@ -1,6 +1,6 @@
 import type { DialogHandle } from '@115master/ui'
 import type { App, PropType } from 'vue'
-import { Button, Dialog, ModalHost, Tooltip } from '@115master/ui'
+import { Button, Dialog, Image, ModalHost, Tooltip } from '@115master/ui'
 import { LayoutGroup, motion, MotionConfig } from 'motion-v'
 import {
   createApp,
@@ -10,7 +10,6 @@ import {
   ref,
 } from 'vue'
 import { appDialog } from '@/app/dialog'
-import { Image } from '@/components/Image'
 import { I, Icon } from '@/icons'
 import mainStyles from '@/styles/main.css?inline'
 

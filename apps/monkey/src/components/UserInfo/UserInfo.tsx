@@ -1,5 +1,5 @@
+import { Image } from '@115master/ui'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
-import { Image } from '@/components/Image'
 import { I, Icon } from '@/icons'
 import { useUserAqStore } from '@/store/userAq'
 

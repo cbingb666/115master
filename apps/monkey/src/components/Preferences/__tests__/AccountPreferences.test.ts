@@ -44,14 +44,12 @@ vi.mock('@/icons', () => ({
   },
   Icon: defineComponent({ setup: () => () => h('i') }),
 }))
-vi.mock('@/components/Image', () => ({
-  Image: defineComponent({
-    setup: (_, { slots }) => () => h('div', slots.fallback?.()),
-  }),
-}))
 vi.mock('@115master/ui', () => ({
   Button: defineComponent({
     setup: (_, { slots }) => () => h('button', slots.default?.()),
+  }),
+  Image: defineComponent({
+    setup: (_, { slots }) => () => h('div', slots.fallback?.()),
   }),
 }))
 
