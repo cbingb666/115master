@@ -4,7 +4,7 @@ import { defineComponent } from 'vue'
 import './PlayerControlSurface.css'
 
 /**
- * 播放器控制表面。统一承载一层 Float Glass，内部动作使用透明 Button。
+ * 播放器控制表面。统一承载一层 Panel Glass，内部动作使用透明 Button。
  */
 const PlayerControlSurface = defineComponent({
   name: 'PlayerControlSurface',
@@ -24,10 +24,11 @@ const PlayerControlSurface = defineComponent({
     return () => (
       <Pill
         as="div"
-        variant="glass-floating"
+        variant="plain"
         size="md"
         class={[
           'x-player-control-surface relative h-auto min-h-10 gap-0 px-1',
+          'ui-glass-panel',
           props.class,
         ].filter(Boolean).join(' ')}
       >

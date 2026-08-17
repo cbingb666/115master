@@ -20,6 +20,24 @@
       ]
     },
     {
+      "id": "ui-xplayer-playercontrolsurface--player-controls",
+      "docs": "ui-xplayer-playercontrolsurface--docs",
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-xplayer-playercontrolsurface--player-controls:adapts-media-control-material-to-the-active-theme"
+      ],
+      "ready": "[data-app-player-surface=\"volume\"]",
+      "outcomes": [
+        {
+          "selector": "[data-app-player-surface=\"volume\"]",
+          "count": 1
+        }
+      ]
+    },
+    {
       "id": "app-dialog-history-adapter--nested-and-forward-navigation",
       "docs": "app-dialog-history-adapter--docs",
       "tags": [

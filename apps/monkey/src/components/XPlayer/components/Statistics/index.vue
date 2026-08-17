@@ -2,7 +2,6 @@
   <Popup
     :class="styles.root"
     :visible="statistics.visible.value"
-    variant="panel"
   >
     <div :class="styles.container.main">
       <!-- 头部 -->

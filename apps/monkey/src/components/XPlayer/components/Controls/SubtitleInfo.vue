@@ -39,7 +39,7 @@ const styles = clsx({
     'rounded-3xl',
     'text-base-content text-sm',
     'pointer-events-none',
-    'ui-glass-floating',
+    'ui-glass-panel',
   ],
   icon: 'size-8 opacity-80',
 })

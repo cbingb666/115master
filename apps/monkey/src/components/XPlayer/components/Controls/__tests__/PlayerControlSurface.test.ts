@@ -12,7 +12,7 @@ afterEach(() => {
 })
 
 describe('playerControlSurface', () => {
-  it('owns one Float Glass Pill with ghost buttons inside', () => {
+  it('owns one Panel Glass Pill with ghost buttons inside', () => {
     const host = document.createElement('div')
     const app = createApp({
       setup: () => () => h(
@@ -33,8 +33,8 @@ describe('playerControlSurface', () => {
     const surface = host.querySelector('.ui-pill')
     const button = host.querySelector('button')
 
-    expect(host.querySelectorAll('.ui-glass-floating')).toHaveLength(1)
-    expect(surface?.classList).toContain('ui-glass-floating')
+    expect(host.querySelectorAll('.ui-glass-panel')).toHaveLength(1)
+    expect(surface?.classList).toContain('ui-glass-panel')
     expect(surface?.classList).toContain('x-player-control-surface')
     expect(button?.classList).toContain('btn-ghost')
     expect(button?.hasAttribute('disabled')).toBe(true)

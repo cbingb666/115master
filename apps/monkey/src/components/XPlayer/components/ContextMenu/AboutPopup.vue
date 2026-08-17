@@ -2,7 +2,6 @@
   <Popup
     :visible="visible"
     :class="styles.root"
-    variant="panel"
     @update:visible="$emit('update:visible', $event)"
   >
     <div :class="styles.container.main">

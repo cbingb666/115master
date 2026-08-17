@@ -71,7 +71,7 @@
       v-if="source.isInterrupt.value"
       :class="styles.resumeContainer"
     >
-      <Button variant="glass-overlay" :class="styles.resumeButton" @click="source.resumeSource">
+      <Button variant="solid" :class="styles.resumeButton" @click="source.resumeSource">
         恢复播放
       </Button>
     </div>

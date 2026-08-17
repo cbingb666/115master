@@ -3,7 +3,7 @@
     <!-- 恢复音频提示 -->
     <div v-if="playerCore?.isSuspended" :class="[styles.tooltipContent]">
       <Button
-        variant="glass-overlay"
+        variant="solid"
         size="sm"
         :class="[styles.resumeBtn]"
         @click="() => {
