@@ -105,10 +105,9 @@
     <Drawer
       v-model:open="preferences.showPlaylist"
       label="播放列表"
-      placement="end"
+      :placement="placement"
       size="md"
       data-app-xplayer-shortcuts
-      style="--ui-drawer-size: var(--app-playlist-width, min(100vw, 32rem))"
     >
       <Playlist
         :pick-code="params.pickCode.value"
@@ -134,7 +133,7 @@ import type XPlayerInstance from '@/components/XPlayer/index.vue'
 import type { Subtitle, ThumbnailRequest } from '@/components/XPlayer/types'
 import { Button, Drawer } from '@115master/ui'
 import { format } from '@115master/utils'
-import { useTitle } from '@vueuse/core'
+import { breakpointsTailwind, useBreakpoints, useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
 import { computed, h, nextTick, onMounted, ref, shallowRef, toValue, watch } from 'vue'
 import iinaIcon from '@/assets/icons/iina-icon.png'
@@ -179,9 +178,6 @@ const styles = clsx({
       'flex flex-col items-center',
       'min-h-screen gap-5',
       'bg-base-100 text-base-content',
-      'sm:[--app-xplayer-ratio:0.3] md:[--app-xplayer-ratio:0.518] lg:[--app-xplayer-ratio:0.618] 2xl:[--app-xplayer-ratio:0.718]',
-      '[--app-playlist-ratio:calc(1-var(--app-xplayer-ratio))]',
-      '[--app-playlist-width:calc(100%*var(--app-playlist-ratio))]',
       'relative',
     ],
     pageMain: ['relative h-screen w-full overflow-hidden bg-black'],
@@ -199,6 +195,10 @@ const styles = clsx({
     iinaIcon: 'size-7 contrast-200 grayscale invert',
   },
 })
+
+/** 播放列表位置 */
+const sm = useBreakpoints(breakpointsTailwind).greaterOrEqual('sm')
+const placement = computed(() => sm.value ? 'end' : 'bottom')
 
 /** 日志 */
 const logger = appLogger.sub('Video')

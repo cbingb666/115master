@@ -88,7 +88,7 @@ const styles = clsx({
     container: [
       'relative flex flex-shrink-0 items-center justify-center',
       'overflow-hidden rounded-xl',
-      'aspect-video h-28 w-50',
+      'aspect-video w-40 sm:w-50',
       'before:absolute before:inset-0 before:rounded-xl before:bg-black before:content-[\'\']',
       'group/cover',
     ],
