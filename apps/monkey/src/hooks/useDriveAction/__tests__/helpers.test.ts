@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { composeRenamedName } from '../helpers'
+import { composeRenamedName, summarizeErrors } from '../helpers'
 
 describe('composeRenamedName', () => {
   it('文件夹（无扩展名）→ 直接采用输入', () => {
@@ -16,5 +16,15 @@ describe('composeRenamedName', () => {
 
   it('多段扩展名 → 与 removeFileExtension 对称，拼回最后一段', () => {
     expect(composeRenamedName('archive.tar.gz', 'archive2')).toBe('archive2.gz')
+  })
+})
+
+describe('summarizeErrors', () => {
+  it('按错误原因聚合重复的批量任务失败信息', () => {
+    expect(summarizeErrors([
+      '任务已存在，请勿输入重复的链接地址',
+      '任务已存在，请勿输入重复的链接地址',
+      '错误的链接',
+    ])).toBe('任务已存在，请勿输入重复的链接地址（2 个）；错误的链接')
   })
 })

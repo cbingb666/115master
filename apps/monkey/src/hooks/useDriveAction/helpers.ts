@@ -16,3 +16,16 @@ export function composeRenamedName(oldName: string, input: string): string {
   const ext = oldName.slice(string.removeFileExtension(oldName).length)
   return `${input}${ext}`
 }
+
+/** 汇总批量操作中的错误消息。 */
+export function summarizeErrors(errors: (string | undefined)[]): string {
+  const groups = errors.reduce((groups, error) => {
+    const message = error?.trim() || '未知错误'
+    groups.set(message, (groups.get(message) ?? 0) + 1)
+    return groups
+  }, new Map<string, number>())
+
+  return [...groups]
+    .map(([message, count]) => count > 1 ? `${message}（${count} 个）` : message)
+    .join('；')
+}

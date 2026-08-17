@@ -10,6 +10,7 @@ import {
 import { useOfflineSpaceStore } from '@/store/offlineSpace'
 import { useUserAqStore } from '@/store/userAq'
 import { drive115 } from '@/utils/drive115Instance'
+import { summarizeErrors } from './helpers'
 
 type Path = InstanceType<typeof CloudDownload>['$props']['path']
 
@@ -86,7 +87,7 @@ export function useCloudDownloadAction() {
         await dialog.alert({
           title: '部分任务添加失败',
           // r.error_msg: res.result[] 中的项是原始后端数据，未经 normalizeResponse 处理
-          content: failed.map(r => r.error_msg || '未知错误').join('\n'),
+          content: summarizeErrors(failed.map(r => r.error_msg)),
         })
       }
       return true
@@ -95,7 +96,7 @@ export function useCloudDownloadAction() {
     await dialog.alert({
       title: '添加任务失败',
       // r.error_msg: res.result[] 中的项是原始后端数据，未经 normalizeResponse 处理
-      content: res.result.map(r => r.error_msg || '未知错误').join('\n'),
+      content: summarizeErrors(res.result.map(r => r.error_msg)),
     })
     return false
   }
