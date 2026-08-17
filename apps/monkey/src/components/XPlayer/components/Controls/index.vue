@@ -15,7 +15,7 @@ const styles = clsx({
   root: [
     'absolute inset-0 flex flex-col',
     'transition-all duration-500 ease-[var(--ui-ease-standard)]',
-    'data-[mask="true"]:bg-base-100/50',
+    'data-[mask="true"]:bg-black/50',
   ],
 })
 
