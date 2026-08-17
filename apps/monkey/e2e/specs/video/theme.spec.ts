@@ -1,6 +1,30 @@
+import type { Locator } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 import { MASTER_URL } from '../../support'
 import { EPISODES, gmStore, setupVideo, videoUrl, watch } from './support'
+
+async function contrast(target: Locator) {
+  return target.evaluate((element) => {
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')!
+    const luminance = (color: string) => {
+      context.clearRect(0, 0, 1, 1)
+      context.fillStyle = color
+      context.fillRect(0, 0, 1, 1)
+      return Array.from(context.getImageData(0, 0, 1, 1).data.slice(0, 3))
+        .map(channel => channel / 255)
+        .map(channel => channel <= 0.04045
+          ? channel / 12.92
+          : ((channel + 0.055) / 1.055) ** 2.4)
+        .reduce((total, channel, index) => total + channel * [0.2126, 0.7152, 0.0722][index], 0)
+    }
+    const values = [
+      luminance(getComputedStyle(element).color),
+      luminance(getComputedStyle(element.parentElement!).backgroundColor),
+    ].sort((a, b) => b - a)
+    return (values[0] + 0.05) / (values[1] + 0.05)
+  })
+}
 
 /** 主题与设置：gmValues 驱动 data-theme、设置项切换持久化 */
 test.describe('主题与设置', () => {
@@ -32,6 +56,31 @@ test.describe('主题与设置', () => {
     })
     expect(errors).toEqual([])
   })
+
+  for (const theme of ['light', 'dark'] as const) {
+    test(`${theme} 主题下播放/暂停动画前景色适配黑色视频底色`, async ({ page }) => {
+      await setupVideo(page, {
+        download: true,
+        gmValues: { USER_SETTINGS: { theme } },
+      })
+      await page.goto(videoUrl(EPISODES[0].pc))
+
+      const video = page.locator('video')
+      const animation = page.locator('div.absolute.inset-0.m-auto.size-20.rounded-full')
+      await video.waitFor({ state: 'attached' })
+      await video.dispatchEvent('canplay')
+      await expect(animation).toBeVisible()
+
+      await video.dispatchEvent('play')
+      await expect(animation).toHaveClass(/animate-\[fadeOut_350ms/)
+      expect(await contrast(animation)).toBeGreaterThanOrEqual(3)
+
+      await expect(animation).toBeHidden()
+      await video.dispatchEvent('pause')
+      await expect(animation).toHaveClass(/animate-\[fadeOut_350ms/)
+      expect(await contrast(animation)).toBeGreaterThanOrEqual(3)
+    })
+  }
 
   test('theme=system 跟随系统配色', async ({ page }) => {
     const errors = watch(page)
