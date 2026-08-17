@@ -22,8 +22,8 @@ import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
+import { useDriveList } from '@/store/driveList/useDriveList'
 import { getFilesItemId } from '@/utils/filesItem'
-import { useDrivePageList } from './useDrivePageList'
 
 type ThumbnailProps = InstanceType<typeof FileItemThumbnail>['$props']
 
@@ -70,13 +70,15 @@ const FileBroswer = defineComponent({
       area: computed(() => keyword.value.trim() ? 'search' : nav.area.value),
       direction: nav.direction,
     }
-    const explorer = useDrivePageList({
-      cid: source.cid,
-      area: source.area,
-      keyword,
-      fc: 1,
-      nf: ref('1'),
-      size: 20,
+    const explorer = useDriveList({
+      source: {
+        cid: source.cid,
+        area: source.area,
+        search: computed(() => !!keyword.value.trim()),
+      },
+      page: shallowRef(1),
+      size: shallowRef(20),
+      filter: { keyword, fc: 1, nf: '1' },
     })
     const positionKey = computed(() => [
       source.area.value || 'all',
@@ -86,7 +88,7 @@ const FileBroswer = defineComponent({
       keyword.value,
       explorer.order.value ?? '',
       explorer.asc.value ?? '',
-      explorer.fc_mix.value ?? '',
+      explorer.fcMix.value ?? '',
     ].join(':'))
 
     const { newFolder, renameItem } = useFileAction()
@@ -94,6 +96,8 @@ const FileBroswer = defineComponent({
     const contextmenuShow = shallowRef(false)
     const contextmenuPosition = shallowRef({ x: 0, y: 0 })
     const contextmenuItem = shallowRef<Share.Entity.FilesItem | null>(null)
+
+    watch([source.cid, source.area, keyword], () => explorer.changePage(1), { flush: 'sync' })
 
     function handleContextmenu(item: Share.Entity.FilesItem, e: MouseEvent) {
       e.preventDefault()
@@ -271,7 +275,7 @@ const FileBroswer = defineComponent({
                 />
                 <FileSortSelector
                   asc={explorer.asc.value || 0}
-                  fc_mix={explorer.fc_mix.value || 0}
+                  fc_mix={explorer.fcMix.value || 0}
                   order={explorer.order.value || 'user_ptime'}
                   onSort={handleSort}
                 />

@@ -1,12 +1,21 @@
 import type { Share } from '@115master/drive115'
-import type { InfiniteData, QueryClient, QueryKey } from '@tanstack/vue-query'
-import type { MaybeRefOrGetter } from 'vue'
+import type { InfiniteData, QueryKey } from '@tanstack/vue-query'
+import type { MaybeRefOrGetter, Ref } from 'vue'
+import type { ReorderOp } from './cache'
 import type { DriveListPage } from './query'
+import type { DriveListMode } from '@/hooks/useDriveListMode'
 import { Core } from '@115master/drive115'
 import { useInfiniteQuery, useQuery } from '@tanstack/vue-query'
-import { computed, toValue, watch } from 'vue'
-import { queryClient as appQueryClient } from '@/app/queryClient'
+import { computed, nextTick, shallowRef, toValue, watch } from 'vue'
+import { queryClient } from '@/app/queryClient'
+import { drive115 } from '@/utils/drive115Instance'
+import { getFilesItemId } from '@/utils/filesItem'
 import { appLogger } from '@/utils/logger'
+import {
+  applyDriveListMutation,
+  invalidateDriveListScope,
+  removeDriveListScope,
+} from './cache'
 import {
   driveListKeys,
   fetchDriveListPage,
@@ -16,23 +25,27 @@ import {
 
 type Input<T> = MaybeRefOrGetter<T>
 
-export interface UseDriveListOptions {
+interface DriveListSource {
   area: Input<string>
   cid: Input<string>
-  page: Input<number>
-  size: Input<number>
-  mode: Input<'pagination' | 'infinite'>
-  search: Input<boolean>
-  enabled?: Input<boolean>
+  search?: Input<boolean>
+}
+
+interface DriveListFilter {
   keyword?: Input<string>
   suffix?: Input<string>
   type?: Input<string>
   fc?: Input<string | number>
   nf?: Input<string>
-  order?: Input<Share.Base.Sorter['o'] | '' | undefined>
-  asc?: Input<Share.Base.Sorter['asc'] | undefined>
-  fcMix?: Input<Share.Base.Sorter['fc_mix'] | undefined>
-  queryClient?: QueryClient
+}
+
+export interface UseDriveListOptions {
+  source: DriveListSource
+  page: Ref<number>
+  size: Ref<number>
+  mode?: Input<DriveListMode>
+  filter?: DriveListFilter
+  onSortError?: (cause: unknown) => void
 }
 
 function read<T>(value: Input<T> | undefined, fallback: T): T {
@@ -40,34 +53,38 @@ function read<T>(value: Input<T> | undefined, fallback: T): T {
 }
 
 export function useDriveList(options: UseDriveListOptions) {
-  const client = options.queryClient ?? appQueryClient
+  const requested = shallowRef<{
+    order?: Share.Base.Sorter['o']
+    asc?: Share.Base.Sorter['asc']
+    fcMix?: Share.Base.Sorter['fc_mix']
+  }>({})
   const request = computed(() => ({
-    area: toValue(options.area) || 'all',
-    cid: toValue(options.cid) || '0',
-    page: Math.max(1, toValue(options.page)),
-    size: Math.max(1, toValue(options.size)),
-    search: toValue(options.search),
-    keyword: read(options.keyword, '').trim(),
-    suffix: read(options.suffix, ''),
-    type: read(options.type, ''),
-    fc: String(read(options.fc, '')),
-    nf: read(options.nf, ''),
-    order: read(options.order, '') ?? '',
-    asc: read(options.asc, 0) ?? 0,
-    fcMix: read(options.fcMix, 0) ?? 0,
+    area: toValue(options.source.area) || 'all',
+    cid: toValue(options.source.cid) || '0',
+    page: Math.max(1, options.page.value),
+    size: Math.max(1, options.size.value),
+    search: read(options.source.search, false),
+    keyword: read(options.filter?.keyword, '').trim(),
+    suffix: read(options.filter?.suffix, ''),
+    type: read(options.filter?.type, ''),
+    fc: String(read(options.filter?.fc, '')),
+    nf: read(options.filter?.nf, ''),
+    order: requested.value.order ?? '',
+    asc: requested.value.asc ?? 0,
+    fcMix: requested.value.fcMix ?? 0,
   }))
-  const mode = computed(() => toValue(options.mode))
-  const enabled = computed(() => read(options.enabled, true))
+  const mode = computed(() => read(options.mode, 'pagination'))
 
+  /** Vue Query hooks 必须在 setup 时创建；mode 保证同一时刻只有一个请求启用。 */
   const pageQuery = useQuery<DriveListPage, Error, DriveListPage, QueryKey>(() => {
     const current = request.value
     return {
       queryKey: driveListKeys.page(current),
       queryFn: ({ signal }) => fetchDriveListPage(current, signal),
-      enabled: enabled.value && mode.value === 'pagination',
+      enabled: mode.value === 'pagination',
       ...(current.search && { gcTime: 0 }),
     }
-  }, client)
+  }, queryClient)
 
   const infiniteQuery = useInfiniteQuery<
     DriveListPage,
@@ -86,10 +103,10 @@ export function useDriveList(options: UseDriveListOptions) {
       getNextPageParam: last => (
         last.page * last.size < last.total ? last.page + 1 : undefined
       ),
-      enabled: enabled.value && mode.value === 'infinite',
+      enabled: mode.value === 'infinite',
       ...(current.search && { gcTime: 0 }),
     }
-  }, client)
+  }, queryClient)
 
   const pageData = computed(() => pageQuery.data.value)
   const infiniteData = computed(() => mergeDriveListPages(infiniteQuery.data.value?.pages ?? []))
@@ -112,6 +129,12 @@ export function useDriveList(options: UseDriveListOptions) {
       : null
   ))
   const hasMore = computed(() => mode.value === 'infinite' && !!infiniteQuery.hasNextPage.value)
+  const total = computed(() => normalized.value?.total ?? 0)
+  const order = computed(() => normalized.value?.order ?? requested.value.order)
+  const asc = computed(() => normalized.value?.asc ?? requested.value.asc)
+  const fcMix = computed(() => normalized.value?.fcMix ?? requested.value.fcMix)
+  const path = computed(() => normalized.value?.path ?? [])
+  const pageCount = computed(() => Math.ceil(total.value / options.size.value))
 
   watch(activeError, (value) => {
     if (value)
@@ -132,9 +155,85 @@ export function useDriveList(options: UseDriveListOptions) {
     return !result.isError
   }
 
+  function changePage(page: number) {
+    if (page !== options.page.value)
+      options.page.value = page
+  }
+
+  function changeSize(size: number) {
+    if (size === options.size.value)
+      return
+    options.size.value = size
+    options.page.value = 1
+  }
+
+  async function changeSort(
+    order: Share.Base.Sorter['o'],
+    asc: Share.Base.Sorter['asc'],
+    fcMix: Share.Base.Sorter['fc_mix'],
+  ) {
+    if (request.value.search)
+      return false
+    const area = request.value.area
+    const cid = request.value.cid
+    try {
+      await drive115.file.setFilesOrder({
+        file_id: cid,
+        user_order: order ?? '',
+        user_asc: asc ?? 1,
+        fc_mix: fcMix ?? 0,
+      })
+    }
+    catch (cause) {
+      if (!options.onSortError)
+        throw cause
+      options.onSortError(cause)
+    }
+
+    removeDriveListScope(queryClient, area, cid)
+    requested.value = { order, asc, fcMix }
+    options.page.value = 1
+    await nextTick()
+    return refresh()
+  }
+
+  function applyMutation(op: ReorderOp) {
+    const touched = applyDriveListMutation(
+      queryClient,
+      request.value.area,
+      request.value.cid,
+      op,
+    )
+    if (!touched)
+      void refresh()
+    return touched
+  }
+
+  function applyRemove(items: Share.Entity.FilesItem[]) {
+    return applyMutation({ kind: 'remove', ids: items.map(getFilesItemId) })
+  }
+
+  function applyUpdate(item: Share.Entity.FilesItem) {
+    return applyMutation({ kind: 'update', item })
+  }
+
+  function invalidate(area = request.value.area, cid = request.value.cid) {
+    return invalidateDriveListScope(queryClient, area, cid)
+  }
+
+  function applyCreate() {
+    return invalidate().then(refresh)
+  }
+
+  watch(
+    [() => request.value.area, () => request.value.cid],
+    () => {
+      requested.value = {}
+    },
+    { flush: 'sync' },
+  )
+
   return {
-    request,
-    normalized,
     data,
     loading,
     refreshing,
@@ -142,7 +241,23 @@ export function useDriveList(options: UseDriveListOptions) {
     error,
     moreError,
     hasMore,
+    total,
+    order,
+    asc,
+    fcMix,
+    path,
+    pageCount,
+    page: options.page,
+    size: options.size,
     refresh,
     loadMore,
+    changePage,
+    changeSize,
+    changeSort,
+    applyMutation,
+    applyRemove,
+    applyUpdate,
+    applyCreate,
+    invalidate,
   }
 }

@@ -4,21 +4,14 @@ import { Core } from '@115master/drive115'
 import { useStorage } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
-import { computed, nextTick, shallowRef, watch } from 'vue'
-import { queryClient } from '@/app/queryClient'
+import { computed, nextTick, watch } from 'vue'
 import { router } from '@/app/router'
 import { PAGINATION_DEFAULT_PAGE_SIZE } from '@/constants'
 import { useDriveListMode } from '@/hooks/useDriveListMode'
 import { usePathNav } from '@/hooks/useDriveNav'
 import { useDriveSelection } from '@/hooks/useDriveSelection'
-import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'
 import { appLogger } from '@/utils/logger'
-import {
-  applyDriveListMutation,
-  invalidateDriveListScope,
-  removeDriveListScope,
-} from './cache'
 import { useDriveList } from './useDriveList'
 
 function virtualPath(cid: string, name: string): Share.Entity.PathItem {
@@ -36,24 +29,26 @@ export const useDriveStore = defineStore('drive', () => {
   const nav = usePathNav(router)
   const selection = useDriveSelection()
   const mode = useDriveListMode()
-  const requestedOrder = shallowRef<Share.Base.Sorter['o']>()
-  const requestedAsc = shallowRef<Share.Base.Sorter['asc']>()
-  const requestedFcMix = shallowRef<Share.Base.Sorter['fc_mix']>()
   const isSearch = computed(() => nav.area.value === 'search')
 
   const list = useDriveList({
-    area: () => nav.area.value,
-    cid: () => nav.cid.value,
-    page: () => query.page.value,
-    size: () => query.size.value,
+    source: {
+      area: nav.area,
+      cid: nav.cid,
+      search: isSearch,
+    },
+    page: query.page,
+    size: query.size,
     mode,
-    search: isSearch,
-    keyword: () => query.keyword.value,
-    suffix: () => query.suffix.value,
-    type: () => query.type.value,
-    order: requestedOrder,
-    asc: requestedAsc,
-    fcMix: requestedFcMix,
+    filter: {
+      keyword: query.keyword,
+      suffix: query.suffix,
+      type: query.type,
+    },
+    onSortError: cause => appLogger.warn(
+      '排序保存失败',
+      Core.toResult(Core.toDrive115Error(cause)),
+    ),
   })
 
   const data = list.data
@@ -62,11 +57,11 @@ export const useDriveStore = defineStore('drive', () => {
   const loadingMore = list.loadingMore
   const error = list.error
   const moreError = list.moreError
-  const total = computed(() => list.normalized.value?.total ?? 0)
-  const order = computed(() => list.normalized.value?.order ?? requestedOrder.value)
-  const asc = computed(() => list.normalized.value?.asc ?? requestedAsc.value)
-  const fc_mix = computed(() => list.normalized.value?.fcMix ?? requestedFcMix.value)
-  const pageCount = computed(() => Math.ceil(total.value / query.size.value))
+  const total = list.total
+  const order = list.order
+  const asc = list.asc
+  const fc_mix = list.fcMix
+  const pageCount = list.pageCount
   const hasMore = list.hasMore
 
   const path = computed((): Share.Entity.PathItem[] => {
@@ -76,7 +71,7 @@ export const useDriveStore = defineStore('drive', () => {
     }
     if (nav.area.value === 'star')
       return [virtualPath('0', '星标')]
-    return list.normalized.value?.path ?? []
+    return list.path.value
   })
   const prevLevel = computed(() => path.value[path.value.length - 2])
 
@@ -97,32 +92,21 @@ export const useDriveStore = defineStore('drive', () => {
   }
 
   function changePage(page: number) {
-    if (page !== query.page.value)
-      query.page.value = page
+    list.changePage(page)
   }
 
   function changeSize(size: number) {
-    if (size === query.size.value)
-      return
-    query.size.value = size
-    query.page.value = 1
+    list.changeSize(size)
   }
 
   function invalidate(area: string, cid: string) {
-    return invalidateDriveListScope(queryClient, area, cid)
+    return list.invalidate(area, cid)
   }
 
   /** 对当前目录全部缓存变体施加精确增量。 */
   function applyMutation(op: ReorderOp) {
-    const touched = applyDriveListMutation(
-      queryClient,
-      nav.area.value || 'all',
-      nav.cid.value || '0',
-      op,
-    )
+    list.applyMutation(op)
     selection.clear()
-    if (!touched)
-      void refresh()
   }
 
   function applyRemoveMutation(items: Share.Entity.FilesItem[], targetCid?: string) {
@@ -152,7 +136,7 @@ export const useDriveStore = defineStore('drive', () => {
     else {
       items.forEach((item) => {
         const marked = !(item.m === 1 || item.m === '1')
-        applyDriveListMutation(queryClient, area, nav.cid.value || '0', {
+        list.applyMutation({
           kind: 'update',
           item: { ...item, m: marked ? 1 : 0 } as Share.Entity.FilesItem,
         })
@@ -166,29 +150,7 @@ export const useDriveStore = defineStore('drive', () => {
     nextAsc: Share.Base.Sorter['asc'],
     nextFcMix: Share.Base.Sorter['fc_mix'],
   ) {
-    if (isSearch.value)
-      return false
-    const area = nav.area.value || 'all'
-    const cid = nav.cid.value || '0'
-    try {
-      await drive115.file.setFilesOrder({
-        file_id: cid,
-        user_order: nextOrder ?? '',
-        user_asc: nextAsc ?? 1,
-        fc_mix: nextFcMix ?? 0,
-      })
-    }
-    catch (cause) {
-      appLogger.warn('排序保存失败', Core.toResult(Core.toDrive115Error(cause)))
-    }
-
-    removeDriveListScope(queryClient, area, cid)
-    requestedOrder.value = nextOrder
-    requestedAsc.value = nextAsc
-    requestedFcMix.value = nextFcMix
-    query.page.value = 1
-    await nextTick()
-    return refresh()
+    return list.changeSort(nextOrder, nextAsc, nextFcMix)
   }
 
   function afterAction(invalidateCids?: string[]) {
@@ -214,9 +176,6 @@ export const useDriveStore = defineStore('drive', () => {
   watch(
     [nav.cid, nav.area],
     () => {
-      requestedOrder.value = undefined
-      requestedAsc.value = undefined
-      requestedFcMix.value = undefined
       selection.clear()
     },
     { flush: 'sync' },
