@@ -36,7 +36,7 @@ test.describe('新建文件夹', () => {
     expect(form.get('pid')).toBe('0')
     expect(form.get('cname')).toBe('测试新建目录')
 
-    /** afterAction：失效缓存并刷新当前目录 → 再次 GET /files */
+    /** afterAction：重新请求当前目录 → 再次 GET /files */
     await expect.poll(() => gets.length).toBeGreaterThan(before)
     /** 对话框关闭、列表仍正常渲染 */
     await expect(page.getByRole('dialog')).toHaveCount(0)

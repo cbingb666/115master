@@ -1,23 +1,12 @@
 import type { Share } from '@115master/drive115'
-import type { InfiniteData, QueryKey } from '@tanstack/vue-query'
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import type { ReorderOp } from './cache'
 import type { DriveListPage } from './query'
 import type { DriveListMode } from '@/hooks/useDriveListMode'
 import { Core } from '@115master/drive115'
-import { useInfiniteQuery, useQuery } from '@tanstack/vue-query'
-import { computed, nextTick, shallowRef, toValue, watch } from 'vue'
-import { queryClient } from '@/app/queryClient'
+import { computed, nextTick, onScopeDispose, shallowRef, toValue, watch } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
-import { getFilesItemId } from '@/utils/filesItem'
 import { appLogger } from '@/utils/logger'
 import {
-  applyDriveListMutation,
-  invalidateDriveListScope,
-  removeDriveListScope,
-} from './cache'
-import {
-  driveListKeys,
   fetchDriveListPage,
   mergeDriveListPages,
   toListData,
@@ -75,60 +64,30 @@ export function useDriveList(options: UseDriveListOptions) {
   }))
   const mode = computed(() => read(options.mode, 'pagination'))
 
-  /** Vue Query hooks 必须在 setup 时创建；mode 保证同一时刻只有一个请求启用。 */
-  const pageQuery = useQuery<DriveListPage, Error, DriveListPage, QueryKey>(() => {
-    const current = request.value
-    return {
-      queryKey: driveListKeys.page(current),
-      queryFn: ({ signal }) => fetchDriveListPage(current, signal),
-      enabled: mode.value === 'pagination',
-      ...(current.search && { gcTime: 0 }),
-    }
-  }, queryClient)
+  const page = shallowRef<DriveListPage>()
+  const pages = shallowRef<DriveListPage[]>([])
+  const fault = shallowRef<Core.Drive115Error>()
+  const moreFault = shallowRef<Core.Drive115Error>()
+  const loading = shallowRef(false)
+  const refreshing = shallowRef(false)
+  const loadingMore = shallowRef(false)
+  let controller: AbortController | undefined
+  let moreController: AbortController | undefined
+  let generation = 0
+  let task: Promise<boolean> = Promise.resolve(false)
 
-  const infiniteQuery = useInfiniteQuery<
-    DriveListPage,
-    Error,
-    InfiniteData<DriveListPage, number>,
-    QueryKey,
-    number
-  >(() => {
-    const current = request.value
-    return {
-      queryKey: driveListKeys.infinite(current),
-      queryFn: ({ pageParam, signal }) => (
-        fetchDriveListPage({ ...current, page: pageParam }, signal)
-      ),
-      initialPageParam: 1,
-      getNextPageParam: last => (
-        last.page * last.size < last.total ? last.page + 1 : undefined
-      ),
-      enabled: mode.value === 'infinite',
-      ...(current.search && { gcTime: 0 }),
-    }
-  }, queryClient)
-
-  const pageData = computed(() => pageQuery.data.value)
-  const infiniteData = computed(() => mergeDriveListPages(infiniteQuery.data.value?.pages ?? []))
+  const pageData = computed(() => page.value)
+  const infiniteData = computed(() => mergeDriveListPages(pages.value))
   const normalized = computed(() => mode.value === 'infinite' ? infiniteData.value : pageData.value)
   const data = computed(() => normalized.value ? toListData(normalized.value) : null)
-  const activeError = computed(() => mode.value === 'infinite' ? infiniteQuery.error.value : pageQuery.error.value)
-  const loading = computed(() => mode.value === 'infinite' ? infiniteQuery.isPending.value : pageQuery.isPending.value)
-  const refreshing = computed(() => !loading.value && (
-    mode.value === 'infinite'
-      ? infiniteQuery.isFetching.value && !infiniteQuery.isFetchingNextPage.value
-      : pageQuery.isFetching.value
-  ))
-  const loadingMore = computed(() => mode.value === 'infinite' && infiniteQuery.isFetchingNextPage.value)
-  const error = computed(() => (
-    activeError.value && !normalized.value ? Core.toDrive115Error(activeError.value) : null
-  ))
-  const moreError = computed(() => (
-    mode.value === 'infinite' && infiniteQuery.isFetchNextPageError.value && activeError.value
-      ? Core.toDrive115Error(activeError.value)
-      : null
-  ))
-  const hasMore = computed(() => mode.value === 'infinite' && !!infiniteQuery.hasNextPage.value)
+  const error = computed(() => fault.value && !normalized.value ? fault.value : null)
+  const moreError = computed(() => mode.value === 'infinite' ? moreFault.value ?? null : null)
+  const hasMore = computed(() => {
+    if (mode.value !== 'infinite')
+      return false
+    const last = pages.value[pages.value.length - 1]
+    return !!last && last.page * last.size < last.total
+  })
   const total = computed(() => normalized.value?.total ?? 0)
   const order = computed(() => normalized.value?.order ?? requested.value.order)
   const asc = computed(() => normalized.value?.asc ?? requested.value.asc)
@@ -136,23 +95,102 @@ export function useDriveList(options: UseDriveListOptions) {
   const path = computed(() => normalized.value?.path ?? [])
   const pageCount = computed(() => Math.ceil(total.value / options.size.value))
 
-  watch(activeError, (value) => {
-    if (value)
-      appLogger.warn(request.value.search ? '文件搜索失败' : '文件列表加载失败', Core.toResult(Core.toDrive115Error(value)))
-  })
+  async function fetchPage(input: typeof request.value, signal: AbortSignal) {
+    try {
+      return await fetchDriveListPage(input, signal)
+    }
+    catch (cause) {
+      if (signal.aborted || !Core.toDrive115Error(cause).retryable)
+        throw cause
+      return fetchDriveListPage(input, signal)
+    }
+  }
 
-  async function refresh(): Promise<boolean> {
-    const result = mode.value === 'infinite'
-      ? await infiniteQuery.refetch()
-      : await pageQuery.refetch()
-    return !result.isError || result.data !== undefined
+  async function load(reset: boolean) {
+    const current = request.value
+    const currentMode = mode.value
+    const token = ++generation
+    controller?.abort()
+    moreController?.abort()
+    loadingMore.value = false
+    const active = new AbortController()
+    controller = active
+    fault.value = undefined
+    moreFault.value = undefined
+
+    if (reset) {
+      page.value = undefined
+      pages.value = []
+    }
+    loading.value = normalized.value === undefined
+    refreshing.value = !loading.value
+
+    try {
+      const numbers = currentMode === 'infinite'
+        ? reset || pages.value.length === 0 ? [1] : pages.value.map(value => value.page)
+        : [current.page]
+      const result = await Promise.all(numbers.map(number => fetchPage({ ...current, page: number }, active.signal)))
+      if (token !== generation || active.signal.aborted)
+        return false
+      if (currentMode === 'infinite')
+        pages.value = result
+      else
+        page.value = result[0]
+      return true
+    }
+    catch (cause) {
+      if (token !== generation || active.signal.aborted)
+        return false
+      fault.value = Core.toDrive115Error(cause)
+      appLogger.warn(current.search ? '文件搜索失败' : '文件列表加载失败', Core.toResult(fault.value))
+      return false
+    }
+    finally {
+      if (token === generation) {
+        loading.value = false
+        refreshing.value = false
+      }
+    }
+  }
+
+  function refresh() {
+    task = load(false)
+    return task
+  }
+
+  function reload() {
+    task = load(true)
+    return task
   }
 
   async function loadMore(): Promise<boolean> {
-    if (mode.value !== 'infinite' || !infiniteQuery.hasNextPage.value || infiniteQuery.isFetchingNextPage.value)
+    const last = pages.value[pages.value.length - 1]
+    if (mode.value !== 'infinite' || !last || !hasMore.value || loading.value || refreshing.value || loadingMore.value)
       return false
-    const result = await infiniteQuery.fetchNextPage()
-    return !result.isError
+    const token = generation
+    moreController?.abort()
+    const active = new AbortController()
+    moreController = active
+    loadingMore.value = true
+    moreFault.value = undefined
+    try {
+      const result = await fetchPage({ ...request.value, page: last.page + 1 }, active.signal)
+      if (token !== generation || active.signal.aborted)
+        return false
+      pages.value = [...pages.value, result]
+      return true
+    }
+    catch (cause) {
+      if (token !== generation || active.signal.aborted)
+        return false
+      moreFault.value = Core.toDrive115Error(cause)
+      appLogger.warn(request.value.search ? '文件搜索失败' : '文件列表加载失败', Core.toResult(moreFault.value))
+      return false
+    }
+    finally {
+      if (token === generation)
+        loadingMore.value = false
+    }
   }
 
   function changePage(page: number) {
@@ -174,7 +212,6 @@ export function useDriveList(options: UseDriveListOptions) {
   ) {
     if (request.value.search)
       return false
-    const area = request.value.area
     const cid = request.value.cid
     try {
       await drive115.file.setFilesOrder({
@@ -190,39 +227,10 @@ export function useDriveList(options: UseDriveListOptions) {
       options.onSortError(cause)
     }
 
-    removeDriveListScope(queryClient, area, cid)
     requested.value = { order, asc, fcMix }
     options.page.value = 1
     await nextTick()
-    return refresh()
-  }
-
-  function applyMutation(op: ReorderOp) {
-    const touched = applyDriveListMutation(
-      queryClient,
-      request.value.area,
-      request.value.cid,
-      op,
-    )
-    if (!touched)
-      void refresh()
-    return touched
-  }
-
-  function applyRemove(items: Share.Entity.FilesItem[]) {
-    return applyMutation({ kind: 'remove', ids: items.map(getFilesItemId) })
-  }
-
-  function applyUpdate(item: Share.Entity.FilesItem) {
-    return applyMutation({ kind: 'update', item })
-  }
-
-  function invalidate(area = request.value.area, cid = request.value.cid) {
-    return invalidateDriveListScope(queryClient, area, cid)
-  }
-
-  function applyCreate() {
-    return invalidate().then(refresh)
+    return task
   }
 
   watch(
@@ -232,6 +240,14 @@ export function useDriveList(options: UseDriveListOptions) {
     },
     { flush: 'sync' },
   )
+  watch([request, mode], () => {
+    task = load(true)
+  }, { immediate: true })
+  onScopeDispose(() => {
+    generation++
+    controller?.abort()
+    moreController?.abort()
+  })
 
   return {
     data,
@@ -250,14 +266,10 @@ export function useDriveList(options: UseDriveListOptions) {
     page: options.page,
     size: options.size,
     refresh,
+    reload,
     loadMore,
     changePage,
     changeSize,
     changeSort,
-    applyMutation,
-    applyRemove,
-    applyUpdate,
-    applyCreate,
-    invalidate,
   }
 }

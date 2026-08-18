@@ -56,7 +56,7 @@ test.describe('目录导航', () => {
     await expect(row(page, '演示视频 01.mp4')).toBeVisible()
     await expect(page.getByRole('list', { name: '文件列表' })).toHaveAttribute('data-file-list-total', '43')
 
-    /** 返回后再次请求根目录（SWR 重新校验） */
+    /** 返回后不复用旧结果，再次请求根目录 */
     const back = reqs.filter(r => r.url.searchParams.get('cid') === '0')
     expect(back.length).toBeGreaterThanOrEqual(2)
 
@@ -72,7 +72,7 @@ test.describe('目录导航', () => {
 
     await page.goBack()
 
-    /** 回到根目录：缓存命中立即渲染（SWR 后台重新校验） */
+    /** 回到根目录后重新请求并渲染 */
     await expect(page).toHaveURL(/#\/drive\/0?$/)
     await expect(row(page, '演示视频 01.mp4')).toBeVisible()
     await expect(page.getByRole('list', { name: '文件列表' })).toHaveAttribute('data-file-list-total', '43')

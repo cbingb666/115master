@@ -19,9 +19,9 @@ export const router = createRouter({
   history: createWebHashHistory(),
   routes,
   scrollBehavior: async (to, _from, savedPosition) => {
-    /** drive 路由由页面自己管理滚动位置 */
+    /** 文件列表不保留滚动位置，每次进入都从顶部开始。 */
     if (to.name === 'drive')
-      return false
+      return { top: 0 }
     if (savedPosition)
       return savedPosition
     return { top: 0 }

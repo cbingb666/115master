@@ -80,17 +80,6 @@ const FileBroswer = defineComponent({
       size: shallowRef(20),
       filter: { keyword, fc: 1, nf: '1' },
     })
-    const positionKey = computed(() => [
-      source.area.value || 'all',
-      source.cid.value || '0',
-      explorer.page.value,
-      explorer.size.value,
-      keyword.value,
-      explorer.order.value ?? '',
-      explorer.asc.value ?? '',
-      explorer.fcMix.value ?? '',
-    ].join(':'))
-
     const { newFolder, renameItem } = useFileAction()
     const { deleteBatch } = useDeleteAction()
     const contextmenuShow = shallowRef(false)
@@ -108,7 +97,7 @@ const FileBroswer = defineComponent({
 
     async function handleNewFolder() {
       if (await newFolder(nav.cid.value || '0'))
-        explorer.applyCreate()
+        await explorer.refresh()
     }
 
     async function handleRename() {
@@ -117,14 +106,14 @@ const FileBroswer = defineComponent({
       const item = contextmenuItem.value
       const newName = await renameItem(item)
       if (newName)
-        explorer.applyUpdate({ ...item, n: newName, ns: newName } as Share.Entity.FilesItem)
+        await explorer.refresh()
     }
 
     async function handleDelete() {
       if (!contextmenuItem.value)
         return
       if (await deleteBatch(nav.cid.value || '0', [contextmenuItem.value]))
-        explorer.applyRemove([contextmenuItem.value])
+        await explorer.refresh()
     }
 
     const contextmenuActions = computed<Action[][]>(() => [
@@ -309,7 +298,6 @@ const FileBroswer = defineComponent({
           <FileList
             items={explorer.data.value?.data ?? []}
             getScrollElement={getScrollElement}
-            positionKey={positionKey.value}
             viewType={viewType.value}
             class="
               shrink-0 pt-1

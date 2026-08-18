@@ -35,37 +35,6 @@ export interface DriveListPage {
   fcMix: Share.Base.Sorter['fc_mix']
 }
 
-function profile(request: DriveListRequest) {
-  return {
-    size: request.size,
-    order: request.order,
-    asc: request.asc,
-    fcMix: request.fcMix,
-    suffix: request.suffix,
-    type: request.type,
-    fc: request.fc,
-    nf: request.nf,
-    keyword: request.keyword,
-  }
-}
-
-function scope(request: DriveListRequest) {
-  return [request.search ? 'drive-search' : 'drive-list', request.area, request.cid] as const
-}
-
-export const driveListKeys = {
-  page: (request: DriveListRequest) => [
-    ...scope(request),
-    'page',
-    { ...profile(request), page: request.page },
-  ] as const,
-  infinite: (request: DriveListRequest) => [
-    ...scope(request),
-    'infinite',
-    profile(request),
-  ] as const,
-}
-
 function messageOf(response: { message?: string, error?: string, error_msg?: string }) {
   return response.message ?? response.error ?? response.error_msg ?? '文件列表加载失败'
 }

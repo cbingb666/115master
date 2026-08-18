@@ -1,13 +1,10 @@
 import type { Api, Share } from '@115master/drive115'
 import type { Pinia } from 'pinia'
-import type { DriveListRequest } from '../query'
 import { createPinia, disposePinia, setActivePinia } from 'pinia'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
-import { queryClient } from '@/app/queryClient'
 import { drive115 } from '@/utils/drive115Instance'
 import { useDriveStore } from '../index'
-import { driveListKeys } from '../query'
 
 const storage = vi.hoisted(() => ({
   mode: 'pagination',
@@ -82,27 +79,7 @@ function filesRes(
   } as Awaited<ReturnType<typeof file.getFilesWithFallback>>
 }
 
-function request(extra: Partial<DriveListRequest> = {}): DriveListRequest {
-  return {
-    area: navArea.value,
-    cid: navCid.value,
-    page: 1,
-    size: storage.size,
-    order: '',
-    asc: 0,
-    fcMix: 0,
-    suffix: '',
-    type: '',
-    fc: '',
-    nf: '',
-    keyword: '',
-    search: false,
-    ...extra,
-  }
-}
-
 beforeEach(() => {
-  queryClient.clear()
   pinia = createPinia()
   setActivePinia(pinia)
   navArea.value = 'all'
@@ -114,12 +91,11 @@ beforeEach(() => {
 
 afterEach(() => {
   disposePinia(pinia)
-  queryClient.clear()
   vi.clearAllMocks()
 })
 
 describe('driveStore query', () => {
-  it('自动加载当前分页，并把 TanStack AbortSignal 传到客户端', async () => {
+  it('自动加载当前分页，并把 AbortSignal 传到客户端', async () => {
     vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes([item('a')]))
 
     const store = useDriveStore()
@@ -176,14 +152,32 @@ describe('driveStore query', () => {
     expect(store.data?.data.map(value => value.n)).toEqual(['file-new'])
   })
 
-  it('无限模式按页追加，并由缓存投影同步 remove', async () => {
+  it('返回已访问目录时重新请求，不复用旧结果', async () => {
+    vi.mocked(file.getFilesWithFallback).mockImplementation(params => Promise.resolve(
+      filesRes([item(params.cid === '0' ? 'root' : 'child')]),
+    ))
+    const store = useDriveStore()
+    await vi.waitFor(() => expect(store.data?.data[0]?.n).toBe('file-root'))
+
+    navCid.value = '100'
+    await vi.waitFor(() => expect(store.data?.data[0]?.n).toBe('file-child'))
+    navCid.value = '0'
+    await vi.waitFor(() => expect(store.data?.data[0]?.n).toBe('file-root'))
+
+    expect(vi.mocked(file.getFilesWithFallback).mock.calls.filter(([params]) => params.cid === '0')).toHaveLength(2)
+  })
+
+  it('无限模式刷新时重新请求当前已加载页', async () => {
     storage.mode = 'infinite'
     storage.size = 2
-    vi.mocked(file.getFilesWithFallback).mockImplementation(params => Promise.resolve(
-      params.offset === 0
+    let removed = false
+    vi.mocked(file.getFilesWithFallback).mockImplementation(params => Promise.resolve(removed
+      ? params.offset === 0
+        ? filesRes([item('b'), item('c')], 3)
+        : filesRes([item('d')], 3, { offset: 2, cur: 2 })
+      : params.offset === 0
         ? filesRes([item('a'), item('b')], 4)
-        : filesRes([item('c'), item('d')], 4, { offset: 2, cur: 2 }),
-    ))
+        : filesRes([item('c'), item('d')], 4, { offset: 2, cur: 2 })))
     const store = useDriveStore()
     await vi.waitFor(() => expect(store.data?.data.map(value => value.n)).toEqual(['file-a', 'file-b']))
 
@@ -191,39 +185,40 @@ describe('driveStore query', () => {
 
     expect(store.data?.data.map(value => value.n)).toEqual(['file-a', 'file-b', 'file-c', 'file-d'])
     expect(store.hasMore).toBe(false)
-    store.applyRemoveMutation([item('a')])
+    removed = true
+    const refresh = store.afterAction()
+    expect(store.data?.data.map(value => value.n)).toEqual(['file-a', 'file-b', 'file-c', 'file-d'])
+    await refresh
     expect(store.data?.data.map(value => value.n)).toEqual(['file-b', 'file-c', 'file-d'])
     expect(store.total).toBe(3)
   })
 })
 
-describe('driveStore cache effects', () => {
-  it('remove 与 update 立即投影到当前 Query 数据', async () => {
-    const items = [item('a'), item('b'), item('c')]
-    vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes(items))
+describe('driveStore actions', () => {
+  it('操作后保留当前画面，完成重新请求后替换', async () => {
+    vi.mocked(file.getFilesWithFallback)
+      .mockResolvedValueOnce(filesRes([item('a')]))
+      .mockResolvedValueOnce(filesRes([item('b')]))
     const store = useDriveStore()
-    await vi.waitFor(() => expect(store.total).toBe(3))
+    await vi.waitFor(() => expect(store.data?.data[0]?.n).toBe('file-a'))
 
-    store.applyRemoveMutation([items[0]])
-    store.applyUpdateMutation(item('b', { n: 'renamed' }))
+    const refresh = store.afterAction()
+    expect(store.data?.data[0]?.n).toBe('file-a')
+    await refresh
 
-    expect(store.data?.data.map(value => value.n)).toEqual(['renamed', 'file-c'])
-    expect(store.total).toBe(2)
+    expect(store.data?.data[0]?.n).toBe('file-b')
   })
 
-  it('changeSort 清掉旧规则缓存，并按新规则拉取', async () => {
+  it('changeSort 按新规则重新请求', async () => {
     vi.mocked(file.getFilesWithFallback)
       .mockResolvedValueOnce(filesRes([item('a')]))
       .mockResolvedValue(filesRes([item('a')], 1, { order: 'file_name', is_asc: 1 }))
     vi.mocked(file.setFilesOrder).mockResolvedValue({ state: true } as never)
     const store = useDriveStore()
     await vi.waitFor(() => expect(store.data?.data).toHaveLength(1))
-    const oldKey = driveListKeys.page(request())
-    expect(queryClient.getQueryData(oldKey)).toBeDefined()
 
     await store.changeSort('file_name', 1, 0)
 
-    expect(queryClient.getQueryData(oldKey)).toBeUndefined()
     expect(file.setFilesOrder).toHaveBeenCalledWith(expect.objectContaining({ user_order: 'file_name' }))
     expect(file.getFilesWithFallback).toHaveBeenLastCalledWith(
       expect.objectContaining({ o: 'file_name', asc: 1 }),
@@ -231,19 +226,7 @@ describe('driveStore cache effects', () => {
     )
   })
 
-  it('all 区切换星标时就地更新实体', async () => {
-    const items = [item('a'), item('b')]
-    vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes(items))
-    const store = useDriveStore()
-    await vi.waitFor(() => expect(store.data?.data).toHaveLength(2))
-
-    store.applyStarMutation([items[0]])
-
-    expect(store.data?.data[0]?.m).toBe(1)
-    expect(store.total).toBe(2)
-  })
-
-  it('star 区使用星标参数与虚拟路径，取消星标会移出结果', async () => {
+  it('star 区使用星标参数与虚拟路径', async () => {
     navArea.value = 'star'
     const items = [item('a', { m: 1 }), item('b', { m: 1 })]
     vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes(items))
@@ -255,9 +238,5 @@ describe('driveStore cache effects', () => {
       expect.anything(),
     )
     expect(store.path).toEqual([expect.objectContaining({ name: '星标' })])
-
-    store.applyStarMutation([items[0]])
-    expect(store.data?.data.map(value => value.n)).toEqual(['file-b'])
-    expect(store.total).toBe(1)
   })
 })

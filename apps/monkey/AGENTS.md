@@ -87,13 +87,14 @@ src/
 useDriveStore
 ├── query      useRouteQuery (keyword/suffix/type/page) + useStorage (pageSize)
 ├── nav        usePathNav(router)                 # 路由参数 ↔ cid/area
-├── list       useDriveList                       # 请求、分页/无限加载、排序与缓存变更
+├── list       useDriveList                       # 请求、分页/无限加载与排序
 └── selection  useDriveSelection
 ```
 
-- `useDriveList` 是文件列表的数据接口，内部统一管理 TanStack Query 请求、分页/无限加载、排序和缓存投影；Drive 页与 FileBrowser 都只提供导航和筛选状态。
-- Query key 覆盖目录、搜索、分页、排序与筛选条件；切页时 TanStack Query 自动取消旧请求，目录缓存由共享 `QueryClient` 持有。
-- `useDriveAction` 聚合文件操作（newFolder/top/star/move/delete/cloudDownload…），每个 action 拆到子 hook；store 的 `afterAction()` 统一做 refresh + 清选 + 失效缓存。
+- `useDriveList` 是文件列表的数据接口，内部统一管理请求、分页/无限加载、排序与并发取消；Drive 页与 FileBrowser 都只提供导航和筛选状态。
+- 文件列表结果不缓存；目录、搜索、分页、排序或筛选条件变化时清空当前数据并重新请求。无限模式仅保留当前视图已经加载的页。
+- 文件列表不记录滚动位置；查询条件变化或重新进入 Drive 路由时从顶部开始。
+- `useDriveAction` 聚合文件操作（newFolder/top/star/move/delete/cloudDownload…），每个 action 拆到子 hook；store 的 `afterAction()` 统一清选并重新请求当前列表，不做本地增量更新或目标目录失效。
 - URL 状态走 `@vueuse/router`，UI 偏好走 `@vueuse/core` `useStorage`，跨会话持久。
 
 ### drive115 集成

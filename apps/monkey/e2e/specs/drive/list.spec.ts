@@ -105,17 +105,12 @@ test.describe('列表渲染', () => {
     await expect(row(page, '虚拟文件 0998.mp4')).toBeVisible()
     expect(await rows(page).count()).toBeLessThan(80)
 
-    /** 布局重排和目录往返都以文件 ID 恢复同一滚动锚点。 */
-    await headerBtn(page, HEADER_BTN.view).click()
-    await expect(list).toHaveAttribute('data-view-type', 'card')
-    await expect(row(page, '虚拟文件 0998.mp4')).toBeVisible()
-    await headerBtn(page, HEADER_BTN.view).click()
-    await expect(list).toHaveAttribute('data-view-type', 'list')
-
+    /** 目录往返不保留滚动位置。 */
     await page.evaluate(() => location.hash = '#/drive/1001')
     await expect(row(page, '动漫 第01话.mp4')).toBeVisible()
     await page.goBack()
-    await expect(row(page, '虚拟文件 0998.mp4')).toBeVisible()
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+    await expect(row(page, '动漫')).toBeVisible()
 
     await page.keyboard.press('Meta+a')
     await expect(page.getByTitle('退出多选')).toContainText('1000 项')

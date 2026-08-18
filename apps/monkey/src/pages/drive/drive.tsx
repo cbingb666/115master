@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Button, Header, HeaderEnd, HeaderStart, Pill, SelectionHeader, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
-import { computed, defineComponent, onBeforeMount, ref, Transition, watch } from 'vue'
+import { computed, defineComponent, onActivated, onBeforeMount, onDeactivated, ref, Transition, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
@@ -52,6 +52,16 @@ const Drive = defineComponent({
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
     const isSearch = computed(() => store.nav.area === 'search')
     const paginated = computed(() => store.mode === 'pagination')
+    let deactivated = false
+
+    onActivated(() => {
+      if (deactivated)
+        void store.reload()
+      deactivated = false
+    })
+    onDeactivated(() => {
+      deactivated = true
+    })
 
     const actionHandlers = {
       newFolder: async () => {
@@ -59,39 +69,36 @@ const Drive = defineComponent({
           store.afterAction()
       },
       batchTop: async () => {
-        if (await action.topBatch(store.selection.values)) {
-          // 置顶影响服务端排序（is_top），本地不预测位置 → 整目录失效 + 刷新当前页
-          store.invalidate('all', store.nav.cid || '0')
+        if (await action.topBatch(store.selection.values))
           store.afterAction()
-        }
       },
       batchStar: async () => {
         const items = store.selection.values
         if (await action.starBatch(items))
-          store.applyStarMutation(items)
+          store.afterAction()
       },
       batchMove: async () => {
         const items = store.selection.values
         const res = await action.moveBatch(store.nav.cid, items)
         if (res.success)
-          await store.afterAction([res.pid])
+          await store.afterAction()
       },
       improve: async () => {
         const pid = store.prevLevel?.cid ?? '0'
         const items = store.selection.values
         if (await action.improve(items, pid))
-          await store.afterAction([pid])
+          await store.afterAction()
       },
       rename: async () => {
         const item = store.selection.values[0]
         const newName = await action.renameItem(item)
         if (newName)
-          store.applyUpdateMutation({ ...item, n: newName, ns: newName } as Share.Entity.FilesItem)
+          store.afterAction()
       },
       batchDelete: async () => {
         const items = store.selection.values
         if (await action.deleteBatch(store.nav.cid, items))
-          store.applyRemoveMutation(items)
+          store.afterAction()
       },
       cloudDownload: async (defaultUrls: string = '') => {
         if (await action.cloudDownload(store.nav.cid, store.path, defaultUrls))
@@ -209,26 +216,12 @@ const Drive = defineComponent({
       container: () => mainRef.value?.el,
     })
 
-    const positionKey = computed(() => [
-      store.nav.area || 'all',
-      store.nav.cid || '0',
-      paginated.value ? store.query.page : 'infinite',
-      store.query.size,
-      store.query.keyword,
-      store.query.suffix,
-      store.query.type,
-      store.order ?? '',
-      store.asc ?? '',
-      store.fc_mix ?? '',
-      store.mode,
-    ].join(':'))
-
     /** 拖拽移动：乐观退出多选，避免等待 API 期间多选头部闪现 */
     async function handleDragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
       exitSelectMode()
       const success = await action.dragMove(cid, originItems)
       if (success)
-        await store.afterAction([cid])
+        await store.afterAction()
       return success
     }
 
@@ -357,7 +350,6 @@ const Drive = defineComponent({
             data-[view-type=card]:px-5!
           "
           items={store.data?.data ?? []}
-          positionKey={positionKey.value}
           viewType={viewType.value}
           loading={store.loading}
           refreshing={store.refreshing}

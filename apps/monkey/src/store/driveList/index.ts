@@ -1,16 +1,14 @@
 import type { Share } from '@115master/drive115'
-import type { ReorderOp } from './cache'
 import { Core } from '@115master/drive115'
 import { useStorage } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { defineStore } from 'pinia'
-import { computed, nextTick, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { router } from '@/app/router'
 import { PAGINATION_DEFAULT_PAGE_SIZE } from '@/constants'
 import { useDriveListMode } from '@/hooks/useDriveListMode'
 import { usePathNav } from '@/hooks/useDriveNav'
 import { useDriveSelection } from '@/hooks/useDriveSelection'
-import { getFilesItemId } from '@/utils/filesItem'
 import { appLogger } from '@/utils/logger'
 import { useDriveList } from './useDriveList'
 
@@ -75,16 +73,12 @@ export const useDriveStore = defineStore('drive', () => {
   })
   const prevLevel = computed(() => path.value[path.value.length - 2])
 
-  async function navigate(pageNum: number = query.page.value) {
-    if (mode.value === 'pagination' && pageNum !== query.page.value) {
-      query.page.value = pageNum
-      await nextTick()
-    }
+  function refresh() {
     return list.refresh()
   }
 
-  function refresh() {
-    return list.refresh()
+  function reload() {
+    return list.reload()
   }
 
   function loadMore() {
@@ -99,52 +93,6 @@ export const useDriveStore = defineStore('drive', () => {
     list.changeSize(size)
   }
 
-  function invalidate(area: string, cid: string) {
-    return list.invalidate(area, cid)
-  }
-
-  /** 对当前目录全部缓存变体施加精确增量。 */
-  function applyMutation(op: ReorderOp) {
-    list.applyMutation(op)
-    selection.clear()
-  }
-
-  function applyRemoveMutation(items: Share.Entity.FilesItem[], targetCid?: string) {
-    applyMutation({ kind: 'remove', ids: items.map(getFilesItemId) })
-    if (targetCid) {
-      void invalidate('all', targetCid)
-      void invalidate('star', targetCid)
-    }
-  }
-
-  function applyUpdateMutation(item: Share.Entity.FilesItem) {
-    applyMutation({ kind: 'update', item })
-  }
-
-  function applyStarMutation(items: Share.Entity.FilesItem[]) {
-    const area = nav.area.value || 'all'
-    if (area === 'star') {
-      const hasStar = items.some(item => item.m === 1 || item.m === '1')
-      if (hasStar) {
-        applyMutation({ kind: 'remove', ids: items.map(getFilesItemId) })
-      }
-      else {
-        void invalidate('star', nav.cid.value || '0')
-        void refresh()
-      }
-    }
-    else {
-      items.forEach((item) => {
-        const marked = !(item.m === 1 || item.m === '1')
-        list.applyMutation({
-          kind: 'update',
-          item: { ...item, m: marked ? 1 : 0 } as Share.Entity.FilesItem,
-        })
-      })
-    }
-    selection.clear()
-  }
-
   async function changeSort(
     nextOrder: Share.Base.Sorter['o'],
     nextAsc: Share.Base.Sorter['asc'],
@@ -153,16 +101,8 @@ export const useDriveStore = defineStore('drive', () => {
     return list.changeSort(nextOrder, nextAsc, nextFcMix)
   }
 
-  async function afterAction(invalidateCids?: string[]) {
-    const cid = nav.cid.value || '0'
+  function afterAction() {
     selection.clear()
-    await Promise.all([
-      invalidate(nav.area.value || 'all', cid),
-      ...(invalidateCids?.flatMap(targetCid => [
-        invalidate('all', targetCid),
-        invalidate('star', targetCid),
-      ]) ?? []),
-    ])
     return refresh()
   }
 
@@ -203,16 +143,11 @@ export const useDriveStore = defineStore('drive', () => {
     pageCount,
     hasMore,
     mode,
-    navigate,
     refresh,
+    reload,
     loadMore,
     changePage,
     changeSize,
-    invalidate,
-    applyMutation,
-    applyRemoveMutation,
-    applyUpdateMutation,
-    applyStarMutation,
     changeSort,
     afterAction,
   }

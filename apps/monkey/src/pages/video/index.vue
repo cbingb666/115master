@@ -145,7 +145,6 @@ import { PLUS_VERSION } from '@/constants'
 import { useMoveAction } from '@/hooks/useDriveAction/useMoveAction'
 import { useLockFn } from '@/hooks/useLockFn'
 import { I, Icon } from '@/icons'
-import { useDriveStore } from '@/store/driveList'
 import { subtitlePreference } from '@/utils/cache/subtitlePreference'
 import { clsx } from '@/utils/clsx'
 import { drive115 } from '@/utils/drive115Instance'
@@ -224,8 +223,6 @@ const DataHistory = useDataHistory()
 const DataMark = useMark(DataFileInfo)
 /** 移动操作 */
 const moveAction = useMoveAction()
-/** drive 列表 store（移动后最小化刷新缓存用） */
-const driveStore = useDriveStore()
 /** 是否正在切换视频 */
 const changeing = shallowRef(false)
 /** 视频尺寸 */
@@ -295,30 +292,15 @@ const FileActions = computed<FileActionMenuTypes.FileAction[]>(() => [
         parentId: DataFileInfo.state.parent_id,
       })
 
-      /** 当前文件项（移动 API 与列表缓存增量操作用） */
+      /** 当前文件项（移动 API 使用） */
       const fileItem = { fc: 1, fid: DataFileInfo.state.file_id } as Share.Entity.FilesItem
       /** 源目录（移动后 DataFileInfo 会刷新，需提前捕获） */
       const sourceCid = params.cid.value || DataFileInfo.state.parent_id || '0'
 
       /** 复用 masterapp 的移动功能（文件浏览器对话框 + 移动 API） */
-      const { success, pid } = await moveAction.moveBatch(sourceCid, [fileItem])
+      const { success } = await moveAction.moveBatch(sourceCid, [fileItem])
       if (!success) {
         return
-      }
-
-      /**
-       * 最小化刷新 drive 列表：
-       * 离开 drive 页后 nav 冻结在进入时的目录，与源目录一致则重新校验源/目标目录；
-       * 不一致（如直接打开播放页）则失效源/目标目录缓存，返回列表时重拉
-       */
-      if (driveStore.nav.cid === sourceCid) {
-        await driveStore.afterAction([pid])
-      }
-      else {
-        driveStore.invalidate('all', sourceCid)
-        driveStore.invalidate('star', sourceCid)
-        driveStore.invalidate('all', pid)
-        driveStore.invalidate('star', pid)
       }
 
       /** 刷新文件信息，获取新的 parent_id */

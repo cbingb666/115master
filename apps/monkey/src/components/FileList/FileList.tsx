@@ -9,9 +9,6 @@ import {
   computed,
   defineComponent,
   nextTick,
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
   onMounted,
   ref,
   shallowRef,
@@ -20,15 +17,7 @@ import {
 import { errorFeedback } from '@/utils/errorFeedback'
 import { getFilesItemId } from '@/utils/filesItem'
 import Empty from '../Empty/Empty'
-import { group, locate } from './layout'
-
-interface Position {
-  id: string
-  offset: number
-}
-
-const positions = new Map<string, Position>()
-const POSITION_LIMIT = 100
+import { group } from './layout'
 
 const FileList = defineComponent({
   name: 'FileList',
@@ -44,10 +33,6 @@ const FileList = defineComponent({
     getScrollElement: {
       type: Function as PropType<() => HTMLElement | undefined>,
       default: undefined,
-    },
-    positionKey: {
-      type: String,
-      default: '',
     },
     loading: {
       type: Boolean,
@@ -99,15 +84,12 @@ const FileList = defineComponent({
     const sentinel = ref<HTMLElement>()
     const margin = shallowRef(0)
     const focus = shallowRef<number>()
-    const pending = shallowRef('')
     const breakpoints = useBreakpoints(breakpointsTailwind)
     const sm = breakpoints.greaterOrEqual('sm')
     const xxl = breakpoints.greaterOrEqual('2xl')
     const columns = computed(() => props.viewType === 'list' ? 1 : xxl.value ? 5 : sm.value ? 4 : 2)
     const gap = computed(() => props.viewType === 'list' ? 4 : sm.value ? 20 : 12)
     const rows = computed(() => group(props.items, columns.value))
-    let restoring = false
-    let frame = 0
 
     function key(index: number) {
       const item = rows.value[index]?.[0]
@@ -158,30 +140,6 @@ const FileList = defineComponent({
     })))
     const virtualizer = () => props.getScrollElement ? elementList.value : windowList.value
 
-    function offset() {
-      return props.getScrollElement?.()?.scrollTop ?? window.scrollY
-    }
-
-    function save(positionKey = props.positionKey) {
-      if (!positionKey || props.items.length === 0)
-        return
-      const top = virtualizer().scrollOffset ?? offset()
-      const row = virtualizer().getVirtualItemForOffset(top)
-      const item = row && props.items[row.index * columns.value]
-      if (!row || !item)
-        return
-      positions.delete(positionKey)
-      positions.set(positionKey, {
-        id: getFilesItemId(item),
-        offset: top - row.start,
-      })
-      if (positions.size <= POSITION_LIMIT)
-        return
-      const oldest = positions.keys().next().value
-      if (oldest !== undefined)
-        positions.delete(oldest)
-    }
-
     function start() {
       const scroll = props.getScrollElement?.()
       if (scroll) {
@@ -191,60 +149,23 @@ const FileList = defineComponent({
       window.scrollTo({ top: 0, behavior: 'auto' })
     }
 
-    async function restore(positionKey = props.positionKey) {
-      if (!positionKey || props.loading || rows.value.length === 0)
-        return
-      const current = ++frame
-      await nextTick()
-      if (current !== frame || positionKey !== props.positionKey || props.loading)
-        return
+    async function reset() {
       updateMargin()
       await nextTick()
-      const position = positions.get(positionKey)
-      if (!position) {
-        start()
-        pending.value = ''
-        return
-      }
-      const index = locate(props.items, position.id, columns.value)
-      if (index < 0) {
-        start()
-        pending.value = ''
-        return
-      }
-      restoring = true
-      virtualizer().scrollToIndex(index, { align: 'start', behavior: 'auto' })
-      requestAnimationFrame(() => {
-        if (current === frame)
-          virtualizer().scrollBy(position.offset, { behavior: 'auto' })
-        restoring = false
-      })
-      pending.value = ''
+      virtualizer().measure()
+      start()
     }
 
-    watch(() => props.positionKey, (value, previous) => {
-      if (previous)
-        save(previous)
-      pending.value = value
-      void nextTick(() => {
-        if (!props.loading && pending.value === value)
-          void restore(value)
-      })
-    }, { immediate: true, flush: 'pre' })
     watch(() => props.loading, (value, previous) => {
-      if (value && !previous) {
-        if (!pending.value)
-          save()
-        pending.value = props.positionKey
+      if (value) {
+        start()
         return
       }
-      if (!value && pending.value)
-        void restore(pending.value)
-    }, { flush: 'pre' })
+      if (previous)
+        void reset()
+    }, { flush: 'post' })
     watch([() => props.viewType, columns], () => {
       virtualizer().measure()
-      pending.value = props.positionKey
-      void restore(props.positionKey)
     }, { flush: 'post' })
 
     function checkMore() {
@@ -256,24 +177,10 @@ const FileList = defineComponent({
         void props.onLoadMore()
     }
 
-    onMounted(() => void nextTick(() => {
-      updateMargin()
-      checkMore()
-    }))
-    onActivated(() => {
-      pending.value = props.positionKey
-      void restore(props.positionKey)
-    })
-    onDeactivated(() => save())
-    onBeforeUnmount(() => {
-      frame++
-      save()
-    })
+    onMounted(() => void reset().then(checkMore))
     useResizeObserver(track, updateMargin)
     useEventListener(window, 'resize', updateMargin)
     const handleScroll = useThrottleFn(() => {
-      if (!props.loading && !restoring)
-        save()
       checkMore()
     }, 50)
     useEventListener(window, 'scroll', () => {
