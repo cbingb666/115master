@@ -77,10 +77,6 @@ export const useDriveStore = defineStore('drive', () => {
     return list.refresh()
   }
 
-  function reload() {
-    return list.reload()
-  }
-
   function loadMore() {
     return list.loadMore()
   }
@@ -144,7 +140,6 @@ export const useDriveStore = defineStore('drive', () => {
     hasMore,
     mode,
     refresh,
-    reload,
     loadMore,
     changePage,
     changeSize,

@@ -52,7 +52,7 @@ Status: ready-for-agent
 - 一次 `drive115.tag.getLabels({ limit: 200 })` 全量加载，搜索 / 筛选全在前端。
 - **不引** `useDriveCache`（LRU）、**不引**后端分页状态机——标签量级小（典型几十到上百），前端处理足够。
 - `searchLabels` 与 `getLabels` 同端点（`/label/list`），前端过滤即可，首版不调用 `searchLabels`。
-- 列表页不 `keepAlive`——每次进入刷新全量，数据新鲜度优先（全量加载成本低）。
+- 列表页每次进入均重建并全量刷新，数据新鲜度优先（全量加载成本低）。
 
 ### 稳定内部模型（adapter 对冲未联调）
 

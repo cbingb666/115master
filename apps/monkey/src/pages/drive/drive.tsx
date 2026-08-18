@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Action } from '@/types/action'
 import { Button, Header, HeaderEnd, HeaderStart, Pill, SelectionHeader, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
-import { computed, defineComponent, onActivated, onBeforeMount, onDeactivated, ref, Transition, watch } from 'vue'
+import { computed, defineComponent, onBeforeMount, ref, Transition, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
@@ -52,17 +52,6 @@ const Drive = defineComponent({
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
     const isSearch = computed(() => store.nav.area === 'search')
     const paginated = computed(() => store.mode === 'pagination')
-    let deactivated = false
-
-    onActivated(() => {
-      if (deactivated)
-        void store.reload()
-      deactivated = false
-    })
-    onDeactivated(() => {
-      deactivated = true
-    })
-
     const actionHandlers = {
       newFolder: async () => {
         if (await action.newFolder(store.nav.cid))

@@ -25,7 +25,7 @@ main.ts (run-at: document-start)
 src/
 ├── main.ts               # 入口：document.domain 设置 + URL 路由分发
 ├── app/                  # MASTER SPA 骨架
-│   ├── app.tsx           # App 根（OverlayHost + Dialog/Toast + RouterView/KeepAlive）
+│   ├── app.tsx           # App 根（OverlayHost + Dialog/Toast + RouterView）
 │   ├── router.ts         # createWebHashHistory + 旧播放页重定向
 │   └── routes.ts         # drive / video / test 路由
 ├── pages/
@@ -75,8 +75,8 @@ src/
 ### MASTER SPA
 
 - `createMasterApp()`（`app/index.ts`）— 重置文档（favicon、meta viewport、`#my-app`、滚动条样式）、注入主题、挂载 Vue + Pinia + router。
-- 路由（hash）：`/drive/:area?/:cid?`（网盘，`keepAlive`）、`/video/:pickCode`（播放）、`/test`。
-- App 根（`app.tsx`，TSX）— `onErrorCaptured` 全局兜底，`<KeepAlive>` 包裹 `meta.keepAlive` 路由。
+- 路由（hash）：`/drive/:area?/:cid?`（网盘）、`/video/:pickCode`（播放）、`/test`。
+- App 根（`app.tsx`，TSX）— `onErrorCaptured` 全局兜底，`RouterView` 直接渲染当前路由页面。
 - 网盘页 `drive.tsx` 用 `actionAtom`/`actionConfig` 声明式描述右键菜单 action，由 `FileContextMenu` 渲染。
 
 ### 状态管理：Pinia store + hooks 组合

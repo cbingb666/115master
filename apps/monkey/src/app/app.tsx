@@ -1,6 +1,6 @@
 import { DialogHost, ModalHost, OverlayHost, Watermark } from '@115master/ui'
 import { GM_info } from 'vite-plugin-monkey/dist/client'
-import { defineComponent, KeepAlive, onErrorCaptured } from 'vue'
+import { defineComponent, onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
 import { appDialog } from '@/app/dialog'
 import {
@@ -35,17 +35,7 @@ const App = defineComponent({
             <ToastContainer>
               <GlobalSearchModal />
               <PreferencesDialog />
-              <RouterView>
-                {{
-                  default: ({ Component, route }: any) => {
-                    if (!Component)
-                      return null
-                    if (route.meta?.keepAlive)
-                      return <KeepAlive><Component key={route.name as string} /></KeepAlive>
-                    return <Component />
-                  },
-                }}
-              </RouterView>
+              <RouterView />
             </ToastContainer>
           </DialogHost>
         </DndRoot>

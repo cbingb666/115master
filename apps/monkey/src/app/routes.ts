@@ -17,9 +17,6 @@ export const routes: RouteRecordRaw[] = [
     name: 'drive',
     path: '/drive/:area?/:cid?',
     component: async () => import('../pages/drive/drive'),
-    meta: {
-      keepAlive: true,
-    },
   },
 
   {

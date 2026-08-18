@@ -158,11 +158,6 @@ export function useDriveList(options: UseDriveListOptions) {
     return task
   }
 
-  function reload() {
-    task = load(true)
-    return task
-  }
-
   async function loadMore(): Promise<boolean> {
     const last = pages.value[pages.value.length - 1]
     if (mode.value !== 'infinite' || !last || !hasMore.value || loading.value || refreshing.value || loadingMore.value)
@@ -266,7 +261,6 @@ export function useDriveList(options: UseDriveListOptions) {
     page: options.page,
     size: options.size,
     refresh,
-    reload,
     loadMore,
     changePage,
     changeSize,
