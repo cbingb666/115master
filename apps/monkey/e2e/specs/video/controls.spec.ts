@@ -90,7 +90,7 @@ test.describe('控制栏', () => {
     expect(errors).toEqual([])
   })
 
-  test('播放器信息弹层使用沉浸式滚动条', async ({ page }) => {
+  test('播放器信息复用 Dialog 并使用沉浸式滚动条', async ({ page }) => {
     const errors = watch(page)
     await setupVideo(page)
     await page.goto(videoUrl(EPISODES[0].pc))
@@ -99,12 +99,14 @@ test.describe('控制栏', () => {
     const menu = page.getByRole('menu', { name: '播放器操作' })
     await expect(menu.getByText('关于', { exact: true })).toHaveCount(0)
     await menu.getByText('Statistics', { exact: true }).click()
-    const statistics = page.locator('.x-popup').filter({
-      has: page.getByRole('heading', { name: 'Statistics' }),
-    })
+    const statistics = page.getByRole('dialog', { name: 'Statistics' })
     await expect(statistics).toBeVisible()
-    await expect(statistics.locator('.ui-scrollbar.ui-scrollbar-md.overflow-y-auto')).toHaveCount(1)
-    await statistics.getByRole('button').click()
+    await expect(statistics).toHaveAttribute('data-ui-dialog-size', 'lg')
+    await expect(statistics.locator('.ui-dialog__content.ui-scrollbar.ui-scrollbar-md')).toHaveCount(1)
+    const section = statistics.getByRole('heading', { name: 'Source Info' })
+    await expect(section).not.toHaveClass(/\bsticky\b/)
+    await expect(section).toHaveCSS('padding-left', '0px')
+    await statistics.getByRole('button', { name: '关闭' }).click()
     await expect(statistics).toBeHidden()
     expect(errors).toEqual([])
   })

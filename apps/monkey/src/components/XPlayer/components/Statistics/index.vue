@@ -1,191 +1,166 @@
 <template>
-  <Popup
-    :class="styles.root"
-    :visible="statistics.visible.value"
+  <Dialog
+    v-model:open="statistics.visible.value"
+    size="lg"
   >
-    <div :class="styles.container.main">
-      <!-- 头部 -->
-      <div :class="styles.container.header">
-        <div :class="styles.titleContainer">
-          <Icon :name="I.STATISTICS_INFO" :class="styles.titleIcon" />
-          <h3 :class="styles.container.headerTitle">
-            Statistics
-          </h3>
+    <template #title>
+      <span :class="styles.title">
+        <Icon :name="I.STATISTICS_INFO" class="size-6" />
+        Statistics
+      </span>
+    </template>
+
+    <div :class="styles.sections">
+      <!-- Player Core -->
+      <div :class="styles.section.wrapper">
+        <h3 :class="styles.section.header">
+          Player Core
+        </h3>
+        <div :class="styles.section.content">
+          <table :class="styles.table.wrapper">
+            <tbody>
+              <tr>
+                <td :class="styles.table.labelCell">
+                  Core Type:
+                </td>
+                <td :class="styles.table.valueCell">
+                  {{ playerCoreType }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <Button
-          variant="ghost"
-          size="xs"
-          shape="circle"
-          :class="styles.closeButton"
-          @click="statistics.toggleVisible"
-        >
-          <Icon :name="I.CLOSE" class="size-4" />
-        </Button>
       </div>
 
-      <!-- 滚动内容区 -->
-      <div :class="styles.container.content">
-        <div :class="styles.container.sectionsWrapper">
-          <!-- Player Core -->
-          <div :class="styles.section.wrapper">
-            <h4 :class="styles.section.header">
-              Player Core
-            </h4>
-            <div :class="styles.section.content">
-              <table :class="styles.table.wrapper">
-                <tbody>
-                  <tr>
-                    <td :class="styles.table.labelCell">
-                      Core Type:
-                    </td>
-                    <td :class="styles.table.valueCell">
-                      {{ playerCoreType }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <!-- Source Info -->
+      <div :class="styles.section.wrapper">
+        <h3 :class="styles.section.header">
+          Source Info
+        </h3>
+        <div :class="styles.section.content">
+          <table :class="[styles.table.wrapper, styles.table.fixedLayout]">
+            <tbody>
+              <tr v-for="(value, key) in sourceInfoItems" :key="key">
+                <td :class="styles.table.labelCell">
+                  {{ key }}:
+                </td>
+                <td :class="styles.table.valueCell">
+                  {{ value }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-          <!-- Source Info -->
-          <div :class="styles.section.wrapper">
-            <h4 :class="styles.section.header">
-              Source Info
-            </h4>
-            <div :class="styles.section.content">
-              <table :class="[styles.table.wrapper, styles.table.fixedLayout]">
-                <tbody>
-                  <tr v-for="(value, key) in sourceInfoItems" :key="key">
-                    <td :class="styles.table.labelCell">
-                      {{ key }}:
-                    </td>
-                    <td :class="styles.table.valueCell">
-                      {{ value }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <!-- Streams -->
+      <div v-if="hasStreams" :class="styles.section.wrapper">
+        <div :class="styles.section.header">
+          <h3 class="m-0 text-base font-medium">
+            Streams
+          </h3>
+          <span :class="styles.section.headerDesc">{{ streamsCount }}</span>
+        </div>
+        <div :class="styles.section.content">
+          <table
+            v-for="stream in streams"
+            :key="stream.id"
+            :class="[styles.table.wrapper, styles.table.fixedLayout, styles.table.subTable, {
+              [styles.table.active]: isActiveStream(stream.id),
+            }]"
+          >
+            <tbody>
+              <tr>
+                <td :class="styles.table.labelCell">
+                  {{ stream.mediaType }}
+                </td>
+                <td :class="styles.table.valueCell">
+                  ID: {{ stream.id }}
+                </td>
+              </tr>
+              <tr v-for="(value, label) in getStreamProperties(stream)" :key="label">
+                <td :class="styles.table.labelCell">
+                  {{ label }}:
+                </td>
+                <td :class="styles.table.valueCell">
+                  {{ value }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-          <!-- Streams -->
-          <div v-if="hasStreams" :class="[styles.section.wrapper]">
-            <div :class="styles.section.header">
-              <h4 :class="styles.container.headerTitle">
-                Streams
-              </h4>
-              <span :class="styles.section.headerDesc">{{ streamsCount }}</span>
-            </div>
-            <div :class="styles.section.content">
-              <table
-                v-for="stream in streams"
-                :key="stream.id"
-                :class="[styles.table.wrapper, styles.table.fixedLayout, styles.table.subTable, {
-                  [styles.table.active]: isActiveStream(stream.id),
-                }]"
-              >
-                <tbody>
-                  <tr>
-                    <td :class="styles.table.labelCell">
-                      {{ stream.mediaType }}
-                    </td>
-                    <td :class="styles.table.valueCell">
-                      ID: {{ stream.id }}
-                    </td>
-                  </tr>
-                  <tr v-for="(value, label) in getStreamProperties(stream)" :key="label">
-                    <td :class="styles.table.labelCell">
-                      {{ label }}:
-                    </td>
-                    <td :class="styles.table.valueCell">
-                      {{ value }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <!-- Core Stats -->
+      <div v-if="hasStats" :class="styles.section.wrapper">
+        <h3 :class="styles.section.header">
+          Core Stats
+        </h3>
+        <div :class="styles.section.content">
+          <table :class="styles.table.wrapper">
+            <tbody>
+              <tr v-for="(value, key) in statsItems" :key="key">
+                <td :class="styles.table.labelCell">
+                  {{ key }}:
+                </td>
+                <td :class="styles.table.valueCell">
+                  {{ value }}
+                </td>
+              </tr>
+              <tr v-if="hasAudioVideoTimes">
+                <td :class="styles.table.labelCell">
+                  A-V:
+                </td>
+                <td :class="styles.table.valueCell">
+                  {{ audioVideoTimeDiff }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-          <!-- Core Stats -->
-          <div v-if="hasStats" :class="styles.section.wrapper">
-            <h4 :class="styles.section.header">
-              Core Stats
-            </h4>
-            <div :class="styles.section.content">
-              <table :class="styles.table.wrapper">
-                <tbody>
-                  <tr v-for="(value, key) in statsItems" :key="key">
-                    <td :class="styles.table.labelCell">
-                      {{ key }}:
-                    </td>
-                    <td :class="styles.table.valueCell">
-                      {{ value }}
-                    </td>
-                  </tr>
-                  <tr v-if="hasAudioVideoTimes">
-                    <td :class="styles.table.labelCell">
-                      A-V:
-                    </td>
-                    <td :class="styles.table.valueCell">
-                      {{ audioVideoTimeDiff }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- 错误信息 -->
-          <div v-if="hasLoadError" :class="styles.section.wrapper">
-            <h4 :class="styles.section.header">
-              错误信息
-            </h4>
-            <div :class="styles.section.content">
-              <div :class="styles.error">
-                {{ errorMessage }}
-              </div>
-            </div>
+      <!-- 错误信息 -->
+      <div v-if="hasLoadError" :class="styles.section.wrapper">
+        <h3 :class="styles.section.header">
+          错误信息
+        </h3>
+        <div :class="styles.section.content">
+          <div :class="styles.error">
+            {{ errorMessage }}
           </div>
         </div>
       </div>
     </div>
-  </Popup>
+
+    <template #actions>
+      <Button @click="statistics.visible.value = false">
+        关闭
+      </Button>
+    </template>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
-import { Button, scrollbar } from '@115master/ui'
+import { Button, Dialog } from '@115master/ui'
 import { computed } from 'vue'
-import Popup from '@/components/XPlayer/components/Popup/index.vue'
 import { PlayerCoreType } from '@/components/XPlayer/hooks/playerCore/types'
 import { usePlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
 
 const styles = clsx({
-  // 根元素样式
-  root: 'top-4! left-4! h-2/3 w-lg p-0!',
-  // 标题容器样式
-  titleContainer: 'flex items-center gap-2 space-x-2',
-  // 标题图标样式
-  titleIcon: 'size-6',
-  // 容器样式
-  container: {
-    main: 'flex h-full flex-col rounded-xl',
-    header:
-      'flex items-center justify-between rounded-t-xl px-4 py-4',
-    headerTitle: 'text-base-content text-base font-medium',
-    content: [...scrollbar(), 'flex-1 overflow-y-auto pb-5'],
-    sectionsWrapper: 'space-y-6 text-sm',
-  },
+  title: 'flex items-center gap-2',
+  sections: 'space-y-6 text-sm',
   // 章节样式
   section: {
     wrapper: 'stats-section',
     header: [
-      'text-base-content border-base-content/10 sticky top-0 mb-2 border-b px-6 py-2 text-base font-medium shadow-sm',
+      'text-base-content border-base-content/10 mb-3 border-b pb-2 text-base font-medium',
       'flex items-baseline gap-2',
     ],
     headerDesc: 'text-base-content/60 text-xs',
-    content: 'space-y-2 px-6 pt-2',
+    content: 'space-y-2',
   },
   // 表格样式
   table: {
@@ -199,8 +174,6 @@ const styles = clsx({
   // 错误信息样式
   error:
     'bg-error/10 border-error text-error-content rounded border-l-2 p-2 font-mono text-xs whitespace-pre-wrap',
-  // 关闭按钮样式
-  closeButton: '',
 })
 
 /** 读取播放器上下文 */
