@@ -101,7 +101,7 @@ _Avoid_: 转发壳迁移、少改文件
 _Avoid_: 页面抽屉、浮层、Navigation Stack
 
 **Dialog**：
-带内容与操作结构的 Modal Surface，适合命令、确认、输入或聚焦任务。
+带内容与操作结构的 Modal Surface，适合命令、确认、输入或聚焦任务；内容区的边界滚动被限制在当前 Dialog 内，不继续串联到模态外层。
 _Avoid_: Dialog 服务、Drawer、路由弹窗
 
 **Drawer**：

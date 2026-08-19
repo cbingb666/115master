@@ -742,6 +742,25 @@
       ]
     },
     {
+      "id": "ui-dialog--overflow",
+      "docs": "ui-dialog--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-dialog--overflow:contains-boundary-scrolling-inside-the-dialog"
+      ],
+      "ready": "main[aria-label=\"Dialog overflow\"]",
+      "outcomes": [
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
       "id": "ui-dialog--content",
       "docs": "ui-dialog--docs",
       "component": true,

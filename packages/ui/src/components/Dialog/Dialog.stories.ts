@@ -280,6 +280,63 @@ Content.test('proves prop, slot, and label-only accessible names', async ({ canv
   await hidden(dialog)
 })
 
+export const Overflow = meta.story({
+  name: '滚动边界',
+  parameters: {
+    controls: { disable: true },
+  },
+  render: () => ({
+    components: { Button, Dialog },
+    setup() {
+      const open = ref(false)
+      const items = Array.from({ length: 40 }, (_, index) => index + 1)
+
+      return { items, open }
+    },
+    template: `
+      <main
+        aria-label="Dialog overflow"
+        class="h-screen overflow-y-auto"
+        data-ui-dialog-background
+      >
+        <div class="flex min-h-[200vh] items-start justify-center p-6">
+          <Button aria-haspopup="dialog" :aria-expanded="open" @click="open = true">
+            Open overflow Dialog
+          </Button>
+
+          <Dialog
+            :open="open"
+            title="Overflow Dialog"
+            @update:open="open = $event"
+          >
+            <a href="#overflow-end">Jump to end</a>
+            <p v-for="item in items" :key="item">Scrollable item {{ item }}</p>
+            <span id="overflow-end">End of scrollable content</span>
+
+            <template #actions>
+              <Button @click="open = false">Close overflow Dialog</Button>
+            </template>
+          </Dialog>
+        </div>
+      </main>
+    `,
+  }),
+})
+
+Overflow.test('contains boundary scrolling inside the Dialog', async ({ canvasElement }) => {
+  const canvas = within(canvasElement)
+
+  await userEvent.click(canvas.getByRole('button', { name: 'Open overflow Dialog' }))
+  const dialog = await canvas.findByRole('dialog', { name: 'Overflow Dialog' })
+  const scroller = within(dialog).getByText('Scrollable item 40').parentElement
+
+  if (!scroller)
+    throw new Error('Overflow Dialog did not render its content scroller')
+
+  await expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight)
+  await expect(getComputedStyle(scroller).overscrollBehavior).toBe('contain')
+})
+
 export const Lifecycle = meta.story({
   name: '受控生命周期与焦点',
   parameters: {
