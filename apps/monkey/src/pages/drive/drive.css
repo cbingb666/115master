@@ -1,3 +1,10 @@
+.drive-page {
+  --drive-floating-gap: calc(var(--spacing) * 2);
+  --drive-floating-content-gap: calc(var(--drive-floating-gap) + var(--spacing) * 3);
+  --drive-bottom-gap: calc(env(safe-area-inset-bottom) + var(--drive-floating-content-gap));
+  --ui-header-offset: var(--drive-floating-gap);
+}
+
 .drive-bottom-dock {
   /* 沉浸式底栏：控件保持悬浮，底层向列表方向羽化过渡 */
   &::before {
@@ -10,6 +17,48 @@
     z-index: var(--ui-z-under);
     pointer-events: none;
     background: linear-gradient(to top, oklch(15% 0.01 260 / 0.3), transparent);
+  }
+}
+
+.drive-bottom-dock-enter-active {
+  transition:
+    transform 180ms var(--ui-ease-enter),
+    opacity 180ms var(--ui-ease-enter);
+}
+
+.drive-bottom-dock-enter-from,
+.drive-bottom-dock-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.drive-bottom-dock-leave-active {
+  pointer-events: none;
+  transition:
+    transform 140ms var(--ui-ease-exit),
+    opacity 140ms var(--ui-ease-exit);
+}
+
+.drive-bottom-content-enter-active {
+  transition: opacity 180ms var(--ui-ease-enter);
+}
+
+.drive-bottom-content-enter-from,
+.drive-bottom-content-leave-to {
+  opacity: 0;
+}
+
+.drive-bottom-content-leave-active {
+  pointer-events: none;
+  transition: opacity 140ms var(--ui-ease-exit);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drive-bottom-dock-enter-active,
+  .drive-bottom-dock-leave-active,
+  .drive-bottom-content-enter-active,
+  .drive-bottom-content-leave-active {
+    transition: none;
   }
 }
 

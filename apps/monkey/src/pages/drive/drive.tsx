@@ -1,8 +1,8 @@
 import type { Share } from '@115master/drive115'
-import type { Action } from '@/types/action'
-import { Button, Header, HeaderEnd, HeaderStart, Pill, SelectionHeader, Tooltip } from '@115master/ui'
-import { breakpointsTailwind, useBreakpoints, useResizeObserver, useStorage, useTitle } from '@vueuse/core'
-import { computed, defineComponent, onBeforeMount, ref, Transition, watch } from 'vue'
+import type { DriveBottomMode } from './DriveBottomDock'
+import { Button, Header, HeaderEnd, HeaderStart, SelectionHeader, Tooltip } from '@115master/ui'
+import { breakpointsTailwind, useBreakpoints, useStorage, useTitle } from '@vueuse/core'
+import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
@@ -34,6 +34,8 @@ import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
 import { getFilesItemId } from '@/utils/filesItem'
 import { openFilesItem } from '@/utils/openFilesItem'
+import DriveBottomDock from './DriveBottomDock'
+import { useDrivePageActions } from './useDrivePageActions'
 import './drive.css'
 
 const Drive = defineComponent({
@@ -42,122 +44,17 @@ const Drive = defineComponent({
     useTitle('115Master')
 
     const store = useDriveStore()
-
-    const action = useDriveAction()
     const dialog = useAppDialog()
     const search = useGlobalSearch()
     const bp = useBreakpoints(breakpointsTailwind)
-    const searchTooltip = computed(() => bp.greater('sm').value ? '搜索 (⌘K)' : '搜索')
+    const desktop = bp.greater('sm')
+    const searchTooltip = computed(() => desktop.value ? '搜索 (⌘K)' : '搜索')
     const route = useRoute()
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
+    const items = computed(() => store.data?.data ?? [])
     const isSearch = computed(() => store.nav.area === 'search')
     const paginated = computed(() => store.mode === 'pagination')
-    const actionHandlers = {
-      newFolder: async () => {
-        if (await action.newFolder(store.nav.cid))
-          store.afterAction()
-      },
-      batchTop: async () => {
-        if (await action.topBatch(store.selection.values))
-          store.afterAction()
-      },
-      batchStar: async () => {
-        const items = store.selection.values
-        if (await action.starBatch(items))
-          store.afterAction()
-      },
-      batchMove: async () => {
-        const items = store.selection.values
-        const res = await action.moveBatch(store.nav.cid, items)
-        if (res.success)
-          await store.afterAction()
-      },
-      improve: async () => {
-        const pid = store.prevLevel?.cid ?? '0'
-        const items = store.selection.values
-        if (await action.improve(items, pid))
-          await store.afterAction()
-      },
-      rename: async () => {
-        const item = store.selection.values[0]
-        const newName = await action.renameItem(item)
-        if (newName)
-          store.afterAction()
-      },
-      batchDelete: async () => {
-        const items = store.selection.values
-        if (await action.deleteBatch(store.nav.cid, items))
-          store.afterAction()
-      },
-      cloudDownload: async (defaultUrls: string = '') => {
-        if (await action.cloudDownload(store.nav.cid, store.path, defaultUrls))
-          store.afterAction()
-      },
-      batchTag: async () => {
-        await action.tagBatch(store.selection.values)
-      },
-    }
-
-    const actionAtom = {
-      top: {
-        name: 'top',
-        label: '置顶',
-        activeLabel: '取消置顶',
-        icon: I.TOP,
-        activeIcon: I.TOP_SOLID,
-        activeIconColor: 'text-primary',
-        active: computed(() => store.selection.values.some(item => item.is_top)),
-        onClick: () => actionHandlers.batchTop(),
-      },
-      star: {
-        name: 'star',
-        label: '星标',
-        activeLabel: '取消星标',
-        icon: I.STAR,
-        activeIcon: I.STAR_FILL,
-        activeIconColor: 'text-primary',
-        active: computed(() => store.selection.values.some(item => item.m)),
-        onClick: () => actionHandlers.batchStar(),
-      },
-      move: {
-        name: 'move',
-        label: '移动',
-        icon: I.MOVE,
-        onClick: () => actionHandlers.batchMove(),
-      },
-      improve: {
-        name: 'improve',
-        label: '提到上级',
-        icon: I.FILE_IMPROVE,
-        show: computed(() => store.prevLevel !== undefined),
-        onClick: () => actionHandlers.improve(),
-      },
-      rename: {
-        name: 'rename',
-        label: '重命名',
-        icon: I.RENAME,
-        show: computed(() => store.selection.count === 1),
-        onClick: () => actionHandlers.rename(),
-      },
-      tag: {
-        name: 'tag',
-        label: '打标签',
-        icon: I.TAG,
-        onClick: () => actionHandlers.batchTag(),
-      },
-      delete: {
-        name: 'delete',
-        icon: I.DELETE,
-        label: '删除',
-        onClick: () => actionHandlers.batchDelete(),
-      },
-    } satisfies Record<string, Action>
-
-    const actionConfig = computed<Action[][]>(() => [
-      [actionAtom.top, actionAtom.star, actionAtom.tag],
-      [actionAtom.move, actionAtom.improve, actionAtom.rename],
-      [actionAtom.delete],
-    ])
+    const actions = useDrivePageActions(store, useDriveAction())
 
     function handleClickPath(data: Share.Entity.PathItem) {
       if (isSearch.value)
@@ -165,18 +62,10 @@ const Drive = defineComponent({
       router.push({ name: 'drive', params: { cid: data.cid === '0' ? '' : data.cid } })
     }
 
-    async function handleSort(order: Share.Base.Sorter['o'], asc: Share.Base.Sorter['asc'], fc_mix: Share.Base.Sorter['fc_mix']) {
-      await store.changeSort(order, asc, fc_mix)
-    }
-
-    // function handleSearch(value: string) {
-    //   router.push({ path: '/drive/search', query: { keyword: value } })
-    // }
-
     const mainRef = ref<{ el: HTMLElement | undefined } | null>(null)
 
     const { preview } = useFilePreview({
-      get listData() { return store.data?.data ?? [] },
+      get listData() { return items.value },
     })
 
     function openItem(item: Share.Entity.FilesItem) {
@@ -196,7 +85,7 @@ const Drive = defineComponent({
       contextmenuPosition,
       itemProps,
     } = useFileSelection({
-      get items() { return store.data?.data ?? [] },
+      get items() { return items.value },
       get selected() { return store.selection.checked },
       set: store.selection.toggle,
       clear: store.selection.clear,
@@ -208,13 +97,20 @@ const Drive = defineComponent({
     /** 拖拽移动：乐观退出多选，避免等待 API 期间多选头部闪现 */
     async function handleDragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
       exitSelectMode()
-      const success = await action.dragMove(cid, originItems)
-      if (success)
-        await store.afterAction()
-      return success
+      return actions.dragMove(cid, originItems)
     }
 
-    function ListHeader(dragging: boolean) {
+    const sorter = computed(() => ({
+      asc: store.asc ?? 0,
+      fc_mix: store.fc_mix ?? 0,
+      order: store.order ?? 'user_ptime',
+    }))
+    const page = computed(() => ({
+      currentPageSize: store.query.size,
+      onChangePageSize: store.changeSize,
+    }))
+
+    function renderHeader(dragging: boolean) {
       // 拖拽期间冻结在多选头部之外：保住面包屑投放目标
       if (selectMode.value && !dragging) {
         return (
@@ -233,15 +129,6 @@ const Drive = defineComponent({
           />
         )
       }
-      const sorter: { asc: Share.Base.Sorter['asc'], fc_mix: Share.Base.Sorter['fc_mix'], order: Share.Base.Sorter['o'] } = {
-        asc: store.asc || 0,
-        fc_mix: store.fc_mix || 0,
-        order: store.order || 'user_ptime',
-      }
-      const page = {
-        currentPageSize: store.query.size,
-        onChangePageSize: store.changeSize,
-      }
       return (
         <Header>
           <HeaderStart>
@@ -258,19 +145,19 @@ const Drive = defineComponent({
               </Button>
             </Tooltip>
             {isSearch.value
-              ? paginated.value && <FilePageSizeSelector {...page} />
+              ? paginated.value && <FilePageSizeSelector {...page.value} />
               : (
                   <>
                     <div class="hidden @[480px]:inline-flex">
-                      <FileNewFolderButton onClick={actionHandlers.newFolder} />
+                      <FileNewFolderButton onClick={actions.newFolder} />
                     </div>
                     {paginated.value && (
                       <div class="hidden @[480px]:inline-flex">
-                        <FilePageSizeSelector {...page} />
+                        <FilePageSizeSelector {...page.value} />
                       </div>
                     )}
                     <div class="hidden @[480px]:inline-flex">
-                      <FileSortSelector {...sorter} onSort={handleSort} />
+                      <FileSortSelector {...sorter.value} onSort={store.changeSort} />
                     </div>
                   </>
                 )}
@@ -290,7 +177,7 @@ const Drive = defineComponent({
                     default: () => (
                       <>
                         <li>
-                          <a tabindex="0" onClick={actionHandlers.newFolder}>
+                          <a tabindex="0" onClick={actions.newFolder}>
                             <Icon class="text-lg" name={I.NEW_FOLDER} />
                             <span class="ml-2">新建文件夹</span>
                           </a>
@@ -302,7 +189,7 @@ const Drive = defineComponent({
                               <span class="ml-2">排序</span>
                             </summary>
                             <ul>
-                              <SortOptions {...sorter} onSort={handleSort} />
+                              <SortOptions {...sorter.value} onSort={store.changeSort} />
                             </ul>
                           </details>
                         </li>
@@ -314,7 +201,7 @@ const Drive = defineComponent({
                                 <span class="ml-2">每页</span>
                               </summary>
                               <ul>
-                                <PageSizeOptions {...page} />
+                                <PageSizeOptions {...page.value} />
                               </ul>
                             </details>
                           </li>
@@ -330,7 +217,7 @@ const Drive = defineComponent({
       )
     }
 
-    function List(dragging: boolean) {
+    function renderList(dragging: boolean) {
       return (
         <FileList
           class="
@@ -338,7 +225,7 @@ const Drive = defineComponent({
             pb-20
             data-[view-type=card]:px-5!
           "
-          items={store.data?.data ?? []}
+          items={items.value}
           viewType={viewType.value}
           loading={store.loading}
           refreshing={store.refreshing}
@@ -356,7 +243,7 @@ const Drive = defineComponent({
                 class="data-[view-type=list]:px-(--main-content-gutter)"
                 key={getFilesItemId(item)}
                 index={index}
-                setsize={store.data?.data?.length ?? 0}
+                setsize={items.value.length}
                 viewType={viewType.value}
                 selectMode={selectMode.value}
                 cid={store.nav.cid}
@@ -368,7 +255,7 @@ const Drive = defineComponent({
             ),
             overlay: () => (
               <FileContextMenu
-                actionConfig={actionConfig.value}
+                actionConfig={actions.groups}
                 position={contextmenuPosition.value}
                 show={contextmenuShow.value}
                 onClose={() => contextmenuShow.value = false}
@@ -379,7 +266,7 @@ const Drive = defineComponent({
       )
     }
 
-    const bottomMode = computed<'actions' | 'pagination' | null>(() => {
+    const bottomMode = computed(() => {
       if (selectMode.value && store.selection.count > 0)
         return 'actions'
       if (paginated.value && !store.loading && store.pageCount > 1)
@@ -387,72 +274,24 @@ const Drive = defineComponent({
       return null
     })
 
-    const bottomRef = ref<HTMLElement>()
-    const bottomSize = ref<{ height: number, width: number }>()
-    useResizeObserver(bottomRef, ([entry]) => {
-      const item = entry.target as HTMLElement
-      bottomSize.value = { height: item.offsetHeight, width: item.offsetWidth }
-    })
-    const bottomStyle = computed(() => bottomSize.value
-      ? {
-          height: `${bottomSize.value.height}px`,
-          width: `${bottomSize.value.width}px`,
-        }
-      : undefined)
-
-    function FixedBottom() {
+    function renderBottom() {
       return (
-        <div class="drive-bottom-dock ui-z-elevated pointer-events-none fixed right-0 bottom-[var(--drive-bottom-gap)] left-(--sider-width) grid grid-cols-1">
-          <Transition
-            enterActiveClass="motion-reduce:transition-none transition-[transform,opacity] duration-[180ms] ease-[var(--ui-ease-enter)]"
-            enterFromClass="scale-[0.98] opacity-0"
-            enterToClass="scale-100 opacity-100"
-            leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-[transform,opacity] duration-[140ms] ease-[var(--ui-ease-exit)]"
-            leaveFromClass="scale-100 opacity-100"
-            leaveToClass="scale-[0.98] opacity-0"
-          >
-            {bottomMode.value && (
-              <Pill
-                key="surface"
-                as="div"
-                variant="glass-floating"
-                size="md"
-                class="drive-bottom-surface pointer-events-auto col-start-1 row-start-1 box-content grid min-h-0 grid-cols-1 justify-self-center overflow-hidden p-0 transition-[width,height] duration-[180ms] ease-[var(--ui-ease-move)] motion-reduce:transition-none"
-                style={bottomStyle.value}
-              >
-                <Transition
-                  enterActiveClass="motion-reduce:transition-none transition-opacity duration-[180ms] ease-[var(--ui-ease-enter)]"
-                  enterFromClass="opacity-0"
-                  enterToClass="opacity-100"
-                  leaveActiveClass="pointer-events-none motion-reduce:transition-none transition-opacity duration-[140ms] ease-[var(--ui-ease-exit)]"
-                  leaveFromClass="opacity-100"
-                  leaveToClass="opacity-0"
-                >
-                  {bottomMode.value === 'actions'
-                    ? (
-                        <div ref={bottomRef} key="actions" class="pointer-events-auto col-start-1 row-start-1 justify-self-center">
-                          <ActionBar embedded groups={actionConfig.value} />
-                        </div>
-                      )
-                    : (
-                        <div ref={bottomRef} key="pagination" class="pointer-events-auto col-start-1 row-start-1 justify-self-center">
-                          <Pagination
-                            embedded
-                            surface="floating"
-                            currentPage={store.query.page}
-                            currentPageSize={store.query.size}
-                            showSizeChanger={false}
-                            total={store.total}
-                            onCurrentPageChange={store.changePage}
-                            onPageSizeChange={store.changeSize}
-                          />
-                        </div>
-                      )}
-                </Transition>
-              </Pill>
-            )}
-          </Transition>
-        </div>
+        <DriveBottomDock mode={bottomMode.value}>
+          {{ default: ({ mode }: { mode: Exclude<DriveBottomMode, null> }) => mode === 'actions'
+            ? <ActionBar embedded groups={actions.groups} />
+            : (
+                <Pagination
+                  embedded
+                  surface="floating"
+                  currentPage={store.query.page}
+                  currentPageSize={store.query.size}
+                  showSizeChanger={false}
+                  total={store.total}
+                  onCurrentPageChange={store.changePage}
+                  onPageSizeChange={store.changeSize}
+                />
+              ) }}
+        </DriveBottomDock>
       )
     }
 
@@ -463,29 +302,23 @@ const Drive = defineComponent({
 
     onBeforeMount(() => {
       if (route.query.offline_url)
-        actionHandlers.cloudDownload(route.query.offline_url as string)
+        actions.cloudDownload(route.query.offline_url as string)
     })
 
     return () => (
       <DndMonitor>
         {{ default: ({ active }: { active: boolean }) => (
           <div
-            class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] [--ui-header-gutter:var(--main-content-gutter)] sm:[--main-content-gutter:calc(var(--spacing)*6)]"
-            style={{
-              '--drive-floating-gap': 'calc(var(--spacing) * 2)',
-              '--drive-floating-content-gap': 'calc(var(--drive-floating-gap) + var(--spacing) * 3)',
-              '--drive-bottom-gap': 'calc(env(safe-area-inset-bottom) + var(--drive-floating-content-gap))',
-              '--ui-header-offset': 'var(--drive-floating-gap)',
-            }}
+            class="drive-page flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] [--ui-header-gutter:var(--main-content-gutter)] sm:[--main-content-gutter:calc(var(--spacing)*6)]"
           >
             <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
               <Sider>
                 <SiderContent />
               </Sider>
               <Main ref={mainRef} class="relative flex min-h-screen flex-col">
-                {ListHeader(active)}
-                {List(active)}
-                <FixedBottom />
+                {renderHeader(active)}
+                {renderList(active)}
+                {renderBottom()}
               </Main>
             </Layout>
           </div>
