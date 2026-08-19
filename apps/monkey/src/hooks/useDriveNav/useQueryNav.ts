@@ -1,8 +1,7 @@
 import type { ComputedRef, Ref } from 'vue'
 import type { Router } from 'vue-router'
 import type { NavSource } from './types'
-import { computed } from 'vue'
-import { useNavDirection } from './useNavDirection'
+import { computed, shallowRef, watch } from 'vue'
 
 export interface QueryNavReturn extends NavSource {
   push: (cid: string) => void
@@ -18,8 +17,11 @@ export interface QueryNavOptions {
 
 /** Query 参数导航源 — FileBrowser 对话框用，从 route query params (`?fb_cid=xxx`) 读取 cid */
 export function useQueryNav(r: Router, options: QueryNavOptions): QueryNavReturn {
-  const { direction, position, remove: removeDirection } = useNavDirection(r)
-  const initial = position()
+  const position = shallowRef((history.state?.position as number) ?? 0)
+  const initial = position.value
+  const removePosition = watch(r.currentRoute, () => {
+    position.value = (history.state?.position as number) ?? 0
+  }, { flush: 'sync' })
 
   /** 推入初始条目，使对话框拥有独立的历史记录层 */
   r.push({ query: { ...r.currentRoute.value.query, fb_cid: options.defaultCid } })
@@ -31,7 +33,7 @@ export function useQueryNav(r: Router, options: QueryNavOptions): QueryNavReturn
 
   const area = computed(() => '') as Readonly<Ref<string>>
 
-  const canBack = computed(() => position() > initial + 1)
+  const canBack = computed(() => position.value > initial + 1)
   /** query 导航不支持前进，前进按钮始终禁用 */
   const canForward = computed(() => false)
 
@@ -43,17 +45,17 @@ export function useQueryNav(r: Router, options: QueryNavOptions): QueryNavReturn
   const removeExit = r.afterEach((_to, _from, failure) => {
     if (failure)
       return
-    if (position() <= initial && options.onExit)
+    if (position.value <= initial && options.onExit)
       options.onExit()
   })
 
   function dispose() {
-    removeDirection()
+    removePosition()
     removeExit()
-    const distance = position() - initial
+    const distance = position.value - initial
     if (distance > 0)
       r.go(-distance)
   }
 
-  return { cid, area, direction, push, canBack, canForward, dispose }
+  return { cid, area, push, canBack, canForward, dispose }
 }

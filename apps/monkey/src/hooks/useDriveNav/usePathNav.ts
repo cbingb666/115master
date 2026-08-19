@@ -1,7 +1,6 @@
 import type { Router } from 'vue-router'
 import type { NavSource } from './types'
 import { computed, shallowRef, watch } from 'vue'
-import { useNavDirection } from './useNavDirection'
 
 const AREAS = new Set(['star', 'recent', 'trash', 'share', 'search'])
 
@@ -15,8 +14,6 @@ function parse(params: Record<string, string>) {
 
 /** Vue Router 导航源 — drive 页面用，从 route path params 读取 cid */
 export function usePathNav(r: Router): NavSource {
-  const { direction } = useNavDirection(r)
-
   /** 仅在 drive 路由时更新 cid/area，离开 drive 时冻结最后的值 */
   const frozen = shallowRef({ cid: '0', area: 'all' })
 
@@ -29,5 +26,5 @@ export function usePathNav(r: Router): NavSource {
   const cid = computed(() => frozen.value.cid)
   const area = computed(() => frozen.value.area)
 
-  return { cid, area, direction }
+  return { cid, area }
 }

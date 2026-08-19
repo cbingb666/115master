@@ -47,7 +47,6 @@ vi.mock('@/hooks/useDriveNav', () => ({
   usePathNav: () => ({
     cid: navCid,
     area: navArea,
-    direction: ref('forward'),
   }),
 }))
 

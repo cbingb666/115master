@@ -68,7 +68,6 @@ const FileBroswer = defineComponent({
     const source = {
       cid: computed(() => keyword.value.trim() ? '0' : nav.cid.value),
       area: computed(() => keyword.value.trim() ? 'search' : nav.area.value),
-      direction: nav.direction,
     }
     const explorer = useDriveList({
       source: {

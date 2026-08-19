@@ -12,7 +12,6 @@ export function useStackNav(initial: string): NavSource & {
 } {
   const stack = shallowRef<string[]>([initial])
   const cursor = shallowRef(0)
-  const direction = shallowRef<NavSource['direction']['value']>('forward')
 
   const cid = computed(() => stack.value[cursor.value])
   const area = computed(() => '')
@@ -25,22 +24,19 @@ export function useStackNav(initial: string): NavSource & {
     next.push(target)
     stack.value = next
     cursor.value = next.length - 1
-    direction.value = 'forward'
   }
 
   function back() {
     if (!canBack.value)
       return
     cursor.value--
-    direction.value = 'back'
   }
 
   function forward() {
     if (!canForward.value)
       return
     cursor.value++
-    direction.value = 'forward'
   }
 
-  return { cid, area, direction, push, back, forward, canBack, canForward }
+  return { cid, area, push, back, forward, canBack, canForward }
 }
