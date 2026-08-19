@@ -660,7 +660,7 @@ export const DialogHost = defineComponent({
                   <>
                     {content}
                     {prompt && (
-                      <div class="mt-4">
+                      <div>
                         <label for={inputId} class="sr-only">
                           {inputLabelNode}
                         </label>

@@ -692,6 +692,7 @@ PromptValidation.test('announces a required error and submits the corrected valu
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open required Prompt' }))
   const input = canvas.getByRole('textbox', { name: 'File name' })
+  await expect(getComputedStyle(input.parentElement!).marginTop).toBe('0px')
   await userEvent.type(input, '{Enter}')
   await expect(canvas.getByRole('alert')).toHaveTextContent('Enter a file name.')
   await expect(input).toHaveAttribute('aria-invalid', 'true')

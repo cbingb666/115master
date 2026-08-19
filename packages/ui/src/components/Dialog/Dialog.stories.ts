@@ -257,6 +257,7 @@ Content.test('proves prop, slot, and label-only accessible names', async ({ canv
 
   await expect(dialog).toHaveAttribute('aria-labelledby', title.id)
   await expect(dialog).toHaveAttribute('aria-describedby', description.id)
+  await expect(getComputedStyle(title.parentElement!).marginBlockEnd).toBe('0px')
   await userEvent.click(canvas.getByRole('button', { name: 'Close prop content' }))
   await hidden(dialog)
 
@@ -328,11 +329,13 @@ Overflow.test('contains boundary scrolling inside the Dialog', async ({ canvasEl
 
   await userEvent.click(canvas.getByRole('button', { name: 'Open overflow Dialog' }))
   const dialog = await canvas.findByRole('dialog', { name: 'Overflow Dialog' })
+  const title = canvas.getByRole('heading', { name: 'Overflow Dialog' })
   const scroller = within(dialog).getByText('Scrollable item 40').parentElement
 
   if (!scroller)
     throw new Error('Overflow Dialog did not render its content scroller')
 
+  await expect(getComputedStyle(title.parentElement!).marginBlockEnd).toBe('8px')
   await expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight)
   await expect(getComputedStyle(scroller).overscrollBehavior).toBe('contain')
 })
