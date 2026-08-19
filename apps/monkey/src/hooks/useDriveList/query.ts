@@ -3,7 +3,7 @@ import { Core } from '@115master/drive115'
 import { drive115 } from '@/utils/drive115Instance'
 import { getFilesItemId } from '@/utils/filesItem'
 
-export interface DriveListProfile {
+interface DriveListProfile {
   size: number
   order: string
   asc: number
@@ -25,8 +25,6 @@ export interface DriveListRequest extends DriveListProfile {
 export interface DriveListPage {
   items: Share.Entity.FilesItem[]
   total: number
-  fileCount: number
-  folderCount: number
   path: Share.Entity.PathItem[]
   page: number
   size: number
@@ -43,15 +41,10 @@ function normalize(
   response: Api.FileApi.Res.Files | Api.FileApi.Res.GetFilesSearch,
   request: DriveListRequest,
 ): DriveListPage {
-  const items = response.data ?? []
-  const path = 'path' in response ? response.path : []
-
   return {
-    items,
+    items: response.data ?? [],
     total: response.count,
-    fileCount: 'file_count' in response ? response.file_count : items.filter(item => item.fc !== 0).length,
-    folderCount: 'folder_count' in response ? response.folder_count : items.filter(item => item.fc === 0).length,
-    path,
+    path: 'path' in response ? response.path : [],
     page: request.page,
     size: request.size,
     order: response.order,
@@ -121,21 +114,5 @@ export function mergeDriveListPages(pages: DriveListPage[]): DriveListPage | und
     items: [...items.values()],
     path,
     page: Math.max(...pages.map(page => page.page)),
-  }
-}
-
-export function toListData(page: DriveListPage): Api.FileApi.Res.Files {
-  return {
-    state: true,
-    count: page.total,
-    file_count: page.fileCount,
-    folder_count: page.folderCount,
-    is_asc: page.asc,
-    order: page.order,
-    fc_mix: page.fcMix,
-    offset: (page.page - 1) * page.size,
-    cur: page.page,
-    data: page.items,
-    path: page.path,
   }
 }

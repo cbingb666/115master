@@ -51,7 +51,7 @@ const Drive = defineComponent({
     const searchTooltip = computed(() => desktop.value ? '搜索 (⌘K)' : '搜索')
     const route = useRoute()
     const viewType = useStorage<'list' | 'card'>('115Master_drive_view_type', 'card')
-    const items = computed(() => store.data?.data ?? [])
+    const items = computed(() => store.items)
     const isSearch = computed(() => store.nav.area === 'search')
     const paginated = computed(() => store.mode === 'pagination')
     const actions = useDrivePageActions(store, useDriveAction())

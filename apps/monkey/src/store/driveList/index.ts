@@ -6,11 +6,11 @@ import { defineStore } from 'pinia'
 import { computed, watch } from 'vue'
 import { router } from '@/app/router'
 import { PAGINATION_DEFAULT_PAGE_SIZE } from '@/constants'
+import { useDriveList } from '@/hooks/useDriveList'
 import { useDriveListMode } from '@/hooks/useDriveListMode'
 import { usePathNav } from '@/hooks/useDriveNav'
 import { useDriveSelection } from '@/hooks/useDriveSelection'
 import { appLogger } from '@/utils/logger'
-import { useDriveList } from './useDriveList'
 
 function virtualPath(cid: string, name: string): Share.Entity.PathItem {
   return { cid, name, aid: '0', pid: '', isp: '', iss: '', fv: '', fvs: '', p_cid: '' }
@@ -49,7 +49,7 @@ export const useDriveStore = defineStore('drive', () => {
     ),
   })
 
-  const data = list.data
+  const items = list.items
   const loading = list.loading
   const refreshing = list.refreshing
   const loadingMore = list.loadingMore
@@ -73,29 +73,11 @@ export const useDriveStore = defineStore('drive', () => {
   })
   const prevLevel = computed(() => path.value[path.value.length - 2])
 
-  function refresh() {
-    return list.refresh()
-  }
-
-  function loadMore() {
-    return list.loadMore()
-  }
-
-  function changePage(page: number) {
-    list.changePage(page)
-  }
-
-  function changeSize(size: number) {
-    list.changeSize(size)
-  }
-
-  async function changeSort(
-    nextOrder: Share.Base.Sorter['o'],
-    nextAsc: Share.Base.Sorter['asc'],
-    nextFcMix: Share.Base.Sorter['fc_mix'],
-  ) {
-    return list.changeSort(nextOrder, nextAsc, nextFcMix)
-  }
+  const refresh = list.refresh
+  const loadMore = list.loadMore
+  const changePage = list.changePage
+  const changeSize = list.changeSize
+  const changeSort = list.changeSort
 
   function afterAction() {
     selection.clear()
@@ -104,9 +86,7 @@ export const useDriveStore = defineStore('drive', () => {
 
   watch(
     [() => query.keyword.value, () => query.size.value, () => mode.value],
-    (_current, previous) => {
-      if (previous)
-        query.page.value = 1
+    () => {
       selection.clear()
     },
     { flush: 'sync' },
@@ -123,7 +103,7 @@ export const useDriveStore = defineStore('drive', () => {
     query,
     nav,
     selection,
-    data,
+    items,
     loading,
     refreshing,
     loadingMore,

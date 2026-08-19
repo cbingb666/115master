@@ -84,8 +84,8 @@ export function useTagAction() {
   /** 失败项按 id 重新勾选（refresh 后引用已变，按 id 在新列表中匹配） */
   function reselectFailed(failedIds: string[]) {
     const idSet = new Set(failedIds)
-    drive.data?.data
-      ?.filter(item => idSet.has(getFilesItemId(item)))
+    drive.items
+      .filter(item => idSet.has(getFilesItemId(item)))
       .forEach(item => drive.selection.toggle(item, true))
   }
 

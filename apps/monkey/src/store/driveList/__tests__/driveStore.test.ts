@@ -99,7 +99,7 @@ describe('driveStore query', () => {
 
     const store = useDriveStore()
 
-    await vi.waitFor(() => expect(store.data?.data.map(value => value.n)).toEqual(['file-a']))
+    await vi.waitFor(() => expect(store.items.map(value => value.n)).toEqual(['file-a']))
     expect(file.getFilesWithFallback).toHaveBeenCalledWith(
       expect.objectContaining({ cid: '0', offset: 0, limit: 256 }),
       expect.anything(),
@@ -110,7 +110,7 @@ describe('driveStore query', () => {
   it('同 key 刷新期间保留旧数据，完成后原位替换', async () => {
     vi.mocked(file.getFilesWithFallback).mockResolvedValueOnce(filesRes([item('a')]))
     const store = useDriveStore()
-    await vi.waitFor(() => expect(store.data?.data).toHaveLength(1))
+    await vi.waitFor(() => expect(store.items).toHaveLength(1))
 
     type Response = Awaited<ReturnType<typeof file.getFilesWithFallback>>
     let resolveRefresh!: (response: Response) => void
@@ -120,11 +120,11 @@ describe('driveStore query', () => {
 
     const refreshing = store.refresh()
     await vi.waitFor(() => expect(store.refreshing).toBe(true))
-    expect(store.data?.data.map(value => value.n)).toEqual(['file-a'])
+    expect(store.items.map(value => value.n)).toEqual(['file-a'])
 
     resolveRefresh(filesRes([item('a'), item('b')], 2))
     await refreshing
-    expect(store.data?.data.map(value => value.n)).toEqual(['file-a', 'file-b'])
+    expect(store.items.map(value => value.n)).toEqual(['file-a', 'file-b'])
   })
 
   it('切页取消旧请求，迟到响应不会覆盖新页', async () => {
@@ -144,11 +144,11 @@ describe('driveStore query', () => {
 
     store.changePage(2)
 
-    await vi.waitFor(() => expect(store.data?.data.map(value => value.n)).toEqual(['file-new']))
+    await vi.waitFor(() => expect(store.items.map(value => value.n)).toEqual(['file-new']))
     expect(firstSignal?.aborted).toBe(true)
     resolveSlow(filesRes([item('old')]))
     await Promise.resolve()
-    expect(store.data?.data.map(value => value.n)).toEqual(['file-new'])
+    expect(store.items.map(value => value.n)).toEqual(['file-new'])
   })
 
   it('返回已访问目录时重新请求，不复用旧结果', async () => {
@@ -156,12 +156,12 @@ describe('driveStore query', () => {
       filesRes([item(params.cid === '0' ? 'root' : 'child')]),
     ))
     const store = useDriveStore()
-    await vi.waitFor(() => expect(store.data?.data[0]?.n).toBe('file-root'))
+    await vi.waitFor(() => expect(store.items[0]?.n).toBe('file-root'))
 
     navCid.value = '100'
-    await vi.waitFor(() => expect(store.data?.data[0]?.n).toBe('file-child'))
+    await vi.waitFor(() => expect(store.items[0]?.n).toBe('file-child'))
     navCid.value = '0'
-    await vi.waitFor(() => expect(store.data?.data[0]?.n).toBe('file-root'))
+    await vi.waitFor(() => expect(store.items[0]?.n).toBe('file-root'))
 
     expect(vi.mocked(file.getFilesWithFallback).mock.calls.filter(([params]) => params.cid === '0')).toHaveLength(2)
   })
@@ -178,17 +178,17 @@ describe('driveStore query', () => {
         ? filesRes([item('a'), item('b')], 4)
         : filesRes([item('c'), item('d')], 4, { offset: 2, cur: 2 })))
     const store = useDriveStore()
-    await vi.waitFor(() => expect(store.data?.data.map(value => value.n)).toEqual(['file-a', 'file-b']))
+    await vi.waitFor(() => expect(store.items.map(value => value.n)).toEqual(['file-a', 'file-b']))
 
     await store.loadMore()
 
-    expect(store.data?.data.map(value => value.n)).toEqual(['file-a', 'file-b', 'file-c', 'file-d'])
+    expect(store.items.map(value => value.n)).toEqual(['file-a', 'file-b', 'file-c', 'file-d'])
     expect(store.hasMore).toBe(false)
     removed = true
     const refresh = store.afterAction()
-    expect(store.data?.data.map(value => value.n)).toEqual(['file-a', 'file-b', 'file-c', 'file-d'])
+    expect(store.items.map(value => value.n)).toEqual(['file-a', 'file-b', 'file-c', 'file-d'])
     await refresh
-    expect(store.data?.data.map(value => value.n)).toEqual(['file-b', 'file-c', 'file-d'])
+    expect(store.items.map(value => value.n)).toEqual(['file-b', 'file-c', 'file-d'])
     expect(store.total).toBe(3)
   })
 })
@@ -199,13 +199,13 @@ describe('driveStore actions', () => {
       .mockResolvedValueOnce(filesRes([item('a')]))
       .mockResolvedValueOnce(filesRes([item('b')]))
     const store = useDriveStore()
-    await vi.waitFor(() => expect(store.data?.data[0]?.n).toBe('file-a'))
+    await vi.waitFor(() => expect(store.items[0]?.n).toBe('file-a'))
 
     const refresh = store.afterAction()
-    expect(store.data?.data[0]?.n).toBe('file-a')
+    expect(store.items[0]?.n).toBe('file-a')
     await refresh
 
-    expect(store.data?.data[0]?.n).toBe('file-b')
+    expect(store.items[0]?.n).toBe('file-b')
   })
 
   it('changeSort 按新规则重新请求', async () => {
@@ -214,7 +214,7 @@ describe('driveStore actions', () => {
       .mockResolvedValue(filesRes([item('a')], 1, { order: 'file_name', is_asc: 1 }))
     vi.mocked(file.setFilesOrder).mockResolvedValue({ state: true } as never)
     const store = useDriveStore()
-    await vi.waitFor(() => expect(store.data?.data).toHaveLength(1))
+    await vi.waitFor(() => expect(store.items).toHaveLength(1))
 
     await store.changeSort('file_name', 1, 0)
 
@@ -230,7 +230,7 @@ describe('driveStore actions', () => {
     const items = [item('a', { m: 1 }), item('b', { m: 1 })]
     vi.mocked(file.getFilesWithFallback).mockResolvedValue(filesRes(items))
     const store = useDriveStore()
-    await vi.waitFor(() => expect(store.data?.data).toHaveLength(2))
+    await vi.waitFor(() => expect(store.items).toHaveLength(2))
 
     expect(file.getFilesWithFallback).toHaveBeenCalledWith(
       expect.objectContaining({ star: 1 }),

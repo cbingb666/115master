@@ -20,9 +20,9 @@ import {
 } from '@/components'
 import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
+import { useDriveList } from '@/hooks/useDriveList'
 import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
-import { useDriveList } from '@/store/driveList/useDriveList'
 import { getFilesItemId } from '@/utils/filesItem'
 
 type ThumbnailProps = InstanceType<typeof FileItemThumbnail>['$props']
@@ -69,14 +69,16 @@ const FileBroswer = defineComponent({
       cid: computed(() => keyword.value.trim() ? '0' : nav.cid.value),
       area: computed(() => keyword.value.trim() ? 'search' : nav.area.value),
     }
+    const page = shallowRef(1)
+    const size = shallowRef(20)
     const explorer = useDriveList({
       source: {
         cid: source.cid,
         area: source.area,
         search: computed(() => !!keyword.value.trim()),
       },
-      page: shallowRef(1),
-      size: shallowRef(20),
+      page,
+      size,
       filter: { keyword, fc: 1, nf: '1' },
     })
     const { newFolder, renameItem } = useFileAction()
@@ -84,8 +86,6 @@ const FileBroswer = defineComponent({
     const contextmenuShow = shallowRef(false)
     const contextmenuPosition = shallowRef({ x: 0, y: 0 })
     const contextmenuItem = shallowRef<Share.Entity.FilesItem | null>(null)
-
-    watch([source.cid, source.area, keyword], () => explorer.changePage(1), { flush: 'sync' })
 
     function handleContextmenu(item: Share.Entity.FilesItem, e: MouseEvent) {
       e.preventDefault()
@@ -258,7 +258,7 @@ const FileBroswer = defineComponent({
               <FileMenu class="ui-z-elevated relative shrink-0">
                 <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
                 <FilePageSizeSelector
-                  currentPageSize={explorer.size.value}
+                  currentPageSize={size.value}
                   onChangePageSize={explorer.changeSize}
                 />
                 <FileSortSelector
@@ -295,7 +295,7 @@ const FileBroswer = defineComponent({
           data-file-browser-scroll
         >
           <FileList
-            items={explorer.data.value?.data ?? []}
+            items={explorer.items.value}
             getScrollElement={getScrollElement}
             viewType={viewType.value}
             class="
@@ -306,7 +306,7 @@ const FileBroswer = defineComponent({
             loading={explorer.loading.value}
             refreshing={explorer.refreshing.value}
             error={explorer.error.value ?? null}
-            empty={!explorer.loading.value && (explorer.data.value?.data?.length ?? 0) === 0}
+            empty={!explorer.loading.value && explorer.items.value.length === 0}
           >
             {{
               item: ({ item, index }: { item: Share.Entity.FilesItem, index: number }) => (
@@ -315,7 +315,7 @@ const FileBroswer = defineComponent({
                   key={getFilesItemId(item)}
                   data={item}
                   index={index}
-                  setsize={explorer.data.value?.data?.length ?? 0}
+                  setsize={explorer.items.value.length}
                   pathSelect={true}
                   viewType={viewType.value}
                   cid={source.cid.value}
@@ -349,8 +349,8 @@ const FileBroswer = defineComponent({
             >
               <Pagination
                 surface="floating"
-                currentPage={explorer.page.value}
-                currentPageSize={explorer.size.value}
+                currentPage={page.value}
+                currentPageSize={size.value}
                 showSizeChanger={false}
                 total={explorer.total.value}
                 onCurrentPageChange={explorer.changePage}

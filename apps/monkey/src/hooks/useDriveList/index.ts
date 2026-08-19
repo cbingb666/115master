@@ -6,11 +6,7 @@ import { Core } from '@115master/drive115'
 import { computed, nextTick, onScopeDispose, shallowRef, toValue, watch } from 'vue'
 import { drive115 } from '@/utils/drive115Instance'
 import { appLogger } from '@/utils/logger'
-import {
-  fetchDriveListPage,
-  mergeDriveListPages,
-  toListData,
-} from './query'
+import { fetchDriveListPage, mergeDriveListPages } from './query'
 
 type Input<T> = MaybeRefOrGetter<T>
 
@@ -28,7 +24,7 @@ interface DriveListFilter {
   nf?: Input<string>
 }
 
-export interface UseDriveListOptions {
+interface UseDriveListOptions {
   source: DriveListSource
   page: Ref<number>
   size: Ref<number>
@@ -79,7 +75,7 @@ export function useDriveList(options: UseDriveListOptions) {
   const pageData = computed(() => page.value)
   const infiniteData = computed(() => mergeDriveListPages(pages.value))
   const normalized = computed(() => mode.value === 'infinite' ? infiniteData.value : pageData.value)
-  const data = computed(() => normalized.value ? toListData(normalized.value) : null)
+  const items = computed(() => normalized.value?.items ?? [])
   const error = computed(() => fault.value && !normalized.value ? fault.value : null)
   const moreError = computed(() => mode.value === 'infinite' ? moreFault.value ?? null : null)
   const hasMore = computed(() => {
@@ -229,6 +225,20 @@ export function useDriveList(options: UseDriveListOptions) {
   }
 
   watch(
+    [
+      () => request.value.area,
+      () => request.value.cid,
+      () => request.value.search,
+      () => request.value.keyword,
+      () => request.value.size,
+      mode,
+    ],
+    () => {
+      options.page.value = 1
+    },
+    { flush: 'sync' },
+  )
+  watch(
     [() => request.value.area, () => request.value.cid],
     () => {
       requested.value = {}
@@ -245,7 +255,7 @@ export function useDriveList(options: UseDriveListOptions) {
   })
 
   return {
-    data,
+    items,
     loading,
     refreshing,
     loadingMore,
@@ -258,8 +268,6 @@ export function useDriveList(options: UseDriveListOptions) {
     fcMix,
     path,
     pageCount,
-    page: options.page,
-    size: options.size,
     refresh,
     loadMore,
     changePage,
