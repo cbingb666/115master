@@ -9,11 +9,11 @@ import { I } from '@/icons'
  */
 export function getVolumeIcon(volume = 0, muted = false): IconValue {
   if (muted) {
-    return I.VOLUME_OFF
+    return I.VOLUME_MUTE
   }
 
   if (volume === 0) {
-    return I.VOLUME_MUTE
+    return I.VOLUME_OFF
   }
 
   if (volume < 50) {
