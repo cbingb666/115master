@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
 import type { DriveBottomMode } from './DriveBottomDock'
-import { Button, Header, HeaderEnd, HeaderStart, SelectionHeader, Tooltip } from '@115master/ui'
+import { Button, Header, HeaderEnd, HeaderStart, Pagination, SelectionHeader, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -19,7 +19,6 @@ import {
   Layout,
   Main,
   PageSizeOptions,
-  Pagination,
   ResponsiveMenu,
   Sider,
   SiderContent,
@@ -28,6 +27,7 @@ import {
   useFileSelection,
 } from '@/components'
 import { DndMonitor } from '@/components/Dnd'
+import { PAGINATION_LABELS } from '@/constants'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'
 import { I, Icon } from '@/icons'
@@ -287,6 +287,7 @@ const Drive = defineComponent({
                   currentPageSize={store.query.size}
                   showSizeChanger={false}
                   total={store.total}
+                  labels={PAGINATION_LABELS}
                   onCurrentPageChange={store.changePage}
                   onPageSizeChange={store.changeSize}
                 />

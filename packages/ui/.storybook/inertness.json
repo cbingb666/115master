@@ -1163,6 +1163,25 @@
       ]
     },
     {
+      "id": "ui-pagination--behavior",
+      "docs": "ui-pagination--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-pagination--behavior:changes-pages-by-button-and-jump-input-then-changes-page-size"
+      ],
+      "ready": "[data-ui-pagination-result]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-pagination-result]",
+          "text": "5/30"
+        }
+      ]
+    },
+    {
       "id": "ui-dialog-service--close-all",
       "docs": "ui-dialog-service--docs",
       "component": true,

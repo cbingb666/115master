@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
 import type { Action } from '@/types/action'
-import { Button, scrollbar, Tooltip } from '@115master/ui'
+import { Button, Pagination, scrollbar, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import {
@@ -16,8 +16,8 @@ import {
   FilePath,
   FileSortSelector,
   FileViewType,
-  Pagination,
 } from '@/components'
+import { PAGINATION_LABELS } from '@/constants'
 import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useDriveList } from '@/hooks/useDriveList'
@@ -353,6 +353,7 @@ const FileBroswer = defineComponent({
                 currentPageSize={size.value}
                 showSizeChanger={false}
                 total={explorer.total.value}
+                labels={PAGINATION_LABELS}
                 onCurrentPageChange={explorer.changePage}
                 onPageSizeChange={explorer.changeSize}
               />

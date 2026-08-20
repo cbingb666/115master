@@ -15,6 +15,7 @@ it('imports the narrow runtime contract without browser globals', async () => {
     'ModalHost',
     'NavigationStack',
     'OverlayHost',
+    'Pagination',
     'Pill',
     'Progress',
     'SelectionHeader',

@@ -71,6 +71,12 @@ export type {
   NavigationStackProps,
 } from './components/NavigationStack/NavigationStack'
 export { OverlayHost } from './components/OverlayHost/OverlayHost'
+export { Pagination } from './components/Pagination/Pagination'
+export type {
+  PaginationLabels,
+  PaginationProps,
+  PaginationSurface,
+} from './components/Pagination/Pagination'
 export { Pill } from './components/Pill/Pill'
 export type {
   PillAs,

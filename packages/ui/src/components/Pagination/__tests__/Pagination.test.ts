@@ -1,10 +1,19 @@
 // @vitest-environment jsdom
 
+import type { PaginationLabels } from '../Pagination'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createApp, h } from 'vue'
-import Pagination from '../Pagination'
+import { Pagination } from '../Pagination'
 
 const apps: ReturnType<typeof createApp>[] = []
+
+const labels: PaginationLabels = {
+  previousPage: 'Previous page',
+  nextPage: 'Next page',
+  jumpToPage: 'Jump to page',
+  pageSize: 'Items per page',
+  pageSizeUnit: 'items',
+}
 
 function mount(surface: 'plain' | 'floating' = 'plain', embedded = false) {
   const host = document.createElement('div')
@@ -16,6 +25,9 @@ function mount(surface: 'plain' | 'floating' = 'plain', embedded = false) {
       currentPageSize: 30,
       total: 90,
       showSizeChanger: false,
+      labels,
+      onCurrentPageChange: () => {},
+      onPageSizeChange: () => {},
     }),
   })
   app.mount(host)

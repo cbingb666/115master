@@ -1,3 +1,5 @@
+import type { PaginationLabels } from '@115master/ui'
+
 // 是否为 plus 版本
 export const PLUS_VERSION = import.meta.env.VITE_PLUS_VERSION
 
@@ -20,3 +22,12 @@ export const PAGINATION_DEFAULT_PAGE_SIZE = 256
 
 /** 分页默认每页大小选项 */
 export const PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS = [30, 50, 100, 300, 500, 1000]
+
+/** 分页器本地化文案 */
+export const PAGINATION_LABELS = {
+  previousPage: '上一页',
+  nextPage: '下一页',
+  jumpToPage: '跳转到页码',
+  pageSize: '每页条数',
+  pageSizeUnit: '条',
+} satisfies PaginationLabels
