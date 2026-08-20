@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { Range } from '@tanstack/vue-virtual'
 import type { MaybeElement } from '@vueuse/core'
 import type { PropType, SlotsType, VNodeChild } from 'vue'
-import { Progress, StatusFeedback } from '@115master/ui'
+import { Empty, Progress, StatusFeedback } from '@115master/ui'
 import { defaultRangeExtractor, useVirtualizer, useWindowVirtualizer } from '@tanstack/vue-virtual'
 import { breakpointsTailwind, unrefElement, useBreakpoints, useEventListener, useResizeObserver, useThrottleFn } from '@vueuse/core'
 import {
@@ -16,7 +16,6 @@ import {
 } from 'vue'
 import { errorFeedback } from '@/utils/errorFeedback'
 import { getFilesItemId } from '@/utils/filesItem'
-import Empty from '../Empty/Empty'
 import { group } from './layout'
 
 const FileList = defineComponent({

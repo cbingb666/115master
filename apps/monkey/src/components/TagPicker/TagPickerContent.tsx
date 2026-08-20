@@ -1,8 +1,7 @@
 import type { PropType } from 'vue'
 import { Api } from '@115master/drive115'
-import { Button, scrollbar, StatusFeedback } from '@115master/ui'
+import { Button, Empty, scrollbar, StatusFeedback } from '@115master/ui'
 import { defineComponent } from 'vue'
-import { Empty } from '@/components'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
 import { errorFeedback } from '@/utils/errorFeedback'
@@ -113,16 +112,21 @@ const TagPickerContent = defineComponent({
                 : store.tags.length === 0
                   ? (
                       <div class="py-6">
-                        <Empty icon={I.TAG} description="暂无标签，请先在标签管理页创建">
-                          <Button
-                            color="primary"
-                            size="sm"
-                            class="gap-1"
-                            onClick={() => props.onGotoTags()}
-                          >
-                            <Icon name={I.RIGHT} size="sm" />
-                            去创建标签
-                          </Button>
+                        <Empty description="暂无标签，请先在标签管理页创建">
+                          {{
+                            icon: () => <Icon name={I.TAG} size="custom" />,
+                            default: () => (
+                              <Button
+                                color="primary"
+                                size="sm"
+                                class="gap-1"
+                                onClick={() => props.onGotoTags()}
+                              >
+                                <Icon name={I.RIGHT} size="sm" />
+                                去创建标签
+                              </Button>
+                            ),
+                          }}
                         </Empty>
                       </div>
                     )

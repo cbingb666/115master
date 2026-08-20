@@ -45,6 +45,8 @@ export type {
   DrawerProps,
   DrawerSize,
 } from './components/Drawer/Drawer'
+export { Empty } from './components/Empty/Empty'
+export type { EmptyProps, EmptySize } from './components/Empty/Empty'
 export { Header } from './components/Header/Header'
 export type { HeaderProps } from './components/Header/Header'
 export { HeaderEnd } from './components/Header/HeaderEnd'

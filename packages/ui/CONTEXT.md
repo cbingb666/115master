@@ -73,7 +73,7 @@ _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Image、Progress、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Image、Empty、Progress、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：
@@ -175,6 +175,10 @@ _Avoid_: 链接按钮、router button
 **Progress**：
 固定在视口顶缘、由 active 状态驱动的页面级 indeterminate 加载反馈；只承担不占布局的视觉提示，调用方仍负责为内容区域声明 busy 语义。
 _Avoid_: 确定进度条、布局内进度、业务加载状态
+
+**Empty**：
+应用无关的居中空状态占位；展示调用方提供的字符串说明，支持标准尺寸、装饰图片、可隐藏的视觉区以及操作内容，图标通过 slot 注入。
+_Avoid_: 应用图标 registry、内置业务文案、集合状态管理、错误与加载反馈
 
 **StatusFeedback**：
 应用无关的居中语义状态反馈；展示调用方提供的字符串消息，支持 status、标准尺寸以及由 callback 与 label 成对配置的重试、关闭和详情操作，图标通过 slot 注入。

@@ -140,13 +140,10 @@
 </template>
 
 <script setup lang="ts">
-import { Image, StatusFeedback } from '@115master/ui'
+import { Empty, Image, StatusFeedback } from '@115master/ui'
 import { format } from '@115master/utils'
 import { useAsyncState, useElementVisibility } from '@vueuse/core'
 import { computed, onMounted, ref, watch } from 'vue'
-import {
-  Empty,
-} from '@/components'
 import { clsx } from '@/utils/clsx'
 import { errorFeedback } from '@/utils/errorFeedback'
 import { createGMImageLoader } from '@/utils/imageLoader'

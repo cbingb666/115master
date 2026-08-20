@@ -227,7 +227,7 @@
 
 <script lang="ts" setup>
 import type { useDataMovieInfo } from '@/pages/video/data/useDataMovieInfo'
-import { Image, StatusFeedback } from '@115master/ui'
+import { Empty, Image, StatusFeedback } from '@115master/ui'
 import { format } from '@115master/utils'
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
 import {
@@ -236,9 +236,6 @@ import {
   ref,
   watch,
 } from 'vue'
-import {
-  Empty,
-} from '@/components'
 import { clsx } from '@/utils/clsx'
 import { errorFeedback } from '@/utils/errorFeedback'
 import CopyButton from './components/CopyButton.vue'
