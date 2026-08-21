@@ -8,6 +8,7 @@ it('imports the narrow runtime contract without browser globals', async () => {
     'DialogHost',
     'Drawer',
     'Empty',
+    'FloatingDock',
     'Header',
     'HeaderEnd',
     'HeaderStart',

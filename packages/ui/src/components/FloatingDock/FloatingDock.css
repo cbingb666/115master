@@ -1,0 +1,48 @@
+.ui-floating-dock {
+  transition:
+    width 180ms var(--ui-ease-move),
+    height 180ms var(--ui-ease-move);
+}
+
+.ui-floating-dock-enter-active {
+  transition:
+    transform 180ms var(--ui-ease-enter),
+    opacity 180ms var(--ui-ease-enter);
+}
+
+.ui-floating-dock-enter-from,
+.ui-floating-dock-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.ui-floating-dock-leave-active {
+  pointer-events: none;
+  transition:
+    transform 140ms var(--ui-ease-exit),
+    opacity 140ms var(--ui-ease-exit);
+}
+
+.ui-floating-dock-content-enter-active {
+  transition: opacity 180ms var(--ui-ease-enter);
+}
+
+.ui-floating-dock-content-enter-from,
+.ui-floating-dock-content-leave-to {
+  opacity: 0;
+}
+
+.ui-floating-dock-content-leave-active {
+  pointer-events: none;
+  transition: opacity 140ms var(--ui-ease-exit);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-floating-dock,
+  .ui-floating-dock-enter-active,
+  .ui-floating-dock-leave-active,
+  .ui-floating-dock-content-enter-active,
+  .ui-floating-dock-content-leave-active {
+    transition: none;
+  }
+}

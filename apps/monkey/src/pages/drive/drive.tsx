@@ -1,6 +1,5 @@
 import type { Share } from '@115master/drive115'
-import type { DriveBottomMode } from './DriveBottomDock'
-import { Button, Header, HeaderEnd, HeaderStart, Pagination, SelectionHeader, Tooltip } from '@115master/ui'
+import { Button, FloatingDock, Header, HeaderEnd, HeaderStart, Pagination, SelectionHeader, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -34,7 +33,6 @@ import { I, Icon } from '@/icons'
 import { useDriveStore } from '@/store/driveList'
 import { getFilesItemId } from '@/utils/filesItem'
 import { openFilesItem } from '@/utils/openFilesItem'
-import DriveBottomDock from './DriveBottomDock'
 import { useDrivePageActions } from './useDrivePageActions'
 import './drive.css'
 
@@ -276,23 +274,25 @@ const Drive = defineComponent({
 
     function renderBottom() {
       return (
-        <DriveBottomDock mode={bottomMode.value}>
-          {{ default: ({ mode }: { mode: Exclude<DriveBottomMode, null> }) => mode === 'actions'
-            ? <ActionBar embedded groups={actions.groups} />
-            : (
-                <Pagination
-                  embedded
-                  surface="floating"
-                  currentPage={store.query.page}
-                  currentPageSize={store.query.size}
-                  showSizeChanger={false}
-                  total={store.total}
-                  labels={PAGINATION_LABELS}
-                  onCurrentPageChange={store.changePage}
-                  onPageSizeChange={store.changeSize}
-                />
-              ) }}
-        </DriveBottomDock>
+        <div class="drive-bottom-dock ui-z-elevated pointer-events-none fixed right-0 bottom-[var(--drive-bottom-gap)] left-(--sider-width) flex items-center justify-center">
+          <FloatingDock contentKey={bottomMode.value}>
+            {bottomMode.value === 'actions'
+              ? <ActionBar embedded groups={actions.groups} />
+              : (
+                  <Pagination
+                    embedded
+                    surface="floating"
+                    currentPage={store.query.page}
+                    currentPageSize={store.query.size}
+                    showSizeChanger={false}
+                    total={store.total}
+                    labels={PAGINATION_LABELS}
+                    onCurrentPageChange={store.changePage}
+                    onPageSizeChange={store.changeSize}
+                  />
+                )}
+          </FloatingDock>
+        </div>
       )
     }
 

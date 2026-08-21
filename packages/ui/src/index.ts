@@ -47,6 +47,11 @@ export type {
 } from './components/Drawer/Drawer'
 export { Empty } from './components/Empty/Empty'
 export type { EmptyProps, EmptySize } from './components/Empty/Empty'
+export { FloatingDock } from './components/FloatingDock/FloatingDock'
+export type {
+  FloatingDockContentKey,
+  FloatingDockProps,
+} from './components/FloatingDock/FloatingDock'
 export { Header } from './components/Header/Header'
 export type { HeaderProps } from './components/Header/Header'
 export { HeaderEnd } from './components/Header/HeaderEnd'

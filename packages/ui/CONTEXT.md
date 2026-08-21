@@ -73,7 +73,7 @@ _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、Image、Empty、Progress、Pagination、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、文案集、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、FloatingDock、Image、Empty、Progress、Pagination、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、文案集、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：
@@ -195,6 +195,10 @@ _Avoid_: 选择状态管理、应用图标 registry、内置本地化文案、�
 **Pill**：
 呈现胶囊几何的信息、组合布局或导航容器；不执行按钮动作。
 _Avoid_: 胶囊按钮、Badge
+
+**FloatingDock**：
+由 `contentKey` 驱动显隐与内容身份的连续 Floating Glass 表面；统一负责表面进入退出、内容切换与 ResizeObserver 尺寸过渡，页面负责定位、对齐和背景羽化。
+_Avoid_: 页面底栏定位器、业务操作栏、Glass 交叉淡化
 
 **Header**：
 应用无关的吸附式页面头部外壳；随根滚动渐显衬底，并通过 HeaderStart 与 HeaderEnd 组合可收缩主内容和不收缩尾部操作。应用拥有业务内容，并可通过 `--ui-header-offset` 与 `--ui-header-gutter` 调整页面集成几何。

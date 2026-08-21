@@ -2,7 +2,7 @@ import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
 import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
-import { Button, Header, HeaderEnd, HeaderStart, Pill, Progress, SelectionHeader, StatusFeedback } from '@115master/ui'
+import { Button, FloatingDock, Header, HeaderEnd, HeaderStart, Pill, Progress, SelectionHeader, StatusFeedback } from '@115master/ui'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
@@ -299,11 +299,11 @@ const Tags = defineComponent({
           <Main class="relative flex min-h-screen flex-col">
             <ListHeader />
             <ListArea />
-            {multi.selectMode.value && store.selectedCount > 0 && (
-              <div class="ui-z-elevated pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
-                <ActionBar groups={batchActions.value} />
-              </div>
-            )}
+            <div class="ui-z-elevated pointer-events-none fixed right-0 bottom-16 left-(--sider-width) flex items-center justify-center">
+              <FloatingDock contentKey={multi.selectMode.value && store.selectedCount > 0 ? 'actions' : null}>
+                <ActionBar embedded groups={batchActions.value} />
+              </FloatingDock>
+            </div>
             <ActionMenu
               show={multi.contextmenuShow.value}
               position={multi.contextmenuPosition.value}
