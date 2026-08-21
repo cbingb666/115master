@@ -2,7 +2,7 @@
 import type { App } from 'vue'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createApp, defineComponent, h, nextTick, ref, shallowRef } from 'vue'
-import { useCollectionSelection } from '..'
+import { useCollectionSelection } from '../useCollectionSelection'
 
 interface Item {
   id: string
@@ -106,6 +106,16 @@ afterEach(() => {
 })
 
 describe('useCollectionSelection', () => {
+  it('owns its marquee element through the UI namespace', async () => {
+    const view = setup()
+    await nextTick()
+
+    const box = view.container().querySelector<HTMLElement>('.ui-collection-selection-box')
+    expect(box).not.toBeNull()
+    expect(box?.style.cssText).toBe('')
+    expect(view.nodes()[0].hasAttribute('data-ui-collection-selection-key')).toBe(true)
+  })
+
   it('activates a plain item and toggles items once selection is active', () => {
     const view = setup()
     const [a, b] = view.nodes()

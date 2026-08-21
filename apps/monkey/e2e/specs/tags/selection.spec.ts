@@ -20,7 +20,7 @@ test('标签列表复用 CollectionSelection 的激活、多选、右键与长�
   })
   await page.goto(`${MASTER_URL}#/tags`)
 
-  const row = (name: string) => page.locator(`[data-selection-key]:has(span[title="${name}"])`)
+  const row = (name: string) => page.locator(`[data-ui-collection-selection-key]:has(span[title="${name}"])`)
   const exit = page.getByTitle('退出多选')
   await expect(row('电影')).toBeVisible()
 

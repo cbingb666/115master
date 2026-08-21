@@ -126,7 +126,7 @@ describe('fileItem', () => {
       setup: () => () => h(DndRoot, null, {
         default: () => h(FileItem, {
           'data': data,
-          'data-selection-key': 'pick-a',
+          'data-ui-collection-selection-key': 'pick-a',
         }, {
           thumbnail: () => h('span', 'file'),
         }),
@@ -135,7 +135,7 @@ describe('fileItem', () => {
     app.mount(root)
     apps.push(app)
 
-    expect(root.querySelector('[data-selection-key="pick-a"]')).not.toBeNull()
+    expect(root.querySelector('[data-ui-collection-selection-key="pick-a"]')).not.toBeNull()
   })
 
   it('列表视图普通模式不显示也不占位 checkbox', () => {

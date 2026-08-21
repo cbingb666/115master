@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
+import { useCollectionSelection } from '@115master/ui'
 import { computed } from 'vue'
-import { useCollectionSelection } from '@/hooks/useCollectionSelection'
 import { getFilesItemId } from '@/utils/filesItem'
 
 export interface FileSelectionOptions {

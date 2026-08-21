@@ -110,7 +110,7 @@ test.describe('选择与操作', () => {
       }, selector)
     }
 
-    const traces = [await sample('[data-selection-key] input[type="checkbox"]')]
+    const traces = [await sample('[data-ui-collection-selection-key] input[type="checkbox"]')]
     await expect(page.getByRole('button', { name: '置顶', exact: true })).toBeVisible()
     traces.push(await sample('[title="退出多选"]'))
     await expect(page.getByRole('button', { name: '下一页' })).toBeVisible()

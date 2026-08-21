@@ -46,7 +46,7 @@ export default defineConfig({
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['vue', '@floating-ui/vue'],
+      external: ['vue', '@floating-ui/vue', '@vueuse/core'],
     },
   },
 })

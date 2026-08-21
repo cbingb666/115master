@@ -387,6 +387,9 @@ importers:
       '@floating-ui/vue':
         specifier: ^1.1.10
         version: 1.1.11(vue@3.5.27(typescript@5.9.3))
+      '@vueuse/core':
+        specifier: ^14.1.0
+        version: 14.1.0(vue@3.5.27(typescript@5.9.3))
     devDependencies:
       '@115master/eslint-config':
         specifier: workspace:*
@@ -424,6 +427,9 @@ importers:
       daisyui:
         specifier: ^5.6.16
         version: 5.6.16
+      jsdom:
+        specifier: ^29.1.1
+        version: 29.1.1
       playwright:
         specifier: ^1.57.0
         version: 1.62.0

@@ -7,6 +7,13 @@ export type {
   ButtonType,
   ButtonVariant,
 } from './components/Button/Button'
+export { useCollectionSelection } from './components/CollectionSelection/useCollectionSelection'
+export type {
+  CollectionSelectionAdapter,
+  CollectionSelectionBind,
+  CollectionSelectionMenu,
+  CollectionSelectionOptions,
+} from './components/CollectionSelection/useCollectionSelection'
 export { ContextMenu } from './components/ContextMenu/ContextMenu'
 export type {
   ContextMenuCloseReason,

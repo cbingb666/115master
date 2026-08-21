@@ -1,6 +1,6 @@
 import type { useTagStore } from '@/store/tagList'
+import { useCollectionSelection } from '@115master/ui'
 import { computed } from 'vue'
-import { useCollectionSelection } from '@/hooks/useCollectionSelection'
 
 export function useTagSelection(store: ReturnType<typeof useTagStore>, container: () => HTMLElement | undefined) {
   const selection = useCollectionSelection({

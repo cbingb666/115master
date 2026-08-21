@@ -73,7 +73,7 @@ _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、样式模块、服务与类型集合；组件包括 Button、Pill、FloatingDock、Image、Empty、Progress、Pagination、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、文案集、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、provide 方法、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、交互模块、服务与类型集合；组件包括 Button、Pill、FloatingDock、Image、Empty、Progress、Pagination、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，交互模块包括 useCollectionSelection，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、文案集、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、provide 方法、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：
@@ -191,6 +191,10 @@ _Avoid_: Error 对象格式化、播放器错误码解释、剪贴板或弹窗�
 **SelectionHeader**：
 应用无关的选择模式页面头部；展示调用方提供的选中数量与退出文案，在左侧按回调提供带淡入淡出过渡的全选操作，并由调用方通过 allSelected 控制其隐藏；图标通过 slots 注入，不管理选择状态。
 _Avoid_: 选择状态管理、应用图标 registry、内置本地化文案、业务操作集合
+
+**Collection Selection**：
+应用无关的集合选择交互模块；调用方通过一个 selection adapter 提供集合状态，并提供条目、稳定键、容器与默认激活行为。模块统一管理 Shift/Ctrl 多选、长按、框选、边缘自动滚动、右键选择与键盘快捷键，所有选择变更都写回同一个 adapter。
+_Avoid_: 文件或标签业务状态、复选框 DOM 查询、调用方手写选择手势、应用级框选样式
 
 **Pill**：
 呈现胶囊几何的信息、组合布局或导航容器；不执行按钮动作。

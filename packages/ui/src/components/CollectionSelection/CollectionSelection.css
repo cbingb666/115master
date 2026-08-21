@@ -1,0 +1,10 @@
+@layer components {
+  .ui-collection-selection-box {
+    position: absolute;
+    z-index: var(--ui-z-raised);
+    display: none;
+    border: 2px solid var(--color-primary);
+    background-color: color-mix(in oklab, var(--color-primary) 10%, transparent);
+    pointer-events: none;
+  }
+}

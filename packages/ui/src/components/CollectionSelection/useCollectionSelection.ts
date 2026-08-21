@@ -2,7 +2,7 @@ import type { ComputedRef, ShallowRef } from 'vue'
 import { useEventListener, useThrottleFn } from '@vueuse/core'
 import { computed, onScopeDispose, shallowRef, watch, watchEffect } from 'vue'
 
-const ATTRIBUTE = 'data-selection-key'
+const ATTRIBUTE = 'data-ui-collection-selection-key'
 const EDGE = 80
 const SPEED = 12
 const DISTANCE = 10
@@ -38,7 +38,7 @@ export interface CollectionSelectionBind<T> {
   allSelected: ComputedRef<boolean>
   menu: ShallowRef<CollectionSelectionMenu<T> | null>
   itemProps: (item: T) => {
-    'data-selection-key': string
+    'data-ui-collection-selection-key': string
     'onClick': (event: MouseEvent) => void
     'onContextmenu': (event: MouseEvent) => void
     'onPointerdown': (event: PointerEvent) => void
@@ -458,7 +458,7 @@ export function useCollectionSelection<T>(options: CollectionSelectionOptions<T>
       onContextmenu: (event: MouseEvent) => contextmenu(value, event),
       onPointerdown: (event: PointerEvent) => pointerdown(value, event),
     } as {
-      'data-selection-key': string
+      'data-ui-collection-selection-key': string
       'onClick': (event: MouseEvent) => void
       'onContextmenu': (event: MouseEvent) => void
       'onPointerdown': (event: PointerEvent) => void
@@ -484,15 +484,7 @@ export function useCollectionSelection<T>(options: CollectionSelectionOptions<T>
     scroll.value = scroller(container)
     if (!box.value) {
       box.value = document.createElement('div')
-      box.value.className = 'collection-selection-box'
-      box.value.style.cssText = `
-        position: absolute;
-        border: 2px solid var(--color-primary);
-        background-color: color-mix(in oklab, var(--color-primary) 10%, transparent);
-        pointer-events: none;
-        z-index: var(--ui-z-raised);
-        display: none;
-      `
+      box.value.className = 'ui-collection-selection-box'
     }
     if (!container.contains(box.value))
       container.appendChild(box.value)
