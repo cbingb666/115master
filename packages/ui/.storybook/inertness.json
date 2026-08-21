@@ -1203,6 +1203,33 @@
           "count": 0
         }
       ]
+    },
+    {
+      "id": "ui-responsivemenu--default",
+      "docs": "ui-responsivemenu--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-responsivemenu--default:switches-surfaces-by-viewport-and-preserves-dismissal-focus-and-selection-behavior"
+      ],
+      "ready": "[data-ui-responsive-menu-result]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-responsive-menu-result]",
+          "text": "idle"
+        },
+        {
+          "selector": "[role=\"menu\"]",
+          "count": 0
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
     }
   ]
 }

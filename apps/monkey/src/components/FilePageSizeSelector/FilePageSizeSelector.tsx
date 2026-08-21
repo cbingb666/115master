@@ -1,7 +1,6 @@
 import type { PropType } from 'vue'
-import { Button, Tooltip } from '@115master/ui'
+import { Button, ResponsiveMenu, Tooltip } from '@115master/ui'
 import { defineComponent } from 'vue'
-import { ResponsiveMenu } from '@/components'
 import { I, Icon } from '@/icons'
 import PageSizeOptions from './PageSizeOptions'
 

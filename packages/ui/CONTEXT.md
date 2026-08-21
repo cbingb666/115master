@@ -72,12 +72,16 @@ _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
 应用无关的 Pointer Events 拖拽模块；DndRoot 拥有会话与跟随层，DndSource 负责激活阈值、payload 惰性求值和 click 抑制，DndTarget 负责命中、接收判断与投放，DndMonitor 只公开会话是否活跃。调用方通过 slot 保留真实 DOM，并拥有 payload、预览内容和领域投放规则。
 _Avoid_: 文件拖拽适配、业务 payload 类型、应用挂载节点
 
+**Responsive Menu**：
+由锚点触发、按公共 sm 断点选择桌面浮动菜单或移动端 bottom Drawer 的临时操作表面；统一负责 Overlay Host、Modal Host、定位、焦点与关闭语义，标题和菜单项内容由应用提供。
+_Avoid_: App Dialog Adapter、应用挂载节点、业务 Action 模型
+
 **Overlay Host**：
 位于当前主题作用域内、供临时浮层脱离裁切上下文渲染的共享宿主。
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、样式模块、交互模块、服务与类型集合；组件包括 Button、Pill、FloatingDock、Image、Empty、Progress、Pagination、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、DndRoot、DndSource、DndTarget、DndMonitor、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，交互模块包括 useCollectionSelection，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、文案集、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、DnD provide/use、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、交互模块、服务与类型集合；组件包括 Button、Pill、FloatingDock、Image、Empty、Progress、Pagination、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、ResponsiveMenu、DndRoot、DndSource、DndTarget、DndMonitor、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，交互模块包括 useCollectionSelection，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、文案集、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、DnD provide/use、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：

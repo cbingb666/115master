@@ -1,0 +1,45 @@
+@layer components {
+  .ui-responsive-menu__backdrop {
+    cursor: default;
+  }
+
+  .ui-responsive-menu__dropdown {
+    position: fixed;
+    width: max-content;
+    max-width: calc(100dvw - 1.25rem);
+    max-height: calc(100dvh - 1.25rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .ui-responsive-menu__drawer.ui-drawer--bottom .ui-drawer__panel {
+    width: 100%;
+    height: auto;
+    max-height: min(80dvh, 24rem);
+  }
+
+  .ui-responsive-menu__sheet {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+
+  .ui-responsive-menu__title {
+    margin: 0;
+    padding: 0.5rem 1.25rem 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .ui-responsive-menu__items {
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 0.75rem 1rem;
+  }
+}

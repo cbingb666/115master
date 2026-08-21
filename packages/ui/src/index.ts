@@ -107,6 +107,11 @@ export type {
 } from './components/Pill/Pill'
 export { Progress } from './components/Progress/Progress'
 export type { ProgressProps } from './components/Progress/Progress'
+export { ResponsiveMenu } from './components/ResponsiveMenu/ResponsiveMenu'
+export type {
+  ResponsiveMenuProps,
+  ResponsiveMenuTrigger,
+} from './components/ResponsiveMenu/ResponsiveMenu'
 export { scrollbar } from './components/Scrollbar/Scrollbar'
 export type { ScrollbarSize } from './components/Scrollbar/Scrollbar'
 export { SelectionHeader } from './components/SelectionHeader/SelectionHeader'
