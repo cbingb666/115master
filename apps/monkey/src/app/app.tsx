@@ -1,4 +1,4 @@
-import { DialogHost, ModalHost, OverlayHost, Watermark } from '@115master/ui'
+import { DialogHost, DndRoot, ModalHost, OverlayHost, Watermark } from '@115master/ui'
 import { GM_info } from 'vite-plugin-monkey/dist/client'
 import { defineComponent, onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
@@ -8,7 +8,6 @@ import {
   ToastContainer,
   useSponsorBoot,
 } from '@/components'
-import { DndRoot } from '@/components/Dnd'
 import { PreferencesDialog } from '@/components/Preferences'
 import { appLogger } from '@/utils/logger'
 

@@ -45,6 +45,15 @@ export type {
   DialogServiceMessages,
   DialogServiceOptions,
 } from './components/Dialog/service'
+export { default as DndMonitor } from './components/Dnd/DndMonitor'
+export { default as DndRoot } from './components/Dnd/DndRoot'
+export { default as DndSource } from './components/Dnd/DndSource'
+export { default as DndTarget } from './components/Dnd/DndTarget'
+export type {
+  DndOffset,
+  DndSourceBindings,
+  DndTargetBindings,
+} from './components/Dnd/useDnd'
 export { Drawer } from './components/Drawer/Drawer'
 export type {
   DrawerCloseReason,

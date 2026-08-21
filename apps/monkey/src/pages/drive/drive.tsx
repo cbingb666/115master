@@ -1,5 +1,5 @@
 import type { Share } from '@115master/drive115'
-import { Button, FloatingDock, Header, HeaderEnd, HeaderStart, Pagination, SelectionHeader, Tooltip } from '@115master/ui'
+import { Button, DndMonitor, FloatingDock, Header, HeaderEnd, HeaderStart, Pagination, SelectionHeader, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -25,7 +25,6 @@ import {
   useFilePreview,
   useFileSelection,
 } from '@/components'
-import { DndMonitor } from '@/components/Dnd'
 import { PAGINATION_LABELS } from '@/constants'
 import { useDriveAction } from '@/hooks/useDriveAction'
 import { useGlobalSearch } from '@/hooks/useGlobalSearch'

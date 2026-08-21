@@ -1,8 +1,8 @@
 import type { Share } from '@115master/drive115'
+import type { DndSourceBindings } from '@115master/ui'
 import type { PropType, SlotsType } from 'vue'
-import type { DndSourceBindings } from '../Dnd'
+import { DndSource } from '@115master/ui'
 import { defineComponent } from 'vue'
-import { DndSource } from '../Dnd'
 import FileDragPreview from './FileDragPreview'
 
 /** 文件拖拽源适配：提供文件预览与统一跟随偏移。 */

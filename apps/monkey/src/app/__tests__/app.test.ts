@@ -19,6 +19,7 @@ vi.mock('@115master/ui', async () => {
 
   return {
     DialogHost: Host,
+    DndRoot: Host,
     ModalHost: Host,
     OverlayHost: Host,
     Watermark: defineComponent({
@@ -59,14 +60,6 @@ vi.mock('@/components/Preferences', async () => {
   const { defineComponent } = await import('vue')
   return {
     PreferencesDialog: defineComponent({ setup: () => () => null }),
-  }
-})
-vi.mock('@/components/Dnd', async () => {
-  const { defineComponent } = await import('vue')
-  return {
-    DndRoot: defineComponent({
-      setup: (_, { slots }) => () => slots.default?.(),
-    }),
   }
 })
 vi.mock('@/utils/logger', () => ({ appLogger: { error: vi.fn() } }))

@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import type { Share } from '@115master/drive115'
+import { DndRoot } from '@115master/ui'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { computed, createApp, defineComponent, h, nextTick, ref, shallowRef } from 'vue'
-import DndRoot from '../../Dnd/DndRoot'
 import FileItem from '../FileItem'
 
 vi.hoisted(() => {

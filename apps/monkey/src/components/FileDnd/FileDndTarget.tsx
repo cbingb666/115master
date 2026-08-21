@@ -1,9 +1,9 @@
 import type { Share } from '@115master/drive115'
+import type { DndTargetBindings } from '@115master/ui'
 import type { SlotsType } from 'vue'
-import type { DndTargetBindings } from '../Dnd'
+import { DndTarget } from '@115master/ui'
 import { defineComponent } from 'vue'
 import { getFilesItemId } from '@/utils/filesItem'
-import { DndTarget } from '../Dnd'
 
 /** 文件投放目标适配：统一拒绝拖入被拖集合自身。 */
 const FileDndTarget = defineComponent({

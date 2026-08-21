@@ -1,11 +1,8 @@
 // @vitest-environment jsdom
 import type { App } from 'vue'
+import { DndMonitor, DndRoot, DndSource, DndTarget } from '@115master/ui'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { createApp, defineComponent, h, nextTick } from 'vue'
-import DndMonitor from '../DndMonitor'
-import DndRoot from '../DndRoot'
-import DndSource from '../DndSource'
-import DndTarget from '../DndTarget'
 
 interface FixtureOptions {
   accept?: (payload: unknown) => boolean
@@ -117,11 +114,11 @@ describe('dndSource', () => {
     document.dispatchEvent(pointer('pointermove', 60, 50))
     await nextTick()
 
-    expect(root.querySelector('[data-dnd-cursor]')?.classList).toContain('cursor-grabbing')
+    expect(root.querySelector('[data-ui-dnd-cursor]')?.classList).toContain('cursor-grabbing')
 
     document.dispatchEvent(pointer('pointerup', 60, 50))
     await nextTick()
-    expect(root.querySelector('[data-dnd-cursor]')).toBeNull()
+    expect(root.querySelector('[data-ui-dnd-cursor]')).toBeNull()
   })
 
   it('触摸阈值为 10px', async () => {

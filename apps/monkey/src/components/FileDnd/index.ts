@@ -1,5 +1,5 @@
-export type { DndSourceBindings as FileDndSourceBindings, DndTargetBindings as FileDndTargetBindings } from '../Dnd'
 export { default as FileDndSource } from './FileDndSource'
 export { default as FileDndTarget } from './FileDndTarget'
 export { default as FileDragPreview } from './FileDragPreview'
 export { resolveFileDragIcon } from './resolveFileDragIcon'
+export type { DndSourceBindings as FileDndSourceBindings, DndTargetBindings as FileDndTargetBindings } from '@115master/ui'
