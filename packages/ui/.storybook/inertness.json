@@ -1213,7 +1213,8 @@
         "test"
       ],
       "tests": [
-        "ui-responsivemenu--default:switches-surfaces-by-viewport-and-preserves-dismissal-focus-and-selection-behavior"
+        "ui-responsivemenu--default:switches-surfaces-by-viewport-and-preserves-dismissal-focus-and-selection-behavior",
+        "ui-responsivemenu--default:opens-the-desktop-menu-at-its-anchor-without-interpolating-placement"
       ],
       "ready": "[data-ui-responsive-menu-result]",
       "outcomes": [

@@ -3,10 +3,15 @@
     cursor: default;
   }
 
-  .ui-responsive-menu__dropdown {
+  .ui-responsive-menu__positioner {
     position: fixed;
     width: max-content;
     max-width: calc(100dvw - 1.25rem);
+  }
+
+  .ui-responsive-menu__dropdown {
+    width: max-content;
+    max-width: 100%;
     max-height: calc(100dvh - 1.25rem);
     overflow: auto;
     overscroll-behavior: contain;

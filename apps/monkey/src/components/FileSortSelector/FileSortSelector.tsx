@@ -61,11 +61,11 @@ const FileSortSelector = defineComponent({
           target: (_props: object) => (
             <Tooltip content={`当前排序：${sortLabel.value}${props.fc_mix === 0 ? '（目录置顶）' : ''}`}>
               <Button
+                {..._props}
                 variant="glass-floating"
                 shape="circle"
                 aria-label={`当前排序：${sortLabel.value}`}
                 tabindex="0"
-                {..._props}
               >
                 <span class="relative inline-flex items-center">
                   {

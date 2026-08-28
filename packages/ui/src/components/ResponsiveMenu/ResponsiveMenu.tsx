@@ -60,6 +60,7 @@ export const ResponsiveMenu = defineComponent({
 
   setup(props, { slots }) {
     const anchor = shallowRef<HTMLElement>()
+    const positioner = shallowRef<HTMLElement>()
     const menu = shallowRef<HTMLElement>()
     const open = shallowRef(false)
     const mounted = shallowRef(false)
@@ -82,7 +83,7 @@ export const ResponsiveMenu = defineComponent({
       flip({ padding: 10 }),
       shift({ padding: 10 }),
     ])
-    const { floatingStyles } = useFloating(anchor, menu, {
+    const { floatingStyles } = useFloating(anchor, positioner, {
       open,
       placement: 'bottom-end',
       strategy: 'fixed',
@@ -229,40 +230,45 @@ export const ResponsiveMenu = defineComponent({
                   }}
                 />
               )}
-              <Transition
-                enterActiveClass="duration-100 ease-[var(--ui-ease-enter)]"
-                enterFromClass="opacity-0 scale-95"
-                enterToClass="opacity-100 scale-100"
-                leaveActiveClass="duration-150 ease-[var(--ui-ease-exit)]"
-                leaveFromClass="opacity-100 scale-100"
-                leaveToClass="opacity-0 scale-95"
+              <div
+                ref={positioner}
+                class="ui-responsive-menu__positioner ui-z-menu"
+                data-ui-responsive-menu-positioner=""
+                style={floatingStyles.value}
               >
-                {open.value && (
-                  <ul
-                    ref={menu}
-                    id={id}
-                    aria-label={props.title}
-                    class="
+                <Transition
+                  enterActiveClass="transition-[opacity,scale] duration-100 ease-[var(--ui-ease-enter)]"
+                  enterFromClass="opacity-0 scale-95"
+                  enterToClass="opacity-100 scale-100"
+                  leaveActiveClass="transition-[opacity,scale] duration-150 ease-[var(--ui-ease-exit)]"
+                  leaveFromClass="opacity-100 scale-100"
+                  leaveToClass="opacity-0 scale-95"
+                >
+                  {open.value && (
+                    <ul
+                      ref={menu}
+                      id={id}
+                      aria-label={props.title}
+                      class="
                         ui-responsive-menu__dropdown
                         menu
                         ui-glass-floating
-                        ui-z-menu
                         min-w-44
                         rounded-2xl
                         p-1.5
                         outline-none
                       "
-                    data-ui-responsive-menu="dropdown"
-                    role="menu"
-                    tabindex={-1}
-                    style={floatingStyles.value}
-                    onClick={select}
-                    onKeydown={menuKeydown}
-                  >
-                    {slots.default?.()}
-                  </ul>
-                )}
-              </Transition>
+                      data-ui-responsive-menu="dropdown"
+                      role="menu"
+                      tabindex={-1}
+                      onClick={select}
+                      onKeydown={menuKeydown}
+                    >
+                      {slots.default?.()}
+                    </ul>
+                  )}
+                </Transition>
+              </div>
             </Teleport>
           )
           : (

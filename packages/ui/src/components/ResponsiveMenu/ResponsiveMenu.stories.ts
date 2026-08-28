@@ -108,3 +108,49 @@ Default.test('switches surfaces by viewport and preserves dismissal, focus and s
   })
   await expect(trigger).toHaveFocus()
 })
+
+Default.test('opens the desktop menu at its anchor without interpolating placement', async ({ canvasElement }) => {
+  if (!window.matchMedia('(min-width: 40rem)').matches)
+    return
+
+  const canvas = within(canvasElement)
+  const trigger = canvas.getByRole('button', { name: 'Available actions' })
+  const frames: { opacity: number, x: number, y: number }[] = []
+  let count = 0
+  const settled = new Promise<void>((resolve) => {
+    document.addEventListener('click', () => {
+      const sample = () => {
+        const menu = canvasElement.querySelector<HTMLElement>('[role="menu"][aria-label="Available actions"]')
+
+        if (menu) {
+          const rect = menu.getBoundingClientRect()
+
+          frames.push({
+            opacity: Number(getComputedStyle(menu).opacity),
+            x: rect.x + rect.width / 2,
+            y: rect.y + rect.height / 2,
+          })
+        }
+        count += 1
+        if (frames.some(frame => frame.opacity >= 0.999) || count >= 40) {
+          resolve()
+          return
+        }
+        requestAnimationFrame(sample)
+      }
+
+      requestAnimationFrame(sample)
+    }, { capture: true, once: true })
+  })
+
+  await userEvent.click(trigger)
+  await settled
+
+  const visible = frames.filter(frame => frame.opacity > 0.05)
+  const x = visible.map(frame => frame.x)
+  const y = visible.map(frame => frame.y)
+
+  await expect(visible.length).toBeGreaterThan(1)
+  await expect(Math.max(...x) - Math.min(...x)).toBeLessThanOrEqual(1)
+  await expect(Math.max(...y) - Math.min(...y)).toBeLessThanOrEqual(1)
+})
