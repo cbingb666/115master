@@ -63,14 +63,14 @@ test.describe('选择与操作', () => {
     await boot(page, { storage: { '115Master_pageSize': '30' } })
     await expect(page.getByRole('button', { name: '下一页' })).toBeVisible()
     await expect.poll(() => page.locator('.drive-bottom-dock').evaluate((dock) => {
-      const surface = dock.querySelector<HTMLElement>('.drive-bottom-surface') ?? dock
+      const surface = dock.querySelector<HTMLElement>('[data-ui-floating-dock]')!
       return Number.parseFloat(getComputedStyle(surface.firstElementChild!).opacity)
     })).toBe(1)
 
     async function sample(selector: string) {
       return page.evaluate(async (selector) => {
         const dock = document.querySelector<HTMLElement>('.drive-bottom-dock')!
-        const surface = dock.querySelector<HTMLElement>('.drive-bottom-surface') ?? dock
+        const surface = dock.querySelector<HTMLElement>('[data-ui-floating-dock]')!
         const source = surface.firstElementChild as HTMLElement
         source.dataset.transitionSource = ''
         document.querySelector<HTMLElement>(selector)!.click()
