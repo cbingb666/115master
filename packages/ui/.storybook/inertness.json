@@ -1144,6 +1144,29 @@
       ]
     },
     {
+      "id": "ui-actionmenu--default",
+      "docs": "ui-actionmenu--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "ui-actionmenu--default:normalizes-groups-and-closes-after-selection"
+      ],
+      "ready": "main[aria-label=\"Action Menu behavior\"]",
+      "outcomes": [
+        {
+          "selector": "[data-ui-action-menu-result]",
+          "text": "idle"
+        },
+        {
+          "selector": "[role=\"menu\"]",
+          "count": 0
+        }
+      ]
+    },
+    {
       "id": "ui-contextmenu--materials",
       "docs": "ui-contextmenu--docs",
       "component": true,

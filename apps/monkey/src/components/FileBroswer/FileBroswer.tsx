@@ -1,12 +1,11 @@
 import type { Share } from '@115master/drive115'
+import type { ActionMenuGroup } from '@115master/ui'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
-import type { Action } from '@/types/action'
-import { Button, Pagination, scrollbar, Tooltip } from '@115master/ui'
+import { ActionMenu, Button, Pagination, scrollbar, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import {
-  FileContextMenu,
   FileItem,
   FileItemThumbnail,
   FileList,
@@ -23,6 +22,7 @@ import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useDriveList } from '@/hooks/useDriveList'
 import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
+import { actionIcon } from '@/utils/action'
 import { getFilesItemId } from '@/utils/filesItem'
 
 type ThumbnailProps = InstanceType<typeof FileItemThumbnail>['$props']
@@ -115,10 +115,10 @@ const FileBroswer = defineComponent({
         await explorer.refresh()
     }
 
-    const contextmenuActions = computed<Action[][]>(() => [
+    const contextmenuActions = computed<ActionMenuGroup[]>(() => [
       [
-        { name: 'rename', label: '重命名', icon: I.RENAME, onClick: handleRename },
-        { name: 'delete', label: '删除', icon: I.DELETE, onClick: handleDelete },
+        { id: 'rename', label: '重命名', leading: actionIcon(I.RENAME), onSelect: handleRename },
+        { id: 'delete', label: '删除', leading: actionIcon(I.DELETE), onSelect: handleDelete },
       ],
     ])
 
@@ -332,11 +332,12 @@ const FileBroswer = defineComponent({
                 </FileItem>
               ),
               overlay: () => (
-                <FileContextMenu
-                  actionConfig={contextmenuActions.value}
+                <ActionMenu
+                  aria-label="文件操作"
+                  groups={contextmenuActions.value}
+                  open={contextmenuShow.value}
                   position={contextmenuPosition.value}
-                  show={contextmenuShow.value}
-                  onClose={() => contextmenuShow.value = false}
+                  onUpdate:open={open => contextmenuShow.value = open}
                 />
               ),
             }}

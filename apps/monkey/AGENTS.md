@@ -77,7 +77,7 @@ src/
 - `createMasterApp()`（`app/index.ts`）— 重置文档（favicon、meta viewport、`#my-app`、滚动条样式）、注入主题、挂载 Vue + Pinia + router。
 - 路由（hash）：`/drive/:area?/:cid?`（网盘）、`/video/:pickCode`（播放）、`/test`。
 - App 根（`app.tsx`，TSX）— `onErrorCaptured` 全局兜底，`RouterView` 直接渲染当前路由页面。
-- 网盘页 `drive.tsx` 用 `actionAtom`/`actionConfig` 声明式描述右键菜单 action，由 `FileContextMenu` 渲染。
+- 网盘页 `drive.tsx` 用 `ActionMenuGroup` 声明式描述操作，由 `@115master/ui` 的 `ActionMenu` 渲染；同一分组也供 `ActionBar` 消费。
 
 ### 状态管理：Pinia store + hooks 组合
 

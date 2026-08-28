@@ -60,7 +60,20 @@
     <Statistics />
 
     <!-- 右键菜单 -->
-    <ContextMenu />
+    <ActionMenu
+      :open="contextMenu.visible.value"
+      :position="contextMenu.position.value"
+      :groups="contextMenu.groups"
+      material="overlay"
+      aria-label="播放器操作"
+      @update:open="(visible: boolean) => contextMenu.visible.value = visible"
+    />
+
+    <PlayerSettingsPopup
+      :visible="contextMenu.showSettings.value"
+      :default-tab="contextMenu.defaultSettingsTab.value"
+      @update:visible="(visible: boolean) => contextMenu.showSettings.value = visible"
+    />
 
     <!-- 恢复容器 -->
     <div
@@ -77,11 +90,10 @@
 <script setup lang="ts">
 import type { PlayerContext } from './hooks/usePlayerProvide'
 import type { XPlayerEmit, XPlayerProps } from './types'
-import { Button, StatusFeedback } from '@115master/ui'
+import { ActionMenu, Button, StatusFeedback } from '@115master/ui'
 import { shallowRef, watch, watchEffect } from 'vue'
 import { clsx } from '@/utils/clsx'
 import { errorFeedback } from '@/utils/errorFeedback'
-import ContextMenu from './components/ContextMenu/index.vue'
 import ControlsBar from './components/Controls/ControlBar.vue'
 import ControlsHeader from './components/Controls/ControlHeader.vue'
 import ControlsMask from './components/Controls/ControlMask.vue'
@@ -90,6 +102,7 @@ import SubtitleInfo from './components/Controls/SubtitleInfo.vue'
 import HUD from './components/HUD/index.vue'
 import Loading from './components/Loading/index.vue'
 import PlayAnimation from './components/PlayAnimation/index.vue'
+import PlayerSettingsPopup from './components/Settings/PlayerSettingsPopup.vue'
 import { FAST_JUMP_OFFSET, HIGH_FAST_JUMP_OFFSET } from './components/Shortcuts/shortcuts.const'
 import Statistics from './components/Statistics/index.vue'
 import Subtitle from './components/Subtitle/index.vue'
@@ -161,6 +174,7 @@ const {
   videoEnhance,
   playerCore,
   controls,
+  contextMenu,
 } = ctx
 
 function closeError() {

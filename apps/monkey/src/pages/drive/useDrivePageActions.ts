@@ -1,9 +1,10 @@
 import type { Share } from '@115master/drive115'
+import type { ActionMenuGroup, ActionMenuItem } from '@115master/ui'
 import type { useDriveAction } from '@/hooks/useDriveAction'
 import type { useDriveStore } from '@/store/driveList'
-import type { Action } from '@/types/action'
 import { computed } from 'vue'
 import { I } from '@/icons'
+import { actionIcon } from '@/utils/action'
 
 type DriveAction = ReturnType<typeof useDriveAction>
 type DriveStore = ReturnType<typeof useDriveStore>
@@ -62,62 +63,58 @@ export function useDrivePageActions(store: DriveStore, action: DriveAction) {
     return success
   }
 
+  const topActive = computed(() => store.selection.values.some(item => item.is_top))
+  const starActive = computed(() => store.selection.values.some(item => item.m))
   const atoms = {
     top: {
-      name: 'top',
-      label: '置顶',
-      activeLabel: '取消置顶',
-      icon: I.TOP,
-      activeIcon: I.TOP_SOLID,
-      activeIconColor: 'text-primary',
-      active: computed(() => store.selection.values.some(item => item.is_top)),
-      onClick: top,
+      id: 'top',
+      label: () => topActive.value ? '取消置顶' : '置顶',
+      leading: actionIcon(() => topActive.value ? I.TOP_SOLID : I.TOP),
+      tone: () => topActive.value ? 'primary' : 'default',
+      onSelect: top,
     },
     star: {
-      name: 'star',
-      label: '星标',
-      activeLabel: '取消星标',
-      icon: I.STAR,
-      activeIcon: I.STAR_FILL,
-      activeIconColor: 'text-primary',
-      active: computed(() => store.selection.values.some(item => item.m)),
-      onClick: star,
+      id: 'star',
+      label: () => starActive.value ? '取消星标' : '星标',
+      leading: actionIcon(() => starActive.value ? I.STAR_FILL : I.STAR),
+      tone: () => starActive.value ? 'primary' : 'default',
+      onSelect: star,
     },
     move: {
-      name: 'move',
+      id: 'move',
       label: '移动',
-      icon: I.MOVE,
-      onClick: move,
+      leading: actionIcon(I.MOVE),
+      onSelect: move,
     },
     improve: {
-      name: 'improve',
+      id: 'improve',
       label: '提到上级',
-      icon: I.FILE_IMPROVE,
-      show: computed(() => store.prevLevel !== undefined),
-      onClick: improve,
+      leading: actionIcon(I.FILE_IMPROVE),
+      visible: computed(() => store.prevLevel !== undefined),
+      onSelect: improve,
     },
     rename: {
-      name: 'rename',
+      id: 'rename',
       label: '重命名',
-      icon: I.RENAME,
-      show: computed(() => store.selection.count === 1),
-      onClick: rename,
+      leading: actionIcon(I.RENAME),
+      visible: computed(() => store.selection.count === 1),
+      onSelect: rename,
     },
     tag: {
-      name: 'tag',
+      id: 'tag',
       label: '打标签',
-      icon: I.TAG,
-      onClick: tag,
+      leading: actionIcon(I.TAG),
+      onSelect: tag,
     },
     delete: {
-      name: 'delete',
-      icon: I.DELETE,
+      id: 'delete',
       label: '删除',
-      onClick: remove,
+      leading: actionIcon(I.DELETE),
+      onSelect: remove,
     },
-  } satisfies Record<string, Action>
+  } satisfies Record<string, ActionMenuItem>
 
-  const groups: Action[][] = [
+  const groups: ActionMenuGroup[] = [
     [atoms.top, atoms.star, atoms.tag],
     [atoms.move, atoms.improve, atoms.rename],
     [atoms.delete],

@@ -1,3 +1,10 @@
+export { ActionMenu } from './components/ActionMenu/ActionMenu'
+export type {
+  ActionMenuGroup,
+  ActionMenuItem,
+  ActionMenuProps,
+  ActionMenuTone,
+} from './components/ActionMenu/ActionMenu'
 export { Button } from './components/Button/Button'
 export type {
   ButtonColor,

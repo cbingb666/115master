@@ -1,15 +1,14 @@
+import type { ActionMenuGroup } from '@115master/ui'
 import type { TagFormState } from './TagFormContent'
 import type { Tag } from '@/store/tagList'
-import type { Action } from '@/types/action'
 import { Api, Core } from '@115master/drive115'
-import { Button, FloatingDock, Header, HeaderEnd, HeaderStart, Pill, Progress, SelectionHeader, StatusFeedback } from '@115master/ui'
+import { ActionMenu, Button, FloatingDock, Header, HeaderEnd, HeaderStart, Pill, Progress, SelectionHeader, StatusFeedback } from '@115master/ui'
 import { useTitle } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, defineComponent, h, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useAppDialog } from '@/app/dialog'
 import {
   ActionBar,
-  ActionMenu,
   Layout,
   Main,
   Sider,
@@ -18,6 +17,7 @@ import {
 } from '@/components'
 import { I, Icon } from '@/icons'
 import { useTagStore } from '@/store/tagList'
+import { actionIcon } from '@/utils/action'
 import { errorFeedback } from '@/utils/errorFeedback'
 import TagFormContent from './TagFormContent'
 import TagItem from './TagItem'
@@ -132,46 +132,46 @@ const Tags = defineComponent({
     }
 
     /** 右键菜单：编辑（仅单选）/ 删除（批量，作用于全部选中） */
-    const contextActions = computed<Action[][]>(() => [
+    const contextActions = computed<ActionMenuGroup[]>(() => [
       [{
-        name: 'edit',
+        id: 'edit',
         label: '编辑',
-        icon: I.RENAME,
-        show: () => store.selectedCount === 1,
-        onClick: () => {
+        leading: actionIcon(I.RENAME),
+        visible: () => store.selectedCount === 1,
+        onSelect: () => {
           const tag = store.filtered.find(t => store.isSelected(t.id))
           if (tag)
             openTagForm(tag)
         },
       }],
       [{
-        name: 'delete',
+        id: 'delete',
         label: '删除',
-        icon: I.DELETE,
-        iconColor: 'text-error',
-        onClick: () => deleteBatch(),
+        leading: actionIcon(I.DELETE),
+        tone: 'destructive',
+        onSelect: () => deleteBatch(),
       }],
     ])
 
     /** 底部操作栏：编辑（仅单选）/ 批量删除 */
-    const batchActions = computed<Action[][]>(() => [[
+    const batchActions = computed<ActionMenuGroup[]>(() => [[
       {
-        name: 'edit',
+        id: 'edit',
         label: '编辑',
-        icon: I.RENAME,
-        show: () => store.selectedCount === 1,
-        onClick: () => {
+        leading: actionIcon(I.RENAME),
+        visible: () => store.selectedCount === 1,
+        onSelect: () => {
           const tag = store.filtered.find(t => store.isSelected(t.id))
           if (tag)
             openTagForm(tag)
         },
       },
       {
-        name: 'delete',
+        id: 'delete',
         label: '批量删除',
-        icon: I.DELETE,
-        iconColor: 'text-error',
-        onClick: () => deleteBatch(),
+        leading: actionIcon(I.DELETE),
+        tone: 'destructive',
+        onSelect: () => deleteBatch(),
       },
     ]])
 
@@ -305,10 +305,14 @@ const Tags = defineComponent({
               </FloatingDock>
             </div>
             <ActionMenu
-              show={multi.contextmenuShow.value}
+              aria-label="标签操作"
+              groups={contextActions.value}
+              open={multi.contextmenuShow.value}
               position={multi.contextmenuPosition.value}
-              actionConfig={contextActions.value}
-              onClose={multi.closeContextmenu}
+              onUpdate:open={(open) => {
+                if (!open)
+                  multi.closeContextmenu()
+              }}
             />
           </Main>
         </Layout>

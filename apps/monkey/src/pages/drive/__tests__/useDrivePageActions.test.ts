@@ -42,7 +42,7 @@ function setup() {
   const actions = useDrivePageActions(store, mocks as unknown as DriveAction)
 
   function action(name: string) {
-    return actions.groups.flat().find(item => item.name === name)!
+    return actions.groups.flat().find(item => item.id === name)!
   }
 
   return { action, actions, afterAction, mocks, selected, store }
@@ -52,15 +52,17 @@ describe('useDrivePageActions', () => {
   it('提供 ActionBar 与右键菜单共用的分组和状态', () => {
     const { action, actions } = setup()
 
-    expect(actions.groups.map(group => group.map(item => item.name))).toEqual([
+    expect(actions.groups.map(group => group.map(item => item.id))).toEqual([
       ['top', 'star', 'tag'],
       ['move', 'improve', 'rename'],
       ['delete'],
     ])
-    expect(toValue(action('top').active)).toBe(true)
-    expect(toValue(action('star').active)).toBe(true)
-    expect(toValue(action('improve').show)).toBe(true)
-    expect(toValue(action('rename').show)).toBe(true)
+    expect(toValue(action('top').label)).toBe('取消置顶')
+    expect(toValue(action('star').label)).toBe('取消星标')
+    expect(toValue(action('top').tone)).toBe('primary')
+    expect(toValue(action('star').tone)).toBe('primary')
+    expect(toValue(action('improve').visible)).toBe(true)
+    expect(toValue(action('rename').visible)).toBe(true)
   })
 
   it('把当前目录和选择态传给页面操作', async () => {
@@ -68,9 +70,9 @@ describe('useDrivePageActions', () => {
 
     await actions.newFolder()
     await actions.cloudDownload('magnet:?xt=test')
-    await action('move').onClick?.(action('move'))
-    await action('improve').onClick?.(action('improve'))
-    await action('rename').onClick?.(action('rename'))
+    await action('move').onSelect()
+    await action('improve').onSelect()
+    await action('rename').onSelect()
 
     expect(mocks.newFolder).toHaveBeenCalledWith('10')
     expect(mocks.cloudDownload).toHaveBeenCalledWith('10', store.path, 'magnet:?xt=test')
@@ -82,15 +84,15 @@ describe('useDrivePageActions', () => {
   it('仅在操作成功时刷新，标签操作沿用自身刷新事务', async () => {
     const { action, afterAction, mocks } = setup()
 
-    await action('top').onClick?.(action('top'))
+    await action('top').onSelect()
     expect(afterAction).toHaveBeenCalledTimes(1)
 
     afterAction.mockClear()
     mocks.topBatch.mockResolvedValue(false)
-    await action('top').onClick?.(action('top'))
+    await action('top').onSelect()
     expect(afterAction).not.toHaveBeenCalled()
 
-    await action('tag').onClick?.(action('tag'))
+    await action('tag').onSelect()
     expect(mocks.tagBatch).toHaveBeenCalledTimes(1)
     expect(afterAction).not.toHaveBeenCalled()
   })

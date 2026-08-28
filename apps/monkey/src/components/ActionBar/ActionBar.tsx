@@ -1,8 +1,7 @@
+import type { ActionMenuGroup, ActionMenuItem } from '@115master/ui'
 import type { PropType } from 'vue'
-import type { Action } from '@/types/action'
 import { Button, Pill, Tooltip } from '@115master/ui'
 import { defineComponent, Fragment, ref, toValue, triggerRef } from 'vue'
-import { Icon } from '@/icons'
 
 /**
  * 分组操作栏
@@ -11,7 +10,7 @@ const ActionBar = defineComponent({
   name: 'ActionBar',
   props: {
     groups: {
-      type: Array as PropType<Action[][]>,
+      type: Array as PropType<readonly ActionMenuGroup[]>,
       required: true,
     },
     /** Glass 材质由外层容器承载 */
@@ -23,18 +22,18 @@ const ActionBar = defineComponent({
   setup: (props) => {
     const loading = ref(new Set<string>())
 
-    function setLoading(item: Action, value: boolean) {
+    function setLoading(item: ActionMenuItem, value: boolean) {
       if (value) {
-        loading.value.add(item.name)
+        loading.value.add(item.id)
         triggerRef(loading)
         return
       }
-      loading.value.delete(item.name)
+      loading.value.delete(item.id)
       triggerRef(loading)
     }
 
-    function handleClick(item: Action) {
-      const result = item.onClick?.(item)
+    function select(item: ActionMenuItem) {
+      const result = item.onSelect()
       if (result instanceof Promise) {
         setLoading(item, true)
         result.finally(() => {
@@ -46,7 +45,7 @@ const ActionBar = defineComponent({
     return () => {
       const groups = props.groups
         .map(group => group.filter(item =>
-          item.show === undefined || toValue(item.show),
+          item.visible === undefined || toValue(item.visible),
         ))
         .filter(group => group.length > 0)
 
@@ -61,24 +60,16 @@ const ActionBar = defineComponent({
           ]}
         >
           {groups.map((group, groupIndex) => (
-            <Fragment key={group.map(item => item.name).join(':')}>
+            <Fragment key={group.map(item => item.id).join(':')}>
               <div class="flex items-center justify-center">
                 {group.map((item) => {
-                  const isLoading = loading.value.has(item.name)
-                  const active = toValue(item.active)
-                  const label = active && item.activeLabel
-                    ? item.activeLabel
-                    : item.label
-                  const icon = active && item.activeIcon
-                    ? item.activeIcon
-                    : item.icon
-                  const iconColor = active && item.activeIconColor
-                    ? item.activeIconColor
-                    : item.iconColor
+                  const isLoading = loading.value.has(item.id)
+                  const label = toValue(item.label)
+                  const tone = item.tone === undefined ? 'default' : toValue(item.tone)
 
                   return (
                     <Tooltip
-                      key={item.name}
+                      key={item.id}
                       content={label}
                       placement="top"
                     >
@@ -87,7 +78,8 @@ const ActionBar = defineComponent({
                         variant="ghost"
                         shape="circle"
                         class="relative h-11 w-11"
-                        onClick={() => handleClick(item)}
+                        disabled={item.disabled === undefined ? false : toValue(item.disabled)}
+                        onClick={() => select(item)}
                       >
                         <span
                           class={[
@@ -97,14 +89,21 @@ const ActionBar = defineComponent({
                             isLoading ? 'opacity-100' : 'opacity-0',
                           ]}
                         />
-                        <Icon
-                          class={[
-                            'drop-shadow-base-200/50 size-6 drop-shadow-sm',
-                            isLoading ? 'opacity-20' : '',
-                            iconColor,
-                          ]}
-                          name={icon}
-                        />
+                        {item.leading && (
+                          <span
+                            class={[
+                              'flex size-6 items-center justify-center [&>*]:size-6',
+                              'drop-shadow-base-200/50 drop-shadow-sm',
+                              'transition-all ease-[var(--ui-ease-standard)]',
+                              tone === 'primary' ? 'text-primary' : '',
+                              tone === 'destructive' ? 'text-error' : '',
+                              isLoading ? 'opacity-20' : '',
+                            ]}
+                            aria-hidden="true"
+                          >
+                            {item.leading()}
+                          </span>
+                        )}
                       </Button>
                     </Tooltip>
                   )

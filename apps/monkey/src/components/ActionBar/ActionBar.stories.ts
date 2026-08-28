@@ -1,17 +1,18 @@
+import type { ActionMenuGroup } from '@115master/ui'
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import type { Action } from '@/types/action'
 import { I } from '@/icons'
+import { actionIcon } from '@/utils/action'
 import ActionBar from './ActionBar'
 
 const groups = [
   [
-    { name: 'download', label: '下载', icon: I.DOWNLOAD },
-    { name: 'move', label: '移动', icon: I.MOVE },
+    { id: 'download', label: '下载', leading: actionIcon(I.DOWNLOAD), onSelect: () => {} },
+    { id: 'move', label: '移动', leading: actionIcon(I.MOVE), onSelect: () => {} },
   ],
   [
-    { name: 'delete', label: '删除', icon: I.DELETE, iconColor: 'text-error' },
+    { id: 'delete', label: '删除', leading: actionIcon(I.DELETE), tone: 'destructive', onSelect: () => {} },
   ],
-] satisfies Action[][]
+] satisfies ActionMenuGroup[]
 
 const meta = {
   title: 'UI/ActionBar',
@@ -40,10 +41,10 @@ export const Async: Story = {
   args: {
     groups: [[
       {
-        name: 'download',
+        id: 'download',
         label: '下载',
-        icon: I.DOWNLOAD,
-        onClick: () => new Promise(resolve => setTimeout(resolve, 1200)),
+        leading: actionIcon(I.DOWNLOAD),
+        onSelect: () => new Promise(resolve => setTimeout(resolve, 1200)),
       },
     ]],
   },

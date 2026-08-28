@@ -65,8 +65,12 @@ _Avoid_: 组件基础 Story、重复 Story
 _Avoid_: Popover、菜单、可点击提示
 
 **Context Menu**：
-由坐标与受控 open 状态驱动的临时操作表面；统一负责 Overlay Host、视口避让、滚动锁定、焦点循环、关闭语义与材质选择，默认使用 floating，媒体场景可选择 overlay，菜单项内容由应用通过 slot 提供。
+由坐标与受控 open 状态驱动的临时操作表面；统一负责 Overlay Host、视口避让、滚动锁定、焦点循环、关闭语义与材质选择，默认使用 floating，媒体场景可选择 overlay；标准数据驱动操作使用 Action Menu，自定义菜单项内容由应用通过 slot 提供。
 _Avoid_: 应用挂载节点、业务 Action 模型、页面内定位逻辑
+
+**Action Menu**：
+由应用无关的动作描述分组驱动、内部组合 Context Menu 的标准操作表面；统一负责菜单项语义、显隐、禁用态、语义色、前导内容、尾部提示、空组折叠、分隔线与选中关闭，调用方拥有业务动作和受控 open 状态。
+_Avoid_: Monkey IconValue、业务 Action 继承、页面专属菜单渲染
 
 **Headless DnD**：
 应用无关的 Pointer Events 拖拽模块；DndRoot 拥有会话与跟随层，DndSource 负责激活阈值、payload 惰性求值和 click 抑制，DndTarget 负责命中、接收判断与投放，DndMonitor 只公开会话是否活跃。调用方通过 slot 保留真实 DOM，并拥有 payload、预览内容和领域投放规则。
@@ -81,7 +85,7 @@ _Avoid_: App Dialog Adapter、应用挂载节点、业务 Action 模型
 _Avoid_: `#my-app`、Tooltip 容器
 
 **公共 UI 契约**：
-由包根命名导出、允许消费方稳定依赖的组件、样式模块、交互模块、服务与类型集合；组件包括 Button、Pill、FloatingDock、Image、Empty、Progress、Pagination、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、ResponsiveMenu、DndRoot、DndSource、DndTarget、DndMonitor、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，交互模块包括 useCollectionSelection，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、文案集、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、DnD provide/use、默认单例与内部文件路径不属于契约。
+由包根命名导出、允许消费方稳定依赖的组件、样式模块、交互模块、服务与类型集合；组件包括 ActionMenu、Button、Pill、FloatingDock、Image、Empty、Progress、Pagination、SelectionHeader、StatusFeedback、Tooltip、ContextMenu、ResponsiveMenu、DndRoot、DndSource、DndTarget、DndMonitor、Watermark、Header、HeaderStart、HeaderEnd、Dialog、Drawer、ModalHost、DialogHost、NavigationStack 与 OverlayHost，样式模块包括 Scrollbar，交互模块包括 useCollectionSelection，服务固定为 createDialogService 与 useDialog，并公开与这些契约直接对应的 Props、尺寸、文案集、加载器、选项、结果、关闭原因、服务实例和句柄类型。内部 Modal Root、DnD provide/use、默认单例与内部文件路径不属于契约。
 _Avoid_: 深层导入、默认导出
 
 **UI Namespace**：

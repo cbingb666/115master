@@ -1,5 +1,5 @@
 import type { Share } from '@115master/drive115'
-import { Button, DndMonitor, FloatingDock, Header, HeaderEnd, HeaderStart, Pagination, ResponsiveMenu, SelectionHeader, Tooltip } from '@115master/ui'
+import { ActionMenu, Button, DndMonitor, FloatingDock, Header, HeaderEnd, HeaderStart, Pagination, ResponsiveMenu, SelectionHeader, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, useTitle } from '@vueuse/core'
 import { computed, defineComponent, onBeforeMount, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -7,7 +7,6 @@ import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
 import {
   ActionBar,
-  FileContextMenu,
   FileItem,
   FileList,
   FileNewFolderButton,
@@ -250,11 +249,12 @@ const Drive = defineComponent({
               />
             ),
             overlay: () => (
-              <FileContextMenu
-                actionConfig={actions.groups}
+              <ActionMenu
+                aria-label="文件操作"
+                groups={actions.groups}
+                open={contextmenuShow.value}
                 position={contextmenuPosition.value}
-                show={contextmenuShow.value}
-                onClose={() => contextmenuShow.value = false}
+                onUpdate:open={open => contextmenuShow.value = open}
               />
             ),
           }}

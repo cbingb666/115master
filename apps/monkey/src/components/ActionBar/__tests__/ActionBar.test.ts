@@ -3,6 +3,7 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { createApp, h, nextTick } from 'vue'
 import { I } from '@/icons'
+import { actionIcon } from '@/utils/action'
 import ActionBar from '../ActionBar'
 
 const apps: ReturnType<typeof createApp>[] = []
@@ -44,7 +45,12 @@ describe('actionBar', () => {
     const host = document.createElement('div')
     const app = createApp({
       setup: () => () => h(ActionBar, {
-        groups: [[{ name: 'download', label: '下载', icon: I.DOWNLOAD }]],
+        groups: [[{
+          id: 'download',
+          label: '下载',
+          leading: actionIcon(I.DOWNLOAD),
+          onSelect: () => {},
+        }]],
       }),
     })
     app.mount(host)
