@@ -9,9 +9,12 @@ test.describe('视频页装配', () => {
     await setupVideo(page)
     await page.goto(videoUrl(EPISODES[0].pc))
 
-    // 文档标题与头部文件名来自 files/video mock（HeaderInfo 大写渲染；exact 区分播放列表项文本）
+    // 文档标题与头部文件名来自 files/video mock，多个文件时显示播放序号
     await expect(page).toHaveTitle(EPISODES[0].n)
-    await expect(page.getByText(EPISODES[0].n.toUpperCase(), { exact: true })).toBeVisible()
+    await expect(page.locator('[data-app-video-title]')).toHaveText(
+      `1/${EPISODES.length} ${EPISODES[0].n.toUpperCase()}`,
+    )
+    await expect(page.locator('[data-app-video-position]')).toHaveText(`1/${EPISODES.length}`)
     // 面包屑来自播放列表 path（过滤根目录后剩「剧集」）
     await expect(page.getByRole('link', { name: '剧集', exact: true })).toBeVisible()
     // 控制栏核心按钮渲染；默认 mock 无可用视频源（m3u8 未转码、下载失败）→ canplay=false
@@ -61,7 +64,21 @@ test.describe('视频页装配', () => {
     // 忽略后错误提示消失，页面其余部分仍可用
     await close.click()
     await expect(close).toBeHidden()
-    await expect(page.getByText(EPISODES[0].n.toUpperCase(), { exact: true })).toBeVisible()
+    await expect(page.locator('[data-app-video-title]')).toContainText(
+      EPISODES[0].n.toUpperCase(),
+    )
+    expect(errors).toEqual([])
+  })
+
+  test('单文件播放列表的标题不显示序号', async ({ page }) => {
+    const errors = watch(page)
+    await setupVideo(page, { playlistSize: 1 })
+    await page.goto(videoUrl(EPISODES[0].pc))
+
+    await expect(page.locator('[data-app-video-title]')).toHaveText(
+      EPISODES[0].n.toUpperCase(),
+    )
+    await expect(page.locator('[data-app-video-position]')).toHaveCount(0)
     expect(errors).toEqual([])
   })
 })

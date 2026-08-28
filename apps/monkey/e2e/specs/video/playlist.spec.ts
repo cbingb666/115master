@@ -132,6 +132,10 @@ test.describe('播放列表', () => {
     await expect(page).toHaveURL(new RegExp(`#/video/${EPISODES[1].pc}$`))
     await expect(page).toHaveTitle(EPISODES[1].n)
     expect(requested).toContain(EPISODES[1].pc)
+    await expect(page.locator('[data-app-video-title]')).toHaveText(
+      `2/${EPISODES.length} ${EPISODES[1].n.toUpperCase()}`,
+    )
+    await expect(page.locator('[data-app-video-position]')).toHaveText(`2/${EPISODES.length}`)
     // 当前集高亮跟随切换
     await expect(sider(page).locator('.text-primary')).toHaveText(EPISODES[1].n)
     await expect(sider(page)).toHaveAttribute('open', '')

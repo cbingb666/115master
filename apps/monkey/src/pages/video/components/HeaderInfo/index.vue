@@ -12,8 +12,13 @@
     <div :class="styles.fileInfo.container">
       <div :class="styles.fileInfo.file">
         <!-- 文件名 -->
-        <span :class="styles.fileInfo.name">
-          {{ fileInfo.state?.file_name?.toUpperCase() }}
+        <span data-app-video-title :class="styles.fileInfo.name">
+          <span
+            v-if="position"
+            data-app-video-position
+            :class="styles.fileInfo.position"
+          >{{ position }}</span>{{ position ? ' ' : '' }}
+          <span>{{ name }}</span>
         </span>
         <!-- 文件大小 -->
         <span :class="styles.fileInfo.size">
@@ -73,6 +78,7 @@ const styles = clsx({
     container: 'flex flex-1 flex-col',
     file: 'flex flex-wrap items-center gap-2 tracking-tight',
     name: 'app-text-shadow-dark line-clamp-2 text-xl font-semibold text-white',
+    position: 'mr-2 inline-block rounded-md bg-white/15 px-1.5 py-0.5 align-middle text-sm font-medium tracking-normal whitespace-nowrap text-white/70',
     size: 'app-text-shadow-dark flex-shrink-0 text-xs font-medium tracking-wide whitespace-nowrap text-white',
     path: {
       container: [
@@ -89,5 +95,25 @@ const path = computed(() => {
   return (props.playlist.state?.path ?? []).filter(
     item => Number(item.cid) !== 0,
   )
+})
+
+const name = computed(() => {
+  return props.fileInfo.state?.file_name?.toUpperCase() ?? ''
+})
+
+const position = computed(() => {
+  const data = props.playlist.state?.data
+  if (!data || data.length <= 1) {
+    return
+  }
+
+  const index = data.findIndex(
+    item => item.pc === props.fileInfo.state?.pick_code,
+  )
+  if (index < 0) {
+    return
+  }
+
+  return `${index + 1}/${data.length}`
 })
 </script>

@@ -56,19 +56,20 @@ function videoInfo(ep: (typeof EPISODES)[number]) {
   }
 }
 
-/** 播放列表响应（/files?type=4，3 集 + path） */
-function playlist() {
+/** 播放列表响应（/files?type=4，剧集 + path） */
+function playlist(size = EPISODES.length) {
+  const episodes = EPISODES.slice(0, size)
   return {
     state: true,
-    count: EPISODES.length,
-    file_count: EPISODES.length,
+    count: episodes.length,
+    file_count: episodes.length,
     folder_count: 0,
     is_asc: 1,
     order: 'file_name',
     fc_mix: 0,
     offset: 0,
     cur: 1,
-    data: EPISODES.map((ep, i) => ({
+    data: episodes.map((ep, i) => ({
       m: 0,
       n: ep.n,
       ns: ep.n,
@@ -145,6 +146,8 @@ export interface VideoMockOptions {
   download?: boolean
   /** thunder 返回两条字幕搜索结果 */
   subtitles?: boolean
+  /** 播放列表包含的剧集数量 */
+  playlistSize?: number
 }
 
 /** 安装视频页默认 mock；返回 files/video 的 pickcode 请求记录 */
@@ -164,7 +167,7 @@ export function installVideoMocks(api: MockApi, options: VideoMockOptions = {}) 
   api.override(FILES_RE, ({ route, url }) => {
     if (url.searchParams.get('type') !== '4')
       return
-    return json(route, playlist())
+    return json(route, playlist(options.playlistSize))
   })
 
   api.override(/^https:\/\/webapi\.115\.com\/files\/history/, ({ route, request }) => {
