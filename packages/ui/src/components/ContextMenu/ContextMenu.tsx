@@ -111,13 +111,27 @@ export const ContextMenu = defineComponent({
       return undefined
     })
     let locked: HTMLElement | undefined
-    let overflow = ''
+    let left = 0
+    let top = 0
     let previous: HTMLElement | undefined
+
+    function prevent(event: Event) {
+      event.preventDefault()
+    }
+
+    function reset() {
+      if (!locked)
+        return
+      locked.scrollLeft = left
+      locked.scrollTop = top
+    }
 
     function unlock() {
       if (!locked)
         return
-      locked.style.overflowY = overflow
+      window.removeEventListener('wheel', prevent, true)
+      window.removeEventListener('touchmove', prevent, true)
+      locked.removeEventListener('scroll', reset)
       locked = undefined
     }
 
@@ -151,8 +165,11 @@ export const ContextMenu = defineComponent({
         ? document.activeElement
         : undefined
       locked = scrollParent(props.position.x, props.position.y)
-      overflow = locked.style.overflowY
-      locked.style.overflowY = 'hidden'
+      left = locked.scrollLeft
+      top = locked.scrollTop
+      window.addEventListener('wheel', prevent, { capture: true, passive: false })
+      window.addEventListener('touchmove', prevent, { capture: true, passive: false })
+      locked.addEventListener('scroll', reset)
       adjusted.value = { ...props.position }
       nextTick(() => {
         if (!props.open)

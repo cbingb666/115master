@@ -465,11 +465,24 @@ ScrollLocking.test('locks and restores the targeted scroll container', async ({ 
   if (!scroll)
     throw new Error('Context Menu scroll fixture did not render')
 
+  scroll.scrollTop = 24
   await expect(getComputedStyle(scroll).overflowY).toBe('auto')
   await invoke(trigger)
   await canvas.findByRole('menu', { name: '滚动区操作' })
+  await expect(getComputedStyle(scroll).overflowY).toBe('auto')
+
+  const wheel = new WheelEvent('wheel', {
+    bubbles: true,
+    cancelable: true,
+    deltaY: 80,
+  })
+  scroll.dispatchEvent(wheel)
+  await expect(wheel.defaultPrevented).toBe(true)
+
+  scroll.scrollTop = 80
+  await fireEvent.scroll(scroll)
   await waitFor(async () => {
-    await expect(getComputedStyle(scroll).overflowY).toBe('hidden')
+    await expect(scroll.scrollTop).toBe(24)
   })
 
   await userEvent.keyboard('{Escape}')
@@ -477,6 +490,11 @@ ScrollLocking.test('locks and restores the targeted scroll container', async ({ 
     await expect(canvas.queryByRole('menu')).not.toBeInTheDocument()
   })
   await expect(getComputedStyle(scroll).overflowY).toBe('auto')
+
+  scroll.scrollTop = 80
+  await fireEvent.scroll(scroll)
+  await expect(scroll.scrollTop).toBe(80)
+  scroll.scrollTop = 0
 })
 
 export const OverlayTargets = meta.story({
