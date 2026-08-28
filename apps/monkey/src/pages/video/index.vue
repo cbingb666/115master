@@ -131,16 +131,14 @@ import type { PlayerContext } from '@/components/XPlayer/hooks/usePlayerProvide'
 import type XPlayerInstance from '@/components/XPlayer/index.vue'
 import type { Subtitle, ThumbnailRequest } from '@/components/XPlayer/types'
 import { Button, Drawer } from '@115master/ui'
-import { format } from '@115master/utils'
 import { breakpointsTailwind, useBreakpoints, useTitle } from '@vueuse/core'
 import { cloneDeep } from 'lodash'
-import { computed, h, nextTick, onMounted, ref, shallowRef, toValue, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, shallowRef, toValue, watch } from 'vue'
 import iinaIcon from '@/assets/icons/iina-icon.png'
 import PlayerControlSurface from '@/components/XPlayer/components/Controls/PlayerControlSurface'
 import { ACTION_GROUPS } from '@/components/XPlayer/components/Shortcuts/shortcuts.const'
 import XPlayer from '@/components/XPlayer/index.vue'
 import { controlStyles } from '@/components/XPlayer/styles/common'
-import { formatTime } from '@/components/XPlayer/utils/time'
 import { PLUS_VERSION } from '@/constants'
 import { useMoveAction } from '@/hooks/useDriveAction/useMoveAction'
 import { useLockFn } from '@/hooks/useLockFn'
@@ -548,59 +546,14 @@ async function playPreviousOrNext(ctx: PlayerContext, dir: number) {
 
   const nextIndex = currentIndex + dir
   if (nextIndex >= 0 && nextIndex < DataPlaylist.state.data.length) {
-    const nextItem = DataPlaylist.state.data[nextIndex]
-    handleChangeVideo(nextItem)
-    const no = nextIndex + 1
-    const len = DataPlaylist.state?.data.length
-    const noText = `(${no + 1}/${len})`
-    const title = h('div', {
-      class: 'text-sm font-semibold',
-    }, [
-      h('span', {
-        class: 'text-lg font-semibold',
-      }, nextItem.n),
-    ])
-    const value = h('div', [
-      h(
-        'div',
-        {
-          class: 'flex items-center gap-2',
-        },
-        [
-          h(
-            'span',
-            {
-              class: 'text-xs text-base-content',
-            },
-            noText,
-          ),
-          h(
-            'span',
-            {
-              class: 'text-xs text-base-content/70',
-            },
-            formatTime(nextItem.play_long),
-          ),
-          h(
-            'span',
-            {
-              class: 'text-xs text-base-content/70',
-            },
-            format.fileSize(Number(nextItem.s)),
-          ),
-        ],
-      ),
+    handleChangeVideo(DataPlaylist.state.data[nextIndex])
+    return
+  }
 
-    ])
-    const icon = I.PLAYLIST
-    ctx.hud?.show({ title, icon, value })
-  }
-  else {
-    ctx.hud?.show({
-      title: '没有更多了',
-      icon: I.PLAYLIST,
-    })
-  }
+  ctx.hud?.show({
+    title: '没有更多了',
+    icon: I.PLAYLIST,
+  })
 }
 
 /** 播放上一集 */

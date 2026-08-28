@@ -151,6 +151,9 @@ test.describe('播放列表', () => {
     await expect(prev).toBeDisabled()
     await expect(next).toBeEnabled()
     await next.click()
+    await expect(
+      page.locator('[data-app-video-player] .x-popup').filter({ hasText: EPISODES[1].n }),
+    ).toHaveCount(0, { timeout: 300 })
     await expect(page).toHaveURL(new RegExp(`#/video/${EPISODES[1].pc}$`))
 
     // 第 2 集：两者皆可用，继续下一集
@@ -162,6 +165,12 @@ test.describe('播放列表', () => {
     // 第 3 集：下一集禁用
     await expect(next).toBeDisabled()
     await expect(prev).toBeEnabled()
+
+    // 快捷键继续向后切换时仍保留“没有更多”提示
+    await page.keyboard.press(']')
+    await expect(
+      page.locator('[data-app-video-player] .x-popup').filter({ hasText: '没有更多了' }),
+    ).toBeVisible()
     expect(errors).toEqual([])
   })
 })
