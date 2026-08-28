@@ -173,4 +173,29 @@ test.describe('播放列表', () => {
     ).toBeVisible()
     expect(errors).toEqual([])
   })
+
+  test('切换视频时唤醒控制层并恢复自动隐藏', async ({ page }) => {
+    const errors = watch(page)
+    await setupVideo(page)
+    await page.goto(videoUrl(EPISODES[0].pc))
+
+    const next = page.locator('button[title^="下一集"]')
+    const player = page.locator('[data-app-video-player] > div')
+
+    // 鼠标离开播放器后，控制层进入隐藏态
+    await expect(next).toBeVisible()
+    await page.mouse.move(720, 450)
+    await page.waitForTimeout(250)
+    await player.dispatchEvent('mouseleave')
+    await expect(next).toBeHidden({ timeout: 2_000 })
+
+    // 控制层隐藏时通过快捷键切换，切换后应重新显示
+    await page.keyboard.press(']')
+    await expect(page).toHaveURL(new RegExp(`#/video/${EPISODES[1].pc}$`))
+    await expect(next).toBeVisible()
+
+    // 唤醒不会改变原有自动隐藏行为
+    await expect(next).toBeHidden({ timeout: 2_000 })
+    expect(errors).toEqual([])
+  })
 })

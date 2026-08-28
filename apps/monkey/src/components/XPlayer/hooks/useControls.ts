@@ -95,6 +95,12 @@ export function useControls(ctx: PlayerContext) {
     )
   }
 
+  /** 唤醒控制栏并恢复自动隐藏 */
+  const wake = () => {
+    show()
+    startAutoHideTimer()
+  }
+
   watch(ctx.rootPropsVm.showPlaylist, (open) => {
     if (open) {
       show()
@@ -199,5 +205,6 @@ export function useControls(ctx: PlayerContext) {
     lockControlsWithTimeoutUnlock,
     startAutoHideTimer,
     stopAutoHideTimer,
+    wake,
   }
 }

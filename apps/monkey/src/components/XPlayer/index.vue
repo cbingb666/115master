@@ -198,5 +198,6 @@ defineExpose({
   togglePlay: playerCore.value?.togglePlay,
   interruptSource: source.interruptSource,
   seekTo: playerCore.value?.seek,
+  wakeControls: controls.wake,
 })
 </script>

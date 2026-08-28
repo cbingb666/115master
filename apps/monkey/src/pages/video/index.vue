@@ -598,6 +598,8 @@ watch(
       return
     }
 
+    xplayerRef.value?.wakeControls()
+
     try {
       // 清理旧数据
       DataThumbnails.destory()
