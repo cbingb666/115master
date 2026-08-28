@@ -31,6 +31,10 @@ type ThumbnailProps = InstanceType<typeof FileItemThumbnail>['$props']
 const FileBroswer = defineComponent({
   name: 'FileBroswer',
   props: {
+    title: {
+      type: String,
+      required: true,
+    },
     defaultCid: {
       type: String,
       default: '0',
@@ -191,8 +195,25 @@ const FileBroswer = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        <div class="ui-z-header sticky top-0 flex justify-end px-6 pt-3">
-          <div class="flex w-full items-center gap-2 sm:w-auto">
+        <div
+          class="ui-z-header flex items-center gap-4 px-6 pt-5"
+          data-file-browser-toolbar
+        >
+          <h2
+            class={[
+              'min-w-0 flex-1 truncate text-lg leading-[1.4] font-semibold',
+              isMobile.value && searchExpanded.value && 'hidden',
+            ]}
+          >
+            {props.title}
+          </h2>
+
+          <div
+            class={[
+              'ml-auto flex min-w-0 items-center gap-2',
+              isMobile.value && searchExpanded.value ? 'flex-1' : 'shrink-0',
+            ]}
+          >
             {showSearchBox.value && (
               <label
                 class={[
@@ -277,8 +298,11 @@ const FileBroswer = defineComponent({
         </div>
 
         {/* header */}
-        <div class={['border-base-content/10 ui-z-elevated sticky top-0 min-w-0 border-b px-6 py-2', viewType.value === 'card' && 'mb-5']}>
-          <div class="mt-1 flex min-w-0 items-center gap-3">
+        <div
+          class={['border-base-content/10 ui-z-elevated sticky top-0 min-w-0 border-b px-6 py-2', viewType.value === 'card' && 'mb-5']}
+          data-file-browser-path
+        >
+          <div class="flex min-w-0 items-center gap-3">
             {/* -my-3 + py-3：overflow-hidden 会裁掉 FilePath 的玻璃阴影，padding 给阴影留出渲染空间，负 margin 保持布局不变 */}
             <div class="-my-3 min-w-0 flex-1 overflow-hidden py-3">
               <FilePath

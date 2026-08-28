@@ -40,12 +40,13 @@ export function useFileBrowserDialog() {
       })
 
       instance = dialog.create({
-        title: options.title,
+        label: options.title,
         closeOnBackdrop: true,
         size: options.size ?? 'xl',
         content: () => (
           <div class="-m-5 h-[min(50rem,calc(100dvh-11rem))]">
             <FileBroswer
+              title={options.title}
               cid={cid}
               keyword={keyword}
               defaultCid={options.defaultCid ?? '0'}

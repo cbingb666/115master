@@ -42,6 +42,51 @@ async function closePicker(page: Parameters<typeof boot>[0]) {
 }
 
 test.describe('保存目录选择器', () => {
+  test('标题和工具按钮显示在同一行', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    const panel = picker.locator('[data-ui-dialog-panel]')
+    const title = picker.getByRole('heading', { name: '选择保存目录' })
+    const toolbar = picker.locator('[data-file-browser-toolbar]')
+    const path = picker.locator('[data-file-browser-path]')
+    const search = toolbar.locator('button').first()
+
+    await expect(title).toBeVisible()
+    await expect(search).toBeVisible()
+    await expect(toolbar).toHaveCSS('padding-top', '20px')
+    await expect(toolbar).toHaveCSS('padding-right', '24px')
+    await expect(toolbar).toHaveCSS('padding-bottom', '0px')
+    await expect(toolbar).toHaveCSS('padding-left', '24px')
+    await expect.poll(async () => {
+      const panelBox = await panel.boundingBox()
+      const toolbarBox = await toolbar.boundingBox()
+      if (!panelBox || !toolbarBox)
+        return Number.POSITIVE_INFINITY
+      return Math.abs(toolbarBox.y - panelBox.y)
+    }).toBeLessThanOrEqual(1)
+    await expect.poll(async () => {
+      const toolbarBox = await toolbar.boundingBox()
+      const pathBox = await path.boundingBox()
+      if (!toolbarBox || !pathBox)
+        return Number.POSITIVE_INFINITY
+      return Math.abs(pathBox.y - toolbarBox.y - toolbarBox.height)
+    }).toBeLessThanOrEqual(1)
+    await expect.poll(async () => {
+      const titleBox = await title.boundingBox()
+      const searchBox = await search.boundingBox()
+      if (!titleBox || !searchBox)
+        return Number.POSITIVE_INFINITY
+      return Math.abs(
+        titleBox.y + titleBox.height / 2 - searchBox.y - searchBox.height / 2,
+      )
+    }).toBeLessThanOrEqual(1)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
   test('搜索按钮可展开并加载搜索结果', async ({ page }) => {
     const errors = watch(page)
     const requests = record(page, SEARCH_RE)
