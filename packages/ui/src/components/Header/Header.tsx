@@ -33,13 +33,13 @@ export const Header = defineComponent({
       <div
         class={[
           'ui-header',
-          'ui-z-header sticky top-[var(--ui-header-offset,calc(var(--spacing)*2))] pb-4',
+          'ui-z-header sticky top-[var(--ui-header-offset,calc(var(--spacing)*2))] pb-2',
           props.class,
         ]}
         data-ui-header=""
       >
         <div
-          class="ui-header__content @container flex min-w-0 items-center justify-between gap-2 overflow-hidden px-[var(--ui-header-gutter,calc(var(--spacing)*6))] py-3"
+          class="ui-header__content @container flex min-w-0 items-center justify-between gap-2 overflow-hidden px-[var(--ui-header-gutter,calc(var(--spacing)*6))] py-2"
           data-ui-header-content=""
         >
           {slots.default?.()}

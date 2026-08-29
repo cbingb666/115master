@@ -215,9 +215,9 @@ const Drive = defineComponent({
       return (
         <FileList
           class="
-            pt-5
+            pt-2
             pb-20
-            data-[view-type=card]:px-5!
+            data-[view-type=card]:px-(--main-content-gutter)!
           "
           items={items.value}
           viewType={viewType.value}
@@ -305,7 +305,7 @@ const Drive = defineComponent({
       <DndMonitor>
         {{ default: ({ active }: { active: boolean }) => (
           <div
-            class="drive-page flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] [--ui-header-gutter:var(--main-content-gutter)] sm:[--main-content-gutter:calc(var(--spacing)*6)]"
+            class="drive-page flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*4)] [--ui-header-gutter:calc(var(--spacing)*2)]"
           >
             <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
               <Sider>

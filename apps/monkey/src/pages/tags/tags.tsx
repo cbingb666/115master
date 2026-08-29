@@ -271,7 +271,7 @@ const Tags = defineComponent({
             </div>
           )}
           {!store.loading && list.length > 0 && (
-            <ul class="grid w-full grid-cols-1 gap-1 pt-5">
+            <ul class="grid w-full grid-cols-1 gap-1 pt-2">
               {list.map(tag => (
                 <TagItem
                   key={tag.id}
@@ -291,7 +291,7 @@ const Tags = defineComponent({
     }
 
     return () => (
-      <div class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*3)] [--ui-header-gutter:var(--main-content-gutter)] sm:[--main-content-gutter:calc(var(--spacing)*6)]">
+      <div class="flex h-full flex-col [--main-content-gutter:calc(var(--spacing)*4)] [--ui-header-gutter:calc(var(--spacing)*2)] [--ui-header-offset:0px]">
         <Layout class="[--navbar-frosted-glass-height:var(--navbar-height)]">
           <Sider>
             <SiderContent />

@@ -1,8 +1,7 @@
 .drive-page {
   --drive-floating-gap: calc(var(--spacing) * 2);
-  --drive-floating-content-gap: calc(var(--drive-floating-gap) + var(--spacing) * 3);
-  --drive-bottom-gap: calc(env(safe-area-inset-bottom) + var(--drive-floating-content-gap));
-  --ui-header-offset: var(--drive-floating-gap);
+  --drive-bottom-gap: calc(env(safe-area-inset-bottom) + var(--drive-floating-gap));
+  --ui-header-offset: 0px;
 }
 
 .drive-bottom-dock {
