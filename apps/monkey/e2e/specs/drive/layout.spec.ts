@@ -4,6 +4,20 @@ import { boot, row, watch } from './helpers'
 
 const SMALL = { '115Master_pageSize': '30' }
 
+test('卡片网格使用紧凑间距', async ({ page }) => {
+  const errors = watch(page)
+  await boot(page)
+
+  const gap = () => row(page, '动漫').evaluate(item =>
+    Number.parseFloat(getComputedStyle(item.parentElement!).columnGap),
+  )
+
+  expect(await gap()).toBe(16)
+  await page.setViewportSize({ width: 500, height: 720 })
+  expect(await gap()).toBe(8)
+  expect(errors).toEqual([])
+})
+
 test('头部沿用侧边栏外边距，文件列表留白为其两倍', async ({ page }) => {
   const errors = watch(page)
   await boot(page)

@@ -87,7 +87,7 @@ const FileList = defineComponent({
     const sm = breakpoints.greaterOrEqual('sm')
     const xxl = breakpoints.greaterOrEqual('2xl')
     const columns = computed(() => props.viewType === 'list' ? 1 : xxl.value ? 5 : sm.value ? 4 : 2)
-    const gap = computed(() => props.viewType === 'list' ? 4 : sm.value ? 20 : 12)
+    const gap = computed(() => props.viewType === 'list' ? 4 : sm.value ? 16 : 8)
     const rows = computed(() => group(props.items, columns.value))
 
     function key(index: number) {
