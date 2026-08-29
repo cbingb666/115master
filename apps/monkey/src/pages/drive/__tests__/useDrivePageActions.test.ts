@@ -32,7 +32,10 @@ function setup() {
     topBatch: vi.fn(() => Promise.resolve(true)),
     starBatch: vi.fn(() => Promise.resolve(true)),
     moveBatch: vi.fn(() => Promise.resolve({ success: true, pid: '20' })),
-    dragMove: vi.fn(() => Promise.resolve(true)),
+    dragMove: vi.fn((_cid: string, _items: Share.Entity.FilesItem[], onConfirm?: () => void) => {
+      onConfirm?.()
+      return Promise.resolve(true)
+    }),
     improve: vi.fn(() => Promise.resolve(true)),
     deleteBatch: vi.fn(() => Promise.resolve(true)),
     renameItem: vi.fn(() => Promise.resolve('renamed.mp4')),
@@ -99,9 +102,11 @@ describe('useDrivePageActions', () => {
 
   it('拖拽移动成功后刷新并透传结果', async () => {
     const { actions, afterAction, mocks, selected } = setup()
+    const onConfirm = vi.fn()
 
-    await expect(actions.dragMove('20', selected)).resolves.toBe(true)
-    expect(mocks.dragMove).toHaveBeenCalledWith('20', selected)
+    await expect(actions.dragMove('20', selected, onConfirm)).resolves.toBe(true)
+    expect(mocks.dragMove).toHaveBeenCalledWith('20', selected, onConfirm)
+    expect(onConfirm).toHaveBeenCalledTimes(1)
     expect(afterAction).toHaveBeenCalledTimes(1)
 
     afterAction.mockClear()

@@ -56,8 +56,8 @@ export function useDrivePageActions(store: DriveStore, action: DriveAction) {
     await action.tagBatch(store.selection.values)
   }
 
-  async function dragMove(cid: string, items: Share.Entity.FilesItem[]) {
-    const success = await action.dragMove(cid, items)
+  async function dragMove(cid: string, items: Share.Entity.FilesItem[], onConfirm?: () => void) {
+    const success = await action.dragMove(cid, items, onConfirm)
     if (success)
       await store.afterAction()
     return success

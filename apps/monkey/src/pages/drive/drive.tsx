@@ -89,10 +89,9 @@ const Drive = defineComponent({
       container: () => mainRef.value?.el,
     })
 
-    /** 拖拽移动：乐观退出多选，避免等待 API 期间多选头部闪现 */
-    async function handleDragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
-      exitSelectMode()
-      return actions.dragMove(cid, originItems)
+    /** 确认移动后退出多选，取消时保留当前选择 */
+    function handleDragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
+      return actions.dragMove(cid, originItems, exitSelectMode)
     }
 
     const sorter = computed(() => ({

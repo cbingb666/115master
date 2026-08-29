@@ -78,8 +78,23 @@ export function useMoveAction() {
   }
 
   /** 拖拽移动 */
-  async function dragMove(cid: string, originItems: Share.Entity.FilesItem[]) {
-    return await moveCore(cid, originItems)
+  async function dragMove(
+    cid: string,
+    originItems: Share.Entity.FilesItem[],
+    onConfirm?: () => void,
+  ) {
+    const confirmed = await dialog.confirm({
+      title: '确认移动',
+      content: originItems.length === 1
+        ? `确定将“${originItems[0].n}”移动到目标文件夹吗？`
+        : `确定将选中的 ${originItems.length} 项移动到目标文件夹吗？`,
+      confirmText: '移动',
+    })
+    if (!confirmed)
+      return false
+
+    onConfirm?.()
+    return moveCore(cid, originItems)
   }
 
   /** 提到上级 */
