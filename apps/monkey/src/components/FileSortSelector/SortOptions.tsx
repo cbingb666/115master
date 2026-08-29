@@ -1,9 +1,8 @@
 import type { Share } from '@115master/drive115'
 import type { PropType } from 'vue'
 import type { Sort } from './FileSortSelector.types'
-import { Button } from '@115master/ui'
-import { defineComponent } from 'vue'
-import { I, Icon } from '@/icons'
+import { defineComponent, useId } from 'vue'
+import { Icon } from '@/icons'
 import { SORT_OPTIONS } from './config'
 
 /**
@@ -31,6 +30,8 @@ const SortOptions = defineComponent({
     },
   },
   setup: (props) => {
+    const name = `file-sort-${useId()}`
+
     const close = () => {
       (document.activeElement as HTMLElement)?.blur()
     }
@@ -64,51 +65,42 @@ const SortOptions = defineComponent({
           </a>
         </li>
         <li class="border-base-content mx-2 my-1 border-t" />
-        {SORT_OPTIONS.map((option, i, list) => {
-          if (i > 0 && list[i - 1].order === option.order)
-            return []
+        <li role="none" class="sm:w-80">
+          <div
+            class="grid grid-flow-col grid-cols-2 grid-rows-5 gap-1 p-1"
+            role="radiogroup"
+            aria-label="排序方式"
+          >
+            {SORT_OPTIONS.map((option) => {
+              const on = active(option)
+              const label = `${option.name}${option.asc === 1 ? '升序' : '降序'}`
 
-          const items = list.filter(item => item.order === option.order)
-          const on = props.order === option.order
-          const item = (
-            <li key={option.order} class="sm:w-42">
-              <div
-                class={{
-                  'flex items-center gap-1 px-3 py-2 transition-colors ease-[var(--ui-ease-standard)]': true,
-                  'bg-primary/15 active:bg-primary/25': on,
-                  'active:bg-primary/10': !on,
-                }}
-              >
-                <Icon class="text-lg" name={option.icon} />
-                <span class="mr-auto ml-2">{option.name}</span>
-                {items.map((sub) => {
-                  const onItem = active(sub)
-
-                  return (
-                    <Button
-                      key={`${sub.order}-${sub.asc}`}
-                      color={onItem ? 'primary' : 'default'}
-                      variant={onItem ? 'solid' : 'ghost'}
-                      size="xs"
-                      shape="circle"
-                      active={onItem}
-                      aria-label={`${option.name}${sub.asc === 1 ? '升序' : '降序'}`}
-                      tabindex="0"
-                      onClick={() => handleSort(sub)}
-                    >
-                      <Icon
-                        class={`text-sm ${sub.asc === 1 ? '' : 'rotate-180'}`}
-                        name={I.ARROW_UP}
-                      />
-                    </Button>
-                  )
-                })}
-              </div>
-            </li>
-          )
-
-          return item
-        })}
+              return (
+                <label
+                  key={`${option.order}-${option.asc}`}
+                  class={{
+                    'flex cursor-pointer items-center gap-2 rounded-xl border px-2.5 py-2 transition-colors ease-[var(--ui-ease-standard)]': true,
+                    'border-primary/30 bg-primary/15 text-primary': on,
+                    'hover:bg-base-content/10 border-transparent': !on,
+                  }}
+                >
+                  <Icon class="shrink-0" name={option.icon} />
+                  <span class="mr-auto whitespace-nowrap">{label}</span>
+                  <input
+                    class="radio radio-xs radio-primary shrink-0"
+                    type="radio"
+                    name={name}
+                    value={`${option.order}-${option.asc}`}
+                    checked={on}
+                    aria-label={label}
+                    onChange={() => handleSort(option)}
+                    onKeydown={event => event.stopPropagation()}
+                  />
+                </label>
+              )
+            })}
+          </div>
+        </li>
       </>
     )
   },

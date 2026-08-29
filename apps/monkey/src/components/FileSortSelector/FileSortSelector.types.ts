@@ -5,5 +5,6 @@ export interface Sort {
   name: string
   order: Share.Base.Sorter['o']
   asc: Share.Base.Sorter['asc']
+  typeIcon: IconValue
   icon: IconValue
 }

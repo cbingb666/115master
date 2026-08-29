@@ -79,7 +79,6 @@ export const I = {
   EXTENSION: 'ion:extension-puzzle',
   WINDOW: 'ion:desktop',
   QUALITY: 'ion:disc',
-  ARROW_UP: 'ion:arrow-up',
   ARROW_DOWN: 'ion:arrow-down',
   SORT: 'ion:options',
   BACK_DIR_ARROW: 'ion:arrow-back-circle',
@@ -131,11 +130,21 @@ export const I = {
   STAR: 'ion:star-outline',
 
   // === 排序 ===
-  SORT_HISTORY: 'ion:document-outline',
-  SORT_EDIT_CALENDAR: 'ion:create-outline',
-  SORT_SCHEDULE: 'ion:open-outline',
-  SORT_ALPHA: 'ion:text-outline',
-  SORT_DATABASE: 'ion:server-outline',
+  SORT_CREATED: 'custom:sort-created',
+  SORT_CREATED_ASC: 'custom:sort-created-asc',
+  SORT_CREATED_DESC: 'custom:sort-created-desc',
+  SORT_UPDATED: 'custom:sort-updated',
+  SORT_UPDATED_ASC: 'custom:sort-updated-asc',
+  SORT_UPDATED_DESC: 'custom:sort-updated-desc',
+  SORT_OPENED: 'custom:sort-opened',
+  SORT_OPENED_ASC: 'custom:sort-opened-asc',
+  SORT_OPENED_DESC: 'custom:sort-opened-desc',
+  SORT_NAME: 'custom:sort-name',
+  SORT_NAME_ASC: 'custom:sort-name-asc',
+  SORT_NAME_DESC: 'custom:sort-name-desc',
+  SORT_SIZE: 'custom:sort-size',
+  SORT_SIZE_ASC: 'custom:sort-size-asc',
+  SORT_SIZE_DESC: 'custom:sort-size-desc',
 } as const
 
 export type IconValue = (typeof I)[keyof typeof I]

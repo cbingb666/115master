@@ -48,7 +48,9 @@ const FileSortSelector = defineComponent({
     })
 
     const sortLabel = computed(() => {
-      return current.value?.name ?? '排序'
+      if (!current.value)
+        return '排序'
+      return `${current.value.name}${current.value.asc === 1 ? '升序' : '降序'}`
     })
 
     const sortField = computed(() => {
@@ -73,11 +75,6 @@ const FileSortSelector = defineComponent({
                     && <div class="bg-primary absolute top-0 -left-1 size-1.5 -translate-y-1/2 rounded-full" />
                   }
                   <Icon class="text-xl" name={sortField.value} />
-                  <Icon
-                    size="custom"
-                    class={`text-base-content/70 absolute -right-1 -bottom-0.5 size-2.5 ${props.asc === 1 ? '' : 'rotate-180'}`}
-                    name={I.ARROW_UP}
-                  />
                 </span>
               </Button>
             </Tooltip>
