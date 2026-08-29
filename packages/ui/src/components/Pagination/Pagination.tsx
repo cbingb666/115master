@@ -4,11 +4,8 @@ import type {
 } from 'vue'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { Button } from '../Button/Button'
-import { Pill } from '../Pill/Pill'
 
 type VisiblePage = number | 'ellipsis'
-
-export type PaginationSurface = 'plain' | 'floating'
 
 export interface PaginationLabels {
   previousPage: string
@@ -20,20 +17,7 @@ export interface PaginationLabels {
 
 const options = [30, 50, 100, 300, 500, 1000] as const
 
-const surfaces: Record<PaginationSurface, 'plain' | 'glass-floating'> = {
-  plain: 'plain',
-  floating: 'glass-floating',
-}
-
 const props = {
-  surface: {
-    type: String as PropType<PaginationSurface>,
-    default: 'plain',
-  },
-  embedded: {
-    type: Boolean,
-    default: false,
-  },
   currentPage: {
     type: Number,
     required: true,
@@ -173,11 +157,8 @@ export const Pagination = defineComponent({
       )
 
       return (
-        <Pill
-          as="div"
-          variant={props.embedded ? 'plain' : surfaces[props.surface]}
-          size="md"
-          class="h-auto items-center px-3 py-1.5"
+        <div
+          class="inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 text-sm leading-none font-semibold whitespace-nowrap"
           data-ui-pagination=""
         >
           <div class="drop-shadow-base-200/50 flex items-center gap-1 drop-shadow-sm md:hidden">
@@ -238,9 +219,7 @@ export const Pagination = defineComponent({
 
               return (
                 <Button
-                  variant={active
-                    ? props.surface === 'floating' ? 'glass-inset' : 'soft'
-                    : 'ghost'}
+                  variant={active ? 'glass-inset' : 'ghost'}
                   size="md"
                   shape="circle"
                   aria-current={active ? 'page' : undefined}
@@ -281,7 +260,7 @@ export const Pagination = defineComponent({
               </select>
             </div>
           )}
-        </Pill>
+        </div>
       )
     }
   },

@@ -15,12 +15,10 @@ const labels: PaginationLabels = {
   pageSizeUnit: 'items',
 }
 
-function mount(surface: 'plain' | 'floating' = 'plain', embedded = false) {
+function mount() {
   const host = document.createElement('div')
   const app = createApp({
     setup: () => () => h(Pagination, {
-      surface,
-      embedded,
       currentPage: 1,
       currentPageSize: 30,
       total: 90,
@@ -39,36 +37,20 @@ afterEach(() => {
   apps.splice(0).forEach(app => app.unmount())
 })
 
-describe('pagination surface', () => {
-  it('keeps the plain surface free of glass', () => {
+describe('pagination', () => {
+  it('renders a surface-free layout with one inset selection lens', () => {
     const root = mount().firstElementChild!
-    const current = root.querySelector('[aria-current="page"]')
-
-    expect(root.classList).toContain('ui-pill')
-    expect(root.classList).toContain('ui-pill-md')
-    expect(root.classList).not.toContain('ui-glass-floating')
-    expect(current?.classList).toContain('btn-soft')
-  })
-
-  it('owns one floating glass surface and uses an inset selection lens', () => {
-    const root = mount('floating').firstElementChild!
     const buttons = [...root.querySelectorAll('button')]
     const current = root.querySelector('[aria-current="page"]')
 
-    expect(root.classList).toContain('ui-pill')
-    expect(root.classList).toContain('ui-glass-floating')
+    expect(root.tagName).toBe('DIV')
+    expect(root.classList).not.toContain('ui-pill')
+    expect(root.classList).not.toContain('ui-glass-floating')
     expect(buttons).toHaveLength(7)
     expect(current?.classList).toContain('ui-glass-inset')
     expect(buttons.filter(button => button !== current).every(button => button.classList.contains('btn-ghost'))).toBe(true)
     expect(root.querySelector('button.ui-glass-surface')).toBeNull()
     expect(root.querySelector('button.ui-glass-floating')).toBeNull()
     expect(root.querySelector('.btn-active')).toBeNull()
-  })
-
-  it('keeps the floating selection lens while embedded in another Glass surface', () => {
-    const root = mount('floating', true).firstElementChild!
-
-    expect(root.classList).not.toContain('ui-glass-floating')
-    expect(root.querySelector('[aria-current="page"]')?.classList).toContain('ui-glass-inset')
   })
 })

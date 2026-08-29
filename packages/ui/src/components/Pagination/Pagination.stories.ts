@@ -1,17 +1,11 @@
 import type {
   PaginationLabels,
   PaginationProps,
-  PaginationSurface,
 } from '@115master/ui'
-import { Pagination } from '@115master/ui'
+import { Pagination, Pill } from '@115master/ui'
 import { expect, userEvent, within } from 'storybook/test'
 import { ref } from 'vue'
 import preview from '../../../.storybook/preview'
-
-const surfaces = [
-  'plain',
-  'floating',
-] as const satisfies readonly PaginationSurface[]
 
 const labels: PaginationLabels = {
   previousPage: 'Previous page',
@@ -25,8 +19,6 @@ const meta = preview.meta({
   title: 'UI/Pagination',
   component: Pagination,
   args: {
-    surface: 'plain',
-    embedded: false,
     currentPage: 1,
     currentPageSize: 30,
     total: 90,
@@ -35,9 +27,6 @@ const meta = preview.meta({
     onCurrentPageChange: () => {},
     onPageSizeChange: () => {},
   } satisfies PaginationProps,
-  argTypes: {
-    surface: { control: 'inline-radio', options: surfaces },
-  },
   render: args => ({
     components: { Pagination },
     setup: () => ({ args }),
@@ -67,30 +56,19 @@ export const ManyPages = meta.story({
 })
 
 export const Floating = meta.story({
-  name: '浮动表面',
+  name: '浮动表面组合',
   args: {
-    surface: 'floating',
-    currentPage: 5,
-    total: 300,
-  },
-})
-
-export const Embedded = meta.story({
-  name: '嵌入已有材质',
-  args: {
-    surface: 'floating',
-    embedded: true,
     currentPage: 5,
     total: 300,
   },
   render: args => ({
-    components: { Pagination },
+    components: { Pagination, Pill },
     setup: () => ({ args }),
     template: `
       <div class="flex min-h-48 items-center justify-center bg-base-200 p-6">
-        <div class="ui-glass-floating rounded-box p-3">
+        <Pill as="div" variant="glass-floating" size="md" class="h-auto p-0">
           <Pagination v-bind="args" />
-        </div>
+        </Pill>
       </div>
     `,
   }),
@@ -120,7 +98,6 @@ export const Behavior = meta.story({
     template: `
       <main aria-label="Pagination behavior" class="flex min-h-48 flex-col items-center justify-center gap-4 bg-base-200 p-6">
         <Pagination
-          surface="floating"
           :current-page="page"
           :current-page-size="size"
           :total="300"

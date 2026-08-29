@@ -13,7 +13,7 @@ afterEach(() => {
 })
 
 describe('actionBar', () => {
-  it('uses the shared floating Pill material', () => {
+  it('renders a surface-free action layout', () => {
     const host = document.createElement('div')
     const app = createApp({
       setup: () => () => h(ActionBar, { groups: [] }),
@@ -21,24 +21,12 @@ describe('actionBar', () => {
     app.mount(host)
     apps.push(app)
 
-    const surface = host.querySelector('.ui-pill')
+    const root = host.firstElementChild
 
-    expect(surface?.classList).toContain('ui-glass-floating')
-    expect(surface?.classList).toContain('ui-pill-xl')
-  })
-
-  it('leaves Glass ownership to an embedding surface', () => {
-    const host = document.createElement('div')
-    const app = createApp({
-      setup: () => () => h(ActionBar, { embedded: true, groups: [] }),
-    })
-    app.mount(host)
-    apps.push(app)
-
-    const surface = host.querySelector('.ui-pill')
-
-    expect(surface?.classList).not.toContain('ui-glass-floating')
-    expect(surface?.classList).toContain('ui-pill-md')
+    expect(root?.tagName).toBe('DIV')
+    expect(root?.classList).not.toContain('ui-pill')
+    expect(root?.classList).not.toContain('ui-glass-floating')
+    expect(host.querySelector('.ui-pill')).toBeNull()
   })
 
   it('uses the shared Tooltip for action labels', async () => {

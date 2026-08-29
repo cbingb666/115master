@@ -1,6 +1,6 @@
 import type { ActionMenuGroup, ActionMenuItem } from '@115master/ui'
 import type { PropType } from 'vue'
-import { Button, Pill, Tooltip } from '@115master/ui'
+import { Button, Tooltip } from '@115master/ui'
 import { defineComponent, Fragment, ref, toValue, triggerRef } from 'vue'
 
 /**
@@ -12,11 +12,6 @@ const ActionBar = defineComponent({
     groups: {
       type: Array as PropType<readonly ActionMenuGroup[]>,
       required: true,
-    },
-    /** Glass 材质由外层容器承载 */
-    embedded: {
-      type: Boolean,
-      default: false,
     },
   },
   setup: (props) => {
@@ -50,15 +45,7 @@ const ActionBar = defineComponent({
         .filter(group => group.length > 0)
 
       return (
-        <Pill
-          as="div"
-          variant={props.embedded ? 'plain' : 'glass-floating'}
-          size={props.embedded ? 'md' : 'xl'}
-          class={[
-            'pointer-events-auto justify-center',
-            props.embedded ? 'p-1' : 'p-1.5',
-          ]}
-        >
+        <div class="pointer-events-auto inline-flex min-h-10 items-center justify-center gap-1.5 p-1 text-sm leading-none font-semibold whitespace-nowrap">
           {groups.map((group, groupIndex) => (
             <Fragment key={group.map(item => item.id).join(':')}>
               <div class="flex items-center justify-center">
@@ -114,7 +101,7 @@ const ActionBar = defineComponent({
               )}
             </Fragment>
           ))}
-        </Pill>
+        </div>
       )
     }
   },

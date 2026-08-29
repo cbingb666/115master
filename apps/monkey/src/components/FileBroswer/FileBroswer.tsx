@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { ActionMenuGroup } from '@115master/ui'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
-import { ActionMenu, Button, Pagination, scrollbar, Tooltip } from '@115master/ui'
+import { ActionMenu, Button, Pagination, Pill, scrollbar, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import {
@@ -372,16 +372,17 @@ const FileBroswer = defineComponent({
               class="ui-z-elevated sticky bottom-0 flex shrink-0 justify-center px-4 py-4"
               data-file-browser-pagination
             >
-              <Pagination
-                surface="floating"
-                currentPage={page.value}
-                currentPageSize={size.value}
-                showSizeChanger={false}
-                total={explorer.total.value}
-                labels={PAGINATION_LABELS}
-                onCurrentPageChange={explorer.changePage}
-                onPageSizeChange={explorer.changeSize}
-              />
+              <Pill as="div" variant="glass-floating" size="md" class="h-auto p-0">
+                <Pagination
+                  currentPage={page.value}
+                  currentPageSize={size.value}
+                  showSizeChanger={false}
+                  total={explorer.total.value}
+                  labels={PAGINATION_LABELS}
+                  onCurrentPageChange={explorer.changePage}
+                  onPageSizeChange={explorer.changeSize}
+                />
+              </Pill>
             </div>
           )}
         </div>

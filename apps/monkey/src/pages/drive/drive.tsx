@@ -275,11 +275,9 @@ const Drive = defineComponent({
         <div class="drive-bottom-dock ui-z-elevated pointer-events-none fixed right-0 bottom-[var(--drive-bottom-gap)] left-(--sider-width) flex items-center justify-center">
           <FloatingDock contentKey={bottomMode.value}>
             {bottomMode.value === 'actions'
-              ? <ActionBar embedded groups={actions.groups} />
+              ? <ActionBar groups={actions.groups} />
               : (
                   <Pagination
-                    embedded
-                    surface="floating"
                     currentPage={store.query.page}
                     currentPageSize={store.query.size}
                     showSizeChanger={false}
