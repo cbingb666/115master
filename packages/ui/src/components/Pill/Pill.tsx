@@ -10,6 +10,7 @@ export type PillAs = 'span' | 'div' | 'a'
 
 export type PillVariant
   = | 'plain'
+    | 'soft'
     | 'glass-surface'
     | 'glass-floating'
     | 'glass-overlay'
@@ -36,6 +37,7 @@ export type PillProps = ExtractPublicPropTypes<typeof pillProps>
 
 const variants: Record<PillVariant, string> = {
   'plain': '',
+  'soft': 'ui-pill-soft',
   'glass-surface': 'ui-glass-surface',
   'glass-floating': 'ui-glass-floating',
   'glass-overlay': 'ui-glass-overlay',

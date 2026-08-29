@@ -23,6 +23,14 @@ const FilePathLink = defineComponent({
       type: Function as PropType<(cid: string, items: Share.Entity.FilesItem[]) => void>,
       default: () => {},
     },
+    floating: {
+      type: Boolean,
+      default: true,
+    },
+    size: {
+      type: String as PropType<'sm' | 'md'>,
+      default: 'md',
+    },
   },
   setup: (props) => {
     return () => (
@@ -34,16 +42,21 @@ const FilePathLink = defineComponent({
           <li ref={targetProps.ref}>
             <Pill
               as="a"
-              variant="glass-floating"
-              class="
-            data-[drop-zone=true]:bg-primary/10
-            data-[drop-zone=true]:ring-primary
-            no-underline!
-            transition ease-[var(--ui-ease-standard)]
-            text-shadow-2xs
-            data-[drop-zone=true]:ring-2
-            data-[drop-zone=true]:ring-inset
-          "
+              variant={props.floating ? 'glass-floating' : 'soft'}
+              size={props.size}
+              class={[
+                `
+                  data-[drop-zone=true]:bg-primary/10
+                  data-[drop-zone=true]:ring-primary
+                  text-sm
+                  no-underline! transition
+                  ease-[var(--ui-ease-standard)]
+                  text-shadow-2xs
+                  data-[drop-zone=true]:ring-2
+                  data-[drop-zone=true]:ring-inset
+                `,
+                props.size === 'sm' && 'min-h-7 px-2.5',
+              ]}
               data-drop-zone={hovering}
               href={props.item.cid === '0' ? '#/drive' : `#/drive/${props.item.cid}`}
               onClick={withModifiers(() => props.onPathClick?.(props.item), ['prevent'])}

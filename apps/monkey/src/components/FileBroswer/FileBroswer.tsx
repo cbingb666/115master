@@ -303,10 +303,11 @@ const FileBroswer = defineComponent({
           data-file-browser-path
         >
           <div class="flex min-w-0 items-center gap-3">
-            {/* -my-3 + py-3：overflow-hidden 会裁掉 FilePath 的玻璃阴影，padding 给阴影留出渲染空间，负 margin 保持布局不变 */}
-            <div class="-my-3 min-w-0 flex-1 overflow-hidden py-3">
+            <div class="min-w-0 flex-1 overflow-hidden">
               <FilePath
+                floating={false}
                 path={explorer.path.value ?? []}
+                size="sm"
                 onPathClick={handleClickPath}
               />
             </div>

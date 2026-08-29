@@ -41,6 +41,20 @@ const FilePath = defineComponent({
       type: Boolean,
       default: false,
     },
+    /**
+     * 是否使用悬浮玻璃材质；关闭时使用 soft
+     */
+    floating: {
+      type: Boolean,
+      default: true,
+    },
+    /**
+     * 路径项尺寸
+     */
+    size: {
+      type: String as PropType<'sm' | 'md'>,
+      default: 'md',
+    },
   },
   setup: (props) => {
     const breakpoints = useBreakpoints(breakpointsTailwind)
@@ -48,14 +62,20 @@ const FilePath = defineComponent({
     return () => {
       const { path } = props
       const last = (i: number) => i === path.length - 1
+      const variant = props.floating ? 'glass-floating' : 'soft'
 
       if (path.length === 0)
         return <div class="breadcrumbs rounded-full py-0"><ul></ul></div>
 
       if (breakpoints.greater('sm').value || props.pathSelect || path.length <= 1) {
         return (
-          // -m-3 + p-3：breadcrumbs 的 overflow-x 会裁掉玻璃阴影，padding 给阴影留出渲染空间，负 margin 保持布局不变
-          <div class="breadcrumbs -m-3 rounded-full p-3">
+          <div
+            class={[
+              'breadcrumbs rounded-full',
+              // breadcrumbs 的 overflow-x 会裁掉悬浮玻璃阴影，padding 给阴影留出渲染空间，负 margin 保持布局不变
+              props.floating ? '-m-3 p-3' : 'py-0',
+            ]}
+          >
             <ul>
               {path.map((p, i) => (
                 last(i)
@@ -63,13 +83,18 @@ const FilePath = defineComponent({
                       <li key={p.cid}>
                         <Pill
                           aria-current="page"
-                          variant="glass-floating"
-                          class="
-                            text-base-content/70
-                            cursor-default
-                            no-underline!
-                            text-shadow-2xs
-                          "
+                          variant={variant}
+                          size={props.size}
+                          class={[
+                            `
+                              text-base-content/70
+                              cursor-default
+                              text-sm
+                              no-underline!
+                              text-shadow-2xs
+                            `,
+                            props.size === 'sm' && 'min-h-7 px-2.5',
+                          ]}
                         >
                           {p.name}
                         </Pill>
@@ -79,6 +104,8 @@ const FilePath = defineComponent({
                       <FilePathLink
                         key={p.cid}
                         item={p}
+                        floating={props.floating}
+                        size={props.size}
                         onDragMove={props.onDragMove}
                         onPathClick={props.onPathClick}
                       />
@@ -96,7 +123,7 @@ const FilePath = defineComponent({
             target: (trigger: object) => (
               <Button
                 {...trigger}
-                variant="glass-floating"
+                variant={variant}
                 size="sm"
               >
                 {lastPath.name}

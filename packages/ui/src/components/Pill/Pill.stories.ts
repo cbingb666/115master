@@ -5,6 +5,7 @@ import preview from '../../../.storybook/preview'
 
 const variants = [
   'plain',
+  'soft',
   'glass-surface',
   'glass-floating',
   'glass-overlay',
@@ -107,6 +108,9 @@ export const GlassVariants = meta.story({
       <section aria-label="Pill variants" class="grid gap-4 bg-base-200 p-6 sm:grid-cols-2">
         <div class="rounded-box bg-base-100 p-6">
           <Pill>Plain</Pill>
+        </div>
+        <div class="rounded-box bg-base-100 p-6">
+          <Pill as="a" href="#soft" variant="soft">Soft</Pill>
         </div>
         <div class="rounded-box bg-base-100 p-6">
           <Pill variant="glass-surface">Surface</Pill>
