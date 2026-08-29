@@ -2,6 +2,29 @@
   "name": "Monkey Storybook",
   "stories": [
     {
+      "id": "app-errorstatusfeedback--icon-only",
+      "docs": "app-errorstatusfeedback--docs",
+      "component": true,
+      "tags": [
+        "autodocs",
+        "test"
+      ],
+      "tests": [
+        "app-errorstatusfeedback--icon-only:shows-details-and-exposes-close-and-retry"
+      ],
+      "ready": "[data-app-error-status-feedback-result]",
+      "outcomes": [
+        {
+          "selector": "[data-app-error-status-feedback-result]",
+          "text": "0"
+        },
+        {
+          "selector": "dialog[open]",
+          "count": 0
+        }
+      ]
+    },
+    {
       "id": "integrations-application-styles--theme-composition",
       "docs": "integrations-application-styles--docs",
       "tags": [

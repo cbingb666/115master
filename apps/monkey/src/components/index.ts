@@ -1,5 +1,6 @@
 export * from './ActionBar'
 export * from './CloudDownload'
+export * from './ErrorStatusFeedback'
 export * from './Example'
 export * from './FileBroswer'
 export * from './FileItem'

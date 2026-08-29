@@ -89,6 +89,7 @@ export const I = {
   TOAST_WARNING: 'ion:warning',
   TOAST_INFO: 'ion:information-circle',
   TOAST_CLOSE: 'ion:close',
+  STATUS_ERROR: 'ion:alert-circle-outline',
 
   // === 主题 ===
   THEME_LIGHT: 'ion:sunny',

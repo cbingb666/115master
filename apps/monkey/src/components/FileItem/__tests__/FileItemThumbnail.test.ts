@@ -1,8 +1,17 @@
 // @vitest-environment jsdom
 import type { Share } from '@115master/drive115'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { DialogConfirmOptions } from '@115master/ui'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createApp, h, nextTick } from 'vue'
 import FileItemThumbnail from '../FileItemThumbnail'
+
+const mocks = vi.hoisted(() => ({
+  confirm: vi.fn(),
+}))
+
+vi.mock('@/app/dialog', () => ({
+  useAppDialog: () => ({ confirm: mocks.confirm }),
+}))
 
 vi.mock('@/utils/utils115', () => ({
   Utils115: {
@@ -41,10 +50,15 @@ function mount(props: Record<string, unknown>) {
   return root
 }
 
+beforeEach(() => {
+  mocks.confirm.mockResolvedValue(false)
+})
+
 afterEach(() => {
   apps.splice(0).forEach(app => app.unmount())
   document.body.innerHTML = ''
   vi.restoreAllMocks()
+  mocks.confirm.mockReset()
 })
 
 describe('fileItemThumbnail', () => {
@@ -86,28 +100,40 @@ describe('fileItemThumbnail', () => {
 
   it('加载失败时回退文件图标，并从右上角错误入口请求 Dialog', async () => {
     const error = new Error('decoder unavailable')
-    const dialog = vi.fn()
     const root = mount({
       videoCoverError: error,
-      onVideoCoverError: dialog,
     })
     const trigger = root.querySelector<HTMLButtonElement>('[data-video-cover-error-action]')!
 
     expect(root.querySelector('[data-video-cover]')).toBeNull()
     expect(trigger).not.toBeNull()
+    const anchor = root.querySelector<HTMLElement>('[data-video-cover-error-anchor]')!
+    const fallback = root.querySelector<HTMLElement>('[data-video-cover-error-fallback]')!
+    expect(anchor.contains(trigger)).toBe(true)
+    expect(anchor.classList).toContain('h-full')
+    expect(anchor.classList).toContain('w-full')
+    expect(fallback.classList).toContain('group-data-[view-type=card]:aspect-square')
+    expect(fallback.classList).toContain('group-data-[view-type=card]:h-[61%]')
+    expect(trigger.classList).toContain('top-0')
+    expect(trigger.classList).toContain('right-0')
 
     trigger.click()
     await nextTick()
 
-    expect(dialog).toHaveBeenCalledWith(error, expect.any(Function))
+    expect(mocks.confirm).toHaveBeenCalledOnce()
+    expect(mocks.confirm.mock.calls[0]?.[0]).toEqual(expect.objectContaining({
+      title: '视频封面加载失败',
+      confirmText: '重试加载',
+      cancelText: '关闭',
+    }))
   })
 
   it('封面图片失败后也回退图标，并允许重新生成封面', async () => {
     const retry = vi.fn()
-    const dialog = vi.fn((
-      _error: Error | string,
-      action: () => void | Promise<void>,
-    ) => action())
+    mocks.confirm.mockImplementation(async (options: DialogConfirmOptions) => {
+      await options.onConfirm?.()
+      return true
+    })
     const root = mount({
       videoCover: {
         img: 'blob:broken-cover',
@@ -115,7 +141,6 @@ describe('fileItemThumbnail', () => {
         height: 720,
       },
       onVideoCoverRetry: retry,
-      onVideoCoverError: dialog,
     })
     root.querySelector('img')?.dispatchEvent(new Event('error'))
     await nextTick()
@@ -127,7 +152,7 @@ describe('fileItemThumbnail', () => {
     trigger.click()
     await nextTick()
 
-    expect(dialog).toHaveBeenCalledOnce()
+    expect(mocks.confirm).toHaveBeenCalledOnce()
     expect(retry).toHaveBeenCalledOnce()
     expect(root.querySelector('[data-video-cover-skeleton]')).not.toBeNull()
   })

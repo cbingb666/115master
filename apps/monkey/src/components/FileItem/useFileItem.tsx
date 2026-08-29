@@ -84,40 +84,6 @@ export function useFileItem(options: UseFileItemOptions) {
 
   const hasImagePreview = computed(() => !!data.u)
 
-  function showVideoCoverError(
-    error: Error | string,
-    retry: () => void | Promise<void>,
-  ) {
-    const content = typeof error === 'string'
-      ? error
-      : () => (
-          <div class="space-y-3">
-            <p class="text-base-content/80 m-0 leading-6">
-              {error.message || error.name}
-            </p>
-            {error.stack && (
-              <details class="text-sm">
-                <summary class="text-base-content/60 cursor-pointer font-medium select-none">
-                  技术详情
-                </summary>
-                <pre class="bg-base-200 text-base-content mt-3 max-h-64 overflow-auto rounded-lg p-3 text-xs break-all whitespace-pre-wrap select-text">
-                  {error.stack}
-                </pre>
-              </details>
-            )}
-          </div>
-        )
-
-    return dialog.confirm({
-      title: '视频封面加载失败',
-      content,
-      confirmText: '重试加载',
-      cancelText: '关闭',
-      confirmOnEnter: false,
-      onConfirm: retry,
-    })
-  }
-
   function isIconUrl(icon: string): boolean {
     return icon.startsWith('https://')
   }
@@ -142,7 +108,6 @@ export function useFileItem(options: UseFileItemOptions) {
     hasImagePreview,
     actressAsyncState,
     videoCoverResult,
-    showVideoCoverError,
     open,
     isIconUrl,
   }

@@ -9,12 +9,17 @@
   >
     <div :class="styles.cover.container">
       <template v-if="videoCover.error">
-        <StatusFeedback
+        <ErrorStatusFeedback
           :class="styles.cover.imageError"
-          status="error"
+          :error="videoCover.error"
+          title="视频封面加载失败"
           size="xs"
           :padded="false"
-          v-bind="errorFeedback(videoCover.error)"
+          detail-label="查看视频封面加载错误"
+          retry-label="重试加载"
+          close-label="关闭"
+          :on-retry="retry"
+          @click.stop
         />
       </template>
 
@@ -56,14 +61,13 @@
 
 <script setup lang="ts">
 import type { Share } from '@115master/drive115'
-import { StatusFeedback } from '@115master/ui'
 import { format } from '@115master/utils'
 import { computed, shallowRef } from 'vue'
+import { ErrorStatusFeedback } from '@/components/ErrorStatusFeedback'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { I, Icon } from '@/icons'
 import { clsx } from '@/utils/clsx'
-import { errorFeedback } from '@/utils/errorFeedback'
 
 const props = defineProps<{
   item: Share.Entity.FilesItem
@@ -150,7 +154,7 @@ const config = {
 }
 
 /** smart 视频封面 hook */
-const { videoCover } = useSmartVideoCover(options, config)
+const { retry, videoCover } = useSmartVideoCover(options, config)
 
 /** 进度百分比 */
 const progressPercent = computed(() => {

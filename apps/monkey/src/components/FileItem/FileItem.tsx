@@ -102,7 +102,6 @@ const FileItem = defineComponent({
       hasImagePreview,
       actressAsyncState,
       videoCoverResult,
-      showVideoCoverError,
       open,
     } = useFileItem({
       data: props.data,
@@ -247,7 +246,6 @@ const FileItem = defineComponent({
                       videoCoverLoading: isVideoCoverLoading.value,
                       videoCoverError: videoCoverResult?.videoCover.error,
                       onVideoCoverRetry: videoCoverResult?.retry,
-                      onVideoCoverError: showVideoCoverError,
                       hasImagePreview: hasImagePreview.value,
                       onMouseDown: handleMouseDown,
                     }) ?? (
@@ -260,7 +258,6 @@ const FileItem = defineComponent({
                         videoCoverLoading={isVideoCoverLoading.value}
                         videoCoverError={videoCoverResult?.videoCover.error}
                         onVideoCoverRetry={videoCoverResult?.retry}
-                        onVideoCoverError={showVideoCoverError}
                         hasImagePreview={hasImagePreview.value}
                         onMouseDown={handleMouseDown}
                       />

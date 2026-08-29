@@ -3,7 +3,16 @@
     <div :class="styles.container.content">
       <!-- 错误状态 -->
       <div v-if="videoCover.error" :class="styles.states.error">
-        <StatusFeedback status="error" size="xs" :padded="false" v-bind="errorFeedback(videoCover.error)" />
+        <ErrorStatusFeedback
+          :error="videoCover.error"
+          title="视频封面加载失败"
+          size="xs"
+          :padded="false"
+          detail-label="查看视频封面加载错误"
+          retry-label="重试加载"
+          close-label="关闭"
+          :on-retry="retry"
+        />
       </div>
 
       <!-- 骨架屏 -->
@@ -36,12 +45,11 @@
 </template>
 
 <script setup lang="ts">
-import { StatusFeedback } from '@115master/ui'
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { ErrorStatusFeedback } from '@/components/ErrorStatusFeedback'
 import { useSmartVideoCover } from '@/hooks/useVideoCover'
 import { clsx } from '@/utils/clsx'
-import { errorFeedback } from '@/utils/errorFeedback'
 import 'photoswipe/style.css'
 
 const props = defineProps<{
@@ -106,7 +114,7 @@ const config = {
 }
 
 /** smart 视频封面 hook */
-const { videoCover } = useSmartVideoCover(options, config)
+const { retry, videoCover } = useSmartVideoCover(options, config)
 
 /** 初始化 PhotoSwipe */
 function initPhotoSwipe() {

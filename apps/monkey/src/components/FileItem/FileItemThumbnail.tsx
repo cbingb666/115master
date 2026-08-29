@@ -7,6 +7,7 @@ import { image as imageUtil } from '@115master/utils'
 import { computed, defineComponent, shallowRef, watch } from 'vue'
 import { I, Icon } from '@/icons'
 import { Utils115 } from '@/utils/utils115'
+import { ErrorStatusFeedback } from '../ErrorStatusFeedback'
 
 const FileItemThumbnail = defineComponent({
   name: 'FileItemThumbnail',
@@ -45,13 +46,6 @@ const FileItemThumbnail = defineComponent({
     },
     onVideoCoverRetry: {
       type: Function as PropType<() => void | Promise<void>>,
-      default: undefined,
-    },
-    onVideoCoverError: {
-      type: Function as PropType<(
-        error: Error | string,
-        retry: () => void | Promise<void>,
-      ) => void | Promise<unknown>>,
       default: undefined,
     },
     hasImagePreview: {
@@ -151,37 +145,30 @@ const FileItemThumbnail = defineComponent({
       return props.onVideoCoverRetry?.()
     }
 
-    function showCoverError() {
-      if (!coverError.value)
-        return
-      void props.onVideoCoverError?.(coverError.value, retryVideoCover)
-    }
-
     function renderCoverError() {
+      const error = coverError.value
+
+      if (!error)
+        return null
+
       return (
-        <button
-          type="button"
-          aria-label="查看视频封面加载错误"
+        <ErrorStatusFeedback
+          error={error}
+          title="视频封面加载失败"
+          iconOnly
+          size="xs"
+          padded={false}
+          detailLabel="查看视频封面加载错误"
+          retryLabel="重试加载"
+          closeLabel="关闭"
+          onRetry={retryVideoCover}
           class="
-            bg-error text-error-content ui-z-raised focus-visible:outline-error absolute top-1
-            right-1 flex items-center justify-center rounded-full
-            shadow-sm transition-transform ease-[var(--ui-ease-standard)]
+            ui-z-raised absolute top-0 right-0 flex items-center justify-center rounded-full
+            transition-transform ease-[var(--ui-ease-standard)]
             group-data-[view-type=card]:size-7 group-data-[view-type=list]:size-5 hover:scale-105
-            focus-visible:outline-2 focus-visible:outline-offset-2
           "
           data-video-cover-error-action=""
-          onMousedown={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-          }}
-          onClick={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            showCoverError()
-          }}
-        >
-          <Icon class="size-[70%]" name={I.CLOSE} />
-        </button>
+        />
       )
     }
 
@@ -207,14 +194,15 @@ const FileItemThumbnail = defineComponent({
       )
     }
 
-    function renderOfficialIcon(iconUrl: string) {
+    function renderOfficialIcon(iconUrl: string, fill = false) {
       return (
         <Image
-          class="
-            relative cursor-grab
-            group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all group-data-[view-type=card]:ease-[var(--ui-ease-move)]
-            group-data-[view-type=list]:size-14
-          "
+          class={[
+            'relative cursor-grab',
+            fill
+              ? 'h-full w-full'
+              : 'group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all group-data-[view-type=card]:ease-[var(--ui-ease-move)] group-data-[view-type=list]:size-14',
+          ]}
           src={iconUrl}
           fit="contain"
           fallback={<Icon name={I.DOCUMENT} class="text-base-content/40 h-full w-full" />}
@@ -224,14 +212,15 @@ const FileItemThumbnail = defineComponent({
       )
     }
 
-    function renderFolderCover(icon: IconValue) {
+    function renderFolderCover(icon: IconValue, fill = false) {
       return (
         <div
-          class="
-            relative cursor-grab
-            group-data-[view-type=card]:h-[61%]
-            group-data-[view-type=list]:size-14
-          "
+          class={[
+            'relative cursor-grab',
+            fill
+              ? 'h-full w-full'
+              : 'group-data-[view-type=card]:h-[61%] group-data-[view-type=list]:size-14',
+          ]}
           onMousedown={props.onMouseDown}
         >
           <Icon
@@ -242,14 +231,15 @@ const FileItemThumbnail = defineComponent({
       )
     }
 
-    function renderFileIcon(icon: IconValue) {
+    function renderFileIcon(icon: IconValue, fill = false) {
       return (
         <div
-          class="
-            relative cursor-grab object-contain
-            group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all group-data-[view-type=card]:ease-[var(--ui-ease-move)]
-            group-data-[view-type=list]:size-14
-          "
+          class={[
+            'relative cursor-grab object-contain',
+            fill
+              ? 'h-full w-full'
+              : 'group-data-[view-type=card]:h-[61%] group-data-[view-type=card]:transition-all group-data-[view-type=card]:ease-[var(--ui-ease-move)] group-data-[view-type=list]:size-14',
+          ]}
           onMousedown={props.onMouseDown}
         >
           <Icon
@@ -260,14 +250,34 @@ const FileItemThumbnail = defineComponent({
       )
     }
 
-    function renderFallback() {
+    function renderFallback(fill = false) {
       const icon = Utils115.getFileIcon(props.data)
 
       if (isIconUrl(icon))
-        return renderOfficialIcon(icon)
+        return renderOfficialIcon(icon, fill)
       if (props.isFolder)
-        return renderFolderCover(icon)
-      return renderFileIcon(icon)
+        return renderFolderCover(icon, fill)
+      return renderFileIcon(icon, fill)
+    }
+
+    function renderErrorFallback() {
+      return (
+        <div
+          class="relative flex h-full w-full items-center justify-center"
+          data-video-cover-error-anchor=""
+        >
+          <div
+            class="
+              group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[61%]
+              group-data-[view-type=list]:size-14
+            "
+            data-video-cover-error-fallback=""
+          >
+            {renderFallback(true)}
+          </div>
+          {renderCoverError()}
+        </div>
+      )
     }
 
     return () => {
@@ -278,12 +288,7 @@ const FileItemThumbnail = defineComponent({
 
       // 视频封面加载失败后回退文件图标，并保留错误操作入口
       if (props.isVideo && coverError.value) {
-        return (
-          <>
-            {renderFallback()}
-            {renderCoverError()}
-          </>
-        )
+        return renderErrorFallback()
       }
 
       // 视频封面加载与内容
