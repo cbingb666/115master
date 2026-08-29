@@ -88,19 +88,27 @@ export function useFileItem(options: UseFileItemOptions) {
     error: Error | string,
     retry: () => void | Promise<void>,
   ) {
-    const detail = error instanceof Error
-      ? [
-          `名称：${error.name}`,
-          `信息：${error.message}`,
-          error.stack ? `堆栈：\n${error.stack}` : undefined,
-        ].filter(Boolean).join('\n\n')
-      : error
+    const content = typeof error === 'string'
+      ? error
+      : () => h('div', { class: 'space-y-3' }, [
+          h('p', {
+            class: 'text-base-content/80 m-0 leading-6',
+          }, error.message || error.name),
+          error.stack
+            ? h('details', { class: 'text-sm' }, [
+                h('summary', {
+                  class: 'text-base-content/60 cursor-pointer font-medium select-none',
+                }, '技术详情'),
+                h('pre', {
+                  class: 'bg-base-200 text-base-content mt-3 max-h-64 overflow-auto rounded-lg p-3 text-xs whitespace-pre-wrap break-all select-text',
+                }, error.stack),
+              ])
+            : undefined,
+        ])
 
     return dialog.confirm({
       title: '视频封面加载失败',
-      content: () => h('pre', {
-        class: 'bg-base-200 text-base-content max-h-80 overflow-auto rounded-lg p-3 text-xs whitespace-pre-wrap break-all select-text',
-      }, detail),
+      content,
       confirmText: '重试加载',
       cancelText: '关闭',
       confirmOnEnter: false,
