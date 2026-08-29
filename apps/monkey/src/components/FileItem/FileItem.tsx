@@ -158,7 +158,7 @@ const FileItem = defineComponent({
             data-[dropzone=true]:ring-2
             data-[dropzone=true]:ring-inset
             data-[view-type=card]:flex-col
-            data-[view-type=card]:rounded-2xl
+            data-[view-type=card]:rounded-lg
             data-[view-type=card]:data-[checked=true]:ring-6
             data-[view-type=list]:items-stretch
             data-[view-type=list]:overflow-x-clip
@@ -226,7 +226,7 @@ const FileItem = defineComponent({
                   justify-center group-data-[select-mode=true]:touch-none
                   group-data-[view-type=card]:relative group-data-[view-type=card]:aspect-video
                   group-data-[view-type=card]:w-full
-                  group-data-[view-type=card]:rounded-2xl group-data-[view-type=list]:relative
+                  group-data-[view-type=card]:rounded-lg group-data-[view-type=list]:relative
                   group-data-[view-type=list]:size-14
                 "
                     onMousedown={handleMouseDown}

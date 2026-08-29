@@ -62,9 +62,11 @@ const FileItemContent = defineComponent({
             class="
               text-base-content min-w-0 wrap-anywhere
               group-data-[view-type=card]:line-clamp-4
+              group-data-[view-type=card]:text-sm
               group-data-[view-type=card]:font-medium
               group-data-[view-type=list]:shrink
               group-data-[view-type=list]:truncate
+              group-data-[view-type=list]:text-sm
             "
           >
             {/* 置顶（card 视图内联在文件名前） */}

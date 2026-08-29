@@ -79,8 +79,8 @@ const FileItemThumbnail = defineComponent({
           class="
             border-base-content/5 absolute inset-0 m-auto h-full w-full
             cursor-grab overflow-hidden border bg-black bg-clip-padding
-            group-data-[view-type=card]:overflow-hidden group-data-[view-type=card]:rounded-2xl
-            group-data-[view-type=list]:rounded-lg
+            group-data-[view-type=card]:overflow-hidden group-data-[view-type=card]:rounded-lg
+            group-data-[view-type=list]:rounded-md
           "
           onMousedown={props.onMouseDown}
         >
@@ -100,10 +100,12 @@ const FileItemThumbnail = defineComponent({
       return (
         <Image
           class="
-            group-data-[view-type=list]:ring-base-content/10 cursor-grab rounded-md
+            group-data-[view-type=list]:ring-base-content/10 cursor-grab
             group-data-[view-type=card]:relative
             group-data-[view-type=card]:aspect-square group-data-[view-type=card]:h-[70%]
+            group-data-[view-type=card]:rounded-md
             group-data-[view-type=card]:transition-all group-data-[view-type=card]:ease-[var(--ui-ease-move)] group-data-[view-type=list]:size-14
+            group-data-[view-type=list]:rounded-sm
             group-data-[view-type=list]:ring-1
           "
           imgClass="group-data-[view-type=card]:object-contain"
