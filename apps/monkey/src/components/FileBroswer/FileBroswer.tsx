@@ -43,6 +43,18 @@ const FileBroswer = defineComponent({
       type: Object as () => Ref<string>,
       required: true,
     },
+    page: {
+      type: Object as () => Ref<number>,
+      required: false,
+    },
+    size: {
+      type: Object as () => Ref<number>,
+      required: false,
+    },
+    total: {
+      type: Object as () => Ref<number>,
+      required: false,
+    },
     keyword: {
       type: Object as () => Ref<string>,
       required: false,
@@ -73,8 +85,8 @@ const FileBroswer = defineComponent({
       cid: computed(() => keyword.value.trim() ? '0' : nav.cid.value),
       area: computed(() => keyword.value.trim() ? 'search' : nav.area.value),
     }
-    const page = shallowRef(1)
-    const size = shallowRef(20)
+    const page = props.page ?? shallowRef(1)
+    const size = props.size ?? shallowRef(20)
     const explorer = useDriveList({
       source: {
         cid: source.cid,
@@ -172,6 +184,11 @@ const FileBroswer = defineComponent({
         props.currentPathRef.value = p
     }, { immediate: true })
 
+    watch(explorer.total, (total) => {
+      if (props.total)
+        props.total.value = total
+    }, { immediate: true })
+
     function handleClickPath(data: Share.Entity.PathItem) {
       nav.push(data.cid)
     }
@@ -191,6 +208,20 @@ const FileBroswer = defineComponent({
       fc_mix: Share.Base.Sorter['fc_mix'],
     ) {
       await explorer.changeSort(order, asc, fc_mix)
+    }
+
+    function pager() {
+      return (
+        <Pagination
+          currentPage={page.value}
+          currentPageSize={size.value}
+          showSizeChanger={false}
+          total={explorer.total.value}
+          labels={PAGINATION_LABELS}
+          onCurrentPageChange={explorer.changePage}
+          onPageSizeChange={explorer.changeSize}
+        />
+      )
     }
 
     return () => (
@@ -368,21 +399,13 @@ const FileBroswer = defineComponent({
             }}
           </FileList>
 
-          {explorer.pageCount.value > 1 && (
+          {isMobile.value && explorer.pageCount.value > 1 && (
             <div
               class="ui-z-elevated sticky bottom-0 flex shrink-0 justify-center px-4 py-4"
               data-file-browser-pagination
             >
               <Pill as="div" variant="glass-floating" size="md" class="h-auto p-0">
-                <Pagination
-                  currentPage={page.value}
-                  currentPageSize={size.value}
-                  showSizeChanger={false}
-                  total={explorer.total.value}
-                  labels={PAGINATION_LABELS}
-                  onCurrentPageChange={explorer.changePage}
-                  onPageSizeChange={explorer.changeSize}
-                />
+                {pager()}
               </Pill>
             </div>
           )}

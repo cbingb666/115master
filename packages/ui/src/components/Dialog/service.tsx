@@ -45,6 +45,8 @@ export interface DialogOptions {
   title?: DialogRenderable
   label?: string
   content?: DialogRenderable
+  /** Leading footer content rendered before the standard cancel and confirm actions. */
+  actions?: DialogRenderable
   confirmText?: DialogRenderable
   cancelText?: DialogRenderable
   messages?: Partial<DialogServiceMessages>
@@ -573,6 +575,9 @@ export const DialogHost = defineComponent({
           const content = present(entry.options.content)
             ? render(runtime, entry, entry.options.content)
             : undefined
+          const actions = present(entry.options.actions)
+            ? render(runtime, entry, entry.options.actions)
+            : undefined
           const inputLabelNode = prompt
             ? render(runtime, entry, inputLabel)
             : undefined
@@ -722,9 +727,10 @@ export const DialogHost = defineComponent({
                     )}
                   </>
                 ),
-                actions: showConfirm || showCancel
+                actions: filled(actions) || showConfirm || showCancel
                   ? () => (
                       <>
+                        {actions}
                         {showCancel && (
                           <Button
                             color="neutral"

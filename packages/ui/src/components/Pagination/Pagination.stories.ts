@@ -83,6 +83,16 @@ export const WithoutSizeChanger = meta.story({
   },
 })
 
+export const Small = meta.story({
+  name: '紧凑尺寸',
+  args: {
+    currentPage: 3,
+    total: 150,
+    showSizeChanger: false,
+    size: 'sm',
+  },
+})
+
 export const Behavior = meta.story({
   name: '导航契约',
   parameters: {

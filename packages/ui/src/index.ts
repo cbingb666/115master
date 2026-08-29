@@ -103,6 +103,7 @@ export { Pagination } from './components/Pagination/Pagination'
 export type {
   PaginationLabels,
   PaginationProps,
+  PaginationSize,
 } from './components/Pagination/Pagination'
 export { Pill } from './components/Pill/Pill'
 export type {

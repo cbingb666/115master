@@ -1,8 +1,10 @@
 import type { Share } from '@115master/drive115'
 import type { DialogSize } from '@115master/ui'
-import { ref } from 'vue'
+import { Pagination } from '@115master/ui'
+import { ref, shallowRef } from 'vue'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
+import { PAGINATION_LABELS } from '@/constants'
 import { useQueryNav } from '@/hooks/useDriveNav'
 import FileBroswer from './FileBroswer'
 
@@ -32,6 +34,9 @@ export function useFileBrowserDialog() {
     const cid = ref(options.defaultCid ?? '0')
     const keyword = ref('')
     const path = ref<Share.Entity.PathItem[] | null>(null)
+    const page = shallowRef(1)
+    const size = shallowRef(20)
+    const total = shallowRef(0)
 
     return new Promise((resolve, reject) => {
       let result: FileBrowserDialogResult | false = false
@@ -46,11 +51,36 @@ export function useFileBrowserDialog() {
         confirmText: options.confirmText,
         closeOnBackdrop: true,
         size: options.size ?? 'xl',
+        actions: () => total.value > size.value
+          ? (
+              <div
+                class="absolute left-1/2 hidden -translate-x-1/2 sm:block"
+                data-file-browser-pagination
+              >
+                <Pagination
+                  currentPage={page.value}
+                  currentPageSize={size.value}
+                  size="sm"
+                  showSizeChanger={false}
+                  total={total.value}
+                  labels={PAGINATION_LABELS}
+                  onCurrentPageChange={value => page.value = value}
+                  onPageSizeChange={(value) => {
+                    size.value = value
+                    page.value = 1
+                  }}
+                />
+              </div>
+            )
+          : undefined,
         content: () => (
           <div class="-m-5 h-[min(50rem,calc(100dvh-11rem))]">
             <FileBroswer
               title={options.title}
               cid={cid}
+              page={page}
+              size={size}
+              total={total}
               keyword={keyword}
               defaultCid={options.defaultCid ?? '0'}
               currentPathRef={options.returnPath ? path : undefined}

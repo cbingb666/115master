@@ -7,6 +7,8 @@ import { Button } from '../Button/Button'
 
 type VisiblePage = number | 'ellipsis'
 
+export type PaginationSize = 'sm' | 'md'
+
 export interface PaginationLabels {
   previousPage: string
   nextPage: string
@@ -37,6 +39,10 @@ const props = {
   showSizeChanger: {
     type: Boolean,
     default: true,
+  },
+  size: {
+    type: String as PropType<PaginationSize>,
+    default: 'md',
   },
   labels: {
     type: Object as PropType<PaginationLabels>,
@@ -124,6 +130,7 @@ export const Pagination = defineComponent({
     }
 
     return () => {
+      const small = props.size === 'sm'
       const labels = {
         previousPage: props.labels.previousPage.trim(),
         nextPage: props.labels.nextPage.trim(),
@@ -143,10 +150,14 @@ export const Pagination = defineComponent({
           inputmode="numeric"
           pattern="[0-9]*"
           class={[
-            'input input-ghost input-md',
+            'input input-ghost',
+            small ? 'input-sm' : 'input-md',
             'text-base-content/70 focus:bg-base-content/10 focus:text-base-content/80',
-            'rounded-full px-2 text-center text-sm focus:outline-none',
-            mobile ? 'w-24' : 'w-14 px-1',
+            'rounded-full px-2 text-center focus:outline-none',
+            small ? 'text-xs' : 'text-sm',
+            mobile
+              ? small ? 'w-20' : 'w-24'
+              : small ? 'w-12 px-1' : 'w-14 px-1',
           ]}
           aria-label={labels.jumpToPage}
           placeholder={mobile ? `${props.currentPage}/${count.value}` : '…'}
@@ -158,15 +169,23 @@ export const Pagination = defineComponent({
 
       return (
         <div
-          class="inline-flex min-h-10 items-center gap-1.5 p-1.5 text-sm leading-none font-semibold whitespace-nowrap"
+          class={[
+            'inline-flex items-center leading-none font-semibold whitespace-nowrap',
+            small ? 'min-h-8 gap-1 p-0 text-xs' : 'min-h-10 gap-1.5 p-1.5 text-sm',
+          ]}
           data-ui-pagination=""
         >
-          <div class="drop-shadow-base-200/50 flex items-center gap-1 drop-shadow-sm md:hidden">
+          <div
+            class={[
+              'drop-shadow-base-200/50 flex items-center gap-1 drop-shadow-sm',
+              small ? 'lg:hidden' : 'md:hidden',
+            ]}
+          >
             <Button
               variant="ghost"
-              size="md"
+              size={props.size}
               shape="circle"
-              class="text-lg"
+              class={small ? 'text-base' : 'text-lg'}
               disabled={first.value}
               aria-label={labels.previousPage}
               onClick={() => props.onCurrentPageChange(props.currentPage - 1)}
@@ -178,9 +197,9 @@ export const Pagination = defineComponent({
 
             <Button
               variant="ghost"
-              size="md"
+              size={props.size}
               shape="circle"
-              class="text-lg"
+              class={small ? 'text-base' : 'text-lg'}
               disabled={last.value}
               aria-label={labels.nextPage}
               onClick={() => props.onCurrentPageChange(props.currentPage + 1)}
@@ -189,12 +208,17 @@ export const Pagination = defineComponent({
             </Button>
           </div>
 
-          <div class="drop-shadow-base-200/50 hidden items-center gap-1 drop-shadow-sm md:flex">
+          <div
+            class={[
+              'drop-shadow-base-200/50 hidden items-center gap-1 drop-shadow-sm',
+              small ? 'lg:flex' : 'md:flex',
+            ]}
+          >
             <Button
               variant="ghost"
-              size="md"
+              size={props.size}
               shape="circle"
-              class="text-lg"
+              class={small ? 'text-base' : 'text-lg'}
               disabled={first.value}
               aria-label={labels.previousPage}
               onClick={() => props.onCurrentPageChange(props.currentPage - 1)}
@@ -209,7 +233,7 @@ export const Pagination = defineComponent({
                 return lastEllipsis
                   ? jumpInput()
                   : (
-                      <span class="flex size-12 items-center justify-center" aria-hidden="true">
+                      <span class={['flex items-center justify-center', small ? 'size-8' : 'size-12']} aria-hidden="true">
                         …
                       </span>
                     )
@@ -220,7 +244,7 @@ export const Pagination = defineComponent({
               return (
                 <Button
                   variant={active ? 'glass-inset' : 'ghost'}
-                  size="md"
+                  size={props.size}
                   shape="circle"
                   aria-current={active ? 'page' : undefined}
                   onClick={() => props.onCurrentPageChange(page)}
@@ -232,9 +256,9 @@ export const Pagination = defineComponent({
 
             <Button
               variant="ghost"
-              size="md"
+              size={props.size}
               shape="circle"
-              class="text-lg"
+              class={small ? 'text-base' : 'text-lg'}
               disabled={last.value}
               aria-label={labels.nextPage}
               onClick={() => props.onCurrentPageChange(props.currentPage + 1)}
@@ -244,9 +268,17 @@ export const Pagination = defineComponent({
           </div>
 
           {props.showSizeChanger && (
-            <div class="ml-4 hidden items-center gap-2 md:flex">
+            <div
+              class={[
+                small ? 'ml-3 gap-1.5 lg:flex' : 'ml-4 gap-2 md:flex',
+                'hidden items-center',
+              ]}
+            >
               <select
-                class="select select-ghost select-sm text-base-content/80 cursor-pointer rounded-xl focus:outline-none"
+                class={[
+                  'select select-ghost text-base-content/80 cursor-pointer rounded-xl focus:outline-none',
+                  small ? 'select-xs' : 'select-sm',
+                ]}
                 aria-label={labels.pageSize}
                 value={props.currentPageSize}
                 onChange={changeSize}

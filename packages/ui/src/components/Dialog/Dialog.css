@@ -116,6 +116,7 @@
   }
 
   .ui-dialog__actions {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;

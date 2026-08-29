@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import type { PaginationLabels } from '../Pagination'
+import type { PaginationLabels, PaginationSize } from '../Pagination'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createApp, h } from 'vue'
 import { Pagination } from '../Pagination'
@@ -15,7 +15,7 @@ const labels: PaginationLabels = {
   pageSizeUnit: 'items',
 }
 
-function mount() {
+function mount(size: PaginationSize = 'md') {
   const host = document.createElement('div')
   const app = createApp({
     setup: () => () => h(Pagination, {
@@ -23,6 +23,7 @@ function mount() {
       currentPageSize: 30,
       total: 90,
       showSizeChanger: false,
+      size,
       labels,
       onCurrentPageChange: () => {},
       onPageSizeChange: () => {},
@@ -55,5 +56,15 @@ describe('pagination', () => {
     expect(root.querySelector('button.ui-glass-surface')).toBeNull()
     expect(root.querySelector('button.ui-glass-floating')).toBeNull()
     expect(root.querySelector('.btn-active')).toBeNull()
+  })
+
+  it('supports a compact size without outer padding', () => {
+    const root = mount('sm').firstElementChild!
+    const buttons = [...root.querySelectorAll('button')]
+
+    expect(root.classList).toContain('min-h-8')
+    expect(root.classList).toContain('p-0')
+    expect(buttons.every(button => button.classList.contains('btn-sm'))).toBe(true)
+    expect(root.querySelector('input')?.classList).toContain('input-sm')
   })
 })

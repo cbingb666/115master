@@ -136,35 +136,38 @@ test.describe('保存目录选择器', () => {
     expect(errors).toEqual([])
   })
 
-  test('分页器吸附在列表底部，滚动到底后不遮挡列表', async ({ page }) => {
+  test('桌面分页器嵌入弹窗底部且不使用 glass 材质', async ({ page }) => {
     const errors = watch(page)
     await bootWithOffline(page)
 
     const picker = await openPicker(page)
     const scroll = picker.locator('[data-file-browser-scroll]')
-    const dock = picker.locator('[data-file-browser-pagination]')
-    const pagination = dock.locator(':scope > *')
+    const actions = picker.locator('.ui-dialog__actions')
+    const pagination = actions.locator('[data-file-browser-pagination]')
+    const cancel = actions.getByRole('button', { name: '取消' })
+    const confirm = actions.getByRole('button', { name: '保存到此目录' })
 
-    await expect(dock).toHaveCSS('position', 'sticky')
+    await expect(pagination.locator('[data-ui-pagination]')).toBeVisible()
+    await expect(pagination.locator('.ui-glass-floating')).toHaveCount(0)
+    await expect(pagination.getByRole('button', { name: '下一页' })).toHaveClass(/btn-sm/)
+    await expect(scroll.locator('[data-file-browser-pagination]')).toHaveCount(0)
     await expect.poll(async () => {
-      const listBox = await scroll.boundingBox()
+      const actionsBox = await actions.boundingBox()
       const paginationBox = await pagination.boundingBox()
-      if (!listBox || !paginationBox)
-        return false
-      return listBox.y + listBox.height - paginationBox.y - paginationBox.height
-    }).toBe(16)
-
-    await scroll.evaluate(element => element.scrollTo({ top: element.scrollHeight }))
-    await expect.poll(() => scroll.evaluate(element => (
-      element.scrollHeight - element.clientHeight - element.scrollTop
-    ))).toBe(0)
-    await expect.poll(async () => {
-      const listBox = await picker.getByRole('list', { name: '文件列表' }).boundingBox()
-      const paginationBox = await pagination.boundingBox()
-      if (!listBox || !paginationBox)
+      const cancelBox = await cancel.boundingBox()
+      const confirmBox = await confirm.boundingBox()
+      if (!actionsBox || !paginationBox || !cancelBox || !confirmBox)
         return Number.POSITIVE_INFINITY
-      return listBox.y + listBox.height - paginationBox.y
-    }).toBeLessThanOrEqual(0)
+      const centerX = paginationBox.x + paginationBox.width / 2
+      const centerY = paginationBox.y + paginationBox.height / 2
+      if (paginationBox.height > cancelBox.height)
+        return paginationBox.height - cancelBox.height
+      return Math.max(
+        Math.abs(centerX - actionsBox.x - actionsBox.width / 2),
+        Math.abs(centerY - cancelBox.y - cancelBox.height / 2),
+        Math.abs(centerY - confirmBox.y - confirmBox.height / 2),
+      )
+    }).toBeLessThanOrEqual(1)
 
     await closePicker(page)
     expect(errors).toEqual([])
