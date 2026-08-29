@@ -46,15 +46,16 @@
 .ui-glass-floating {
   --ui-glass-tone: var(--color-base-content);
   --ui-glass-fg: var(--ui-glass-tone);
-  --ui-glass-bg: color-mix(in oklab, var(--ui-glass-tone) 15%, transparent);
-  --ui-glass-hover-bg: color-mix(in oklab, var(--ui-glass-tone) 20%, transparent);
-  --ui-glass-active-bg: color-mix(in oklab, var(--ui-glass-tone) 24%, transparent);
+  --ui-glass-neutral-bg: color-mix(in oklab, var(--color-base-300) 38%, transparent);
+  --ui-glass-bg: color-mix(in oklab, var(--ui-glass-tone) 12%, var(--ui-glass-neutral-bg));
+  --ui-glass-hover-bg: color-mix(in oklab, var(--ui-glass-tone) 24%, var(--ui-glass-neutral-bg));
+  --ui-glass-active-bg: color-mix(in oklab, var(--ui-glass-tone) 48%, var(--ui-glass-neutral-bg));
   --ui-glass-border: color-mix(in oklab, var(--ui-glass-tone) 20%, transparent);
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.3);
   --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.12), 0 6px 18px oklch(0% 0 0 / 0.1);
   --ui-glass-backdrop: var(--ui-glass-blur-standard);
   --ui-glass-saturation: 180%;
-  --ui-glass-opaque-bg: color-mix(in oklab, var(--ui-glass-tone) 92%, var(--color-base-300));
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--color-base-300) 92%, var(--ui-glass-tone));
   --ui-glass-opaque-hover-bg: color-mix(in oklab, var(--ui-glass-opaque-bg) 92%, var(--ui-glass-fg));
   --ui-glass-opaque-active-bg: color-mix(in oklab, var(--ui-glass-opaque-bg) 86%, var(--ui-glass-fg));
 }
@@ -190,7 +191,7 @@
   --ui-glass-border: color-mix(in oklab, var(--color-base-content) 10%, transparent);
   --ui-glass-highlight: 0 1px 0 oklch(100% 0 0 / 0.65);
   --ui-glass-shadow: 0 1px 2px oklch(0% 0 0 / 0.08), 0 6px 18px oklch(0% 0 0 / 0.06);
-  --ui-glass-opaque-bg: color-mix(in oklab, var(--ui-glass-tone) 94%, var(--color-base-100));
+  --ui-glass-opaque-bg: color-mix(in oklab, var(--color-base-100) 94%, var(--ui-glass-tone));
   --ui-glass-opaque-hover-bg: color-mix(in oklab, var(--ui-glass-opaque-bg) 94%, var(--ui-glass-fg));
   --ui-glass-opaque-active-bg: color-mix(in oklab, var(--ui-glass-opaque-bg) 90%, var(--ui-glass-fg));
 }
@@ -204,7 +205,14 @@
 }
 
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  :is(.ui-glass-floating, .ui-glass-overlay, .ui-glass-panel) {
+  :is(
+    .ui-glass-floating,
+    .ui-glass-overlay,
+    .ui-glass-panel,
+    [data-theme] .ui-glass-floating,
+    [data-theme] .ui-glass-overlay,
+    [data-theme] .ui-glass-panel
+  ) {
     --ui-glass-bg: var(--ui-glass-opaque-bg);
   }
 
@@ -215,7 +223,14 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  :is(.ui-glass-floating, .ui-glass-overlay, .ui-glass-panel) {
+  :is(
+    .ui-glass-floating,
+    .ui-glass-overlay,
+    .ui-glass-panel,
+    [data-theme] .ui-glass-floating,
+    [data-theme] .ui-glass-overlay,
+    [data-theme] .ui-glass-panel
+  ) {
     --ui-glass-bg: var(--ui-glass-opaque-bg);
 
     -webkit-backdrop-filter: none;

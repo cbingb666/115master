@@ -78,6 +78,38 @@ export const Materials = meta.story({
   }),
 })
 
+export const Contrast = meta.story({
+  name: '极端背景对比',
+  render: () => ({
+    template: `
+      <main class="min-h-screen bg-base-100 p-8 text-base-content max-md:p-4">
+        <div class="mx-auto grid max-w-6xl gap-6">
+          <header class="grid gap-4 rounded-box bg-base-200 p-6">
+            <p class="m-0 text-xs font-bold uppercase tracking-[0.08em] text-base-content/70">Floating Glass · contrast</p>
+            <h1 class="m-0 text-[clamp(1.75rem,5vw,3rem)] leading-none">One material across background extremes</h1>
+            <p class="m-0">Floating 材质通过中性底色稳定前景，不依赖下方内容本身提供对比度。</p>
+          </header>
+
+          <section aria-label="Floating Glass background extremes" class="relative grid min-h-72 overflow-hidden rounded-box sm:grid-cols-2">
+            <div class="bg-black p-6 text-sm font-semibold text-white/70">Deep backdrop</div>
+            <div class="bg-white p-6 text-right text-sm font-semibold text-black/70">Light backdrop</div>
+            <article class="ui-glass-floating absolute inset-x-[clamp(1rem,8vw,6rem)] top-1/2 grid -translate-y-1/2 gap-6 rounded-box p-6 sm:grid-cols-2">
+              <div>
+                <h2 class="m-0">Over deep content</h2>
+                <p class="mb-0">The foreground remains distinct from the darkest backdrop.</p>
+              </div>
+              <div>
+                <h2 class="m-0">Over light content</h2>
+                <p class="mb-0">The same surface also separates it from the lightest backdrop.</p>
+              </div>
+            </article>
+          </section>
+        </div>
+      </main>
+    `,
+  }),
+})
+
 export const FilterOwnership = meta.story({
   name: '单层滤镜',
   render: () => ({
