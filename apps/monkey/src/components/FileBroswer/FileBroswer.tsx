@@ -2,7 +2,7 @@ import type { Share } from '@115master/drive115'
 import type { ActionMenuGroup } from '@115master/ui'
 import type { Ref } from 'vue'
 import type { NavSource } from '@/hooks/useDriveNav/types'
-import { ActionMenu, Button, Pagination, Pill, scrollbar, Tooltip } from '@115master/ui'
+import { ActionMenu, Button, scrollbar, Tooltip } from '@115master/ui'
 import { breakpointsTailwind, useBreakpoints, useStorage, watchDebounced } from '@vueuse/core'
 import { computed, defineComponent, nextTick, ref, shallowRef, watch } from 'vue'
 import {
@@ -16,7 +16,6 @@ import {
   FileSortSelector,
   FileViewType,
 } from '@/components'
-import { PAGINATION_LABELS } from '@/constants'
 import { useDeleteAction } from '@/hooks/useDriveAction/useDeleteAction'
 import { useFileAction } from '@/hooks/useDriveAction/useFileAction'
 import { useDriveList } from '@/hooks/useDriveList'
@@ -211,20 +210,6 @@ const FileBroswer = defineComponent({
       await explorer.changeSort(order, asc, fc_mix)
     }
 
-    function pager() {
-      return (
-        <Pagination
-          currentPage={page.value}
-          currentPageSize={size.value}
-          showSizeChanger={false}
-          total={explorer.total.value}
-          labels={PAGINATION_LABELS}
-          onCurrentPageChange={explorer.changePage}
-          onPageSizeChange={explorer.changeSize}
-        />
-      )
-    }
-
     return () => (
       <div class="flex h-full flex-col">
         <div
@@ -400,17 +385,6 @@ const FileBroswer = defineComponent({
               ),
             }}
           </FileList>
-
-          {isMobile.value && explorer.pageCount.value > 1 && (
-            <div
-              class="file-browser__bottom ui-z-elevated sticky bottom-0 flex shrink-0 justify-center px-4 py-4"
-              data-file-browser-pagination
-            >
-              <Pill as="div" variant="glass-floating" size="sm" class="h-auto p-1">
-                {pager()}
-              </Pill>
-            </div>
-          )}
         </div>
       </div>
     )

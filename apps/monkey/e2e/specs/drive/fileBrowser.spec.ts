@@ -245,11 +245,13 @@ test.describe('保存目录选择器', () => {
     const scroll = picker.locator('[data-file-browser-scroll]')
     const actions = picker.locator('.ui-dialog__actions')
     const pagination = actions.locator('[data-file-browser-pagination]')
+    const surface = pagination.locator('.ui-glass-floating')
     const cancel = actions.getByRole('button', { name: '取消' })
     const confirm = actions.getByRole('button', { name: '保存到此目录' })
 
     await expect(pagination.locator('[data-ui-pagination]')).toBeVisible()
-    await expect(pagination.locator('.ui-glass-floating')).toBeVisible()
+    await expect(surface).toBeVisible()
+    await expect(surface).toHaveCSS('padding-top', '4px')
     await expect(cancel).toHaveClass(/ui-glass-floating/)
     await expect(confirm).toHaveClass(/ui-glass-floating/)
     await expect(pagination.getByRole('button', { name: '下一页' })).toHaveClass(/btn-sm/)
@@ -263,8 +265,6 @@ test.describe('保存目录选择器', () => {
         return Number.POSITIVE_INFINITY
       const centerX = paginationBox.x + paginationBox.width / 2
       const centerY = paginationBox.y + paginationBox.height / 2
-      if (paginationBox.height > cancelBox.height)
-        return paginationBox.height - cancelBox.height
       return Math.max(
         Math.abs(centerX - actionsBox.x - actionsBox.width / 2),
         Math.abs(centerY - cancelBox.y - cancelBox.height / 2),
@@ -272,6 +272,102 @@ test.describe('保存目录选择器', () => {
       )
     }).toBeLessThanOrEqual(1)
 
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
+  test('移动端分页器居中位于操作按钮上方', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+    await page.evaluate(() => localStorage.setItem('115Master_file_browser_view_type', 'card'))
+
+    const picker = await openPicker(page)
+    await page.setViewportSize({ width: 390, height: 844 })
+    const actions = picker.locator('.ui-dialog__actions')
+    const pagination = actions.locator('[data-file-browser-pagination]')
+    const surface = pagination.locator('.ui-glass-floating')
+    const cancel = actions.getByRole('button', { name: '取消' })
+    const confirm = actions.getByRole('button', { name: '保存到此目录' })
+
+    await expect(pagination.locator('[data-ui-pagination]')).toBeVisible()
+    await expect(surface).toBeVisible()
+    await expect(pagination.getByRole('button', { name: '下一页' })).toHaveClass(/btn-sm/)
+    await expect(picker.locator('[data-file-browser-scroll] [data-file-browser-pagination]')).toHaveCount(0)
+    await expect.poll(async () => {
+      const actionsBox = await actions.boundingBox()
+      const surfaceBox = await surface.boundingBox()
+      if (!actionsBox || !surfaceBox)
+        return Number.POSITIVE_INFINITY
+      return surfaceBox.width / actionsBox.width
+    }).toBeLessThanOrEqual(0.5)
+    await expect.poll(async () => {
+      const actionsBox = await actions.boundingBox()
+      const surfaceBox = await surface.boundingBox()
+      if (!actionsBox || !surfaceBox)
+        return Number.POSITIVE_INFINITY
+      return Math.abs(
+        surfaceBox.x + surfaceBox.width / 2 - actionsBox.x - actionsBox.width / 2,
+      )
+    }).toBeLessThanOrEqual(1)
+    await expect.poll(async () => {
+      const surfaceBox = await surface.boundingBox()
+      const cancelBox = await cancel.boundingBox()
+      const confirmBox = await confirm.boundingBox()
+      if (!surfaceBox || !cancelBox || !confirmBox)
+        return Number.NEGATIVE_INFINITY
+      return Math.min(cancelBox.y, confirmBox.y) - surfaceBox.y - surfaceBox.height
+    }).toBeGreaterThanOrEqual(8)
+    await expect.poll(async () => {
+      const cancelBox = await cancel.boundingBox()
+      const confirmBox = await confirm.boundingBox()
+      if (!cancelBox || !confirmBox)
+        return Number.POSITIVE_INFINITY
+      return Math.abs(
+        cancelBox.y + cancelBox.height / 2 - confirmBox.y - confirmBox.height / 2,
+      )
+    }).toBeLessThanOrEqual(1)
+    await expect.poll(async () => {
+      const cancelBox = await cancel.boundingBox()
+      const confirmBox = await confirm.boundingBox()
+      if (!cancelBox || !confirmBox)
+        return Number.POSITIVE_INFINITY
+      return Math.abs(cancelBox.width - confirmBox.width)
+    }).toBeLessThanOrEqual(1)
+    await expect.poll(async () => {
+      const paginationBox = await surface.boundingBox()
+      const buttonBoxes = await Promise.all([cancel.boundingBox(), confirm.boundingBox()])
+      if (!paginationBox || buttonBoxes.some(box => !box))
+        return Number.POSITIVE_INFINITY
+
+      return Math.max(...buttonBoxes.map((box) => {
+        if (!box)
+          return Number.POSITIVE_INFINITY
+        return Math.max(
+          0,
+          Math.min(paginationBox.x + paginationBox.width, box.x + box.width)
+          - Math.max(paginationBox.x, box.x),
+        ) * Math.max(
+          0,
+          Math.min(paginationBox.y + paginationBox.height, box.y + box.height)
+          - Math.max(paginationBox.y, box.y),
+        )
+      }))
+    }).toBe(0)
+
+    const scroll = picker.locator('[data-file-browser-scroll]')
+    const last = picker.locator('[data-file-list-index="19"]')
+    await scroll.evaluate((element) => {
+      element.scrollTop = element.scrollHeight
+    })
+    await expect(last).toBeVisible()
+    await expect.poll(async () => {
+      const actionsBox = await actions.boundingBox()
+      const lastBox = await last.boundingBox()
+      const fade = await actions.evaluate(element => Math.abs(Number.parseFloat(getComputedStyle(element, '::before').top)))
+      if (!actionsBox || !lastBox)
+        return Number.NEGATIVE_INFINITY
+      return actionsBox.y - fade - lastBox.y - lastBox.height
+    }).toBeGreaterThanOrEqual(-1)
     await closePicker(page)
     expect(errors).toEqual([])
   })
@@ -303,6 +399,36 @@ test.describe('保存目录选择器', () => {
         return Number.NEGATIVE_INFINITY
       return scrollBox.y + scrollBox.height - actionsBox.y - actionsBox.height
     }).toBeGreaterThanOrEqual(-1)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
+  test('底部渐变不覆盖滚动条', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    const scroll = picker.locator('[data-file-browser-scroll]')
+    const actions = picker.locator('.ui-dialog__actions')
+
+    await expect.poll(async () => {
+      const scrollBox = await scroll.boundingBox()
+      const actionsBox = await actions.boundingBox()
+      const styles = await actions.evaluate((element) => {
+        const scroll = element.parentElement?.querySelector<HTMLElement>('[data-file-browser-scroll]')
+        return {
+          right: Number.parseFloat(getComputedStyle(element, '::before').right),
+          scrollbar: scroll
+            ? Number.parseFloat(getComputedStyle(scroll).getPropertyValue('--ui-scrollbar-size'))
+            : Number.NaN,
+        }
+      })
+      if (!scrollBox || !actionsBox || !Number.isFinite(styles.right) || !Number.isFinite(styles.scrollbar))
+        return Number.POSITIVE_INFINITY
+      return actionsBox.x + actionsBox.width - styles.right
+        - (scrollBox.x + scrollBox.width - styles.scrollbar)
+    }).toBeLessThanOrEqual(0)
 
     await closePicker(page)
     expect(errors).toEqual([])

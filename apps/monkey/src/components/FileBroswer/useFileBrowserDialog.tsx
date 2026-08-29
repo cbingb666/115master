@@ -55,10 +55,10 @@ export function useFileBrowserDialog() {
         actions: () => total.value > size.value
           ? (
               <div
-                class="absolute left-1/2 hidden -translate-x-1/2 sm:block"
+                class="flex w-full basis-full justify-center sm:absolute sm:left-1/2 sm:block sm:w-auto sm:basis-auto sm:-translate-x-1/2"
                 data-file-browser-pagination
               >
-                <Pill as="div" variant="glass-floating" size="sm" class="h-auto p-1">
+                <Pill as="div" variant="glass-floating" size="sm" class="h-auto justify-center p-0 sm:p-1">
                   <Pagination
                     currentPage={page.value}
                     currentPageSize={size.value}
