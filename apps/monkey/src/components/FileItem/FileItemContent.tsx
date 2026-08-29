@@ -148,6 +148,7 @@ const FileItemContent = defineComponent({
                     text-base-content/50
                     group-data-[view-type=card]:col-start-2
                     group-data-[view-type=card]:row-start-3
+                    group-data-[view-type=card]:hidden
                     group-data-[view-type=card]:text-xs
                     group-data-[view-type=list]:w-20
                     group-data-[view-type=list]:text-xs
@@ -167,6 +168,7 @@ const FileItemContent = defineComponent({
             app-font-time
             group-data-[view-type=card]:col-start-1
             group-data-[view-type=card]:row-start-3
+            group-data-[view-type=card]:hidden
             group-data-[view-type=card]:text-xs
             group-data-[view-type=list]:w-36
             group-data-[view-type=list]:text-right

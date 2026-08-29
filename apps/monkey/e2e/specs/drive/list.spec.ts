@@ -61,10 +61,15 @@ test.describe('列表渲染', () => {
 
     /** 默认卡片视图（useStorage 缺省 card） */
     const grid = page.locator('[data-view-type]').first()
+    const video = row(page, '演示视频 01.mp4')
     await expect(grid).toHaveAttribute('data-view-type', 'card')
+    await expect(video.locator('.app-font-file-size')).toBeHidden()
+    await expect(video.locator('[data-tip="修改时间"]')).toBeHidden()
 
     await headerBtn(page, HEADER_BTN.view).click()
     await expect(page.locator('[data-view-type]').first()).toHaveAttribute('data-view-type', 'list')
+    await expect(video.locator('.app-font-file-size')).toBeVisible()
+    await expect(video.locator('[data-tip="修改时间"]')).toBeVisible()
     expect(await page.evaluate(() => localStorage.getItem('115Master_drive_view_type'))).toBe('list')
 
     expect(errors).toEqual([])
