@@ -9,6 +9,8 @@ import FileBroswer from './FileBroswer'
 export interface FileBrowserDialogOptions {
   /** 对话框标题 */
   title: string
+  /** 确认按钮文案 */
+  confirmText?: string
   /** 默认目录 ID */
   defaultCid: string
   /** 尺寸档位，默认 'xl' */
@@ -41,6 +43,7 @@ export function useFileBrowserDialog() {
 
       instance = dialog.create({
         label: options.title,
+        confirmText: options.confirmText,
         closeOnBackdrop: true,
         size: options.size ?? 'xl',
         content: () => (

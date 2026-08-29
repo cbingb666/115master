@@ -15,6 +15,7 @@ export function useMoveAction() {
   async function moveDialog(defaultpid: string): Promise<string | false> {
     const result = await fileBrowser.open({
       title: '移动到',
+      confirmText: '移动到此目录',
       defaultCid: defaultpid ?? '0',
     })
     return result ? result.cid : false

@@ -43,10 +43,11 @@ test.describe('选择与操作', () => {
 
     const dialog = page.getByRole('dialog', { name: '移动到' })
     await expect(page).toHaveURL(/fb_cid=0/)
+    await expect(dialog.getByRole('button', { name: '移动到此目录' })).toBeVisible()
     await dialog.getByRole('listitem').filter({ hasText: '动漫' }).click()
     await expect(page).toHaveURL(/fb_cid=1001/)
     const before = requests.filter(request => request.url.searchParams.get('cid') === '0').length
-    await dialog.getByRole('button', { name: '确认' }).click()
+    await dialog.getByRole('button', { name: '移动到此目录' }).click()
 
     await expect(dialog).toBeHidden()
     await expect.poll(() => (

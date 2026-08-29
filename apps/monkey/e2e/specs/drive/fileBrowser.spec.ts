@@ -25,14 +25,15 @@ async function openPicker(page: Parameters<typeof boot>[0]) {
   await expect(offline).toBeVisible()
   await offline.getByRole('button', { name: '选择' }).click()
 
-  const picker = page.getByRole('dialog', { name: '选择保存目录' })
+  const picker = page.getByRole('dialog', { name: '保存到' })
   await expect(picker).toBeVisible()
   await expect(picker.getByRole('list', { name: '文件列表' })).toBeVisible()
+  await expect(picker.getByRole('button', { name: '保存到此目录' })).toBeVisible()
   return picker
 }
 
 async function closePicker(page: Parameters<typeof boot>[0]) {
-  const picker = page.getByRole('dialog', { name: '选择保存目录' })
+  const picker = page.getByRole('dialog', { name: '保存到' })
   if (await picker.count() > 0)
     await picker.locator('.ui-dialog__actions').getByRole('button', { name: '取消' }).click()
 
@@ -48,7 +49,7 @@ test.describe('保存目录选择器', () => {
 
     const picker = await openPicker(page)
     const panel = picker.locator('[data-ui-dialog-panel]')
-    const title = picker.getByRole('heading', { name: '选择保存目录' })
+    const title = picker.getByRole('heading', { name: '保存到' })
     const toolbar = picker.locator('[data-file-browser-toolbar]')
     const path = picker.locator('[data-file-browser-path]')
     const search = toolbar.locator('button').first()

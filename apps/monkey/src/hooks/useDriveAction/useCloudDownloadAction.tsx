@@ -26,7 +26,8 @@ export function useCloudDownloadAction() {
     directory: ReturnType<typeof ref<{ cid: string, path: Path }>>,
   ) {
     const result = await fileBrowser.open({
-      title: '选择保存目录',
+      title: '保存到',
+      confirmText: '保存到此目录',
       defaultCid: pid ?? '0',
       returnPath: true,
     })
