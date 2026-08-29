@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import type { Share } from '@115master/drive115'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createApp, h, nextTick } from 'vue'
 import FileItemThumbnail from '../FileItemThumbnail'
 
@@ -40,24 +40,6 @@ function mount(props: Record<string, unknown>) {
   apps.push(app)
   return root
 }
-
-function action(label: string) {
-  return [...document.querySelectorAll<HTMLButtonElement>('[role="menuitem"]')]
-    .find(item => item.textContent?.includes(label))
-}
-
-beforeEach(() => {
-  vi.stubGlobal('matchMedia', vi.fn(() => ({
-    matches: true,
-    media: '(min-width: 40rem)',
-    onchange: null,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })))
-})
 
 afterEach(() => {
   apps.splice(0).forEach(app => app.unmount())
@@ -102,10 +84,13 @@ describe('fileItemThumbnail', () => {
     expect(cover.classList).not.toContain('border')
   })
 
-  it('加载失败时回退文件图标，并从右上角错误入口查看详情', async () => {
-    vi.stubGlobal('alert', vi.fn())
+  it('加载失败时回退文件图标，并从右上角错误入口请求 Dialog', async () => {
     const error = new Error('decoder unavailable')
-    const root = mount({ videoCoverError: error })
+    const dialog = vi.fn()
+    const root = mount({
+      videoCoverError: error,
+      onVideoCoverError: dialog,
+    })
     const trigger = root.querySelector<HTMLButtonElement>('[data-video-cover-error-action]')!
 
     expect(root.querySelector('[data-video-cover]')).toBeNull()
@@ -113,13 +98,16 @@ describe('fileItemThumbnail', () => {
 
     trigger.click()
     await nextTick()
-    action('查看错误详情')?.click()
 
-    expect(alert).toHaveBeenCalledWith(expect.stringContaining('decoder unavailable'))
+    expect(dialog).toHaveBeenCalledWith(error, expect.any(Function))
   })
 
   it('封面图片失败后也回退图标，并允许重新生成封面', async () => {
     const retry = vi.fn()
+    const dialog = vi.fn((
+      _error: Error | string,
+      action: () => void | Promise<void>,
+    ) => action())
     const root = mount({
       videoCover: {
         img: 'blob:broken-cover',
@@ -127,6 +115,7 @@ describe('fileItemThumbnail', () => {
         height: 720,
       },
       onVideoCoverRetry: retry,
+      onVideoCoverError: dialog,
     })
     root.querySelector('img')?.dispatchEvent(new Event('error'))
     await nextTick()
@@ -137,9 +126,8 @@ describe('fileItemThumbnail', () => {
 
     trigger.click()
     await nextTick()
-    action('重试加载')?.click()
-    await nextTick()
 
+    expect(dialog).toHaveBeenCalledOnce()
     expect(retry).toHaveBeenCalledOnce()
     expect(root.querySelector('[data-video-cover-skeleton]')).not.toBeNull()
   })

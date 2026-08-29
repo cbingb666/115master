@@ -1,13 +1,11 @@
 import type { Share } from '@115master/drive115'
-import type { ResponsiveMenuTrigger } from '@115master/ui'
 import type { PropType } from 'vue'
 import type { IconValue } from '@/icons'
 import type { FileIcon, IconUrl } from '@/utils/utils115'
-import { Image, ResponsiveMenu } from '@115master/ui'
+import { Image } from '@115master/ui'
 import { image as imageUtil } from '@115master/utils'
 import { computed, defineComponent, shallowRef, watch } from 'vue'
 import { I, Icon } from '@/icons'
-import { errorFeedback } from '@/utils/errorFeedback'
 import { Utils115 } from '@/utils/utils115'
 
 const FileItemThumbnail = defineComponent({
@@ -46,7 +44,14 @@ const FileItemThumbnail = defineComponent({
       default: undefined,
     },
     onVideoCoverRetry: {
-      type: Function as PropType<() => void | Promise<unknown>>,
+      type: Function as PropType<() => void | Promise<void>>,
+      default: undefined,
+    },
+    onVideoCoverError: {
+      type: Function as PropType<(
+        error: Error | string,
+        retry: () => void | Promise<void>,
+      ) => void | Promise<unknown>>,
       default: undefined,
     },
     hasImagePreview: {
@@ -60,7 +65,7 @@ const FileItemThumbnail = defineComponent({
   },
   setup(props) {
     const imageReady = shallowRef(false)
-    const imageError = shallowRef<unknown>()
+    const imageError = shallowRef<Error | string>()
     const coverError = computed(() => imageError.value ?? props.videoCoverError)
     const coverLoading = computed(() =>
       props.isVideo
@@ -140,71 +145,43 @@ const FileItemThumbnail = defineComponent({
       )
     }
 
-    function showCoverError() {
-      const feedback = errorFeedback(coverError.value)
-      if (feedback.onDetail) {
-        feedback.onDetail()
-        return
-      }
-      alert(feedback.message)
-    }
-
     function retryVideoCover() {
       imageReady.value = false
       imageError.value = undefined
-      void props.onVideoCoverRetry?.()
+      return props.onVideoCoverRetry?.()
+    }
+
+    function showCoverError() {
+      if (!coverError.value)
+        return
+      void props.onVideoCoverError?.(coverError.value, retryVideoCover)
     }
 
     function renderCoverError() {
       return (
-        <ResponsiveMenu title="视频封面加载失败">
-          {{
-            target: (trigger: ResponsiveMenuTrigger) => (
-              <button
-                type="button"
-                aria-controls={trigger['aria-controls']}
-                aria-expanded={trigger['aria-expanded']}
-                aria-haspopup={trigger['aria-haspopup']}
-                aria-label={trigger['aria-label']}
-                class="
-                  bg-error text-error-content ui-z-raised focus-visible:outline-error absolute top-1
-                  right-1 flex items-center justify-center rounded-full
-                  shadow-sm transition-transform ease-[var(--ui-ease-standard)]
-                  group-data-[view-type=card]:size-7 group-data-[view-type=list]:size-5 hover:scale-105
-                  focus-visible:outline-2 focus-visible:outline-offset-2
-                "
-                data-video-cover-error-action=""
-                onMousedown={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                }}
-                onClick={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  trigger.onClick()
-                }}
-              >
-                <Icon class="size-[70%]" name={I.CLOSE} />
-              </button>
-            ),
-            default: () => (
-              <>
-                <li>
-                  <button type="button" role="menuitem" onClick={showCoverError}>
-                    <Icon class="text-lg" name={I.ERROR} />
-                    <span>查看错误详情</span>
-                  </button>
-                </li>
-                <li>
-                  <button type="button" role="menuitem" onClick={retryVideoCover}>
-                    <Icon class="text-lg" name={I.RESTART} />
-                    <span>重试加载</span>
-                  </button>
-                </li>
-              </>
-            ),
+        <button
+          type="button"
+          aria-label="查看视频封面加载错误"
+          class="
+            bg-error text-error-content ui-z-raised focus-visible:outline-error absolute top-1
+            right-1 flex items-center justify-center rounded-full
+            shadow-sm transition-transform ease-[var(--ui-ease-standard)]
+            group-data-[view-type=card]:size-7 group-data-[view-type=list]:size-5 hover:scale-105
+            focus-visible:outline-2 focus-visible:outline-offset-2
+          "
+          data-video-cover-error-action=""
+          onMousedown={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
           }}
-        </ResponsiveMenu>
+          onClick={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            showCoverError()
+          }}
+        >
+          <Icon class="size-[70%]" name={I.CLOSE} />
+        </button>
       )
     }
 

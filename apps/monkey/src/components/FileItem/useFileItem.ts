@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
-import { computed, shallowRef } from 'vue'
+import { computed, h, shallowRef } from 'vue'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
 import { useFolderImagePreview } from '@/hooks/useFolderImagePreview'
@@ -84,6 +84,30 @@ export function useFileItem(options: UseFileItemOptions) {
 
   const hasImagePreview = computed(() => !!data.u)
 
+  function showVideoCoverError(
+    error: Error | string,
+    retry: () => void | Promise<void>,
+  ) {
+    const detail = error instanceof Error
+      ? [
+          `名称：${error.name}`,
+          `信息：${error.message}`,
+          error.stack ? `堆栈：\n${error.stack}` : undefined,
+        ].filter(Boolean).join('\n\n')
+      : error
+
+    return dialog.confirm({
+      title: '视频封面加载失败',
+      content: () => h('pre', {
+        class: 'bg-base-200 text-base-content max-h-80 overflow-auto rounded-lg p-3 text-xs whitespace-pre-wrap break-all select-text',
+      }, detail),
+      confirmText: '重试加载',
+      cancelText: '关闭',
+      confirmOnEnter: false,
+      onConfirm: retry,
+    })
+  }
+
   function isIconUrl(icon: string): boolean {
     return icon.startsWith('https://')
   }
@@ -108,6 +132,7 @@ export function useFileItem(options: UseFileItemOptions) {
     hasImagePreview,
     actressAsyncState,
     videoCoverResult,
+    showVideoCoverError,
     open,
     isIconUrl,
   }

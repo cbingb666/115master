@@ -102,6 +102,7 @@ const FileItem = defineComponent({
       hasImagePreview,
       actressAsyncState,
       videoCoverResult,
+      showVideoCoverError,
       open,
     } = useFileItem({
       data: props.data,
@@ -115,7 +116,6 @@ const FileItem = defineComponent({
     function handleClick(event: Event) {
       if (event.target instanceof Element && event.target.closest('[data-video-cover-error-action]')) {
         event.preventDefault()
-        event.stopPropagation()
         return
       }
       props.onClick(event as MouseEvent)
@@ -247,6 +247,7 @@ const FileItem = defineComponent({
                       videoCoverLoading: isVideoCoverLoading.value,
                       videoCoverError: videoCoverResult?.videoCover.error,
                       onVideoCoverRetry: videoCoverResult?.retry,
+                      onVideoCoverError: showVideoCoverError,
                       hasImagePreview: hasImagePreview.value,
                       onMouseDown: handleMouseDown,
                     }) ?? (
@@ -259,6 +260,7 @@ const FileItem = defineComponent({
                         videoCoverLoading={isVideoCoverLoading.value}
                         videoCoverError={videoCoverResult?.videoCover.error}
                         onVideoCoverRetry={videoCoverResult?.retry}
+                        onVideoCoverError={showVideoCoverError}
                         hasImagePreview={hasImagePreview.value}
                         onMouseDown={handleMouseDown}
                       />
