@@ -3,17 +3,17 @@ import { SORT_OPTIONS } from '../config'
 
 describe('file sort selector config', () => {
   it('orders options by direction for the column-flow matrix', () => {
-    expect(SORT_OPTIONS.map(option => `${option.name}${option.asc === 1 ? '升序' : '降序'}`)).toEqual([
-      '创建升序',
-      '修改升序',
-      '打开升序',
-      '名称升序',
-      '大小升序',
-      '创建降序',
-      '修改降序',
-      '打开降序',
-      '名称降序',
-      '大小降序',
+    expect(SORT_OPTIONS.map(option => option.name)).toEqual([
+      '最早创建',
+      '最早修改',
+      '最早打开',
+      '名称 A–Z',
+      '最小优先',
+      '最近创建',
+      '最近修改',
+      '最近打开',
+      '名称 Z–A',
+      '最大优先',
     ])
   })
 

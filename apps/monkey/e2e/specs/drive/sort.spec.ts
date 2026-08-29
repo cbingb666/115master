@@ -16,13 +16,13 @@ test.describe('排序', () => {
     const posts = record(page, ORDER_RE)
     await boot(page)
 
-    /** mock 响应 order=file_name/asc=1 → 排序按钮回显「名称」 */
-    const trigger = page.getByRole('button', { name: '当前排序：名称' })
+    /** mock 响应 order=file_name/asc=1 → 排序按钮回显「名称 A–Z」 */
+    const trigger = page.getByRole('button', { name: '当前排序：名称 A–Z' })
     await expect(trigger).toBeVisible()
     await trigger.click()
 
-    /** SortOptions：点「大小升序」（aria-label 由 order+asc 组成） */
-    await menu(page).getByRole('button', { name: '大小升序' }).click()
+    /** SortOptions：点「最小优先」 */
+    await menu(page).getByRole('radio', { name: '最小优先' }).click()
 
     /** changeSort 先 POST /files/order 持久化 */
     await expect.poll(() => posts.length).toBe(1)
@@ -47,7 +47,7 @@ test.describe('排序', () => {
     const posts = record(page, ORDER_RE)
     await boot(page)
 
-    await page.getByRole('button', { name: '当前排序：名称' }).click()
+    await page.getByRole('button', { name: '当前排序：名称 A–Z' }).click()
     /** fc_mix=0 → 目录置顶 toggle 初始勾选；点击翻转为混排 */
     const toggle = menu(page).getByRole('checkbox')
     await expect(toggle).toBeChecked()

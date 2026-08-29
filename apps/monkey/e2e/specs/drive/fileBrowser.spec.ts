@@ -176,8 +176,8 @@ test.describe('保存目录选择器', () => {
     await bootWithOffline(page)
 
     const picker = await openPicker(page)
-    await picker.getByRole('button', { name: '当前排序：名称' }).click()
-    await menu(page).getByRole('button', { name: '大小升序' }).click()
+    await picker.getByRole('button', { name: '当前排序：名称 A–Z' }).click()
+    await menu(page).getByRole('radio', { name: '最小优先' }).click()
 
     await expect.poll(() => orders.length).toBe(1)
     await expect.poll(() => requests.some(request => request.url.searchParams.get('o') === 'file_size')).toBe(true)

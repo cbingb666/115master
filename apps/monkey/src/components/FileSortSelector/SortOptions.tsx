@@ -73,7 +73,6 @@ const SortOptions = defineComponent({
           >
             {SORT_OPTIONS.map((option) => {
               const on = active(option)
-              const label = `${option.name}${option.asc === 1 ? '升序' : '降序'}`
 
               return (
                 <label
@@ -85,14 +84,14 @@ const SortOptions = defineComponent({
                   }}
                 >
                   <Icon class="shrink-0" name={option.icon} />
-                  <span class="mr-auto whitespace-nowrap">{label}</span>
+                  <span class="mr-auto whitespace-nowrap">{option.name}</span>
                   <input
                     class="radio radio-xs radio-primary shrink-0"
                     type="radio"
                     name={name}
                     value={`${option.order}-${option.asc}`}
                     checked={on}
-                    aria-label={label}
+                    aria-label={option.name}
                     onChange={() => handleSort(option)}
                     onKeydown={event => event.stopPropagation()}
                   />

@@ -50,7 +50,7 @@ const FileSortSelector = defineComponent({
     const sortLabel = computed(() => {
       if (!current.value)
         return '排序'
-      return `${current.value.name}${current.value.asc === 1 ? '升序' : '降序'}`
+      return current.value.name
     })
 
     const sortField = computed(() => {
