@@ -158,7 +158,7 @@ export const Pagination = defineComponent({
 
       return (
         <div
-          class="inline-flex min-h-10 items-center gap-1.5 px-3 py-1.5 text-sm leading-none font-semibold whitespace-nowrap"
+          class="inline-flex min-h-10 items-center gap-1.5 p-1.5 text-sm leading-none font-semibold whitespace-nowrap"
           data-ui-pagination=""
         >
           <div class="drop-shadow-base-200/50 flex items-center gap-1 drop-shadow-sm md:hidden">

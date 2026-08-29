@@ -44,6 +44,9 @@ describe('pagination', () => {
     const current = root.querySelector('[aria-current="page"]')
 
     expect(root.tagName).toBe('DIV')
+    expect(root.classList).toContain('p-1.5')
+    expect(root.classList).not.toContain('px-3')
+    expect(root.classList).not.toContain('py-1.5')
     expect(root.classList).not.toContain('ui-pill')
     expect(root.classList).not.toContain('ui-glass-floating')
     expect(buttons).toHaveLength(7)
