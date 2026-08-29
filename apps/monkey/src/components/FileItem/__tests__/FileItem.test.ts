@@ -27,6 +27,7 @@ vi.mock('../useFileItem', () => ({
     link: computed(() => ({ href: '#file' })),
     hasActressCover: computed(() => false),
     hasVideoCover: computed(() => false),
+    isVideoCoverLoading: computed(() => false),
     hasImagePreview: computed(() => false),
     actressAsyncState: {
       isReady: shallowRef(true),

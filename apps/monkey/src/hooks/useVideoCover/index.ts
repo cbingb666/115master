@@ -241,6 +241,10 @@ function cleanupBlobUrl(covers: string[]): void {
   })
 }
 
+function normalizeError(error: unknown): Error | string {
+  return error instanceof Error ? error : String(error)
+}
+
 /**
  * 智能视频封面 Hook
  * @description 带滚动加载
@@ -250,7 +254,7 @@ export function useSmartVideoCover(options: Ref<VideoCoverOptions>, config: Smar
   const videoCover = reactive<{
     isReady: boolean
     isLoading: boolean
-    error: unknown
+    error: Error | string | undefined
     state: VideoCover[]
   }>({
     isReady: false,
@@ -331,7 +335,7 @@ export function useSmartVideoCover(options: Ref<VideoCoverOptions>, config: Smar
           = FRIENDLY_ERROR_MESSAGE.CANNOT_VIDEO_COVER_WITHOUT_TRANSCODING
         return
       }
-      videoCover.error = error
+      videoCover.error = normalizeError(error)
     }
     finally {
       videoCover.isLoading = false
@@ -354,11 +358,21 @@ export function useSmartVideoCover(options: Ref<VideoCoverOptions>, config: Smar
       }
     }
     catch (error) {
-      videoCover.error = error
+      videoCover.error = normalizeError(error)
     }
     finally {
       videoCover.isLoading = false
     }
+  }
+
+  /** 重新生成视频封面 */
+  const retry = () => {
+    videoCoverScheduler.remove(taskId)
+    cleanupBlobUrl(videoCover.state.map(item => item.img))
+    videoCover.state = []
+    videoCover.isReady = false
+    videoCover.error = undefined
+    return getData(taskId, options.value)
   }
 
   /** 滚动 */
@@ -401,5 +415,6 @@ export function useSmartVideoCover(options: Ref<VideoCoverOptions>, config: Smar
 
   return {
     videoCover,
+    retry,
   }
 }

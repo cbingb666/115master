@@ -75,6 +75,13 @@ export function useFileItem(options: UseFileItemOptions) {
     && videoCoverResult.videoCover.state.length > 0,
   )
 
+  const isVideoCoverLoading = computed(() =>
+    isVideo.value
+    && !!videoCoverResult
+    && !videoCoverResult.videoCover.isReady
+    && !videoCoverResult.videoCover.error,
+  )
+
   const hasImagePreview = computed(() => !!data.u)
 
   function isIconUrl(icon: string): boolean {
@@ -97,6 +104,7 @@ export function useFileItem(options: UseFileItemOptions) {
     link,
     hasActressCover,
     hasVideoCover,
+    isVideoCoverLoading,
     hasImagePreview,
     actressAsyncState,
     videoCoverResult,
