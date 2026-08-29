@@ -76,9 +76,9 @@ const styles = clsx({
   /** 文件信息样式 */
   fileInfo: {
     container: 'flex flex-1 flex-col',
-    file: 'flex flex-wrap items-center gap-2 tracking-tight',
+    file: 'flex flex-wrap items-baseline gap-2 tracking-tight',
     name: 'app-text-shadow-dark line-clamp-2 text-xl font-semibold text-white',
-    position: 'mr-2 inline-block rounded-md bg-white/15 px-1.5 py-0.5 align-middle text-sm font-medium tracking-normal whitespace-nowrap text-white/70',
+    position: 'mr-2 inline-block rounded-md bg-white px-1.5 py-0.5 align-baseline text-sm font-medium tracking-normal whitespace-nowrap text-black/70',
     size: 'app-text-shadow-dark flex-shrink-0 text-xs font-medium tracking-wide whitespace-nowrap text-white',
     path: {
       container: [
