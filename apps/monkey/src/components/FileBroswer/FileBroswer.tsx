@@ -361,8 +361,8 @@ const FileBroswer = defineComponent({
             viewType={viewType.value}
             class="
               shrink-0 pt-1 pb-24
-              data-[view-type=card]:gap-3!
               data-[view-type=card]:mt-5
+              data-[view-type=card]:gap-3!
               data-[view-type=card]:px-7
             "
             loading={explorer.loading.value}
