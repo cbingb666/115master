@@ -24,6 +24,7 @@ import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
 import { actionIcon } from '@/utils/action'
 import { getFilesItemId } from '@/utils/filesItem'
+import './FileBroswer.css'
 
 type ThumbnailProps = InstanceType<typeof FileItemThumbnail>['$props']
 
@@ -227,136 +228,141 @@ const FileBroswer = defineComponent({
     return () => (
       <div class="flex h-full flex-col">
         <div
-          class="ui-z-header flex items-center gap-4 px-6 pt-5"
-          data-file-browser-toolbar
-        >
-          <h2
-            class={[
-              'min-w-0 flex-1 truncate text-lg leading-[1.4] font-semibold',
-              isMobile.value && searchExpanded.value && 'hidden',
-            ]}
-          >
-            {props.title}
-          </h2>
-
-          <div
-            class={[
-              'ml-auto flex min-w-0 items-center gap-2',
-              isMobile.value && searchExpanded.value ? 'flex-1' : 'shrink-0',
-            ]}
-          >
-            {showSearchBox.value && (
-              <label
-                class={[
-                  'input input-ghost bg-base-content/10 focus-within:bg-base-content/15 h-9 rounded-full',
-                  isMobile.value ? 'flex-1' : 'w-sm max-w-[60vw]',
-                ]}
-              >
-                <Icon class="text-base-content/55 shrink-0 text-2xl" name={I.SEARCH} />
-                <input
-                  ref={searchInputRef}
-                  class="grow bg-transparent text-sm"
-                  value={keywordInput.value}
-                  type="text"
-                  placeholder="搜索目录"
-                  onInput={e => keywordInput.value = (e.target as HTMLInputElement).value}
-                  onKeyup={(e: KeyboardEvent) => {
-                    if (e.key !== 'Enter')
-                      return
-                    keyword.value = keywordInput.value
-                    if (props.keyword)
-                      props.keyword.value = keywordInput.value
-                  }}
-                />
-                {keywordInput.value && (
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    shape="circle"
-                    title="清空搜索"
-                    onClick={clearKeyword}
-                  >
-                    <Icon class="text-base-content/65 text-base" name={I.CLOSE} />
-                  </Button>
-                )}
-              </label>
-            )}
-
-            {searchExpanded.value && (
-              <Button
-                variant="ghost"
-                size="sm"
-                class="shrink-0"
-                onClick={collapseSearch}
-              >
-                取消
-              </Button>
-            )}
-
-            {!searchExpanded.value && (
-              <Tooltip content="搜索">
-                <Button
-                  variant="glass-floating"
-                  shape="circle"
-                  class="shrink-0"
-                  onClick={expandSearch}
-                >
-                  <Icon class="text-xl" name={I.SEARCH} />
-                </Button>
-              </Tooltip>
-            )}
-
-            {showActions.value && (
-              <FileMenu class="ui-z-elevated relative shrink-0">
-                <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
-                <FilePageSizeSelector
-                  currentPageSize={size.value}
-                  onChangePageSize={explorer.changeSize}
-                />
-                <FileSortSelector
-                  asc={explorer.asc.value || 0}
-                  fc_mix={explorer.fcMix.value || 0}
-                  order={explorer.order.value || 'user_ptime'}
-                  onSort={handleSort}
-                />
-                <FileViewType
-                  value={viewType.value}
-                  onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
-                />
-              </FileMenu>
-            )}
-          </div>
-        </div>
-
-        {/* header */}
-        <div
-          class={['border-base-content/10 ui-z-elevated sticky top-0 min-w-0 border-b px-6 py-2', viewType.value === 'card' && 'mb-5']}
-          data-file-browser-path
-        >
-          <div class="flex min-w-0 items-center gap-3">
-            <div class="min-w-0 flex-1 overflow-hidden">
-              <FilePath
-                floating={false}
-                path={explorer.path.value ?? []}
-                size="sm"
-                onPathClick={handleClickPath}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div
           ref={scrollRef}
           class={[...scrollbar(), 'relative flex min-h-0 flex-1 flex-col overflow-y-auto']}
           data-file-browser-scroll
         >
+          <header class="file-browser__header">
+            <div
+              class="flex items-center gap-4 px-6 pt-5"
+              data-file-browser-toolbar
+            >
+              <h2
+                class={[
+                  'min-w-0 flex-1 truncate text-lg leading-[1.4] font-semibold',
+                  isMobile.value && searchExpanded.value && 'hidden',
+                ]}
+              >
+                {props.title}
+              </h2>
+
+              <div
+                class={[
+                  'ml-auto flex min-w-0 items-center gap-2',
+                  isMobile.value && searchExpanded.value ? 'flex-1' : 'shrink-0',
+                ]}
+              >
+                {showSearchBox.value && (
+                  <label
+                    class={[
+                      'input input-ghost bg-base-content/10 focus-within:bg-base-content/15 h-9 rounded-full',
+                      isMobile.value ? 'flex-1' : 'w-sm max-w-[60vw]',
+                    ]}
+                  >
+                    <Icon class="text-base-content/55 shrink-0 text-2xl" name={I.SEARCH} />
+                    <input
+                      ref={searchInputRef}
+                      class="grow bg-transparent text-sm"
+                      value={keywordInput.value}
+                      type="text"
+                      placeholder="搜索目录"
+                      onInput={e => keywordInput.value = (e.target as HTMLInputElement).value}
+                      onKeyup={(e: KeyboardEvent) => {
+                        if (e.key !== 'Enter')
+                          return
+                        keyword.value = keywordInput.value
+                        if (props.keyword)
+                          props.keyword.value = keywordInput.value
+                      }}
+                    />
+                    {keywordInput.value && (
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        shape="circle"
+                        title="清空搜索"
+                        onClick={clearKeyword}
+                      >
+                        <Icon class="text-base-content/65 text-base" name={I.CLOSE} />
+                      </Button>
+                    )}
+                  </label>
+                )}
+
+                {searchExpanded.value && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    class="shrink-0"
+                    onClick={collapseSearch}
+                  >
+                    取消
+                  </Button>
+                )}
+
+                {!searchExpanded.value && (
+                  <Tooltip content="搜索">
+                    <Button
+                      variant="glass-floating"
+                      shape="circle"
+                      class="shrink-0"
+                      onClick={expandSearch}
+                    >
+                      <Icon class="text-xl" name={I.SEARCH} />
+                    </Button>
+                  </Tooltip>
+                )}
+
+                {showActions.value && (
+                  <FileMenu class="ui-z-elevated relative shrink-0">
+                    <FileNewFolderButton onClick={handleNewFolder}></FileNewFolderButton>
+                    <FilePageSizeSelector
+                      currentPageSize={size.value}
+                      onChangePageSize={explorer.changeSize}
+                    />
+                    <FileSortSelector
+                      asc={explorer.asc.value || 0}
+                      fc_mix={explorer.fcMix.value || 0}
+                      order={explorer.order.value || 'user_ptime'}
+                      onSort={handleSort}
+                    />
+                    <FileViewType
+                      value={viewType.value}
+                      onUpdateValue={(e: 'list' | 'card') => viewType.value = e}
+                    />
+                  </FileMenu>
+                )}
+              </div>
+            </div>
+
+            <div
+              class={[
+                'min-w-0 px-6 py-2',
+                viewType.value === 'card' && 'mb-5',
+              ]}
+              data-file-browser-path
+            >
+              <div class="flex min-w-0 items-center gap-3">
+                <div class="min-w-0 flex-1 overflow-hidden">
+                  <FilePath
+                    floating
+                    path={explorer.path.value ?? []}
+                    size="sm"
+                    onPathClick={handleClickPath}
+                  />
+                </div>
+              </div>
+            </div>
+          </header>
+
           <FileList
             items={explorer.items.value}
             getScrollElement={getScrollElement}
             viewType={viewType.value}
             class="
-              shrink-0 pt-1
+              shrink-0 pt-1 pb-24
               data-[view-type=card]:gap-3!
+              data-[view-type=card]:mt-5
               data-[view-type=card]:px-7
             "
             loading={explorer.loading.value}
@@ -401,10 +407,10 @@ const FileBroswer = defineComponent({
 
           {isMobile.value && explorer.pageCount.value > 1 && (
             <div
-              class="ui-z-elevated sticky bottom-0 flex shrink-0 justify-center px-4 py-4"
+              class="file-browser__bottom ui-z-elevated sticky bottom-0 flex shrink-0 justify-center px-4 py-4"
               data-file-browser-pagination
             >
-              <Pill as="div" variant="glass-floating" size="md" class="h-auto p-0">
+              <Pill as="div" variant="glass-floating" size="sm" class="h-auto p-1">
                 {pager()}
               </Pill>
             </div>

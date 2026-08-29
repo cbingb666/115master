@@ -50,6 +50,10 @@ const props = {
     type: String as PropType<DialogSize>,
     default: 'md',
   },
+  immersive: {
+    type: Boolean,
+    default: false,
+  },
   closeOnEscape: {
     type: Boolean,
     default: true,
@@ -123,10 +127,11 @@ export const Dialog = defineComponent({
         closeOnBackdrop={props.closeOnBackdrop}
         initialFocus={props.initialFocus}
         {...mergeProps(attrs, {
-          'class': ['ui-dialog', sizes[props.size]],
+          'class': ['ui-dialog', sizes[props.size], props.immersive && 'ui-dialog--immersive'],
           'aria-label': titled.value ? undefined : label.value,
           'aria-labelledby': titled.value ? titleId : attrs['aria-labelledby'],
           'aria-describedby': described.value ? descriptionId : attrs['aria-describedby'],
+          'data-ui-dialog-immersive': props.immersive || undefined,
           'data-ui-dialog-size': props.size,
           'onUpdate:open': (open: boolean) => emit('update:open', open),
           'onClose': (reason: ModalDismissReason) => emit('close', reason),
@@ -136,17 +141,21 @@ export const Dialog = defineComponent({
         })}
       >
         <div class={['ui-dialog__panel', 'ui-glass-panel']} data-ui-dialog-panel="">
-          {titled.value && (
-            <header class="ui-dialog__header">
-              <h2 id={titleId} class="ui-dialog__title">
-                {title.value}
-              </h2>
-            </header>
-          )}
+          {(titled.value || described.value) && (
+            <div class="ui-dialog__top">
+              {titled.value && (
+                <header class="ui-dialog__header">
+                  <h2 id={titleId} class="ui-dialog__title">
+                    {title.value}
+                  </h2>
+                </header>
+              )}
 
-          {described.value && (
-            <div id={descriptionId} class="ui-dialog__description">
-              {description.value}
+              {described.value && (
+                <div id={descriptionId} class="ui-dialog__description">
+                  {description.value}
+                </div>
+              )}
             </div>
           )}
 

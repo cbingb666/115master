@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
 import type { DialogSize } from '@115master/ui'
-import { Pagination } from '@115master/ui'
+import { Pagination, Pill } from '@115master/ui'
 import { ref, shallowRef } from 'vue'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
@@ -51,30 +51,33 @@ export function useFileBrowserDialog() {
         confirmText: options.confirmText,
         closeOnBackdrop: true,
         size: options.size ?? 'xl',
+        immersive: true,
         actions: () => total.value > size.value
           ? (
               <div
                 class="absolute left-1/2 hidden -translate-x-1/2 sm:block"
                 data-file-browser-pagination
               >
-                <Pagination
-                  currentPage={page.value}
-                  currentPageSize={size.value}
-                  size="sm"
-                  showSizeChanger={false}
-                  total={total.value}
-                  labels={PAGINATION_LABELS}
-                  onCurrentPageChange={value => page.value = value}
-                  onPageSizeChange={(value) => {
-                    size.value = value
-                    page.value = 1
-                  }}
-                />
+                <Pill as="div" variant="glass-floating" size="sm" class="h-auto p-1">
+                  <Pagination
+                    currentPage={page.value}
+                    currentPageSize={size.value}
+                    size="sm"
+                    showSizeChanger={false}
+                    total={total.value}
+                    labels={PAGINATION_LABELS}
+                    onCurrentPageChange={value => page.value = value}
+                    onPageSizeChange={(value) => {
+                      size.value = value
+                      page.value = 1
+                    }}
+                  />
+                </Pill>
               </div>
             )
           : undefined,
         content: () => (
-          <div class="-m-5 h-[min(50rem,calc(100dvh-11rem))]">
+          <div class="h-[min(50rem,calc(100dvh-11rem))]">
             <FileBroswer
               title={options.title}
               cid={cid}

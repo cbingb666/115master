@@ -54,6 +54,8 @@ export interface DialogOptions {
   showCancel?: boolean
   confirmOnEnter?: boolean
   size?: DialogSize
+  /** Removes the content inset and fades the fixed header and footer into the content. */
+  immersive?: boolean
   closeOnEscape?: boolean
   closeOnBackdrop?: boolean
   initialFocus?: ModalInitialFocus
@@ -633,6 +635,7 @@ export const DialogHost = defineComponent({
               open={entry.open}
               label={entry.options.label}
               size={entry.options.size}
+              immersive={entry.options.immersive}
               closeOnEscape={closeOnEscape}
               closeOnBackdrop={closeOnBackdrop}
               initialFocus={prompt ? `#${inputId}` : entry.options.initialFocus}
@@ -734,6 +737,7 @@ export const DialogHost = defineComponent({
                         {showCancel && (
                           <Button
                             color="neutral"
+                            variant={entry.options.immersive ? 'glass-floating' : undefined}
                             disabled={!top || entry.pending}
                             onClick={() => cancel(runtime, entry, 'cancel')}
                           >
@@ -743,6 +747,7 @@ export const DialogHost = defineComponent({
                         {showConfirm && (
                           <Button
                             color="primary"
+                            variant={entry.options.immersive ? 'glass-floating' : undefined}
                             disabled={!top}
                             loading={entry.pending}
                             onClick={() => void confirm(runtime, entry)}

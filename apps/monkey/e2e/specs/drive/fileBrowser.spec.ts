@@ -136,7 +136,7 @@ test.describe('保存目录选择器', () => {
     expect(errors).toEqual([])
   })
 
-  test('桌面分页器嵌入弹窗底部且不使用 glass 材质', async ({ page }) => {
+  test('桌面分页器嵌入弹窗底部并使用 glass-floating 材质', async ({ page }) => {
     const errors = watch(page)
     await bootWithOffline(page)
 
@@ -148,7 +148,9 @@ test.describe('保存目录选择器', () => {
     const confirm = actions.getByRole('button', { name: '保存到此目录' })
 
     await expect(pagination.locator('[data-ui-pagination]')).toBeVisible()
-    await expect(pagination.locator('.ui-glass-floating')).toHaveCount(0)
+    await expect(pagination.locator('.ui-glass-floating')).toBeVisible()
+    await expect(cancel).toHaveClass(/ui-glass-floating/)
+    await expect(confirm).toHaveClass(/ui-glass-floating/)
     await expect(pagination.getByRole('button', { name: '下一页' })).toHaveClass(/btn-sm/)
     await expect(scroll.locator('[data-file-browser-pagination]')).toHaveCount(0)
     await expect.poll(async () => {
@@ -168,6 +170,38 @@ test.describe('保存目录选择器', () => {
         Math.abs(centerY - confirmBox.y - confirmBox.height / 2),
       )
     }).toBeLessThanOrEqual(1)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
+  test('滚动内容穿透沉浸式头部和底部', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    const header = picker.locator('.file-browser__header')
+    const scroll = picker.locator('[data-file-browser-scroll]')
+    const actions = picker.locator('.ui-dialog__actions')
+
+    await scroll.evaluate((element) => {
+      element.scrollTop = 96
+    })
+
+    await expect.poll(async () => {
+      const headerBox = await header.boundingBox()
+      const scrollBox = await scroll.boundingBox()
+      if (!headerBox || !scrollBox)
+        return Number.POSITIVE_INFINITY
+      return Math.abs(scrollBox.y - headerBox.y)
+    }).toBeLessThanOrEqual(1)
+    await expect.poll(async () => {
+      const scrollBox = await scroll.boundingBox()
+      const actionsBox = await actions.boundingBox()
+      if (!scrollBox || !actionsBox)
+        return Number.NEGATIVE_INFINITY
+      return scrollBox.y + scrollBox.height - actionsBox.y - actionsBox.height
+    }).toBeGreaterThanOrEqual(-1)
 
     await closePicker(page)
     expect(errors).toEqual([])
