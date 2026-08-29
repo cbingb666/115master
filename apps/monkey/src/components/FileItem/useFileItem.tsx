@@ -1,6 +1,6 @@
 import type { Share } from '@115master/drive115'
 import { useAsyncState } from '@vueuse/core'
-import { computed, h, shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useAppDialog } from '@/app/dialog'
 import { router } from '@/app/router'
 import { useFolderImagePreview } from '@/hooks/useFolderImagePreview'
@@ -90,21 +90,23 @@ export function useFileItem(options: UseFileItemOptions) {
   ) {
     const content = typeof error === 'string'
       ? error
-      : () => h('div', { class: 'space-y-3' }, [
-          h('p', {
-            class: 'text-base-content/80 m-0 leading-6',
-          }, error.message || error.name),
-          error.stack
-            ? h('details', { class: 'text-sm' }, [
-                h('summary', {
-                  class: 'text-base-content/60 cursor-pointer font-medium select-none',
-                }, '技术详情'),
-                h('pre', {
-                  class: 'bg-base-200 text-base-content mt-3 max-h-64 overflow-auto rounded-lg p-3 text-xs whitespace-pre-wrap break-all select-text',
-                }, error.stack),
-              ])
-            : undefined,
-        ])
+      : () => (
+          <div class="space-y-3">
+            <p class="text-base-content/80 m-0 leading-6">
+              {error.message || error.name}
+            </p>
+            {error.stack && (
+              <details class="text-sm">
+                <summary class="text-base-content/60 cursor-pointer font-medium select-none">
+                  技术详情
+                </summary>
+                <pre class="bg-base-200 text-base-content mt-3 max-h-64 overflow-auto rounded-lg p-3 text-xs break-all whitespace-pre-wrap select-text">
+                  {error.stack}
+                </pre>
+              </details>
+            )}
+          </div>
+        )
 
     return dialog.confirm({
       title: '视频封面加载失败',
