@@ -10,6 +10,16 @@
   flex: none;
 }
 
+.file-browser__list > [role='list'] {
+  padding-block-start: calc(var(--spacing) * 4);
+  padding-block-end: calc(var(--spacing) * 36);
+}
+
+.file-browser__list > [data-file-list-empty] {
+  align-items: center;
+  padding-block-start: 0;
+}
+
 .file-browser__header::before,
 .file-browser__bottom::before {
   content: '';

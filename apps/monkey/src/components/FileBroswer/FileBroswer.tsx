@@ -336,10 +336,7 @@ const FileBroswer = defineComponent({
             </div>
 
             <div
-              class={[
-                'min-w-0 px-6 py-2',
-                viewType.value === 'card' && 'mb-5',
-              ]}
+              class="min-w-0 px-6 py-2"
               data-file-browser-path
             >
               <div class="flex min-w-0 items-center gap-3">
@@ -360,8 +357,7 @@ const FileBroswer = defineComponent({
             getScrollElement={getScrollElement}
             viewType={viewType.value}
             class="
-              shrink-0 pt-1 pb-24
-              data-[view-type=card]:mt-5
+              file-browser__list min-h-0! flex-1
               data-[view-type=card]:gap-3!
               data-[view-type=card]:px-7
             "

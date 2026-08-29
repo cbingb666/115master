@@ -88,6 +88,107 @@ test.describe('保存目录选择器', () => {
     expect(errors).toEqual([])
   })
 
+  test('内容不足一屏时不产生垂直滚动', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    await picker.locator('button').nth(0).click()
+    await picker.getByPlaceholder('搜索目录').fill('演示视频 01.mp4')
+    await expect(picker.locator('[data-file-list-total="1"]')).toBeVisible()
+
+    const scroll = picker.locator('[data-file-browser-scroll]')
+    await expect.poll(() => scroll.evaluate(element => element.scrollHeight - element.clientHeight)).toBeLessThanOrEqual(0)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
+  test('空目录状态在内容区居中', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    await picker.locator('button').nth(0).click()
+    await picker.getByPlaceholder('搜索目录').fill('不存在的目录')
+    const empty = picker.locator('[data-ui-empty]')
+    const content = picker.locator('.file-browser__list')
+    await expect(empty).toBeVisible()
+
+    await expect.poll(async () => {
+      const contentBox = await content.boundingBox()
+      const emptyBox = await empty.boundingBox()
+      if (!contentBox || !emptyBox)
+        return Number.POSITIVE_INFINITY
+      return Math.max(
+        Math.abs(emptyBox.x + emptyBox.width / 2 - contentBox.x - contentBox.width / 2),
+        Math.abs(emptyBox.y + emptyBox.height / 2 - contentBox.y - contentBox.height / 2),
+      )
+    }).toBeLessThanOrEqual(1)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
+  test('列表和卡片顶部第一项保留 16px 间距', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    const header = picker.locator('.file-browser__header')
+    const first = picker.locator('[data-file-list-index="0"]')
+    const path = picker.locator('[data-file-browser-path]')
+    const scroll = picker.locator('[data-file-browser-scroll]')
+    await scroll.evaluate((element) => {
+      element.scrollTop = 0
+    })
+    await expect(first).toBeVisible()
+
+    const ratio = async () => {
+      const firstBox = await first.boundingBox()
+      const pathBox = await path.boundingBox()
+      const fade = await header.evaluate(element => Math.abs(Number.parseFloat(getComputedStyle(element, '::before').bottom)))
+      if (!firstBox || !pathBox)
+        return Number.POSITIVE_INFINITY
+      return (firstBox.y - pathBox.y - pathBox.height) / fade
+    }
+
+    await expect.poll(ratio).toBeCloseTo(0.25, 2)
+    await picker.locator('button').nth(4).click()
+    await expect(scroll.locator(':scope > [data-view-type="card"]')).toBeVisible()
+    await expect(first).toBeVisible()
+    await expect.poll(ratio).toBeCloseTo(0.25, 2)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
+  test('底部最后一项留白避开操作栏渐变', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    const actions = picker.locator('.ui-dialog__actions')
+    const last = picker.locator('[data-file-list-index="19"]')
+    const scroll = picker.locator('[data-file-browser-scroll]')
+    await scroll.evaluate((element) => {
+      element.scrollTop = element.scrollHeight
+    })
+    await expect(last).toBeVisible()
+
+    await expect.poll(async () => {
+      const actionsBox = await actions.boundingBox()
+      const lastBox = await last.boundingBox()
+      const fade = await actions.evaluate(element => Math.abs(Number.parseFloat(getComputedStyle(element, '::before').top)))
+      if (!actionsBox || !lastBox)
+        return Number.NEGATIVE_INFINITY
+      return actionsBox.y - fade - lastBox.y - lastBox.height
+    }).toBeGreaterThanOrEqual(-1)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
   test('搜索按钮可展开并加载搜索结果', async ({ page }) => {
     const errors = watch(page)
     const requests = record(page, SEARCH_RE)
