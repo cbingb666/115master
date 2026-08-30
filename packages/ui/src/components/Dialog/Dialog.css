@@ -135,7 +135,7 @@
   }
 
   .ui-dialog--immersive {
-    --ui-dialog-immersive-fade: calc(var(--spacing) * 16);
+    --ui-dialog-immersive-fade: calc(var(--spacing) * 4);
     --ui-dialog-immersive-scrollbar-size: var(--ui-scrollbar-size, 8px);
   }
 
