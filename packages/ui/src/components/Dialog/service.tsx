@@ -722,7 +722,7 @@ export const DialogHost = defineComponent({
                               />
                             )}
                         {entry.invalid && (
-                          <p id={errorId} class="mt-2 text-sm text-error" role="alert">
+                          <p id={errorId} class="text-error mt-2 text-sm" role="alert">
                             {requiredErrorNode}
                           </p>
                         )}
@@ -736,7 +736,7 @@ export const DialogHost = defineComponent({
                         {actions}
                         {showCancel && (
                           <Button
-                            color="neutral"
+                            color={entry.options.immersive ? 'default' : 'neutral'}
                             variant={entry.options.immersive ? 'glass-floating' : undefined}
                             disabled={!top || entry.pending}
                             onClick={() => cancel(runtime, entry, 'cancel')}
