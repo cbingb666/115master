@@ -165,7 +165,6 @@
   .ui-dialog--immersive .ui-dialog__actions::before {
     content: '';
     position: absolute;
-    right: var(--ui-dialog-immersive-scrollbar-size);
     left: 0;
     z-index: var(--ui-z-under);
     pointer-events: none;
@@ -173,6 +172,7 @@
 
   .ui-dialog--immersive .ui-dialog__top::before {
     top: 0;
+    right: 0;
     bottom: calc(-1 * var(--ui-dialog-immersive-fade));
     background: linear-gradient(
       to bottom,
@@ -184,6 +184,7 @@
 
   .ui-dialog--immersive .ui-dialog__actions::before {
     top: calc(-1 * var(--ui-dialog-immersive-fade));
+    right: var(--ui-dialog-immersive-scrollbar-size);
     bottom: 0;
     background: linear-gradient(
       to top,

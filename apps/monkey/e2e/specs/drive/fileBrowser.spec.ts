@@ -404,6 +404,27 @@ test.describe('保存目录选择器', () => {
     expect(errors).toEqual([])
   })
 
+  test('顶部渐变覆盖到滚动容器右缘', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    const header = picker.locator('.ui-dialog__top')
+    const scroll = picker.locator('[data-file-browser-scroll]')
+
+    await expect.poll(async () => {
+      const headerBox = await header.boundingBox()
+      const scrollBox = await scroll.boundingBox()
+      const right = await header.evaluate(element => Number.parseFloat(getComputedStyle(element, '::before').right))
+      if (!headerBox || !scrollBox || !Number.isFinite(right))
+        return Number.POSITIVE_INFINITY
+      return Math.abs(headerBox.x + headerBox.width - right - scrollBox.x - scrollBox.width)
+    }).toBeLessThanOrEqual(1)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
   test('底部渐变不覆盖滚动条', async ({ page }) => {
     const errors = watch(page)
     await bootWithOffline(page)
