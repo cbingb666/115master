@@ -14,6 +14,9 @@ test.describe('播放列表', () => {
     const handle = drawer.locator('[data-ui-drawer-drag-handle]')
     const header = drawer.locator('[data-app-playlist-header]')
     const cover = drawer.locator('.aspect-video').first()
+    const close = drawer.getByRole('button', { name: '关闭播放列表' })
+
+    await expect(close).toHaveClass(/ui-glass-floating/)
 
     for (const width of [390, 639]) {
       await page.setViewportSize({ width, height: 900 })
@@ -117,6 +120,29 @@ test.describe('播放列表', () => {
     await page.keyboard.press('Escape')
     await expect(sider(page)).not.toHaveAttribute('open')
     await expect(trigger).toBeFocused()
+    expect(errors).toEqual([])
+  })
+
+  test('浅色模式的头部使用与沉浸式 Dialog 一致的渐变', async ({ page }) => {
+    const errors = watch(page)
+    await setupVideo(page, { gmValues: { USER_SETTINGS: { theme: 'light' } } })
+    await page.goto(videoUrl(EPISODES[0].pc))
+
+    await page.locator('[data-app-playlist-trigger]').click()
+    const gradient = await sider(page).locator('[data-app-playlist-header]').evaluate((header) => {
+      const probe = document.createElement('div')
+      probe.style.backgroundImage = 'linear-gradient(to bottom, oklch(100% 0 0 / 0.96) 0%, oklch(100% 0 0 / 0.84) 55%, transparent 100%)'
+      document.body.append(probe)
+      const expected = getComputedStyle(probe).backgroundImage
+      probe.remove()
+
+      return {
+        actual: getComputedStyle(header, '::before').backgroundImage,
+        expected,
+      }
+    })
+
+    expect(gradient.actual).toBe(gradient.expected)
     expect(errors).toEqual([])
   })
 

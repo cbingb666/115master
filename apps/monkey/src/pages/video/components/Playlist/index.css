@@ -1,0 +1,18 @@
+@layer components {
+  .app-playlist__header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: var(--ui-z-under);
+    background: linear-gradient(
+      to bottom,
+      oklch(0.278 0.0055 286.04 / 0.96) 0%,
+      oklch(0.278 0.0055 286.04 / 0.84) 55%,
+      transparent 100%
+    );
+  }
+
+  [data-theme='light'] .app-playlist__header::before {
+    background: linear-gradient(to bottom, oklch(100% 0 0 / 0.96) 0%, oklch(100% 0 0 / 0.84) 55%, transparent 100%);
+  }
+}
