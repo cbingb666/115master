@@ -105,7 +105,7 @@
       :placement="placement"
       size="md"
       overlay-handle
-      class="app-playlist-drawer"
+      class="app-playlist-drawer [&.ui-drawer--bottom]:[--app-playlist-handle-space:var(--ui-drawer-handle-size)]"
       data-app-xplayer-shortcuts
     >
       <Playlist
@@ -154,7 +154,7 @@ import { webLinkIINA, webLinkShortcutsMpv } from '@/utils/weblink'
 import { FileActionMenu } from './components/FileActionMenu'
 import HeaderInfo from './components/HeaderInfo/index.vue'
 import MovieInfo from './components/MovieInfo/index.vue'
-import Playlist from './components/Playlist/index.vue'
+import Playlist from './components/Playlist'
 import { useDataFileInfo } from './data/useDataFileInfo'
 import { useDataHistory } from './data/useDataHistory'
 import { useMark } from './data/useDataMark'
