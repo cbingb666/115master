@@ -23,7 +23,6 @@ import { useStackNav } from '@/hooks/useDriveNav'
 import { I, Icon } from '@/icons'
 import { actionIcon } from '@/utils/action'
 import { getFilesItemId } from '@/utils/filesItem'
-import './FileBroswer.css'
 
 type ThumbnailProps = InstanceType<typeof FileItemThumbnail>['$props']
 
@@ -217,7 +216,7 @@ const FileBroswer = defineComponent({
           class={[...scrollbar(), 'relative flex min-h-0 flex-1 flex-col overflow-y-auto']}
           data-file-browser-scroll
         >
-          <header class="file-browser__header">
+          <header class="ui-dialog__top ui-z-header sticky top-0 isolate flex-none">
             <div
               class="flex items-center gap-4 px-6 pt-5"
               data-file-browser-toolbar
@@ -342,9 +341,14 @@ const FileBroswer = defineComponent({
             getScrollElement={getScrollElement}
             viewType={viewType.value}
             class="
-              file-browser__list min-h-0! flex-1
+              min-h-0! flex-1
               data-[view-type=card]:gap-3!
               data-[view-type=card]:px-7
+              [&>[data-file-list-empty]]:items-center
+              [&>[data-file-list-empty]]:pt-0
+              [&>[role=list]]:pt-4
+              [&>[role=list]]:pb-48
+              sm:[&>[role=list]]:pb-36
             "
             loading={explorer.loading.value}
             refreshing={explorer.refreshing.value}

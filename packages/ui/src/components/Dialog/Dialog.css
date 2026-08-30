@@ -176,8 +176,8 @@
     bottom: calc(-1 * var(--ui-dialog-immersive-fade));
     background: linear-gradient(
       to bottom,
-      oklch(15% 0.01 260 / 0.9) 0%,
-      oklch(15% 0.01 260 / 0.72) 55%,
+      oklch(0.278 0.0055 286.04 / 0.96) 0%,
+      oklch(0.278 0.0055 286.04 / 0.84) 55%,
       transparent 100%
     );
   }
@@ -185,7 +185,12 @@
   .ui-dialog--immersive .ui-dialog__actions::before {
     top: calc(-1 * var(--ui-dialog-immersive-fade));
     bottom: 0;
-    background: linear-gradient(to top, oklch(15% 0.01 260 / 0.9) 0%, oklch(15% 0.01 260 / 0.72) 55%, transparent 100%);
+    background: linear-gradient(
+      to top,
+      oklch(0.278 0.0055 286.04 / 0.96) 0%,
+      oklch(0.278 0.0055 286.04 / 0.84) 55%,
+      transparent 100%
+    );
   }
 
   [data-theme='light'] .ui-dialog--immersive .ui-dialog__top::before {

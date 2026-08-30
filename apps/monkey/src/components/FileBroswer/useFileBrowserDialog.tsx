@@ -55,7 +55,7 @@ export function useFileBrowserDialog() {
         actions: () => total.value > size.value
           ? (
               <div
-                class="flex w-full basis-full justify-center sm:absolute sm:left-1/2 sm:block sm:w-auto sm:basis-auto sm:-translate-x-1/2"
+                class="flex w-full basis-full justify-center sm:absolute sm:left-1/2 sm:block sm:w-auto sm:basis-auto sm:-translate-x-1/2 max-sm:[&~.ui-button]:basis-0"
                 data-file-browser-pagination
               >
                 <Pill as="div" variant="glass-floating" size="sm" class="h-auto justify-center p-0 sm:p-1">
