@@ -14,7 +14,7 @@ export const HeaderStart = defineComponent({
 
   setup(_, { slots }) {
     return () => (
-      <div class="ui-header__start relative -my-2 flex min-w-0 flex-1 items-center gap-2 overflow-hidden py-2">
+      <div class="ui-header__start relative -my-2 flex min-w-0 flex-1 items-center gap-2 overflow-x-clip overflow-y-visible py-2">
         {slots.default?.()}
       </div>
     )

@@ -1,4 +1,4 @@
-import type { Page, Request } from '@playwright/test'
+import type { Locator, Page, Request } from '@playwright/test'
 import type { HarnessOptions } from '../../support'
 import { expect } from '@playwright/test'
 import { MASTER_URL, setupHarness } from '../../support'
@@ -48,6 +48,22 @@ export const HEADER_BTN = { search: 0, newFolder: 1, pageSize: 2, sort: 3, view:
 
 export function headerBtn(page: Page, index: number) {
   return header(page).getByRole('button').nth(index)
+}
+
+/** 元素下方到最近垂直裁切边界的可绘制空间 */
+export function shadowClearance(element: Locator) {
+  return element.evaluate((node) => {
+    const box = node.getBoundingClientRect()
+    const clearances = [window.innerHeight - box.bottom]
+
+    for (let parent = node.parentElement; parent; parent = parent.parentElement) {
+      if (getComputedStyle(parent).overflowY === 'visible')
+        continue
+      clearances.push(parent.getBoundingClientRect().bottom - box.bottom)
+    }
+
+    return Math.min(...clearances)
+  })
 }
 
 /** 记录匹配请求（URL + method + postData），在触发动作前调用 */

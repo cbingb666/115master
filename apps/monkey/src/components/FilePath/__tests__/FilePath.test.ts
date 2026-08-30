@@ -38,7 +38,7 @@ describe('filePath', () => {
     const host = mount()
 
     expect(host.querySelectorAll('.ui-glass-floating')).toHaveLength(2)
-    expect(host.querySelector('.breadcrumbs')?.classList).toContain('p-3')
+    expect(host.querySelector('.breadcrumbs')?.classList).toContain('p-6')
   })
 
   it('uses soft styling when floating is disabled', () => {

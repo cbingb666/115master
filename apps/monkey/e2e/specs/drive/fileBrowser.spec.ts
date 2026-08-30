@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { FILES_RE, json } from '../../support'
-import { boot, menu, record, row, watch } from './helpers'
+import { boot, menu, record, row, shadowClearance, watch } from './helpers'
 
 const SEARCH_RE = /^https:\/\/webapi\.115\.com\/files\/search/
 const ORDER_RE = /^https:\/\/webapi\.115\.com\/files\/order/
@@ -83,6 +83,20 @@ test.describe('保存目录选择器', () => {
         titleBox.y + titleBox.height / 2 - searchBox.y - searchBox.height / 2,
       )
     }).toBeLessThanOrEqual(1)
+
+    await closePicker(page)
+    expect(errors).toEqual([])
+  })
+
+  test('面包屑的悬浮阴影不被路径容器裁切', async ({ page }) => {
+    const errors = watch(page)
+    await bootWithOffline(page)
+
+    const picker = await openPicker(page)
+    const crumb = picker.locator('[data-file-browser-path] .ui-pill').first()
+    await expect(crumb).toBeVisible()
+
+    await expect.poll(() => shadowClearance(crumb)).toBeGreaterThanOrEqual(24)
 
     await closePicker(page)
     expect(errors).toEqual([])

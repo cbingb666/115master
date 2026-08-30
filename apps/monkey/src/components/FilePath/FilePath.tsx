@@ -73,7 +73,7 @@ const FilePath = defineComponent({
             class={[
               'breadcrumbs rounded-full',
               // breadcrumbs 的 overflow-x 会裁掉悬浮玻璃阴影，padding 给阴影留出渲染空间，负 margin 保持布局不变
-              props.floating ? '-m-3 p-3' : 'py-0',
+              props.floating ? '-m-6 p-6' : 'py-0',
             ]}
           >
             <ul>

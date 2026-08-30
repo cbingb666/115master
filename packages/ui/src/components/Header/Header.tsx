@@ -39,7 +39,7 @@ export const Header = defineComponent({
         data-ui-header=""
       >
         <div
-          class="ui-header__content @container flex min-w-0 items-center justify-between gap-2 overflow-hidden px-[var(--ui-header-gutter,calc(var(--spacing)*6))] py-2"
+          class="ui-header__content @container flex min-w-0 items-center justify-between gap-2 overflow-x-clip overflow-y-visible px-[var(--ui-header-gutter,calc(var(--spacing)*6))] py-2"
           data-ui-header-content=""
         >
           {slots.default?.()}

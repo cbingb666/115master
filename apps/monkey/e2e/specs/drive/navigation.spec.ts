@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { FILES_RE } from '../../support'
-import { boot, record, row, watch } from './helpers'
+import { boot, record, row, shadowClearance, watch } from './helpers'
 
 test.describe('目录导航', () => {
   test('星标页：面包屑显示星标', async ({ page }) => {
@@ -36,6 +36,19 @@ test.describe('目录导航', () => {
     const crumbs = page.locator('.breadcrumbs')
     await expect(crumbs.getByRole('link', { name: '根目录' })).toHaveAttribute('href', '#/drive')
     await expect(crumbs.locator('[aria-current="page"]')).toHaveText('动漫')
+
+    expect(errors).toEqual([])
+  })
+
+  test('面包屑的悬浮阴影不被头部容器裁切', async ({ page }) => {
+    const errors = watch(page)
+    await boot(page)
+
+    await row(page, '动漫').click()
+    const crumb = page.locator('.breadcrumbs').getByRole('link', { name: '根目录' })
+    await expect(crumb).toBeVisible()
+
+    await expect.poll(() => shadowClearance(crumb)).toBeGreaterThanOrEqual(24)
 
     expect(errors).toEqual([])
   })
