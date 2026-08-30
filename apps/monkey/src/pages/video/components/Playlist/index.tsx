@@ -108,7 +108,7 @@ const Playlist = defineComponent({
         <div class="text-base-content relative box-border flex h-full flex-col [--app-playlist-header-height:calc(var(--spacing)*16+var(--app-playlist-handle-space,0rem))] [--app-playlist-space:calc(var(--spacing)*4)]">
           <div
             data-app-playlist-header
-            class="ui-z-raised text-base-content absolute inset-x-0 top-0 flex h-(--app-playlist-header-height) flex-shrink-0 items-center justify-between px-(--app-playlist-space) pt-[calc(var(--spacing)*4+var(--app-playlist-handle-space,0rem))] pb-4 before:absolute before:inset-0 before:z-(--ui-z-under) before:bg-[linear-gradient(to_bottom,var(--color-base-100)_0%,color-mix(in_oklab,var(--color-base-100)_72%,transparent)_58%,transparent_100%)] before:content-['']"
+            class="ui-z-raised text-base-content [data-theme='light']_&:before:bg-[linear-gradient(to_bottom,oklch(100%_0_0/0.96)_0%,oklch(100%_0_0/0.84)_55%,transparent_100%)] absolute inset-x-0 top-0 flex h-(--app-playlist-header-height) flex-shrink-0 items-center justify-between px-(--app-playlist-space) pt-[calc(var(--spacing)*4+var(--app-playlist-handle-space,0rem))] pb-4 before:absolute before:inset-0 before:z-(--ui-z-under) before:bg-[linear-gradient(to_bottom,oklch(0.278_0.0055_286.04/0.96)_0%,oklch(0.278_0.0055_286.04/0.84)_55%,transparent_100%)] before:content-['']"
           >
             <div class="flex items-center gap-2.5 text-xl font-medium tracking-tight">
               <Icon name={I.PLAYLIST} class="size-10" />
