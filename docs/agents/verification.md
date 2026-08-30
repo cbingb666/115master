@@ -20,6 +20,10 @@ flowchart TD
 
 平台架构、E2E 运行时与并行工作流的详细图解见 [verification-architecture.md](./verification-architecture.md)。
 
+## Red-Green-Refactor
+
+新增或改变可通过公共接口观察的行为，或修复可通过公共接口复现的缺陷时，必须使用 Red-Green-Refactor：先与用户确认要保护的测试接缝，再以一个纵向切片为单位写出能表达目标行为的失败测试（Red），完成使其通过的最小实现（Green），所有切片通过后再重构（Refactor）。测试必须通过公共接口验证行为，mock 仅用于系统边界。
+
 ### ① 单元 + Storybook 浏览器测试（`pnpm test`）
 
 - monkey：`test` = `test:inertness` + `vitest run`。vitest projects：`unit`（node 环境，匹配 `**/__tests__/**/*.test.ts`）、`storybook-dark`、`storybook-light`（chromium headless 真实浏览器，见 `apps/monkey/vitest.config.ts`）。
