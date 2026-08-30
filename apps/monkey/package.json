@@ -23,7 +23,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "type-check": "vue-tsc -b --noEmit && vue-tsc -p tsconfig.stories.json --noEmit",
+    "type-check": "pnpm --filter . run --parallel \"/^type-check:(app|stories)$/\"",
+    "type-check:app": "vue-tsc -b --noEmit",
+    "type-check:stories": "vue-tsc -p tsconfig.stories.json --noEmit",
     "test": "pnpm test:inertness && vitest run",
     "test:inertness": "node ../../scripts/storybook-explicit-tests.mjs inertness .storybook/inertness.json",
     "test:watch": "vitest",
