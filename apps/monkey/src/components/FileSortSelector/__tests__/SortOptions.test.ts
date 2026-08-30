@@ -21,7 +21,7 @@ afterEach(() => {
 })
 
 describe('sort options', () => {
-  it('pairs ascending and descending options in visual rows', () => {
+  it('uses one compact column and pairs ascending and descending options on wider surfaces', () => {
     const host = document.createElement('div')
     const app = createApp(SortOptions, {
       order: 'user_ptime',
@@ -36,9 +36,11 @@ describe('sort options', () => {
     const labels = [...host.querySelectorAll<HTMLInputElement>('input[type="radio"]')]
       .map(radio => radio.getAttribute('aria-label'))
 
-    expect(group?.classList).toContain('grid-flow-col')
-    expect(group?.classList).toContain('grid-cols-2')
-    expect(group?.classList).toContain('grid-rows-5')
+    expect(group?.classList).toContain('grid-flow-row!')
+    expect(group?.classList).toContain('grid-cols-1')
+    expect(group?.classList).toContain('sm:grid-flow-col!')
+    expect(group?.classList).toContain('sm:grid-cols-2')
+    expect(group?.classList).toContain('sm:grid-rows-5')
     expect(labels).toEqual([
       '最早创建',
       '最早修改',

@@ -67,7 +67,7 @@ const SortOptions = defineComponent({
         <li class="border-base-content mx-2 my-1 border-t" />
         <li role="none" class="sm:w-80">
           <div
-            class="grid grid-flow-col grid-cols-2 grid-rows-5 gap-1 p-1"
+            class="grid grid-flow-row! grid-cols-1 gap-1 p-1 sm:grid-flow-col! sm:grid-cols-2 sm:grid-rows-5"
             role="radiogroup"
             aria-label="排序方式"
           >

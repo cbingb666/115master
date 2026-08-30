@@ -10,6 +10,33 @@ function body(postData: string | null) {
 }
 
 test.describe('排序', () => {
+  test('窄屏更多菜单：排序选项单列排列且不横向溢出', async ({ page }) => {
+    const errors = watch(page)
+    await page.setViewportSize({ width: 375, height: 812 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await boot(page)
+
+    await page.getByRole('button', { name: '更多操作' }).click()
+    const sheet = page.getByRole('menu', { name: '更多操作' })
+    await sheet.getByText('排序', { exact: true }).click()
+    const group = sheet.getByRole('radiogroup', { name: '排序方式' })
+    await expect(group).toBeVisible()
+
+    const layout = await sheet.evaluate((element) => {
+      const labels = [...element.querySelectorAll<HTMLElement>('[role="radiogroup"] label')]
+
+      return {
+        client: element.clientWidth,
+        scroll: element.scrollWidth,
+        x: [...new Set(labels.map(label => Math.round(label.getBoundingClientRect().x)))],
+      }
+    })
+
+    expect(layout.scroll).toBeLessThanOrEqual(layout.client)
+    expect(layout.x).toHaveLength(1)
+    expect(errors).toEqual([])
+  })
+
   test('切换排序：持久化到 /files/order 并按新排序重新请求', async ({ page }) => {
     const errors = watch(page)
     const gets = record(page, FILES_RE)

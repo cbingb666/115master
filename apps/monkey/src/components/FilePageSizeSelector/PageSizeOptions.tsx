@@ -26,7 +26,7 @@ const PageSizeOptions = defineComponent({
     return () => (
       <>
         {PAGINATION_DEFAULT_PAGE_SIZE_OPTIONS.map(option => (
-          <li key={option} class="sm:w-36">
+          <li key={option} class="w-full">
             <a
               class={{ 'bg-primary text-primary-content': props.currentPageSize === option }}
               tabindex="0"

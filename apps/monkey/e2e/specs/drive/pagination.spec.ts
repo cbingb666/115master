@@ -62,6 +62,68 @@ test.describe('分页', () => {
     expect(errors).toEqual([])
   })
 
+  test('页大小菜单：选项横向填满菜单内容区', async ({ page }) => {
+    const errors = watch(page)
+    await boot(page, { storage: { '115Master_pageSize': '1000' } })
+
+    await headerBtn(page, HEADER_BTN.pageSize).click()
+    const dropdown = menu(page)
+    await expect(dropdown).toBeVisible()
+
+    const widths = await dropdown.evaluate((element) => {
+      const option = [...element.querySelectorAll<HTMLElement>('a')]
+        .find(node => node.textContent?.trim() === '1000')
+
+      if (!option)
+        throw new Error('页大小菜单缺少 1000 选项')
+
+      const style = getComputedStyle(element)
+
+      return {
+        content: element.clientWidth - Number.parseFloat(style.paddingLeft) - Number.parseFloat(style.paddingRight),
+        option: option.offsetWidth,
+      }
+    })
+
+    expect(widths.option).toBeCloseTo(widths.content)
+    expect(errors).toEqual([])
+  })
+
+  test('窄屏更多菜单：顶层项填满抽屉且页大小子项右对齐', async ({ page }) => {
+    const errors = watch(page)
+    await page.setViewportSize({ width: 375, height: 812 })
+    await boot(page, { storage: { '115Master_pageSize': '1000' } })
+
+    await page.getByRole('button', { name: '更多操作' }).click()
+    const sheet = page.getByRole('menu', { name: '更多操作' })
+    await expect(sheet).toBeVisible()
+    await sheet.getByText('每页', { exact: true }).click()
+
+    const widths = await sheet.evaluate((element) => {
+      const top = element.querySelector<HTMLElement>(':scope > li > a')
+      const option = [...element.querySelectorAll<HTMLElement>('a')]
+        .find(node => node.textContent?.trim() === '1000')
+      const surface = element.parentElement
+
+      if (!top || !option || !surface)
+        throw new Error('窄屏更多菜单缺少对齐测量项')
+
+      const style = getComputedStyle(element)
+      const box = surface.getBoundingClientRect()
+
+      return {
+        content: surface.clientWidth - Number.parseFloat(style.paddingLeft) - Number.parseFloat(style.paddingRight),
+        optionRight: option.getBoundingClientRect().right,
+        sheetRight: box.right - Number.parseFloat(style.paddingRight),
+        top: top.offsetWidth,
+      }
+    })
+
+    expect(widths.top).toBeCloseTo(widths.content)
+    expect(widths.optionRight).toBeCloseTo(widths.sheetRight)
+    expect(errors).toEqual([])
+  })
+
   test('偏好设置切换为滚动无限加载：逐页追加并隐藏分页器', async ({ page }) => {
     const errors = watch(page)
     const reqs = record(page, FILES_RE)

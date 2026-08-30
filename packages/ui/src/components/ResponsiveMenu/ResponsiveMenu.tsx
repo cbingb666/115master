@@ -286,7 +286,7 @@ export const ResponsiveMenu = defineComponent({
                   <ul
                     id={id}
                     aria-label={props.title}
-                    class="ui-responsive-menu__items menu"
+                    class="ui-responsive-menu__items menu w-full! flex-nowrap!"
                     role="menu"
                     onClick={select}
                   >
