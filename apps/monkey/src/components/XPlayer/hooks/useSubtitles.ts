@@ -49,6 +49,7 @@ export function useSubtitles(ctx: PlayerContext) {
     }
     current.value = subtitle
     if (!init) {
+      ctx.controls.wake()
       ctx.rootProps.onSubtitleChange?.(subtitle)
     }
   }

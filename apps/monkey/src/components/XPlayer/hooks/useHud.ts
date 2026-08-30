@@ -1,7 +1,6 @@
 import type { PlayerContext } from './usePlayerProvide'
 import type { HudMessage } from '@/components/XPlayer/components/HUD/index'
-import { computed, h, onUnmounted, shallowRef, watch } from 'vue'
-import SubtitleDisplay from '@/components/XPlayer/components/SubtitleDisplay.vue'
+import { computed, onUnmounted, shallowRef, watch } from 'vue'
 import { getVolumeIcon } from '@/components/XPlayer/utils/icon'
 import { formatTime } from '@/components/XPlayer/utils/time'
 import { I } from '@/icons'
@@ -152,38 +151,6 @@ export function useHud(ctx: PlayerContext) {
       title: '倍速',
       icon: I.TIMER,
       value: playbackRate,
-    })
-  }
-
-  // 监听字幕变化
-  if (ctx.subtitles) {
-    const { current, currentIndex, total } = ctx.subtitles
-    watch(current, (newSubtitle) => {
-      const icon = newSubtitle ? I.SUBTITLES : I.SUBTITLES_OFF
-
-      if (!newSubtitle) {
-        show({
-          title: '字幕',
-          icon,
-          value: '关闭',
-        })
-        return
-      }
-
-      /** 使用组件渲染字幕信息 */
-      const value = h(SubtitleDisplay, {
-        label: newSubtitle.label,
-        format: newSubtitle.format,
-        source: newSubtitle.source,
-        subtitleIndex: currentIndex.value,
-        total: total.value,
-      })
-
-      show({
-        title: '字幕',
-        icon,
-        value,
-      })
     })
   }
 
